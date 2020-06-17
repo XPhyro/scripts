@@ -20,6 +20,9 @@ do
             pdf)
                 zathura "$file" &
                 ;;
+            md)
+                vim "$file"
+                ;;
             *)
                 xdg-open "$file"
                 ;;
