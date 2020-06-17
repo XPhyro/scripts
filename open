@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+paths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
+
+if [ "$paths" ] 
+then
+    if [ "$EDITOR" ]
+    then
+        "$EDITOR" "$paths"
+    else
+        vim "$paths"
+    fi
+else
+    echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
+fi

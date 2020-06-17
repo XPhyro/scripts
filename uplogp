@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+while read -r i
+do
+    date --date @"$i"
+done < ~/documents/data-dump/up.log

@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+ps -A | awk '{print $4}' | dmenu -i -p 'Which process to kill?' | xargs -r killall

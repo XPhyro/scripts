@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+redshift -l 39.907484:32.819239 &
+disown

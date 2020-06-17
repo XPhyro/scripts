@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+yay -Syuw --noconfirm
+statbarsetavlsyu
+statbarset

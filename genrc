@@ -1,0 +1,47 @@
+#!/usr/bin/env sh
+
+locations="$HOME/documents/sys-admin/locations"
+files="$HOME/documents/sys-admin/files"
+ranger="$HOME/.dotfiles-sensitive/.config/ranger/rc.conf"
+
+rtmp="$( mktemp )"
+
+sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "$ranger"
+
+printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
+
+while read -r i
+do
+    cmd="$( echo "$i" | awk '{print $1}' )"
+    loc="$( echo "$i" | awk '{print $2}' )"
+    if [ "$( printf "%s" "$cmd" | wc -c )" -lt 3 ]
+    then
+        space="$( printf "\t\t" )"
+    else
+        space="$( printf "\t" )"
+    fi
+
+    printf "map g%s%scd %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
+done < "$locations"
+
+printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
+
+while read -r i
+do
+    cmd="$( echo "$i" | awk '{print $1}' )"
+    loc="$( echo "$i" | awk '{print $2}' )"
+    if [ "$( printf "%s" "$cmd" | wc -c )" -lt 3 ]
+    then
+        space="$( printf "\t\t" )"
+    else
+        space="$( printf "\t" )"
+    fi
+
+    printf "map e%s%sshell vim %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
+done < "$files"
+
+printf "\n#\n##\n" >> "$rtmp"
+
+rnum="$( grep -n "### BEGIN AUTO-GENERATED ###" "$ranger" | sed 's/:.*//' )"
+
+sed -i "$rnum r $rtmp" "$ranger"

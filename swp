@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+if [ "$3" ]
+then
+    echo "Only two arguments accepted."
+elif [ "$2" ]
+then
+    tmp="$( mktemp )"
+    [ "$tmp" = "" ] && echo "Could not create tmp file."
+    cp "$1" "$tmp" || { echo "Could not copy $1 to $tmp."; exit 1; }
+    cp "$2" "$1" || { echo "Could not copy $2 to $1. (tmp: $tmp)"; exit 1; }
+    cp "$tmp" "$2" || { echo "Could not copy $tmp to $2."; exit 1; }
+    rm "$tmp" || echo "Could not remove $tmp."
+else
+    echo "Two arguments needed."
+fi

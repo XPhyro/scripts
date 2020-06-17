@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+to_exec=$(echo "" | dmenu -l 0) 
+$to_exec & disown

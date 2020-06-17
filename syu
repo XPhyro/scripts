@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+ans="$( printf "yes\n%s\nyes" "$( yay -Qu )" | dmenu -i -p "Proceed with installation?" )"
+[ "$ans" = "yes" ] || exit
+
+if yay -Syu --noconfirm
+then
+    notify-send -t 1000 "✔ Syu" "Update succeeded" 
+else
+    notify-send -t 1000 "❌ Syu" "Update failed"
+fi
+
+statbarsetavlsyu
+statbarset

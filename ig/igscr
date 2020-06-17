@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+trap ctrl_c INT
+
+ctrl_c() {
+    [ "$newfollow" ] && [ -f "$newfollow" ] && rm "$newfollow"
+    exit 0
+}
+
+cd "$( getloc igg )" || exit
+
+newfollow="$( dupe follow )"
+sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow"
+if [ "$1" = "-r" ]
+then
+    sort -r -o "$newfollow" "$newfollow"
+else
+    sort -o "$newfollow" "$newfollow"
+fi
+
+instagram-scraper @args -f "$newfollow" -T '{username}_{year}-{month}-{day}_{h}-{m}-{s}_{urlname}_{shortcode}' --profile-metadata --media-metadata --latest --retry-forever
+
+[ -f "$newfollow" ] && rm "$newfollow"

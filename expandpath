@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Adapted from https://stackoverflow.com/a/29310477/8403070
+
+expandpath() {
+    local path
+    local -a pathElements resultPathElements
+    IFS=':' read -r -a pathElements <<<"$1"
+    : "${pathElements[@]}"
+    for path in "${pathElements[@]}"; do
+        : "$path"
+        case $path in
+            "~+"/*)
+                path=$PWD/${path#"~+/"}
+                ;;
+            "~-"/*)
+                path=$OLDPWD/${path#"~-/"}
+                ;;
+            "~"/*)
+                path=$HOME/${path#"~/"}
+                ;;
+            "~"*)
+                username=${path%%/*}
+                username=${username#"~"}
+                IFS=: read -r _ _ _ _ _ homedir _ < <(getent passwd "$username")
+                if [[ $path = */* ]]; then
+                    path=${homedir}/${path#*/}
+                else
+                    path=$homedir
+                fi
+                ;;
+        esac
+        resultPathElements+=( "$path" )
+    done
+    local result
+    printf -v result '%s:' "${resultPathElements[@]}"
+    printf '%s\n' "${result%:}"
+}
+
+# This snippet holds the flow if there is no input from both the arguments and stdin.
+if [ "$@" ]
+then
+    for i in "$@"
+    do
+        expandpath "$i"
+    done
+else
+    while read -r i 
+    do
+        expandpath "$i"
+    done < "${@:-/dev/stdin}"
+fi
+
+#for i in "$@"
+#do
+#    expandpath "$i"
+#done

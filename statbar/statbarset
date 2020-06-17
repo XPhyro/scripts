@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+xsetroot -name "$( { statbarcaps; statbarnum; statbarkm; statbarmail; statbaravlsyu; statbarbat; statbarvol; statbardate; } | sed ':a;N;$!ba;s/\n/ \| /g' )"

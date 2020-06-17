@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+stat="$( pulseaudio-ctl status | tail -n 5 | head -n 2 | rmclr | sed -e 's/.*\:\s//' -e 's/\s\%*//' )"
+if [ "$( echo "$stat" | tail -n 1)" = "yes" ]
+then
+    glyph="🔇"
+else
+    glyph="🔈"
+fi
+
+echo "$( echo "$stat" | head -n 1 ) $glyph"

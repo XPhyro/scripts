@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+pulseaudio -k
+sleep 0.1s
+pulseaudio -D -v || restart-paudio

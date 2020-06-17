@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+~/repo/UnrealEngine/Engine/Binaries/Linux/UE4Editor & disown

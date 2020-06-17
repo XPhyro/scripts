@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+[ "$( xset q | head -n 4 | tail -n 1 | awk '{print $8}' )" = 'on' ] && echo Num

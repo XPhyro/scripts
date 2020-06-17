@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+locfile="$HOME/documents/sys-admin/locations"
+
+if ! [ "$2" ]
+then
+    expandpath "$( grep -E "^$1\s+.*" "$locfile" | awk '{print $2}' )"
+    exit
+fi
+
+for i in "$@"
+do
+    expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$locfile" | awk '{print $2}' )" )"
+done

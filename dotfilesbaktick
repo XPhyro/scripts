@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+while true
+do
+    while inotifywait -e modify -r -q -q @~/.dotfiles/.git ~/.dotfiles
+    do
+        sleep 600
+        ~/.dotfiles/dotfilesbak
+    done
+done

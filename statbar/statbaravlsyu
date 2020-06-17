@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+avl="$( wc -c ~/.avlsyu | awk '{print $1}' )"
+[ "$avl" -gt 1 ] && echo "$( wc -l ~/.avlsyu | awk '{print $1}' ) 📦"

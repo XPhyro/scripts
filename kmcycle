@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+currentKeymap="$( xkb-switch )"
+hasCycled=true
+
+case $currentKeymap in
+    gb  ) setxkbmap tr;;
+    tr  ) setxkbmap gb;;
+    *   ) hasCycled=false;;
+esac
+
+$hasCycled && notify-send -t  500 "⌨ $( xkb-switch )" "Changed current keymap" && statbarset
+$hasCycled || notify-send -t 1000 "❌ $currentKeymap" "Current keymap unknown"

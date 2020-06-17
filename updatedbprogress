@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+count=$( df -i | grep '/$' | awk '{print $3}' )
+
+sudo updatedb -v | while read -r
+do
+    if (( ++i % (count/20) == 0 )); then
+        printf "%3d\r" $(( 100 * i / count ))
+    fi
+done

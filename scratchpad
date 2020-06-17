@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+dir="$HOME/documents/notes/scratchpad"
+
+file="$( find "$dir" -type f -printf "%f" | sort -V | tail -n 1 | sed 's/_.*//' )"
+[ "$file" = "" ] && file=-1
+
+: $(( file += 1 ))
+file="$file"_"$( date +"%Y-%m-%d_%H-%M-%S" )"
+
+vim "$dir/$file" -c 'startinsert'

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+t="$( file -b --mime-type "$1" )"
+xclip "$1" -sel clip -t "$t"
+
+# does not work (copies only the first)
+#t="$( file -b --mime-type "$1" )"
+#xclip $@ -sel clip  -t "$t"
+
+# does not work
+#echo "" | xclip -sel clip
+#for i in "$@"
+#do
+#    prev="$( xclip -o -sel clip )"
+#    t="$( file -b --mime-type "$i" )"
+#    xclip "$i" -sel clip -t "$t"
+#    printf "%s\n%s" "$prev" "$( xclip -o -sel clip )" | xclip -sel clip
+#done

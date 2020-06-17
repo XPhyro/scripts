@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+#pulseaudio-ctl mute #&& notify-send -t 1000 "🔇 Volume Mute" "$( pulseaudio-ctl status | tail -n 5 | head -n 1 | rmclr )"
+pactl set-sink-mute "$( voldefsink )" toggle

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+curl wttr.in/Çankaya
+printf "\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K"
+read -r

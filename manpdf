@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+entry="$( apropos . | dmenu -l 20 | awk '{print $1}' )"
+[ "$entry" ] && man -Tpdf "$entry" | zathura -

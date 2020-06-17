@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+getnewpath() {
+    if [ -e "$1"_ ] || [ -d "$1"_ ]
+    then
+        getnewpath "$1"_
+    else
+        echo "$1"_
+    fi
+}
+
+for i in "$@"
+do
+    newpath="$( getnewpath "$i" )"
+    cp -r "$i" "$newpath"
+    echo "$newpath"
+done

@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+while true
+do
+    while inotifywait -e modify -r -q -q @~/.dotfiles-sensitive/.git ~/.dotfiles-sensitive
+    do
+        sleep 1200
+        ~/.dotfiles-sensitive/dotfilesbak-sensitive
+    done
+done

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+
+if bluetoothctl info ; then
+    connectedDevice="$( bluetoothctl info | head -n 3 | tail -n 1 | awk '{$1=""; print substr($0,2)}' )"
+
+    if bluetoothctl disconnect ; then
+        notify-send -t 1000 "✔  $connectedDevice" "Disconnected from bluetooth"
+    else
+        notify-send -t 1000 "❌ $connectedDevice" "ERROR: Could not disconnect from bluetooth"
+    fi
+else
+    notify-send -t 1000 "NULL" "ERROR: No connected device"
+fi
+
+statbarset
