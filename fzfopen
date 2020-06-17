@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+
+for i in "$@"
+do
+    loc="$( getloc "$i" )"
+
+    if ! [ "$loc" ]
+    then
+        file="$( fzf )"
+    else
+        cd "$loc"
+        file="$( fzf )"
+    fi
+
+    if [ "$file" ] 
+    then
+        # This is a workaround for xdg-open not working as intended.
+        extension="$( echo "$file" | sed 's/.*\.//' )"
+        case "$extension" in
+            pdf)
+                zathura "$file" &
+                ;;
+            *)
+                xdg-open "$file"
+                ;;
+        esac
+    fi
+done
