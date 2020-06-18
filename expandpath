@@ -36,7 +36,6 @@ expandpath() {
     printf '%s\n' "${result%:}"
 }
 
-# This snippet holds the flow if there is no input from both the arguments and stdin.
 if [ "$@" ]
 then
     for i in "$@"
@@ -52,8 +51,3 @@ else
         done < "${@:-/dev/stdin}"
     }
 fi
-
-#for i in "$@"
-#do
-#    expandpath "$i"
-#done
