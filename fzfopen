@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
 
+printhelp() {
+    printf "%s\n\t\t%s\n%s\n\t\t%s\n" \
+        "-h, --help" \
+                "print this help message, then exit" \
+        "-r, --read-only" \
+                "print the file to stdout instead of xdg-opening it"
+}
+
 setfile() {
     file="$( fzf )"
 }
@@ -28,12 +36,59 @@ then
 else
     for i in "$@"
     do
+        [ "${i:0:1}" = "-" ] && {
+            if ! [ "${i:1:1}" = "-" ]
+            then
+                sopt="${i:1}"
+                
+                case "$sopt" in
+                    *r*)
+                        ro=1
+                        ;;
+                    *h*)
+                        printhelp
+                        exit 0
+                        ;;
+                    *)
+                        ;;
+                esac
+            else
+                lopt="${i:2}"
+                
+                case "$lopt" in
+                    read-only)
+                        ro=1
+                        ;;
+                    help)
+                        printhelp
+                        exit 0
+                        ;;
+                    *)
+                        ;;
+                esac
+            fi
+        }
+    done
+
+    for i in "$@"
+    do
+        [ "${i:0:1}" = "-" ] && continue
+
         loc="$( getloc "$i" )"
 
-        [ "$( getloc "$i" )" ] && {
-            cd "$loc"
+        [ "$loc" ] && {
+            cd "$loc" || continue
+
             setfile
-            openfile
+
+            [ "$file" ] || continue
+
+            if [ "$ro" = 1 ]
+            then
+                echo "$file"
+            else
+                openfile
+            fi
         }
     done
 fi

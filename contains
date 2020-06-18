@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+case "$1" in
+    *"$2"*)
+        exit 0
+        ;;
+    *)
+        exit 1
+        ;;
+esac
