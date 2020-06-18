@@ -1,31 +1,39 @@
 #!/usr/bin/env sh
 
-for i in "$@"
-do
-    loc="$( getloc "$i" )"
+setfile() {
+    file="$( fzf )"
+}
 
-    if ! [ "$loc" ]
-    then
-        file="$( fzf )"
-    else
-        cd "$loc"
-        file="$( fzf )"
-    fi
+openfile() {
+    [ "$file" ] || return
 
-    if [ "$file" ] 
-    then
-        # This is a workaround for xdg-open not working as intended.
-        extension="$( echo "$file" | sed 's/.*\.//' )"
-        case "$extension" in
-            pdf)
-                zathura "$file" &
-                ;;
-            md)
-                vim "$file"
-                ;;
-            *)
-                xdg-open "$file"
-                ;;
-        esac
-    fi
-done
+    xdg-open "$file"
+
+#    # This is a workaround for xdg-open not working as intended.
+#    extension="$( echo "$file" | sed 's/.*\.//' )"
+#    case "$extension" in
+##       pdf)
+##            zathura "$file" &
+##            ;;
+#        *)
+#            xdg-open "$file"
+#            ;;
+#    esac
+}
+
+if ! [ "$@" ]
+then
+    setfile
+    openfile
+else
+    for i in "$@"
+    do
+        loc="$( getloc "$i" )"
+
+        [ "$( getloc "$i" )" ] && {
+            cd "$loc"
+            setfile
+            openfile
+        }
+    done
+fi
