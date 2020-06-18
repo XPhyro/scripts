@@ -44,10 +44,13 @@ then
         expandpath "$i"
     done
 else
-    while read -r i 
-    do
-        expandpath "$i"
-    done < "${@:-/dev/stdin}"
+    [ -t 0 ] || {
+        while read -r i 
+        do
+            echo "$i"
+            expandpath "$i"
+        done < "${@:-/dev/stdin}"
+    }
 fi
 
 #for i in "$@"

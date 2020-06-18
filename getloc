@@ -2,6 +2,8 @@
 
 locfile="$HOME/documents/sys-admin/locations"
 
+[ "$@" ] || exit
+
 if ! [ "$2" ]
 then
     expandpath "$( grep -E "^$1\s+.*" "$locfile" | awk '{print $2}' )"
