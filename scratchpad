@@ -2,10 +2,18 @@
 
 dir="$HOME/documents/notes/scratchpad"
 
-file="$( find "$dir" -type f -printf "%f" | sort -V | tail -n 1 | sed 's/_.*//' )"
-[ "$file" = "" ] && file=-1
+files="$( find "$dir" -type f -printf "%f\n" )"
+newfile="$( echo "$files" | sort -V | tail -n 1 | sed 's/_.*//' )"
+[ "$newfile" = "" ] && newfile=-1
 
-: $(( file += 1 ))
-file="$file"_"$( date +"%Y-%m-%d_%H-%M-%S" )"
+: $(( newfile += 1 ))
+newfile="$newfile"_"$( date +"%Y-%m-%d_%H-%M-%S" )"
 
-vim "$dir/$file" -c 'startinsert'
+file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
+
+if [ "$file" = "$newfile" ]
+then
+    vim "$dir/$file" -c 'startinsert'
+else
+    vim "$dir/$file" -c 'norm G$'
+fi
