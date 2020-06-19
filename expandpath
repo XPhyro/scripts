@@ -46,7 +46,6 @@ else
     [ -t 0 ] || {
         while read -r i 
         do
-            echo "$i"
             expandpath "$i"
         done < "${@:-/dev/stdin}"
     }
