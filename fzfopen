@@ -40,18 +40,27 @@ else
             if ! [ "${i:1:1}" = "-" ]
             then
                 sopt="${i:1}"
-                
-                case "$sopt" in
-                    *r*)
-                        ro=1
-                        ;;
-                    *h*)
-                        printhelp
-                        exit 0
-                        ;;
-                    *)
-                        ;;
-                esac
+
+                while [ "$sopt" ]
+                do
+                    opt="${sopt:0:1}"
+
+                    case "$opt" in
+                        r)
+                            ro=1
+                            ;;
+                        h)
+                            printhelp
+                            exit 0
+                            ;;
+                        *)
+                            echo "-$opt is not a valid option, exiting."
+                            exit 1
+                            ;;
+                    esac
+
+                    sopt="${sopt:1}"
+                done
             else
                 lopt="${i:2}"
                 
@@ -64,6 +73,8 @@ else
                         exit 0
                         ;;
                     *)
+                        echo "--$lopt is not a valid option, exiting."
+                        exit 1
                         ;;
                 esac
             fi
