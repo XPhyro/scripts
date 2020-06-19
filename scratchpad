@@ -11,6 +11,8 @@ newfile="$newfile"_"$( date +"%Y-%m-%d_%H-%M-%S" )"
 
 file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
 
+[ "$file" ] || exit
+
 if [ "$file" = "$newfile" ]
 then
     vimcmd='startinsert'
