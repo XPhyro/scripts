@@ -4,6 +4,6 @@ flfile="$HOME/documents/sys-admin/files"
 
 for i in "$@"
 do
-    file="$( grep "$i" "$flfile" | head -n 1 | awk '{print $2}' | expandpath )"
+    file="$( getfl "$i" )"
     [ "$file" ] && $EDITOR "$file"
 done

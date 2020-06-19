@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+flfile="$HOME/documents/sys-admin/files"
+
+[ "$@" ] || exit
+
+if ! [ "$2" ]
+then
+    expandpath "$( grep -E "^$1\s+.*" "$flfile" | awk '{print $2}' )"
+    exit
+fi
+
+for i in "$@"
+do
+    expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$flfile" | awk '{print $2}' )" )"
+done

@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+open() {
+    if [ "$( grep -E "^Terminal=.*" "$2" | head -n 1 | sed 's/^Terminal=//' )" = "true" ]
+    then
+        xdg-open "$1" 
+    else
+        xdg-open "$1" &
+    fi
+}
+
+usa="$( getloc usa )"
+lsa="$( getloc lsa )"
+mim="$( getfl mim )"
+
+for i in "$@"
+do
+    # find desktop file
+    dtf="$( grep "$( mimetype "$i" | awk '{print $2}' )" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//' )"
+
+    [ "$dtf" ] || {
+        xdg-open "$i"
+        continue
+    }
+
+    lf="$( find "$lsa" -name "$dtf" | sort | head -n 1 )"
+
+    [ "$lf" ] && {
+        open "$i" "$lf"
+        continue
+    }
+
+    uf="$( find "$usa" -name "$dtf" | sort | head -n 1 )"
+
+    [ "$uf" ] && {
+        open "$i" "$uf"
+        continue
+    }
+done

@@ -15,7 +15,9 @@ setfile() {
 openfile() {
     [ "$file" ] || return
 
-    xdg-open "$file"
+    xph-open "$file"
+
+#   xdg-open "$file"
 
 #    # This is a workaround for xdg-open not working as intended.
 #    extension="$( echo "$file" | sed 's/.*\.//' )"
