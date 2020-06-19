@@ -29,58 +29,58 @@ openfile() {
 #    esac
 }
 
+for i in "$@"
+do
+    [ "${i:0:1}" = "-" ] && {
+        if ! [ "${i:1:1}" = "-" ]
+        then
+            sopt="${i:1}"
+
+            while [ "$sopt" ]
+            do
+                opt="${sopt:0:1}"
+
+                case "$opt" in
+                    r)
+                        ro=1
+                        ;;
+                    h)
+                        printhelp
+                        exit 0
+                        ;;
+                    *)
+                        echo "-$opt is not a valid option, exiting."
+                        exit 1
+                        ;;
+                esac
+
+                sopt="${sopt:1}"
+            done
+        else
+            lopt="${i:2}"
+            
+            case "$lopt" in
+                read-only)
+                    ro=1
+                    ;;
+                help)
+                    printhelp
+                    exit 0
+                    ;;
+                *)
+                    echo "--$lopt is not a valid option, exiting."
+                    exit 1
+                    ;;
+            esac
+        fi
+    }
+done
+
 if ! [ "$@" ]
 then
     setfile
     openfile
 else
-    for i in "$@"
-    do
-        [ "${i:0:1}" = "-" ] && {
-            if ! [ "${i:1:1}" = "-" ]
-            then
-                sopt="${i:1}"
-
-                while [ "$sopt" ]
-                do
-                    opt="${sopt:0:1}"
-
-                    case "$opt" in
-                        r)
-                            ro=1
-                            ;;
-                        h)
-                            printhelp
-                            exit 0
-                            ;;
-                        *)
-                            echo "-$opt is not a valid option, exiting."
-                            exit 1
-                            ;;
-                    esac
-
-                    sopt="${sopt:1}"
-                done
-            else
-                lopt="${i:2}"
-                
-                case "$lopt" in
-                    read-only)
-                        ro=1
-                        ;;
-                    help)
-                        printhelp
-                        exit 0
-                        ;;
-                    *)
-                        echo "--$lopt is not a valid option, exiting."
-                        exit 1
-                        ;;
-                esac
-            fi
-        }
-    done
-
     for i in "$@"
     do
         [ "${i:0:1}" = "-" ] && continue
