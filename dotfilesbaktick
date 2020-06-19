@@ -4,7 +4,7 @@ while true
 do
     while inotifywait -e modify -r -q -q @~/.dotfiles/.git ~/.dotfiles
     do
-        sleep 600
+        sleep 1200
         ~/.dotfiles/dotfilesbak
     done
 done
