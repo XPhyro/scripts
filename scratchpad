@@ -13,7 +13,9 @@ file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
 
 if [ "$file" = "$newfile" ]
 then
-    vim "$dir/$file" -c 'startinsert'
+    vimcmd='startinsert'
 else
-    vim "$dir/$file" -c 'norm G$'
+    vimcmd='norm G$'
 fi
+
+vim "$dir/$file" -c "$vimcmd"
