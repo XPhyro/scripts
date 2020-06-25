@@ -2,6 +2,11 @@
 # Adapted from https://stackoverflow.com/a/29310477/8403070
 
 expandpath() {
+    [ "$1" = "~" ] && { 
+        printf "%s\n" "$HOME"
+        return
+    }
+
     local path
     local -a pathElements resultPathElements
     IFS=':' read -r -a pathElements <<<"$1"
@@ -36,7 +41,7 @@ expandpath() {
     printf '%s\n' "${result%:}"
 }
 
-if [ "$@" ]
+if [ "$1" ]
 then
     for i in "$@"
     do
