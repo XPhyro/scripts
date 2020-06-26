@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+touchpadId="$( xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//' )"
+[ "$( xinput --list-props "$touchpadId" | head -n 2 | tail -n 1 | awk '{print $4}' )" = "1" ] && echo "Touchpad"

@@ -8,3 +8,5 @@ then
 else
     xinput --enable "$touchpadId"
 fi
+
+statbarset
