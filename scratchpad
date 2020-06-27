@@ -2,8 +2,8 @@
 
 dir="$HOME/documents/notes/scratchpad"
 
-files="$( find "$dir" -type f -printf "%f\n" )"
-newfile="$( echo "$files" | sort -V | tail -n 1 | sed 's/_.*//' )"
+files="$( find "$dir" -type f -printf "%f\n" | sort -rV )"
+newfile="$( echo "$files" | head -n 1 | sed 's/_.*//' )"
 [ "$newfile" = "" ] && newfile=-1
 
 : $(( newfile += 1 ))
