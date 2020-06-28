@@ -13,11 +13,20 @@ file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
 
 [ "$file" ] || exit
 
-if [ "$file" = "$newfile" ]
+[ "$file" = "$newfile" ] && isnew=1
+
+if [ "$isnew" = "1" ]
 then
     vimcmd='startinsert'
 else
     vimcmd='norm G$'
 fi
 
-vim "$dir/$file" -c "$vimcmd"
+path="$dir/$file"
+
+vim "$path" -c "$vimcmd"
+
+[ "$isnew" = "1" ] && {
+    [ -f "$path" ] && title="$( echo "" | dmenu -p "Title for \"$path\":" )"
+    [ "$title" ] && mv "$path" "$path\_$title"
+}
