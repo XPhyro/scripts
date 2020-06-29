@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
 
-cp "$@" || { echo "Could not overwrite:" "$@"; exit 1; }
+cp "$@" || {
+    echo "Could not overwrite:" "$@"
+    exit 1
+}
+
 paths="$( echo "$@" | sed 's/\s.*$//' )"
-rm "$paths" || { echo "Could not remove:" "$paths"; exit 1; }
+
+rm "$paths" || {
+    echo "Could not remove:" "$paths"
+    exit 1
+}

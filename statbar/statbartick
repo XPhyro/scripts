@@ -5,13 +5,15 @@ statbaravlsyutick &
 
 prevDate="$( date +"%R" )"
 
-while [ "$prevDate" = "$( date +"%R" )" ]; do
+while [ "$prevDate" = "$( date +"%R" )" ]
+do
     sleep 1s
 done
 
 sleep 1s
 
-while true; do
+while true
+do
     statbarset &
     sleep 1m
 done
