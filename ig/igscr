@@ -3,7 +3,8 @@
 trap ctrl_c INT
 
 ctrl_c() {
-    [ "$newfollow" ] && [ -f "$newfollow" ] && rm "$newfollow"
+    [ "$newfollow1" ] && [ -f "$newfollow1" ] && rm "$newfollow1"
+    [ "$newfollow2" ] && [ -f "$newfollow2" ] && rm "$newfollow2"
     exit 0
 }
 
@@ -13,22 +14,22 @@ scrape() {
 
 cd "$( getloc igg )" || exit
 
-newfollow="$( dupe follow )"
-sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow"
+newfollow1="$( dupe follow )"
+sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow1"
 if [ "$1" = "-r" ]
 then
-    sort -r -o "$newfollow" "$newfollow"
+    sort -r -o "$newfollow1" "$newfollow1"
 else
-    sort -o "$newfollow" "$newfollow"
+    sort -o "$newfollow1" "$newfollow1"
 fi
 
-cp "$newfollow" "$newfollow"_
+newfollow2="$( dupe "$newfollow1" )"
 
-sed -i '/[v-zV-Z].*/d' "$newfollow"
-sed -i '/[a-uA-U].*/d' "$newfollow"_
+LC_ALL=C sed -i '/^[v-zV-Z].*/d' "$newfollow1"
+LC_ALL=C sed -i '/^[a-uA-U].*/d' "$newfollow2"
 
-scrape args "$newfollow"
-scrape args_ "$newfollow"_
+scrape args "$newfollow1"
+scrape args_ "$newfollow2"
 
-[ -f "$newfollow" ] && rm "$newfollow"
-[ -f "$newfollow"_ ] && rm "$newfollow"_
+[ -f "$newfollow1" ] && rm "$newfollow1"
+[ -f "$newfollow2" ] && rm "$newfollow2"
