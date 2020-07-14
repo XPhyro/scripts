@@ -1,11 +1,12 @@
 #!/usr/bin/env sh
 
+printhelpelement() {
+    printf "%s\n\t\t%s\n" "$1" "$2"
+}
+
 printhelp() {
-    printf "%s\n\t\t%s\n%s\n\t\t%s\n" \
-        "-h, --help" \
-                "print this help message, then exit" \
-        "-r, --read-only" \
-                "print the file to stdout instead of xdg-opening it"
+        printhelpelement "-h, --help" "print this help message, then exit"
+        printhelpelement "-r, --read-only" "print the file to stdout instead of xdg-opening it"
 }
 
 setfile() {
@@ -16,19 +17,6 @@ openfile() {
     [ "$file" ] || return
 
     xph-open "$file"
-
-#   xdg-open "$file"
-
-#    # This is a workaround for xdg-open not working as intended.
-#    extension="$( echo "$file" | sed 's/.*\.//' )"
-#    case "$extension" in
-##       pdf)
-##            zathura "$file" &
-##            ;;
-#        *)
-#            xdg-open "$file"
-#            ;;
-#    esac
 }
 
 for i in "$@"

@@ -9,5 +9,9 @@ case $currentKeymap in
     *   ) hasCycled=false;;
 esac
 
-$hasCycled && notify-send -t  500 "⌨ $( xkb-switch )" "Changed current keymap" && statbarset
+#$hasCycled && statbarset
+$hasCycled && { 
+    notify-send -t  500 "⌨ $( xkb-switch )" "Changed current keymap"
+    statbarset
+}
 $hasCycled || notify-send -t 1000 "❌ $currentKeymap" "Current keymap unknown"

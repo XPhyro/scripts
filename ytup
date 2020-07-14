@@ -1,0 +1,72 @@
+#!/usr/bin/env sh
+
+BASEDIR="$HOME/mnt/mybook/MonsterBackup/Videos"
+UPLSTDR=".ytup_list_dir"
+UPLSTFL=".ytup_list_file"
+LOG=".ytup_uplog"
+SECRETS="$HOME/documents/ytup-client-secrets.json"
+CREDENTIALS="$HOME/documents/ytup-credentials"
+
+LOLID="PLEgGVRa6IwZDF125GMkOK4kRvh5zEZdGi"
+EMID="PLEgGVRa6IwZBATzvHd4Ivj_fjvezmsEb4"
+PD2ID="PLEgGVRa6IwZCE64Mpbn6pjwbNr6MvKsuW"
+PUBGID="PLEgGVRa6IwZBvhgE7lqMZ-0PglkZCGgaQ"
+VALID="PLEgGVRa6IwZB18icLEL8FByCi_fTcQYmO"
+OTHID="PLEgGVRa6IwZDN5Uu9doIoKJyQRWctpJ3p"
+
+cd "$BASEDIR" || exit
+
+find . -mindepth 1 -maxdepth 1 -type d -printf "%f\n" > "$UPLSTDR"
+
+[ -f "$UPLSTFL" ] && rm -f "$UPLSTFL"
+
+while read -r i
+do
+    find "$i" -name "*.mp4" | sort | uniq >> "$UPLSTFL"
+done < "$UPLSTDR"
+
+[ -f "$LOG" ] || touch "$LOG"
+[ -d "metadataout" ] || mkdir metadataout
+
+while read -r i
+do
+    echo "[ytup]: Parsing file: $i"
+
+    name="$( basename "$i" )"
+    echo "[ytup]: Detected name; $name"
+
+    root="$( echo "$i" | sed 's/\/.*//' )"
+    echo "[ytup]: Detected root: $root"
+
+    grep -Fxq "$name" "$LOG" && continue
+
+    touch metadata.json
+    echo "{\"title\":\"$root - $name\",\"description\":\"$name\",\"privacyStatus\":\"unlisted\",\"embeddable\":true,\"publicStatsViewable\":false,\"categoryId\":\"20\"," > metadata.json
+
+    case "$root" in
+        "League of Legends")
+            echo "\"playlistIds\":[\"$LOLID\"]}" >> metadata.json
+            ;;
+        "noire")
+            echo "\"playlistIds\":[\"$EMID\"]}" >> metadata.json
+            ;;
+        "Payday 2")
+            echo "\"playlistIds\":[\"$PD2ID\"]}" >> metadata.json
+            ;;
+        "PUBGLite-Win64-Shipping")
+            echo "\"playlistIds\":[\"$PUBGID\"]}" >> metadata.json
+            ;;
+        "Live")
+            echo "\"playlistIds\":[\"$VALID\"]}" >> metadata.json
+            ;;
+        "Base Profile")
+            echo "\"playlistIds\":[\"$OTHID\"]}" >> metadata.json
+            ;;
+        *)
+            echo "No case for $root"
+            continue
+            ;;
+    esac
+
+    ytuploader -metaJSON metadata.json -metaJSONout "metadataout/metadataout_$i""_.json" -filename "$i" && echo "$name" >> "$LOG"
+done < "$UPLSTFL"

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+fl="$( getfl clp )"
+lastclp="$( xclip -o -sel clip )"
+
+while true
+do
+    while clipnotify
+    do
+        clp="$( xclip -o -sel clip )"
+        [ "$clp" = "$lastclp" ] || {
+            printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$( date +%s )" "$clp" >> "$fl"
+            lastclp="$clp"
+        }
+    done
+done
