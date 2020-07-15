@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+printclips() {
+    awk 'NR==FNR{if (/### BEGIN CLIP ###/) for (i=-1;i<=0;i++) del[NR+i]; next} !(FNR in del)' "$fl" "$fl" | head -n -1 | sed '/### END CLIP ###/{x;G;s/^\n//;p;s/.*//;x;d};G;s/\n$//;h;$!d' | sed 's/### END CLIP ###/\x0f/'
+}
+
+fl="$( getfl clp )"
+
+sel="$( printclips | tac | rofi -dmenu -sep '\x0f' -eh 5 -l 8 || exit )"
+
+if [ "$( echo "$sel" | head -n 1 | sed '/^$/d' )" = "" ]
+then
+    echo "$sel" | tail -n +2 | xclip -sel clip
+else
+    echo "$sel" | xclip -sel clip
+fi
