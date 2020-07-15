@@ -7,7 +7,7 @@ locfile="$HOME/documents/sys-admin/locations"
 for i in "$@"
 do
     [ "$i" = "*" ] && {
-        cat "$locfile" | awk '{print $2}'
+        awk '{print $2}' "$locfile"
         exit
     }
 done
