@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-flfile="$HOME/documents/sys-admin/files"
-
 for i in "$@"
 do
     file="$( getfl "$i" )"

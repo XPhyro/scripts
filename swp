@@ -35,9 +35,9 @@ swap() {
 
     tmp="$( mktemp )"
     [ "$tmp" = "" ] && echo "Could not create tmp file."
-    cp "$tocopy" "$tmp" || { echo "Could not copy $tocopy to $tmp."; exit 1; }
-    cp "$other" "$tocopy" || { echo "Could not copy $other to $tocopy. (tmp: $tmp)"; exit 1; }
-    cp "$tmp" "$other" || { echo "Could not copy $tmp to $other."; exit 1; }
+    cp -r "$tocopy" "$tmp" || { echo "Could not copy $tocopy to $tmp."; exit 1; }
+    cp -r "$other" "$tocopy" || { echo "Could not copy $other to $tocopy. (tmp: $tmp)"; exit 1; }
+    cp -r "$tmp" "$other" || { echo "Could not copy $tmp to $other."; exit 1; }
     rm "$tmp" || echo "Could not remove $tmp."
 }
 

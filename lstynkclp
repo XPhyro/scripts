@@ -1,16 +1,23 @@
 #!/usr/bin/env sh
 
 printclips() {
-    awk 'NR==FNR{if (/### BEGIN CLIP ###/) for (i=-1;i<=0;i++) del[NR+i]; next} !(FNR in del)' "$fl" "$fl" | head -n -1 | sed '/### END CLIP ###/{x;G;s/^\n//;p;s/.*//;x;d};G;s/\n$//;h;$!d' | sed 's/### END CLIP ###/\x0f/'
+    #awk 'NR==FNR{if (/### BEGIN CLIP ###/) for (i=-1;i<=0;i++) del[NR+i]; next} !(FNR in del)' "$fl" "$fl" | head -n -1 | sed '/### END CLIP ###/{x;G;s/^\n//;p;s/.*//;x;d};G;s/\n$//;h;$!d' | sed 's/### END CLIP ###/\x0f/'
+    #sed -e:b -e'$!{N;2,1bb' -e\} -e'/^### BEGIN CLIP ###$/!P;D' -e 's/^### END CLIP ###$/\x0f/' "$fl"
+    #sed -e '/^: D[0-9]\{10\};$/d' -e '/^### BEGIN CLIP ###$/d' -e 's/^### END CLIP ###$/\x0f/' "$fl"
+    perl -0777 -pe 's/\n: [0-9]{10};\n### BEGIN CLIP ###\n/\n/g;' -pe 's/### END CLIP ###\n/\x0f/g;' "$fl" | tail -n +3
 }
 
 fl="$( getfl clp )"
+#sel="$( printclips | tac | rofi -dmenu -sep '\x0f' -eh 5 -l 8 || exit )"
+sel="$( printclips | rofi -dmenu -p 'yank' -sep '\x0f' -selected-row $(( $( grep -E "^### END CLIP ###$" "$fl" | wc -l ) - 1 )) -eh 5 -l 8 || exit )"
 
-sel="$( printclips | tac | rofi -dmenu -sep '\x0f' -eh 5 -l 8 || exit )"
+[ "$sel" = "" ] && exit
 
-if [ "$( echo "$sel" | head -n 1 | sed '/^$/d' )" = "" ]
-then
-    echo "$sel" | tail -n +2 | xclip -sel clip
-else
-    echo "$sel" | xclip -sel clip
-fi
+#if [ "$( echo "$sel" | head -n 1 | sed '/^$/d' )" = "" ]
+#then
+#    echo "$sel" | tail -n +2 | xclip -sel clip
+#else
+#    echo "$sel" | xclip -sel clip
+#fi
+
+echo "$sel" | xclip -sel clip

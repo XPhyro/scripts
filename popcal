@@ -2,4 +2,6 @@
 
 cal -3
 printf "\x1b[1A\x1b[2K"
+echo ""
+calctdiff
 read -r

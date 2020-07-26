@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+DCPATH="/opt/discord/Discord"
+
+if [ "$( ps aux | grep "$DCPATH" | grep -vE "\s+grep\s+" )" = "" ]
+then
+    discord
+else
+    killall Discord
+fi
