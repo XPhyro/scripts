@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+
+if [ "$GREP" ]
+then
+    grp="$GREP"
+else
+    willgrp=1
+fi
+
+if [ "$EXEC" ]
+then
+    exe="$EXEC"
+else
+    willexe=1
+fi
+
+if [ "$KA" ]
+then
+    ka="$KA"
+else
+    willka=1
+fi
+
+if [ "$willgrp" = "1" ] || [ "$willexe" = "1" ] || [ "$willka" = "1" ]
+then
+    if [ "$PROCESS" ]
+    then
+        [ "$willgrp" = "1" ] && grp="$PROCESS"
+        [ "$willexe" = "1" ] && exe="$PROCESS"
+        [ "$willka" = "1" ] && ka="$PROCESS"
+    else
+        echo "Not enough environment variables."
+        exit 1
+    fi
+fi
+
+if [ "$( ps aux | grep "$grp" | grep -vE "\s+grep\s+" )" = "" ]
+then
+    "$exe"
+else
+    killall "$ka"
+fi
