@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+setxkbmap -option "caps:escape"
+xmodmap -e "keycode 9 = Caps_Lock"
+xset -r 9
+xset r rate 250 40
