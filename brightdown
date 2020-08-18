@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+brightnessctl s "$( echo "$( brightnessctl g) * 100 / $( brightnessctl m ) - 5" | bc )"% > /dev/null

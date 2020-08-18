@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+fl="$( getfl brtcch )"
+val="$( cat "$fl" )"
+
+if [ "$val" = "0" ]
+then
+    val="$( brightnessctl g)"
+    brightnessctl s 0
+else
+    brightnessctl s "$val"
+    val="0"
+fi
+
+echo "$val" > "$fl"

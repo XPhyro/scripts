@@ -13,3 +13,41 @@ then
 else
     echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
 fi
+
+#inputpaths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
+#
+###paths=""
+#
+#paths="$inputpaths"
+#if ! [ "$paths" ]
+#then
+#    if [ "$EDITOR" ]
+#    then
+#        "$EDITOR" $paths
+#    else
+#        vim $paths
+#    fi
+#else
+#    echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
+#fi
+#
+###echo "$inputpaths" | while read -r i
+###do
+###    [ -f "$i" ] && {
+###        paths="$paths $i"
+###        haspath="1"
+###        echo aaaaa
+###    }
+###done
+###
+###if ! [ "$haspath" ]
+###then
+###    if [ "$EDITOR" ]
+###    then
+###        "$EDITOR" $paths
+###    else
+###        vim $paths
+###    fi
+###else
+###    echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
+###fi

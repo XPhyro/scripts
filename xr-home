@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
-xrandr --output HDMI-0 --mode 2560x1080 --primary --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 --output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
+xrandr --output HDMI-0 --mode 2560x1080 --primary --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 #--output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
+#xrandr --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 #--output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
