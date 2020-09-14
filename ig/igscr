@@ -19,7 +19,8 @@ sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow1"
 if [ "$1" = "-r" ]
 then
     sort -r -o "$newfollow1" "$newfollow1"
-else
+elif ! [ "$1" = "-n" ]
+then
     sort -o "$newfollow1" "$newfollow1"
 fi
 

@@ -1,11 +1,13 @@
 #!/usr/bin/env sh
 
-stat="$( pulseaudio-ctl status | tail -n 5 | head -n 2 | rmclr | sed -e 's/.*\:\s//' -e 's/\s\%*//' )"
-if [ "$( echo "$stat" | tail -n 1)" = "yes" ]
+stat="$( pacmd list-sinks | grep -A 30 "name: <$( voldefsink )>" )"
+
+# TODO: If the line indices are not constant, use grep.
+if [ "$( echo "$stat" | sed '11q;d' | awk '{print $2}' )" = "yes" ]
 then
     glyph="🔇"
 else
     glyph="🔈"
 fi
 
-echo "$( echo "$stat" | head -n 1 ) $glyph"
+echo "$( echo "$stat" | sed '7q;d' | awk '{print $5}' | sed 's/%//' ) $glyph"
