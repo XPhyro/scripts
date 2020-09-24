@@ -2,7 +2,10 @@
 
 loc="$HOME/documents/sys-admin/locations"
 
-[ "$@" ] || exit
+if [ $# -eq 0 ]
+then
+    exit
+fi
 
 for i in "$@"
 do
@@ -11,12 +14,6 @@ do
         exit
     }
 done
-
-if ! [ "$2" ]
-then
-    expandpath "$( grep -E "^$1\s+.*" "$loc" | awk '{print $2}' )"
-    exit
-fi
 
 for i in "$@"
 do
