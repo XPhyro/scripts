@@ -5,8 +5,8 @@ printhelpelement() {
 }
 
 printhelp() {
-        printhelpelement "-h, --help" "print this help message, then exit"
-        printhelpelement "-r, --read-only" "print the file to stdout instead of xdg-opening it"
+    printhelpelement "-h, --help" "print this help message, then exit"
+    printhelpelement "-r, --read-only" "print the file to stdout instead of xdg-opening it"
 }
 
 setfile() {
