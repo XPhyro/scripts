@@ -1,4 +1,22 @@
 #!/usr/bin/env sh
 
-xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate normal --pos 0x0 --output eDP-1-1 --mode 1920x1080 --pos 0x1080
-#xrandr --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 #--output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
+xr="$( xrandr )"
+hdmic="$( echo "$xr" | grep -o "HDMI-0 connected" )"
+dvic="$( echo "$xr" | grep -o "DVI-I-2-1 connected" )"
+
+if ! [ "$hdmic" = "" ]
+then
+    if ! [ "$dvic" = "" ]
+    then
+        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate normal --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 --output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
+    else
+        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate normal --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080
+    fi
+else
+    if ! [ "$dvic" = "" ]
+    then
+        xrandr --output eDP-1-1 --mode 1920x1080 --primary --pos 1920x0 --output DVI-I-2-1 --mode 1920x1080 --pos 0x0
+    else
+        xrandr --output eDP-1-1 --mode 1920x1080 --primary --pos 0x0
+    fi
+fi
