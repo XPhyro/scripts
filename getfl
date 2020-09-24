@@ -2,13 +2,18 @@
 
 fls="$HOME/documents/sys-admin/files"
 
-[ "$@" ] || exit
-
-if ! [ "$2" ]
+if [ $# -eq 0 ]
 then
-    expandpath "$( grep -E "^$1\s+.*" "$fls" | awk '{print $2}' )"
     exit
 fi
+
+for i in "$@"
+do
+    [ "$i" = "*" ] && {
+        awk '{print $2}' "$fls"
+        exit
+    }
+done
 
 for i in "$@"
 do
