@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+
+compile() {
+    pdflatex -draftmode -halt-on-error "$fl"
+    bibtex "$fl"
+    makeindex "$fl".idx
+    # makeindex -s style.gls ...
+    pdflatex -draftmode -halt-on-error "$fl"
+    pdflatex -halt-on-error "$fl"
+}
+
+if [ "$1" = "" ]
+then
+    fl="main"
+    echo "No file name given, assuming main."
+else
+    fl="$1"
+fi
+
+
+[ -f "$fl.tex" ] || {
+    echo "No such file exists."
+    exit
+}
+
+compile
+
+while true
+do
+    while inotifywait -e modify "$fl.tex"
+    do
+        sleep 0.1s
+        compile
+    done
+done
