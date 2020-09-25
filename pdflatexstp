@@ -29,6 +29,10 @@ while true
 do
     while inotifywait "$fl.tex"
     do
+        while [ ! -f "main.tex" ]; do sleep 0.1s; done
+
         compile
+
+        while [ ! -f "main.tex" ]; do sleep 0.1s; done
     done
 done
