@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 compile() {
+    # Adapted from https://tex.stackexchange.com/a/8792/199300
     pdflatex -draftmode -halt-on-error "$fl"
     bibtex "$fl"
     makeindex "$fl".idx
