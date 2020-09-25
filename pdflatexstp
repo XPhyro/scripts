@@ -27,9 +27,8 @@ compile
 
 while true
 do
-    while inotifywait -e modify "$fl.tex"
+    while inotifywait "$fl.tex"
     do
-        sleep 0.1s
         compile
     done
 done
