@@ -6,11 +6,18 @@ dvic="$( echo "$xr" | grep -o "DVI-I-2-1 connected" )"
 
 if ! [ "$hdmic" = "" ]
 then
+    if [ "$1" = "-p" -o "$1" = "--portrait" ]
+    then
+        rot="left"
+    else
+        rot="normal"
+    fi
+
     if ! [ "$dvic" = "" ]
     then
-        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate normal --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 --output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
+        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate "$rot" --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 --output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
     else
-        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate normal --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080
+        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate "$rot" --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080
     fi
 else
     if ! [ "$dvic" = "" ]
