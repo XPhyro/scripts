@@ -26,6 +26,8 @@ fi
 
 compile
 
+zathura "$fl.pdf" &
+
 while true
 do
     while inotifywait "$fl.tex"
