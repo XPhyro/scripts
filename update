@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
-yay -Syu --noconfirm
+yay -Syu # --noconfirm
 
 cd "$( getloc vim )"
-git pull
-./compile
+[ "$( git pull )" = "Already up to date." ] || ./compile
