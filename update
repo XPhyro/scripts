@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+yay -Syu --noconfirm
+
+cd "$( getloc vim )"
+git pull
+./compile
