@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-
 if bluetoothctl info
 then
     connectedDevice="$( bluetoothctl info | head -n 3 | tail -n 1 | awk '{$1=""; print substr($0,2)}' )"
