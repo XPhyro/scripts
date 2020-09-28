@@ -15,7 +15,7 @@ then
     fl="main"
     echo "No file name given, assuming main."
 else
-    fl="$1"
+    fl="$( echo "$1" | sed 's/\.tex$//' )"
 fi
 
 
@@ -26,16 +26,15 @@ fi
 
 compile
 
-zathura "$fl.pdf" &
+[ "$( ps aux | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
 
 while true
 do
-    while inotifywait "$fl.tex"
-    do
-        while [ ! -f "main.tex" ]; do sleep 0.1s; done
+    inotifywait "$fl.tex"
 
-        compile
+    while [ ! -f "main.tex" ]; do sleep 0.1s; done
 
-        while [ ! -f "main.tex" ]; do sleep 0.1s; done
-    done
+    compile
+
+    while [ ! -f "main.tex" ]; do sleep 0.1s; done
 done
