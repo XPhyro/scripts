@@ -1,8 +1,14 @@
 #!/usr/bin/env sh
 
 result="$( speedtest )"
-fl="$( getfl stl )"
 
 log="$( date +%s ); $( echo "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' ); $( echo "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//' ); $( echo "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}' ); $( echo "$result" | grep "Download:" | awk '{print $2" "$3}' ); $( echo "$result" | grep "Upload:" | awk '{print $2" "$3}')"
 
+echo "$log"
+echo "Logging results..."
+
+fl="$( getfl stl )"
+
 echo "$log" >> "$fl"
+
+echo "Done."
