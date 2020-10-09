@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+sleep 5s
+
+while true
+do
+    syncmail
+    sleep 180s
+done
