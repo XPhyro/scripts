@@ -1,13 +1,17 @@
 #!/usr/bin/env sh
 
+clean() {
+    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.pdf" "$fl.toc"
+}
+
 compile() {
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    pdflatex -draftmode -halt-on-error "$fl"
+    pdflatex -draftmode -shell-escape -halt-on-error "$fl" # || clean
     bibtex "$fl"
     makeindex "$fl".idx
     # makeindex -s style.gls ...
-    pdflatex -draftmode -halt-on-error "$fl"
-    pdflatex -halt-on-error "$fl"
+    pdflatex -draftmode -shell-escape -halt-on-error "$fl"
+    pdflatex -shell-escape -halt-on-error "$fl"
 }
 
 if [ "$1" = "" ]
@@ -18,15 +22,16 @@ else
     fl="$( echo "$1" | sed 's/\.tex$//' )"
 fi
 
-
 [ -f "$fl.tex" ] || {
     echo "No such file exists."
     exit
 }
 
+clean
 compile
 
 [ "$( ps aux | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
+# [ "$( ps aux | grep "pdflatexstp $@" | grep -v "grep.*pdflatexstp $@" )" = "" ] && exit
 
 while true
 do
@@ -34,6 +39,7 @@ do
 
     while [ ! -f "main.tex" ]; do sleep 0.1s; done
 
+    clean # not to allow permanent halting of compilation in the case of corrupted files
     compile
 
     while [ ! -f "main.tex" ]; do sleep 0.1s; done
