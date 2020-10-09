@@ -1,6 +1,47 @@
 #!/usr/bin/env sh
 
-yay -Syu # --noconfirm
+lckfl="$( getfl upabllck )"
 
-cd "$( getloc vim )"
-[ "$( git pull )" = "Already up to date." ] || ./compile
+[ -f "$lckfl" ] && {
+    echo "Lock file is present, waiting..."
+
+    while [ -f "$lckfl" ]
+    do
+        sleep 1s
+    done
+}
+
+touch "$lckfl"
+
+# yay -Syu # --noconfirm
+
+echo -e "[update]: Reading updateables.\n"
+
+lst="$( getfl upabl )"
+
+while read -r i
+do
+    loc="$( echo "$i" | awk -F ";" '{print $1}' )"
+    cmd="$( echo "$i" | awk -F ";" '{print $2}' )"
+
+    echo "[update]: Parsing $loc."
+
+    cd "$( getloc "$loc" )" || {
+        echo "[update]: Could not find location $loc."
+        continue
+    }
+
+    echo "[update]: Pulling updates."
+    if [ "$( git pull )" = "Already up to date." ] 
+    then
+        echo "[update]: Already up to date."
+    else
+        $cmd
+    fi
+
+    echo
+done < "$lst"
+
+rm "$lckfl"
+
+echo "[update]: Done."
