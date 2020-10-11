@@ -1,6 +1,14 @@
 #!/usr/bin/env sh
 
-result="$( speedtest )"
+_="$( ping -c 1 speedtest.net || {
+    echo "Cannot reach speedtest.net servers, exiting."
+    exit 1
+} )"
+
+result="$( speedtest || { 
+    echo "Test failed, exiting."
+    exit 1
+} )"
 
 log="$( date +%s ); $( echo "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' ); $( echo "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//' ); $( echo "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}' ); $( echo "$result" | grep "Download:" | awk '{print $2" "$3}' ); $( echo "$result" | grep "Upload:" | awk '{print $2" "$3}')"
 
