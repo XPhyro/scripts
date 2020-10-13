@@ -5,6 +5,8 @@ _="$( ping -c 1 speedtest.net || {
     exit 1
 } )"
 
+echo "Testing..."
+
 result="$( speedtest || { 
     echo "Test failed, exiting."
     exit 1
