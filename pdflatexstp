@@ -6,7 +6,10 @@ clean() {
 
 compile() {
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    pdflatex -draftmode -shell-escape -halt-on-error "$fl" # || clean
+    pdflatex -draftmode -shell-escape -halt-on-error "$fl" || {
+        clean
+        pdflatex -draftmode -shell-escape -halt-on-error "$fl"
+    }
     bibtex "$fl"
     makeindex "$fl".idx
     # makeindex -s style.gls ...
@@ -37,10 +40,10 @@ while true
 do
     inotifywait "$fl.tex"
 
-    while [ ! -f "main.tex" ]; do sleep 0.1s; done
+    while [ ! -f "$fl.tex" ]; do sleep 0.1s; done
 
-    clean # not to allow permanent halting of compilation in the case of corrupted files
+    # clean # not to allow permanent halting of compilation in the case of corrupted files
     compile
 
-    while [ ! -f "main.tex" ]; do sleep 0.1s; done
+    while [ ! -f "$fl.tex" ]; do sleep 0.1s; done
 done
