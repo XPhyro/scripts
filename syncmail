@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-slog="$( mw sync || exit )"
-log="$( echo "$slog" | head -n 2 | tail -n 1 )"
-
-[ "$log" = "No new mail." ] || {
-    notify-send -u critical -t 10000 "📧 You have new mail."
-    statbarset
-}

@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
 
-sleep 5s
+sleep 15s
 
 while true
 do
-    syncmail
+    mailsync
+    statbarset
     sleep 180s
 done
