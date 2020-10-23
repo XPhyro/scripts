@@ -26,15 +26,7 @@ path="$dir/$file"
 
 vim "$path" -c "$vimcmd"
 
-while true
-do
-    [ "$isnew" = "1" ] && {
-        [ -f "$path" ] && title="$( echo "" | dmenu -p "Title for \"$path\":" )"
-        # currently seconds are included in the title, so no duplicates should occur, but just in case we change this behaviour, we will check for file clashes:
-        [ "$title" -a ! -f "$path\_$title" ] && {
-            mv "$path" "$path\_$title"
-            break
-        }
-    }
-done
-
+[ "$isnew" = "1" ] && {
+    [ -f "$path" ] && title="$( echo "" | dmenu -p "Title for \"$path\":" )"
+    [ "$title" ] && mv "$path" "$path\_$title"
+}
