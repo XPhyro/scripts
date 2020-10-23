@@ -4,6 +4,21 @@ xr="$( xrandr )"
 hdmic="$( echo "$xr" | grep -o "HDMI-0 connected" )"
 dvic="$( echo "$xr" | grep -o "DVI-I-2-1 connected" )"
 
+mode="2560x1080"
+pos="1920x0"
+
+for i in "$@"
+do
+    if [ "$i" = "-g" -o "$i" = "--geforce-now" ]
+    then
+        mode="1920x1080"
+    # elif [ "$i" = "-." -o "$i" = "--..." ] 
+    # then
+    #     ...="..."
+    fi
+done
+
+
 if ! [ "$hdmic" = "" ]
 then
     if [ "$1" = "-p" -o "$1" = "--portrait" ]
@@ -15,9 +30,9 @@ then
 
     if ! [ "$dvic" = "" ]
     then
-        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate "$rot" --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 --output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
+        xrandr --output HDMI-0 --mode "$mode" --primary --rotate "$rot" --pos "$pos" --output eDP-1-1 --mode 1920x1080 --pos 1920x1080 --output DVI-I-2-1 --mode 1920x1080 --pos 0x1080
     else
-        xrandr --output HDMI-0 --mode 2560x1080 --primary --rotate "$rot" --pos 1920x0 --output eDP-1-1 --mode 1920x1080 --pos 1920x1080
+        xrandr --output HDMI-0 --mode "$mode" --primary --rotate "$rot" --pos "$pos" --output eDP-1-1 --mode 1920x1080 --pos 1920x1080
     fi
 else
     if ! [ "$dvic" = "" ]
