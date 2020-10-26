@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
-_="$( ping -c 1 speedtest.net || {
+ping -c 1 speedtest.net > /dev/null 2>&1 || {
     echo "Cannot reach speedtest.net servers, exiting."
     exit 1
-} )"
+}
 
 echo "Testing..."
 
