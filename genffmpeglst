@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+for i in "$@"
+do
+    printf "file '%s'\n" "$i"
+done
