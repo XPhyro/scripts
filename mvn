@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+fl="$1"
+path="$2"
+
+while [ -e "$path" ]
+do
+    path="$path"_
+done
+
+mv -n "$fl" "$path"
