@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-mkdir ~/onedrive
-rclone --vfs-cache-mode writes mount remote: ~/onedrive &

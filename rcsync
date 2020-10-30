@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+case "$1"
+in
+    one) name="onedrive";;
+    open) name="opendrive";;
+    *) exit;;
+esac
+
+sudo mkdir "$name"sync
+sudo rclone sync -L ~/"$name"sync "$1":linux/arch

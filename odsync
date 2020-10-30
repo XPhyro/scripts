@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-mkdir onedrivesync
-/usr/bin/rclone sync -L ~/onedrivesync remote:linux/arch
