@@ -32,7 +32,7 @@ do
     }
 
     echo "[update]: Pulling updates."
-    if [ "$( git pull )" = "Already up to date." ] 
+    if [ "$( git pull | tail -n 1 | grep --color=never -o " up to date.$" )" = " up to date." ] 
     then
         echo "[update]: Already up to date."
     else
