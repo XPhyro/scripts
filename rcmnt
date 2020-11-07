@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env zsh
 
 case "$1"
 in
@@ -7,5 +7,5 @@ in
     *) exit;;
 esac
 
-[ -d ~/"$name" ] || sudo mkdir ~/"$name"
-sudo rclone --vfs-cache-mode writes mount "$1": ~/"$name" &
+[ -d ~/"$name" ] || mkdir ~/"$name"
+sudo rclone --vfs-cache-mode writes mount "$1": ~/"$name" & disown
