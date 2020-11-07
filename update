@@ -21,6 +21,8 @@ lst="$( getfl upabl )"
 
 while read -r i
 do
+    [ "${i::1}" = "#" ] && continue
+
     loc="$( echo "$i" | awk -F ";" '{print $1}' )"
     cmd="$( echo "$i" | awk -F ";" '{print $2}' )"
 
