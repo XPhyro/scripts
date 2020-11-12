@@ -33,8 +33,9 @@ fi
 clean
 compile
 
-[ "$( ps aux | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
-# [ "$( ps aux | grep "pdflatexstp $@" | grep -v "grep.*pdflatexstp $@" )" = "" ] && exit
+pss="$( ps aux )"
+[ "$( echo "$pss" | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
+# [ "$( echo "$pss" | grep "pdflatexstp $@" | grep -v "grep.*pdflatexstp $@" )" = "" ] && exit
 
 while true
 do
