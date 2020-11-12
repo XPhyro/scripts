@@ -4,7 +4,7 @@ check() {
     isdir=0
     for i in "$@"
     do
-        [ -f "$i" -o -d "$i" ] || { 
+        [ -f "$i" ] || [ -d "$i" ] || { 
             echo "$i does not exist."
             exit 1 
         }

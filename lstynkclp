@@ -9,7 +9,7 @@ printclips() {
 
 fl="$( getfl clp )"
 #sel="$( printclips | tac | rofi -dmenu -sep '\x0f' -eh 5 -l 8 || exit )"
-sel="$( printclips | rofi -dmenu -p 'yank' -sep '\x0f' -selected-row $(( $( grep -E "^### END CLIP ###$" "$fl" | wc -l ) - 1 )) -eh 5 -l 8 || exit )"
+sel="$( printclips | rofi -dmenu -p 'yank' -sep '\x0f' -selected-row $(( $( grep -cE "^### END CLIP ###$" "$fl" ) - 1 )) -eh 5 -l 8 || exit )"
 
 [ "$sel" = "" ] && exit
 

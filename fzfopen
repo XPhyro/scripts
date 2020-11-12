@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 printhelpelement() {
     printf "%s\n\t\t%s\n" "$1" "$2"

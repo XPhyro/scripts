@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 lckfl="$( getfl upabllck )"
 
@@ -15,7 +15,7 @@ touch "$lckfl"
 
 # yay -Syu # --noconfirm
 
-echo -e "[update]: Reading updateables.\n"
+printf "[update]: Reading updateables.\n\n"
 
 lst="$( getfl upabl )"
 

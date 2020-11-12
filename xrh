@@ -9,10 +9,10 @@ rot="normal"
 
 for i in "$@"
 do
-    if [ "$i" = "-g" -o "$i" = "--geforce-now" ]
+    if [ "$i" = "-g" ] || [ "$i" = "--geforce-now" ]
     then
         mode="1920x1080"
-    elif [ "$i" = "-p" -o "$i" = "--portrait" ]
+    elif [ "$i" = "-p" ] || [ "$i" = "--portrait" ]
     then
         rot="left"
     fi
