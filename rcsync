@@ -4,7 +4,8 @@ case "$1"
 in
     one) name="onedrive";;
     open) name="opendrive";;
-    *) exit;;
+    *) echo "No drive code given, exiting."; exit;;
+
 esac
 
 sudo mkdir "$name"sync

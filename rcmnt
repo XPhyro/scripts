@@ -4,8 +4,8 @@ case "$1"
 in
     one) name="onedrive";;
     open) name="opendrive";;
-    *) exit;;
+    *) echo "No drive code given, exiting."; exit;;
 esac
 
 [ -d ~/"$name" ] || mkdir ~/"$name"
-sudo rclone --vfs-cache-mode writes mount "$1": ~/"$name" & disown
+sudo rclone mount --daemon --allow-other --vfs-cache-mode writes "$1": ~/"$name" & disown
