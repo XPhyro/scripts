@@ -34,3 +34,5 @@ scrape args_ "$newfollow2"
 
 [ -f "$newfollow1" ] && rm "$newfollow1"
 [ -f "$newfollow2" ] && rm "$newfollow2"
+
+find . -mindepth 2 -name "*.jpg" -or -name "*.mp4" -or -name "*.part" -printf "%P\n" | sort -n > ig.list

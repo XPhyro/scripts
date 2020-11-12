@@ -7,7 +7,7 @@ cd "$base" || exit
 
 touch "$log"
 
-jsons="$( find . -type f -name "*json" | sed 's/^\.\///' | sort )"
+jsons="$( find . -type f -name "*json" -printf "%P\n" | sort )"
 
 for i in $jsons
 do
