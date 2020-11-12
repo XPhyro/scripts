@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+dir="$( getloc mu )"
+
+fls="$( find "$dir" -mindepth 2 -iname "*.pdf" )"
+
+fl="$( echo "$fls" | xargs -r -I {} basename {} | dmenu -i -l 20 -p "Select sheet music:" )"
+
+[ "$fl" = "" ] && exit
+
+path="$( echo "$fls" | grep "$fl" )"
+
+echo "$path"
+
+[ "$( echo "$path" | wc -l )" -gt 1 ] && {
+    notify-send -t 1000 "view-music" "Multiple files with the same name exists, exiting."
+    exit
+}
+
+xdg-open "$path" &
