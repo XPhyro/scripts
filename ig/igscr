@@ -42,8 +42,15 @@ scrape args_ "$newfollow2"
 [ -f "$newfollow1" ] && rm "$newfollow1"
 [ -f "$newfollow2" ] && rm "$newfollow2"
 
-find . -mindepth 2 -name "*.jpg" -or -name "*.mp4" -or -name "*.part" -printf "%P\n" | sort -n > ig.list
-cdsafe ..
+igdirs="$(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' )"
+printf "%s" "$igdirs" | while read -r i
+do
+    cdsafe "$i"
+    find . -name "*.jpg" -or -name "*.mp4" -or -name "*.part" -printf '%P\n' | sort -n > ig.list
+    cdsafe ..
+done
 
-printf "*.jpg\n*.mp4\n*.part\n" > .gitignore
+cdsafe ..
+cat .gitignore.def > .gitignore
+echo >> .gitignore
 find . -type l -printf '!%P\n' >> .gitignore
