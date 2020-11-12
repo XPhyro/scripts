@@ -12,7 +12,14 @@ scrape() {
     instagram-scraper "@$1" -f "$2" -T '{username}_{year}-{month}-{day}_{h}-{m}-{s}_{urlname}_{shortcode}' --profile-metadata --media-metadata --latest --retry-forever
 }
 
-cd "$( getloc igg )" || exit
+cdsafe() {
+    cd "$1" || {
+        echo "Could not cd to $1, exiting."
+        exit
+    }
+}
+
+cdsafe "$( getloc igg )"
 
 newfollow1="$( dupe follow )"
 sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow1"
@@ -36,3 +43,7 @@ scrape args_ "$newfollow2"
 [ -f "$newfollow2" ] && rm "$newfollow2"
 
 find . -mindepth 2 -name "*.jpg" -or -name "*.mp4" -or -name "*.part" -printf "%P\n" | sort -n > ig.list
+cdsafe ..
+
+printf "*.jpg\n*.mp4\n*.part\n" > .gitignore
+find . -type l -printf '!%P\n' >> .gitignore
