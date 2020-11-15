@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+tmp="$( mktemp )"
+
+for i in "$@"
+do
+    if [ -L "$i" ]
+    then
+        printf "%s\n\nPath to symlink is: %s" "$( readlink "$i" )" "$i" > "$tmp"
+        "$EDITOR" "$tmp"
+        ln -sf "$( head -n 1 "$tmp" )" "$i"
+    elif [ ! -e "$i" ]
+    then
+        printf "\n\nPath to symlinks is: %s" "$i" > "$tmp"
+        "$EDITOR" "$tmp"
+        ln -sf "$( head -n 1 "$tmp" )" "$i"
+    else
+        printf "%s exists, overwrite? (y/N): " "$i"
+        read ans
+
+        [ "$ans" != "${ans#[Yy]}" ] && {
+            printf "\n\nPath to symlinks is: %s" "$i" > "$tmp"
+            "$EDITOR" "$tmp"
+            ln -sf "$( head -n 1 "$tmp" )" "$i"
+        }
+    fi
+done
