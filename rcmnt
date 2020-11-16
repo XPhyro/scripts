@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+# Mount a remote drive with rclone based on the given drive code.
 
 case "$1"
 in

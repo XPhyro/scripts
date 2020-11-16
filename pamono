@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Create a mono sink from the default sink and make the new sink the default.
 
 pacmd load-module module-remap-sink master="$( voldefsink )" sink_name=mono sink_properties="device.description='Mono'" channels=2 channel_map=mono,mono
 pacmd set-default-sink mono

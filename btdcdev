@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+# Disconnect from a bluetooth device. Prompts a selection if more than one device is connected.
 
 devs="$( bluetoothctl paired-devices | awk '{print $2}' )"
 cdevs=""

@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Run dotfilesbak-sensitive when a sensitive dot file is modified.
 
 while true
 do

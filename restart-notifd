@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Restart notification-daemon.
 
 killall notification-daemon
 /usr/lib/notification-daemon-1.0/notification-daemon &

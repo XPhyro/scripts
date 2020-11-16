@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Adjust displays with xrandr.
 
 xr="$( xrandr )"
 hdmic="$( echo "$xr" | grep -o "HDMI-0 connected" )"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Restart dotfilesbaktick and dotfilesbaktick-sensitive.
 
 for i in $( ps aux | grep -E "[sh|inotifywait]\s.*\.?dotfiles[-sensitive]?[baktick]?[-sensitive]?" | grep -vE "grep\s.*-E" | awk '{print $2}' )
 do

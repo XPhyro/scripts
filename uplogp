@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Prints the logs taken by uplog.
 
 while read -r i
 do

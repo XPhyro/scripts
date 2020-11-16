@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Set X keyboard properties.
 
 setxkbmap -option "caps:escape"
 xmodmap -e "keycode 9 = Caps_Lock"

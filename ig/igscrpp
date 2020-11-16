@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Scrape profile photos of instagram accounts. First igscr should be run to generate JSON files.
 
 base="$( getloc igg )"
 log="igscrpp.log"

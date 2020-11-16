@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Decrease the volume of the default pulseaudio sink.
 
 #pulseaudio-ctl down #&& notify-send -t 300 "🔉 Volume Down" "$( pulseaudio-ctl status | tail -n 5 | head -n 1 | rmclr )"
 pactl set-sink-volume "$( voldefsink )" -5%

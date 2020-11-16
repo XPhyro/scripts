@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Overwrite a file.
 
 cp "$@" || {
     echo "Could not overwrite:" "$@"

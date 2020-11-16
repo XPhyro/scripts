@@ -1,3 +1,4 @@
 #!/usr/bin/env zsh
+# Launch Unreal Engine.
 
 ~/archive/unreal-engine/Engine/Binaries/Linux/UE4Editor & disown

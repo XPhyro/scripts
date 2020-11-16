@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Log clipped text as a daemon (though it does not fork out). lstynkclp can be used to list and copy these with rofi.
 
 fl="$( getfl clp )"
 lastclp="$( xclip -o -sel clip )"

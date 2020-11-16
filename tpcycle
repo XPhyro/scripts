@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Cycle touchpad status.
 
 touchpadId="$( xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//' )"
 

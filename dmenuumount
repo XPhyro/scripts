@@ -1,9 +1,5 @@
 #!/bin/sh
-
-# A dmenu prompt to unmount drives.
-# Provides you with mounted partitions, select one to unmount.
-# Drives mounted at /, /boot and /home will not be options to unmount.
-#
+# A dmenu prompt to unmount drives. Provides you with mounted partitions, select one to unmount. Drives mounted at /, /boot and /home will not be options to unmount.
 # Taken from Luke Smith's voidrice.
 
 unmountusb() {

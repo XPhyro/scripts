@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Upload files to YouTube.
 
 BASEDIR="$HOME/mnt/mybook/MonsterBackup/Videos"
 UPLSTDR=".ytup_list_dir"

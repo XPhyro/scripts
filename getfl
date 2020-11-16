@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Get a file with a code.
 
 fls="$HOME/documents/sys-admin/files"
 

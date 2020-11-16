@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Pull updates from git and compile programs. Used list file is the file coded upabl.
 
 lckfl="$( getfl upabllck )"
 

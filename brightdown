@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
+# Decrease the brightness of screen(s?). This only affects the laptop screen on my system.
 
 brightnessctl s "$( echo "$( brightnessctl g) * 100 / $( brightnessctl m ) - 5" | bc )"% > /dev/null

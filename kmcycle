@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Toggle X keymap.
 
 currentKeymap="$( xkb-switch )"
 hasCycled=true

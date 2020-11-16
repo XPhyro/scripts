@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Copy a file as binary.
 
 t="$( file -b --mime-type "$1" )"
 xclip "$1" -sel clip -t "$t"

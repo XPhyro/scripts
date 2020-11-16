@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Update packages using dmenu.
 
 ans="$( printf "yes\n%s\nyes" "$( yay -Qu )" | dmenu -i -p "Proceed with installation?" )"
 [ "$ans" = "yes" ] || exit

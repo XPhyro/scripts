@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# updatedb, but shows progress.
 # Taken from https://unix.stackexchange.com/a/43383/401367, written by https://unix.stackexchange.com/users/3352/musa.
 
 count=$( df -i | grep '/$' | awk '{print $3}' )

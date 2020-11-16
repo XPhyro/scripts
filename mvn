@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Force move without overwriting.
 
 fl="$1"
 path="$2"

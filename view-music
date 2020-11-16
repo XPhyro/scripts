@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Find music scores in PDF format, prompt them with dmenu and open the selected one.
 
 dir="$( getloc mu )"
 

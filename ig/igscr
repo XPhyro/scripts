@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Scrape a set of instagram accounts, generate a list of all media files and make git ignore all media files.
 
 cleanexit() {
     [ "$newfollow1" ] && [ -f "$newfollow1" ] && rm "$newfollow1"

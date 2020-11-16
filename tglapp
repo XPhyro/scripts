@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Toggle an application on/off (i.e. launch or kill it).
 
 if [ "$GREP" ]
 then

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Expand ~.
 # Adapted from https://stackoverflow.com/a/29310477/8403070
 
 expandpath() {

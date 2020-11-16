@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Get a file and edit it.
 
 for i in "$@"
 do

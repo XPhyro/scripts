@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Get a directory with a code.
 
 loc="$HOME/documents/sys-admin/locations"
 

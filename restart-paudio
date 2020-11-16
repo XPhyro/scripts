@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Restart pulseaudio.
 
 pulseaudio -k
 sleep 0.1s

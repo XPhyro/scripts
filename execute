@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+# Execute a zsh command via dmenu.
 
 . ~/.zshrc
 

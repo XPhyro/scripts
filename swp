@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# Swap two files or directories.
+# Does not work with symlinks.
 
 check() {
     isdir=0

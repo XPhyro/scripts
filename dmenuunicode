@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
-
 # The famous "get a menu of emojis to copy" script.
-#
 # Taken from Luke Smith's voidrice, edited the characters path.
 
 # Must have xclip installed to even show menu.

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Select a file using fzf and open it using xph-open.
 
 printhelpelement() {
     printf "%s\n\t\t%s\n" "$1" "$2"

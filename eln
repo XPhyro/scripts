@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Edit given links.
 
 tmp="$( mktemp )"
 

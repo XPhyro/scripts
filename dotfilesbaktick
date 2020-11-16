@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Run dotfilesbak when a dot file is modified.
 
 while true
 do

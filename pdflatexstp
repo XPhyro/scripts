@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
+# Compile and show its PDF of a TeX file, then compile it every time it is accessed/modified/etc.
+# Compilation on access is wanted behaviour.
+# This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
 
 clean() {
     rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.pdf" "$fl.toc"

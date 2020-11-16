@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Resolve recursive symlinks into a direct symlink.
 
 # TODO: This resolves direct recursive symlinks, but does not resolve inner recursive symlinks, add an option to also fix them.
 # Example: a/, a/b, b->a, c->b/b => This script does not fix c to point to a/b as b is not a symlink itself (although it is reached from a symlink).

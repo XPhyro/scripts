@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# Take and manage notes with dmenu.
+# Designed to work as a scratchpad to dwm with st.
 
 dir="$HOME/documents/notes/scratchpad"
 

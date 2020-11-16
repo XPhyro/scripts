@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Print logged results of speedtestlog.
 
 fl="$( getfl stl )"
 pingav="0.0"

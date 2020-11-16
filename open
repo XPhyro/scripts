@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Open an executable file.
 
 # TODO: Make this use where instead of type, reducing an awk.
 # TODO: This does not work for multiple inputs, fix.

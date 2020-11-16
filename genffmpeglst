@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Convert given files into a list of ffmpeg comprehendable list.
 
 for i in "$@"
 do

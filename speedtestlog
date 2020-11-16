@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Use speedtest to test internet connection and log the results. speedtestlogp can be used to print the logs.
 
 ping -c 1 speedtest.net > /dev/null 2>&1 || {
     echo "Cannot reach speedtest.net servers, exiting."

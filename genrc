@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Generate rc files.
 
 locations="$HOME/documents/sys-admin/locations"
 files="$HOME/documents/sys-admin/files"
