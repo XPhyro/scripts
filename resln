@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# TODO: This resolves direct recursive symlinks, but does not resolve inner recursive symlinks, add an option to also fix them.
+# Example: a/, a/b, b->a, c->b/b => This script does not fix c to point to a/b as b is not a symlink itself (although it is reached from a symlink).
+
+log() {
+    printf "[resln]: %s\n" "$1"
+}
+
+for i in "$@"
+do
+    [ -L "$i" ] || {
+        log "\"$i\" does not exist or is not a symlink, ignoring."
+        continue
+    }
+
+    dest="$( readlink "$i" )"
+    while [ -L "$dest" ]
+    do
+        dest="$( readlink "$dest" )"
+    done
+
+    ln -sf "$dest" "$i"
+done
