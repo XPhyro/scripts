@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 
-paths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
+# TODO: Make this use where instead of type, reducing an awk.
+# TODO: This does not work for multiple inputs, fix.
+
+paths="$( type $@ 2>/dev/null | awk '{print $3}' )"
 
 if [ "$paths" ] 
 then
