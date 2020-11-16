@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
+# Query X keymap.
 
 echo "$( xkb-switch ) ⌨"

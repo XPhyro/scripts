@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
+# Query updateable packages.
 
 [ "$( wc -c < ~/.avlsyu )" -gt 1 ] && echo "$( wc -l < ~/.avlsyu ) 📦"

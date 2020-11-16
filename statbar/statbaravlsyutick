@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Download package updates, dump update list and redraw status bar.
 
 yay -Syuw --noconfirm
 statbarsetavlsyu

@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
+# Query date.
 
 date +"%a %F %R"

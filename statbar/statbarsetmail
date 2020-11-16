@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Redraw status bar after neomutt exits.
 
 while [ "$( pgrep neomutt )" ]
 do

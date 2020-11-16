@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Query battery status.
 
 # My battery is fully charged at 94.
 chargeThreshold=92

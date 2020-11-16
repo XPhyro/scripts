@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Query unread mails.
 # Adapted from LukeSmith/voidrice.
 
 unread="$(find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/INBOX/new/* -type f 2>/dev/null | wc -l 2>/dev/null)"
