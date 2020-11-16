@@ -1,15 +1,9 @@
 #!/usr/bin/env sh
 
-trap ctrl_c INT
-
-ctrl_c() {
+cleanexit() {
     [ "$newfollow1" ] && [ -f "$newfollow1" ] && rm "$newfollow1"
     [ "$newfollow2" ] && [ -f "$newfollow2" ] && rm "$newfollow2"
     exit 0
-}
-
-scrape() {
-    instagram-scraper "@$1" -f "$2" -T '{username}_{year}-{month}-{day}_{h}-{m}-{s}_{urlname}_{shortcode}' --profile-metadata --media-metadata --latest --retry-forever
 }
 
 cdsafe() {
@@ -19,10 +13,35 @@ cdsafe() {
     }
 }
 
-cdsafe "$( getloc igg )"
+scrape() {
+    while ! instagram-scraper "@$1" -f "$2" -T '{username}_{year}-{month}-{day}_{h}-{m}-{s}_{urlname}_{shortcode}' --profile-metadata --media-metadata --latest --retry-forever
+    do
+        sleep 1m
+    done
+}
+
+genlst() {
+    olddir="$( pwd )"
+    cdsafe "$basedir"
+
+    igdirs="$( find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' )"
+    printf "%s" "$igdirs" | while read -r i
+    do
+        find "$i" -printf "%f\n" | grep -E ".*(jpg|mp4|part)" | sort -n > "$i/ig.list"
+    done
+
+    cdsafe "$olddir"
+}
+
+trap cleanexit INT
+
+basedir="$( getloc igg )"
+cdsafe "$basedir"
 
 newfollow1="$( dupe follow )"
 sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow1"
+
+# TODO: Make this option parsing into a more robust thing
 if [ "$1" = "-r" ]
 then
     sort -r -o "$newfollow1" "$newfollow1"
@@ -30,6 +49,14 @@ elif ! [ "$1" = "-n" ]
 then
     sort -o "$newfollow1" "$newfollow1"
 fi
+
+for i in "$@"
+do
+    [ "$i" = "-l" ] && {
+        genlst
+        cleanexit
+    }
+done
 
 newfollow2="$( dupe "$newfollow1" )"
 
@@ -39,18 +66,12 @@ LC_ALL=C sed -i '/^[a-uA-U].*/d' "$newfollow2"
 scrape args "$newfollow1"
 scrape args_ "$newfollow2"
 
-[ -f "$newfollow1" ] && rm "$newfollow1"
-[ -f "$newfollow2" ] && rm "$newfollow2"
+rdfind -minsize 100 -removeindentinode false -makehardlinks false -makesymlinks true -deleteduplicates true -outputname "$( mktemp )" -dryrun false
+genlst
 
-igdirs="$(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' )"
-printf "%s" "$igdirs" | while read -r i
-do
-    cdsafe "$i"
-    find . -name "*.jpg" -or -name "*.mp4" -or -name "*.part" -printf '%P\n' | sort -n > ig.list
-    cdsafe ..
-done
-
-cdsafe ..
+cdsafe "$basedir/.."
 cat .gitignore.def > .gitignore
 echo >> .gitignore
 find . -type l -printf '!%P\n' >> .gitignore
+
+cleanexit
