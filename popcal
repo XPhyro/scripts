@@ -3,9 +3,8 @@
 # Designed to work as a scratchpad for dwm with st, hence the shortened name pop-up calendar.
 
 date +"%a %F %R"
-echo ""
+echo
 cal -3
-printf "\x1b[1A\x1b[2K"
-echo ""
+echo
 calctdiff || exit 0
 read -r
