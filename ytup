@@ -8,6 +8,7 @@ LOG=".ytup_uplog"
 SECRETS="$HOME/documents/ytup-client-secrets.json"
 CREDENTIALS="$HOME/documents/ytup-credentials"
 
+# these are not sensitive data
 LOLID="PLEgGVRa6IwZDF125GMkOK4kRvh5zEZdGi"
 EMID="PLEgGVRa6IwZBATzvHd4Ivj_fjvezmsEb4"
 PD2ID="PLEgGVRa6IwZCE64Mpbn6pjwbNr6MvKsuW"
