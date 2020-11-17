@@ -21,9 +21,13 @@ scrape() {
     done
 }
 
+lndup() {
+    rdfind -minsize 100 -removeidentinode false -makehardlinks false -makesymlinks true -deleteduplicates true -outputname "$( mktemp )" -dryrun false "$iggdir"
+}
+
 genlst() {
     olddir="$( pwd )"
-    cdsafe "$basedir"
+    cdsafe "$iggdir"
 
     igdirs="$( find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' )"
     printf "%s" "$igdirs" | while read -r i
@@ -36,8 +40,8 @@ genlst() {
 
 trap cleanexit INT
 
-basedir="$( getloc igg )"
-cdsafe "$basedir"
+iggdir="$( getloc igg )"
+cdsafe "$iggdir"
 
 newfollow1="$( dupe follow )"
 sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow1"
@@ -55,6 +59,7 @@ for i in "$@"
 do
     [ "$i" = "-l" ] && {
         genlst
+        lndup
         cleanexit
     }
 done
@@ -67,10 +72,10 @@ LC_ALL=C sed -i '/^[a-uA-U].*/d' "$newfollow2"
 scrape args "$newfollow1"
 scrape args_ "$newfollow2"
 
-rdfind -minsize 100 -removeindentinode false -makehardlinks false -makesymlinks true -deleteduplicates true -outputname "$( mktemp )" -dryrun false
 genlst
+lndup
 
-cdsafe "$basedir/.."
+cdsafe "$iggdir/.."
 cat .gitignore.def > .gitignore
 echo >> .gitignore
 find . -type l -printf '!%P\n' >> .gitignore
