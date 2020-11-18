@@ -2,8 +2,12 @@
 # Find music scores in PDF format, prompt them with dmenu and open the selected one.
 
 dir="$( getloc mu )"
+cd "$dir" || {
+    notify-send "view-music" "Could not cd to $dir."
+    exit
+}
 
-fls="$( find "$dir" -mindepth 2 -iname "*.pdf" )"
+fls="$( find . -mindepth 2 -iname "*.pdf" -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||' )"
 
 fl="$( printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:" )"
 
