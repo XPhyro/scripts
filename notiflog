@@ -1,0 +1,37 @@
+#!/usr/bin/env sh
+# Log notifications.
+
+# TODO: Add support for multi-line title/description of notifications.
+
+fl="$( getfl notiflog )"
+beg="##beg##"
+end="##end##"
+
+title=""
+desc=""
+a=0
+maxa=1
+
+notifwatch | while read -r i
+do
+    arr="$( printf "%s" "$i" | grep "^\s*array \[$" )"
+    [ -z "$arr" ] || {
+        [ "$a" = "0" ] && {
+            a="$maxa"
+
+            printf "%s\n%s\n%s\n%s\n" \
+                "$beg" \
+                "$title" \
+                "$desc" \
+                "$end" >> "$fl"
+
+            continue
+        }
+
+        a=$(( a - 1))
+        continue
+    }
+
+    title="$desc"
+    desc="$( printf "%s" "$i" | grep "^\s*string \".*\"$" | sed -e 's/\s*string "//' -e 's/"$//' )"
+done
