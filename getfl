@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Get a file with a code.
+# TODO: Add ordering by usage to match faster.
 
 fls="$HOME/documents/sys-admin/files"
 

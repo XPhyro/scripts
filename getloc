@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Get a directory with a code.
+# TODO: Add ordering by usage to match faster.
 
 loc="$HOME/documents/sys-admin/locations"
 
