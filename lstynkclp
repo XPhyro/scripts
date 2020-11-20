@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 # List clipped text logged by clplog and copy a selected one using rofi.
 
+# TODO: Instead of using rofi, either add dmenu the ability to have different separators or:
+# TODO: Remove '### BEGIN CLIP ###', replace new lines with a weird character and '### END CLIP ###' with a new line, then pipe to dmenu instead of rofi. After one is selected, replace the weird character back with new lines and remove the last new line.
+
 printclips() {
     #awk 'NR==FNR{if (/### BEGIN CLIP ###/) for (i=-1;i<=0;i++) del[NR+i]; next} !(FNR in del)' "$fl" "$fl" | head -n -1 | sed '/### END CLIP ###/{x;G;s/^\n//;p;s/.*//;x;d};G;s/\n$//;h;$!d' | sed 's/### END CLIP ###/\x0f/'
     #sed -e:b -e'$!{N;2,1bb' -e\} -e'/^### BEGIN CLIP ###$/!P;D' -e 's/^### END CLIP ###$/\x0f/' "$fl"
