@@ -16,6 +16,12 @@ do
     elif [ "$i" = "-p" ] || [ "$i" = "--portrait" ]
     then
         rot="left"
+    elif [ "$i" = "hdmi" ]
+    then
+        hdmic=""
+    elif [ "$i" = "dvi" ]
+    then
+        dvic=""
     fi
 done
 
