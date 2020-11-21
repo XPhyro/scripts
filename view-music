@@ -27,4 +27,5 @@ do
     fi
 done
 
+notify-send -t 2000 "view-music" "Opening $( basename "$fl" ) with $cmd."
 "$cmd" "$fl"
