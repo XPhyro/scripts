@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Launch two st windows with given X geometry to adjust Unity's layout with.
-# Unity Engine sucks on Linux, especially when you use dwm, this is why this script exists.
+# Unity Editor sucks on Linux, especially when you use dwm, this is why this script exists.
 
 #st -g "100x1+2591+794" &
 #st -g "100x1+1920+495" &
