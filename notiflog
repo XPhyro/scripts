@@ -19,8 +19,9 @@ do
         [ "$a" = "0" ] && {
             a="$maxa"
 
-            printf "%s\n%s\n%s\n%s\n" \
+            printf "%s\n%s\n%s\n%s\n%s\n" \
                 "$beg" \
+                "$( date +%s )" \
                 "$title" \
                 "$desc" \
                 "$end" >> "$fl"
