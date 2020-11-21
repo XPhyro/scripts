@@ -13,4 +13,18 @@ fl="$( printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:" )"
 
 [ "$fl" = "" ] && exit
 
-xdg-open "$fl"
+cmd="xdg-open"
+
+for i in "$@"
+do
+    if [ "$cmdget" ]
+    then
+        cmd="$i"
+        unset cmdget
+    elif [ "$i" = "-c" ] || [ "$i" = "--command" ]
+    then
+        cmdget="1"
+    fi
+done
+
+"$cmd" "$fl"
