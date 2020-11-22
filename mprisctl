@@ -39,11 +39,11 @@ constrfcmd() {
                     then
                         fcmd="echo No URI is given."
                     else
-                        if [ "$( printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist):[a-zA-Z0-9]{22}//' )" ]
+                        if [ "$( printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist|artist):[a-zA-Z0-9]{22}//' )" ]
                         then
                             fcmd="echo Given URI is invalid."
                         else
-                            fcmd="$( printf "%sOpenUri '%s'" "$fcmd" "$cmdarg" )"
+                            fcmd="$( printf "%sOpenUri %s" "$fcmd" "$cmdarg" )"
                         fi
                     fi
                     ;;
