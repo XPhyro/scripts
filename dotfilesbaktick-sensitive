@@ -1,11 +1,8 @@
 #!/usr/bin/env sh
 # Run dotfilesbak-sensitive when a sensitive dot file is modified.
 
-while true
+while inotifywait -e modify -r -q -q @~/.dotfiles-sensitive/.git ~/.dotfiles-sensitive
 do
-    while inotifywait -e modify -r -q -q @~/.dotfiles-sensitive/.git ~/.dotfiles-sensitive
-    do
-        sleep 7200
-        ~/.dotfiles-sensitive/dotfilesbak-sensitive
-    done
+    sleep 7200
+    ~/.dotfiles-sensitive/dotfilesbak-sensitive
 done
