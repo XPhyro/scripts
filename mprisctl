@@ -1,0 +1,61 @@
+#!/usr/bin/env sh
+# Control mpris-aware applications.
+
+parseargs() {
+    # TODO: Add alias support.
+    cmd="$1"
+    cmdarg="$2"
+}
+
+detectapp() {
+    apps="$( ps -eocommand )"
+
+    if [ "$( printf "%s" "$apps" | grep "^/opt/spotify/spotify$" )" ]
+    then
+        app="spotify"
+    fi
+}
+
+sendnotif() {
+    [ "$2" ] && ntime="1000" || ntime= "$2"
+    notify-send -t "$ntime" "mprisctl" "$1"
+}
+
+constrfcmd() {
+    case "$app"
+    in
+        "spotify")
+            fcmd="qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
+            case "$cmd"
+            in
+                play) fcmd="$( printf "%sPlay" "$fcmd" )";;
+                pause) fcmd="$( printf "%sPause" "$fcmd" )";;
+                stop) fcmd="$( printf "%sStop" "$fcmd" )";;
+                playpause) fcmd="$( printf "%sPlayPause" "$fcmd" )";;
+                next) fcmd="$( printf "%sNext" "$fcmd" )";;
+                prev) fcmd="$( printf "%sPrevious" "$fcmd" )";;
+                open) 
+                    if [ -z "$cmdarg" ]
+                    then
+                        fcmd="echo No URI is given."
+                    else
+                        if [ "$( printf "%s" "$cmdarg" | sed 's/spotify:.*:.*//' )" ]
+                        then
+                            fcmd="echo Given URI is invalid."
+                        else
+                            fcmd="$( printf "%sOpenUri '%s'" "$fcmd" "$cmdarg" )"
+                        fi
+                    fi
+                    ;;
+                *) fcmd="echo Could not parse command $cmd."
+            esac
+            ;;
+        *) sendnotif "No controllable application detected.";;
+    esac
+}
+
+parseargs "$@"
+detectapp
+constrfcmd
+
+$fcmd
