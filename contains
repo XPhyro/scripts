@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Return whether "$1" is contained in "$2".
+# TODO: Does not work correctly, fix.
 
 case "$1" in
     *"$2"*)
