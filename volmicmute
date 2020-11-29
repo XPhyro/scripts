@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Toggle the mute status of the default pulseaudio source.
+
+pactl set-source-mute "$( voldefsource )" toggle
