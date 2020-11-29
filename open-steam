@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Prompt installed steam games and run the selected one.
 
 grep -E '\s*"[0-9]+"\s*".*"$' "$( getfl steamlibdirs )" | awk -F '"' '{print $4}' | while read -r i
 do
