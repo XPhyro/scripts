@@ -12,4 +12,4 @@ do
     do
         printf '%s\n' "$( grep '"appid"' "$j" | awk -F '"' '{print $4}') $(grep '"name"' "$j" | awk -F '"' '{print $4}' )"
     done
-done | dmenu -i -l 20 -p "Select game:" | awk '{print $1}' | xargs -I '{}' xdg-open 'steam://run/{}'
+done | dmenu -i -l 20 -p "Select game:" | awk '{print $1}' | xargs -r -I '{}' xdg-open 'steam://run/{}'
