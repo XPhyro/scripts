@@ -7,12 +7,12 @@ for i in "$@"
 do
     if [ -L "$i" ]
     then
-        printf "%s\n\nPath to symlink is: %s" "$( readlink "$i" )" "$i" > "$tmp"
+        printf "%s\n\nPath of symlink is: %s" "$( readlink "$i" )" "$i" > "$tmp"
         "$EDITOR" "$tmp"
         ln -sf "$( head -n 1 "$tmp" )" "$i"
     elif [ ! -e "$i" ]
     then
-        printf "\n\nPath to symlinks is: %s" "$i" > "$tmp"
+        printf "\n\nPath of symlinks is: %s" "$i" > "$tmp"
         "$EDITOR" "$tmp"
         ln -sf "$( head -n 1 "$tmp" )" "$i"
     else
@@ -20,7 +20,7 @@ do
         read -r ans
 
         [ "$ans" != "${ans#[Yy]}" ] && {
-            printf "\n\nPath to symlinks is: %s" "$i" > "$tmp"
+            printf "\n\nPath of symlinks is: %s" "$i" > "$tmp"
             "$EDITOR" "$tmp"
             ln -sf "$( head -n 1 "$tmp" )" "$i"
         }
