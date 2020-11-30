@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Pull updates from git and compile programs. Used list file is the file coded upabl.
 
+cleanexit() {
+    rm "$lckfl"
+    exit
+}
+
 lckfl="$( getfl upabllck )"
 
 [ -f "$lckfl" ] && {
@@ -11,6 +16,8 @@ lckfl="$( getfl upabllck )"
         sleep 1s
     done
 }
+
+trap cleanexit INT
 
 touch "$lckfl"
 
