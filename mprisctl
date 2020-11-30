@@ -10,14 +10,20 @@ parseargs() {
 detectapp() {
     apps="$( ps -eocommand )"
 
-    if [ "$( printf "%s" "$apps" | grep "^/opt/spotify/spotify$" )" ]
+    if printf "%s" "$apps" | grep -q "^/opt/spotify/spotify$"
     then
         app="spotify"
     fi
 }
 
 sendnotif() {
-    [ "$2" ] && ntime="1000" || ntime= "$2"
+    if [ "$2" ] 
+    then 
+        ntime="1000"
+    else
+        ntime="$2"
+    fi
+
     notify-send -t "$ntime" "mprisctl" "$1"
 }
 

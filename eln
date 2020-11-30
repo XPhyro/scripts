@@ -17,7 +17,7 @@ do
         ln -sf "$( head -n 1 "$tmp" )" "$i"
     else
         printf "%s exists, overwrite? (y/N): " "$i"
-        read ans
+        read -r ans
 
         [ "$ans" != "${ans#[Yy]}" ] && {
             printf "\n\nPath to symlinks is: %s" "$i" > "$tmp"
