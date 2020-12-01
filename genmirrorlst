@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+sudo reflector --verbose --latest 1000 --protocol https --protocol http --protocol ftp --protocol rsync --sort rate --save /etc/pacman.d/mirrorlist
