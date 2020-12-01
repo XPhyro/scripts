@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Watches processes and notifies when none of the given processes are present.
+
+for i in "$@"
+do
+    while [ "$( ps -o pid= "$i" )" ]
+    do
+        sleep 5
+    done
+done
+
+notify-send -u critical -t 0 "psnotif" "Specified processes became absent on $( date )."
