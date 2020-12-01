@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# Print content of file.
+
+for i in "$@"
+do
+    fl="$( getfl "$i" )"
+    [ -e "$fl" ] && [ ! -d "$fl" ] && cat "$fl"
+done
