@@ -8,12 +8,7 @@ parseargs() {
 }
 
 detectapp() {
-    apps="$( ps -eocommand )"
-
-    if printf "%s" "$apps" | grep -q "^/opt/spotify/spotify$"
-    then
-        app="spotify"
-    fi
+    app="$( detectmpris )"
 }
 
 sendnotif() {
@@ -50,6 +45,56 @@ constrfcmd() {
                             fcmd="echo Given URI is invalid."
                         else
                             fcmd="$( printf "%sOpenUri %s" "$fcmd" "$cmdarg" )"
+                        fi
+                    fi
+                    ;;
+                *) fcmd="echo Could not parse command $cmd."
+            esac
+            ;;
+        "spotify-playerctl")
+            case "$cmd"
+            in
+                play) fcmd="playerctl -p spotify play";;
+                pause) fcmd="playerctl -p spotify pause";;
+                stop) fcmd="playerctl -p spotify stop";;
+                playpause) fcmd="playerctl -p spotify play-pause";;
+                next) fcmd="playerctl -p spotify next";;
+                previous) fcmd="playerctl -p spotify previous";;
+                open) 
+                    if [ -z "$cmdarg" ]
+                    then
+                        fcmd="echo No URI is given."
+                    else
+                        if [ "$( printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist|artist):[a-zA-Z0-9]{22}//' )" ]
+                        then
+                            fcmd="echo Given URI is invalid."
+                        else
+                            fcmd="playerctl -p spotify open '$cmdarg'"
+                        fi
+                    fi
+                    ;;
+                *) fcmd="echo Could not parse command $cmd."
+            esac
+            ;;
+        "vlc")
+            case "$cmd"
+            in
+                play) fcmd="playerctl -p vlc play";;
+                pause) fcmd="playerctl -p vlc pause";;
+                stop) fcmd="playerctl -p vlc stop";;
+                playpause) fcmd="playerctl -p vlc play-pause";;
+                next) fcmd="playerctl -p vlc next";;
+                previous) fcmd="playerctl -p vlc previous";;
+                open) 
+                    if [ -z "$cmdarg" ]
+                    then
+                        fcmd="echo No URI is given."
+                    else
+                        if [ -e "$cmdarg" ]
+                        then
+                            fcmd="echo Given URI is invalid."
+                        else
+                            fcmd="playerctl -p vlc open '$cmdarg'"
                         fi
                     fi
                     ;;
