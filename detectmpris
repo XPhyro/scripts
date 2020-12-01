@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+apps="$( ps -eocommand )"
+
+if printf "%s" "$apps" | grep -q "^vlc"
+then
+    app="vlc"
+elif printf "%s" "$apps" | grep -q "^/opt/spotify/spotify$"
+then
+    app="spotify"
+fi
+
+printf "%s" "$app"
