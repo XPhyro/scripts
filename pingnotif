@@ -24,5 +24,4 @@ t="5s"
     }
 }
 
-# notify-send -t 10000 "🌐 Network connected" "Connected to the specified addresses."
-kdialog --msgbox "notifping\nConnected to the specified addresses."
+notify-send -u critical -t 0 "🌐 pingnotif" "Connected to the specified addresses on $( date )."
