@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-lst="$( cat "$( getfl spuri )" )"
-
-name="$( printf "%s" "$lst" | awk -F '' '{print $2}' | dmenu -i -l 20 -p "Select playlist:" )"
-
-printf "%s" "$lst" | grep "$name" | head -n 1 | awk -F '' '{print $1}'
