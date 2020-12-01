@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # xph-open assignments.
 
-find "$( getloc ass )" -mindepth 1 -printf "%T@;%p\n" | sort -nr | sed 's/^[0-9]*\.[0-9]*;//' | while read -r i
+find -L "$( getloc ass )" -mindepth 1 -type f -printf "%T@;%p\n" | sort -nr | sed 's/^[0-9]*\.[0-9]*;//' | while read -r i
 do
     xph-open "$i" &
     sleep 0.1
