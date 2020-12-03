@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+while true
+do
+    sleep 2h
+    setxkb
+done
