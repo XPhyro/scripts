@@ -30,5 +30,5 @@ vim "$path" -c "$vimcmd"
 
 [ "$isnew" = "1" ] && {
     [ -f "$path" ] && title="$( echo "" | dmenu -p "Title for \"$path\":" )"
-    [ "$title" ] && mv "$path" "$path\_$title"
+    [ "$title" ] && mv "$path" "${path}_$title"
 }
