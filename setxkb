@@ -2,6 +2,10 @@
 # Set X keyboard properties.
 
 setxkbmap -option "caps:escape"
+
 xmodmap -e "keycode 9 = Caps_Lock"
 xset -r 9
+
+xmodmap -e "keycode 108 = Super_R"
+
 xset r rate 250 40
