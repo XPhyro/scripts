@@ -9,4 +9,4 @@ in
 esac
 
 [ -d ~/"$name" ] || mkdir ~/"$name"
-sudo rclone mount --daemon --allow-other --vfs-cache-mode writes "$1": ~/"$name" & disown
+sudo rclone mount --daemon --allow-other --vfs-cache-mode writes "$1": ~/"$name"
