@@ -3,5 +3,5 @@
 while true
 do
     sleep 2h
-    setxkb
+    setxkb -s
 done
