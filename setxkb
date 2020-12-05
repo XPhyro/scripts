@@ -6,6 +6,14 @@ setxkbmap -option "caps:escape"
 xmodmap -e "keycode 9 = Caps_Lock"
 xset -r 9
 
-xmodmap -e "keycode 108 = Super_R"
-
 xset r rate 250 40
+
+for i in "$@"
+do
+    [ "$i" = "-s" ] || [ "$i" = "--super" ] && {
+        xmodmap -e "keycode 108 = Super_R"
+        exit
+    }
+done
+
+xmodmap -e "keycode 108 = ISO_Level3_Shift"
