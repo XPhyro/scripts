@@ -1,27 +1,10 @@
 #!/usr/bin/env sh
-# List clipped text logged by clplog and copy a selected one using rofi.
+# List clipped text logged by clplog and copy a selected one using dmenu.
+# This script and clplog assume that the copied string does not contain the character .
 
-# TODO: Instead of using rofi, either add dmenu the ability to have different separators or:
-# TODO: Remove '### BEGIN CLIP ###', replace new lines with a weird character and '### END CLIP ###' with a new line, then pipe to dmenu instead of rofi. After one is selected, replace the weird character back with new lines and remove the last new line.
+sel="$( perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' "$( getfl clp )" | tail -n +3 | head -n -1 | dmenu -i -l 8 -p "yank" )"
 
-printclips() {
-    #awk 'NR==FNR{if (/### BEGIN CLIP ###/) for (i=-1;i<=0;i++) del[NR+i]; next} !(FNR in del)' "$fl" "$fl" | head -n -1 | sed '/### END CLIP ###/{x;G;s/^\n//;p;s/.*//;x;d};G;s/\n$//;h;$!d' | sed 's/### END CLIP ###/\x0f/'
-    #sed -e:b -e'$!{N;2,1bb' -e\} -e'/^### BEGIN CLIP ###$/!P;D' -e 's/^### END CLIP ###$/\x0f/' "$fl"
-    #sed -e '/^: D[0-9]\{10\};$/d' -e '/^### BEGIN CLIP ###$/d' -e 's/^### END CLIP ###$/\x0f/' "$fl"
-    perl -0777 -pe 's/\n: [0-9]{10};\n### BEGIN CLIP ###\n/\n/g;' -pe 's/### END CLIP ###\n/\x0f/g;' "$fl" | tail -n +3
+[ "$sel" ] && {
+    touch "$( getfl clplck )"
+    printf "%s" "$sel" | tr '' '\n' | xclip -sel clip
 }
-
-fl="$( getfl clp )"
-#sel="$( printclips | tac | rofi -dmenu -sep '\x0f' -eh 5 -l 8 || exit )"
-sel="$( printclips | rofi -dmenu -p 'yank' -sep '\x0f' -selected-row $(( $( grep -cE "^### END CLIP ###$" "$fl" ) - 1 )) -eh 5 -l 8 || exit )"
-
-[ "$sel" = "" ] && exit
-
-#if [ "$( echo "$sel" | head -n 1 | sed '/^$/d' )" = "" ]
-#then
-#    echo "$sel" | tail -n +2 | xclip -sel clip
-#else
-#    echo "$sel" | xclip -sel clip
-#fi
-
-echo "$sel" | xclip -sel clip

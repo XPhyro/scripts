@@ -1,17 +1,24 @@
 #!/usr/bin/env sh
 # Log clipped text as a daemon (though it does not fork out). lstynkclp can be used to list and copy these with rofi.
+# This script and lstynkclp assume that the copied string does not contain the character .
 
 fl="$( getfl clp )"
+lckfl="$( getfl clplck )"
 lastclp="$( xclip -o -sel clip )"
 
 while true
 do
     while clipnotify
     do
+        [ -f "$lckfl" ] && {
+            rm "$lckfl" && lastclp="$( xclip -o -sel clip )"
+            continue
+        }
+
         clp="$( xclip -o -sel clip )"
-        [ "$( echo "$clp" | sed '/^\s*$/d' )" = "" ] && continue
+        [ "$( printf "%s" "$clp" | sed '/^\s*$/d' )" = "" ] && continue
         [ "$clp" = "$lastclp" ] || {
-            printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$( date +%s )" "$clp" >> "$fl"
+            printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$( date +%s )" "$( printf "%s\n" "$clp" | tr '\n' '' )" >> "$fl"
             lastclp="$clp"
         }
     done
