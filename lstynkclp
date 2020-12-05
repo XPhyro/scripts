@@ -2,8 +2,9 @@
 # List clipped text logged by clplog and copy a selected one using dmenu.
 # This script and clplog assume that the copied string does not contain the character .
 # To use, either remove -snp option from dmenu or use my custom build from git@github.com:XPhyro/dmenu-xphyro.git.
+# To use, either remove -n option from dmenu, patch your dmenu with 'preselect' or use my custom build from git@github.com:XPhyro/dmenu-xphyro.git.
 
-sel="$( perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' "$( getfl clp )" | tail -n +3 | head -n -1 | dmenu -snp -i -l 8 -p "yank" )"
+sel="$( perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' "$( getfl clp )" | tail -n +3 | head -n -1 | dmenu -snp -i -l 8 -n 200000000 -p "yank" )"
 
 [ "$sel" ] && {
     touch "$( getfl clplck )"
