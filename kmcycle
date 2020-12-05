@@ -2,17 +2,19 @@
 # Toggle X keymap.
 
 currentKeymap="$( xkb-switch )"
-hasCycled=true
+hasCycled="true"
 
-case $currentKeymap in
-    gb  ) setxkbmap tr;;
-    tr  ) setxkbmap gb;;
-    *   ) hasCycled=false;;
+case "$currentKeymap"
+in
+    gb) setxkbmap tr && setxkb;;
+    tr) setxkbmap gb && setxkb -s;;
+    *) hasCycled="false";;
 esac
 
-#$hasCycled && statbarset
-$hasCycled && { 
-    notify-send -t  500 "⌨ $( xkb-switch )" "Changed current keymap"
+if "$hasCycled"
+then
+    notify-send -t 500 "⌨ $( xkb-switch )" "Changed current keymap"
     statbarset
-}
-$hasCycled || notify-send -t 1000 "❌ $currentKeymap" "Current keymap unknown"
+else
+    notify-send -t 1000 "❌ $currentKeymap" "Current keymap unknown"
+fi
