@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
+# Select a file or a directory using dmenu.
 
 printhelp() {
-    printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
-        "selfl [OPTION...]" \
-        "   -a, --absolute" \
-        "       Prints absolute path instead of relative." \
-        "   -d, --directory" \
-        "       Only shows directories." \
-        "   -s, --show-hidden" \
-        "       Shows hidden directories/files."
+    echo "selfl [OPTION...]"
+    echo "   -a, --absolute"
+    echo "       Prints absolute path instead of relative."
+    echo "   -d, --directory"
+    echo "       Only shows directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
+    echo "   -s, --show-hidden"
+    echo "       Shows hidden directories/files."
 }
 
 printusage() {
