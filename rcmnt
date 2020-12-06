@@ -9,5 +9,5 @@ in
     *) echo "No drive code given, exiting."; exit;;
 esac
 
-[ -d ~/"$name" ] || mkdir ~/"$name"
+[ -d /mnt/"$name" ] || sudo mkdir /mnt/"$name"
 sudo rclone mount --daemon --allow-other --vfs-cache-mode writes "$1": /mnt/"$name"
