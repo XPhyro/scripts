@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 # Select a file or a directory using dmenu.
+# TODO: When -g is given, check directories for whether they are in work tree.
+# TODO: When -g is given, check directories for whether they are in the SAME work tree.
 
 printhelp() {
     echo "selfl [OPTION...] [DIRECTORY...]"
@@ -90,7 +92,7 @@ main() {
                         exit
                     }
 
-                    fls="$( git ls-files )"
+                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; git ls-files )"
                 else
                     fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
                 fi
@@ -102,7 +104,7 @@ main() {
                         exit
                     }
 
-                    fls="$( git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d' )"
+                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d' )"
                 else
                     fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort )"
                 fi
@@ -111,6 +113,14 @@ main() {
             if [ "$PWD" = "/" ]
             then
                 sel="$( printf "%s" "$fls"  | dmenu -i )"
+            elif [ "$git" ]
+            then
+                if contains "$( realpath "$PWD/.." )" "$( git rev-parse --show-toplevel )"
+                then
+                    sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+                else
+                    sel="$( printf "%s" "$fls"  | dmenu -i )"
+                fi
             else
                 sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
             fi
