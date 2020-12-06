@@ -1,0 +1,129 @@
+#!/usr/bin/env sh
+
+printhelp() {
+    printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
+        "selfl [OPTION...]" \
+        "   -a, --absolute" \
+        "       Prints absolute path instead of relative." \
+        "   -d, --directory" \
+        "       Only shows directories." \
+        "   -s, --show-hidden" \
+        "       Shows hidden directories/files."
+}
+
+printusage() {
+    printf "Option [$1] is not valid.\n\n"
+    printhelp
+}
+
+for i in "$@"
+do
+    [ "${i%"${i#?}"}" = "-" ] && {
+        if ! [ "${i%"${i#??}"}" = "--" ]
+        then
+            sopt="$( printf "%s" "$i" | cut -c2- )"
+
+            while [ "$sopt" ]
+            do
+                opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                case "$opt" in
+                    a) absolute="1";;
+                    d) directory="1";;
+                    s) showhidden="1";;
+                    h) printhelp; exit;;
+                    *) printusage "-$opt"; exit;;
+                esac
+
+                sopt="$( printf "%s" "$sopt" | cut -c2- )"
+            done
+        else
+            opt="$( printf "%s" "$i" | cut -c3- )"
+            
+            case "$opt" in
+                absolute) absolute="1";;
+                directory) directory="1";;
+                show-hidden) showhidden="1";;
+                help) printhelp; exit;;
+                *) printusage "--$opt"; exit;;
+            esac
+        fi
+    }
+done
+
+initpwd="$PWD"
+
+if ! [ "$directory" ]
+then
+    until [ -e "$sel" ] && [ ! -d "$sel" ]
+    do
+        [ -d "$sel" ] && {
+            cd "$sel" || {
+                echo "Could not cd to $sel."
+                exit
+            }
+        }
+
+        if [ "$showhidden" ]
+        then
+            fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
+        else
+            fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort )"
+        fi
+
+        if [ "$PWD" = "/" ]
+        then
+            sel="$( printf "%s" "$fls"  | dmenu -i )"
+        else
+            sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+        fi
+
+        printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
+
+        [ "$sel" ] || exit
+    done
+
+    if [ "$absolute" ]
+    then
+        printf "%s\n" "$PWD/$sel"
+    else
+        printf "%s\n" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
+    fi
+else
+
+    while true
+    do
+        [ -d "$sel" ] && {
+            cd "$sel" || {
+                echo "Could not cd to $sel."
+                exit
+            }
+        }
+
+        if [ "$showhidden" ]
+        then
+            fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort )"
+        else
+            fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort )"
+        fi
+
+        if [ "$PWD" = "/" ]
+        then
+            sel="$( printf "%s" "$fls"  | dmenu -i )"
+        else
+            sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+        fi
+
+        printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
+
+        [ "$sel" ] || {
+            if [ "$absolute" ]
+            then
+                printf "%s\n" "$PWD"
+            else
+                realpath --relative-to="$initpwd" "$PWD"
+            fi
+            break
+        }
+    done
+fi
