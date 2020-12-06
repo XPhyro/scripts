@@ -85,7 +85,7 @@ main() {
             then
                 if [ "$git" ]
                 then
-                    [ "$( git rev-parse --is-inside-work-tree )" = "true" ] || {
+                    [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
                         echo "ERROR: Not a git repository, exiting."
                         exit
                     }
@@ -97,7 +97,7 @@ main() {
             else
                 if [ "$git" ]
                 then
-                    [ "$( git rev-parse --is-inside-work-tree )" = "true" ] || {
+                    [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
                         echo "ERROR: Not a git repository, exiting."
                         exit
                     }
