@@ -2,11 +2,15 @@
 # Select a file or a directory using dmenu.
 
 printhelp() {
-    echo "selfl [OPTION...]"
+    echo "selfl [OPTION...] [DIRECTORY...]"
     echo "   -a, --absolute"
     echo "       Prints absolute path instead of relative."
     echo "   -d, --directory"
     echo "       Only shows directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
+    echo "   -g, --git"
+    echo "       Use git ls-files to list files. Does nothing if -d is given."
+    echo "   -h, --help"
+    echo "       Print help message."
     echo "   -s, --show-hidden"
     echo "       Shows hidden directories/files."
 }
@@ -16,114 +20,154 @@ printusage() {
     printhelp
 }
 
-for i in "$@"
-do
-    [ "${i%"${i#?}"}" = "-" ] && {
-        if ! [ "${i%"${i#??}"}" = "--" ]
-        then
-            sopt="$( printf "%s" "$i" | cut -c2- )"
-
-            while [ "$sopt" ]
-            do
-                opt="$( printf "%s" "$sopt" | cut -c1 )"
-
-                case "$opt" in
-                    a) absolute="1";;
-                    d) directory="1";;
-                    s) showhidden="1";;
-                    h) printhelp; exit;;
-                    *) printusage "-$opt"; exit;;
-                esac
-
-                sopt="$( printf "%s" "$sopt" | cut -c2- )"
-            done
-        else
-            opt="$( printf "%s" "$i" | cut -c3- )"
-            
-            case "$opt" in
-                absolute) absolute="1";;
-                directory) directory="1";;
-                show-hidden) showhidden="1";;
-                help) printhelp; exit;;
-                *) printusage "--$opt"; exit;;
-            esac
-        fi
+cdsafe() {
+    cd "$1" 2> /dev/null || {
+        echo "ERROR: Could not cd to $1, exiting."
+        exit
     }
-done
+}
 
-initpwd="$PWD"
-
-if ! [ "$directory" ]
-then
-    until [ -e "$sel" ] && [ ! -d "$sel" ]
+parseargs() {
+    for i in "$@"
     do
-        [ -d "$sel" ] && {
-            cd "$sel" || {
-                echo "Could not cd to $sel."
-                exit
-            }
-        }
-
-        if [ "$showhidden" ]
+        if [ "${i%"${i#?}"}" = "-" ]
         then
-            fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
-        else
-            fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort )"
-        fi
-
-        if [ "$PWD" = "/" ]
-        then
-            sel="$( printf "%s" "$fls"  | dmenu -i )"
-        else
-            sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
-        fi
-
-        printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
-
-        [ "$sel" ] || exit
-    done
-
-    if [ "$absolute" ]
-    then
-        printf "%s\n" "$PWD/$sel"
-    else
-        printf "%s\n" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
-    fi
-else
-
-    while true
-    do
-        [ -d "$sel" ] && {
-            cd "$sel" || {
-                echo "Could not cd to $sel."
-                exit
-            }
-        }
-
-        if [ "$showhidden" ]
-        then
-            fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort )"
-        else
-            fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort )"
-        fi
-
-        if [ "$PWD" = "/" ]
-        then
-            sel="$( printf "%s" "$fls"  | dmenu -i )"
-        else
-            sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
-        fi
-
-        printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
-
-        [ "$sel" ] || {
-            if [ "$absolute" ]
+            if ! [ "${i%"${i#??}"}" = "--" ]
             then
-                printf "%s\n" "$PWD"
+                sopt="$( printf "%s" "$i" | cut -c2- )"
+
+                while [ "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt" in
+                        a) absolute="1";;
+                        d) directory="1";;
+                        g) git="1";;
+                        h) printhelp; exit;;
+                        s) showhidden="1";;
+                        *) printusage "-$opt"; exit;;
+                    esac
+
+                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                done
             else
-                realpath --relative-to="$initpwd" "$PWD"
+                opt="$( printf "%s" "$i" | cut -c3- )"
+                
+                case "$opt" in
+                    absolute    ) absolute="1";;
+                    directory   ) directory="1";;
+                    git         ) git="1";;
+                    help        ) printhelp; exit;;
+                    show-hidden ) showhidden="1";;
+                    *           ) printusage "--$opt"; exit;;
+                esac
             fi
-            break
-        }
+        else
+            initdirs="$initdirs$i
+"
+        fi
     done
+}
+
+main() {
+    if ! [ "$directory" ]
+    then
+        until [ -e "$sel" ] && [ ! -d "$sel" ]
+        do
+            [ -d "$sel" ] && cdsafe "$sel"
+
+            if [ "$showhidden" ]
+            then
+                if [ "$git" ]
+                then
+                    [ "$( git rev-parse --is-inside-work-tree )" = "true" ] || {
+                        echo "ERROR: Not a git repository, exiting."
+                        exit
+                    }
+
+                    fls="$( git ls-files )"
+                else
+                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
+                fi
+            else
+                if [ "$git" ]
+                then
+                    [ "$( git rev-parse --is-inside-work-tree )" = "true" ] || {
+                        echo "ERROR: Not a git repository, exiting."
+                        exit
+                    }
+
+                    fls="$( git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d' )"
+                else
+                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort )"
+                fi
+            fi
+
+            if [ "$PWD" = "/" ]
+            then
+                sel="$( printf "%s" "$fls"  | dmenu -i )"
+            else
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+            fi
+
+            printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
+
+            [ "$sel" ] || exit
+        done
+
+        if [ "$absolute" ]
+        then
+            printf "%s\n" "$PWD/$sel"
+        else
+            printf "%s\n" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
+        fi
+    else
+
+        while true
+        do
+            [ -d "$sel" ] && cdsafe "$sel"
+
+            if [ "$showhidden" ]
+            then
+                fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort )"
+            else
+                fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort )"
+            fi
+
+            if [ "$PWD" = "/" ]
+            then
+                sel="$( printf "%s" "$fls"  | dmenu -i )"
+            else
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+            fi
+
+            printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
+
+            [ "$sel" ] || {
+                if [ "$absolute" ]
+                then
+                    printf "%s\n" "$PWD"
+                else
+                    realpath --relative-to="$initpwd" "$PWD"
+                fi
+
+                break
+            }
+        done
+    fi
+}
+
+parseargs "$@"
+
+if [ "$initdirs" ]
+then
+    printf "%s" "$initdirs" | while read -r i
+    do
+        cdsafe "$i"
+
+        initpwd="$PWD" main
+    done
+else
+    initpwd="$PWD" main
 fi
