@@ -9,6 +9,8 @@ printhelp() {
     echo "       Only shows directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
     echo "   -g, --git"
     echo "       Use git ls-files to list files. Does nothing if -d is given."
+    echo "   -H, --with-directory"
+    echo "       Print initial directory with the selections."
     echo "   -h, --help"
     echo "       Print help message."
     echo "   -s, --show-hidden"
@@ -45,6 +47,7 @@ parseargs() {
                         d) directory="1";;
                         g) git="1";;
                         h) printhelp; exit;;
+                        H) printinitpwd="1";;
                         s) showhidden="1";;
                         *) printusage "-$opt"; exit;;
                     esac
@@ -55,12 +58,13 @@ parseargs() {
                 opt="$( printf "%s" "$i" | cut -c3- )"
                 
                 case "$opt" in
-                    absolute    ) absolute="1";;
-                    directory   ) directory="1";;
-                    git         ) git="1";;
-                    help        ) printhelp; exit;;
-                    show-hidden ) showhidden="1";;
-                    *           ) printusage "--$opt"; exit;;
+                    absolute       ) absolute="1";;
+                    directory      ) directory="1";;
+                    git            ) git="1";;
+                    help           ) printhelp; exit;;
+                    with-directory ) printinitpwd="1";;
+                    show-hidden    ) showhidden="1";;
+                    *              ) printusage "--$opt"; exit;;
                 esac
             fi
         else
@@ -116,11 +120,13 @@ main() {
             [ "$sel" ] || exit
         done
 
+        [ "$printinitpwd" ] && printinitpwd="$initpwd: "
+
         if [ "$absolute" ]
         then
-            printf "%s\n" "$PWD/$sel"
+            printf "%s%s\n" "$printinitpwd" "$PWD/$sel"
         else
-            printf "%s\n" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
+            printf "%s%s\n" "$printinitpwd" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
         fi
     else
 
@@ -145,9 +151,11 @@ main() {
             printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
 
             [ "$sel" ] || {
+                [ "$printinitpwd" ] && printinitpwd="$initpwd: "
+
                 if [ "$absolute" ]
                 then
-                    printf "%s\n" "$PWD"
+                    printf "%s%s\n" "$printinitpwd" "$PWD"
                 else
                     realpath --relative-to="$initpwd" "$PWD"
                 fi
