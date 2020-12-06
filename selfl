@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 # Select a file or a directory using dmenu.
-# TODO: When -g is given, check directories for whether they are in work tree.
-# TODO: When -g is given, check directories for whether they are in the SAME work tree.
 
 printhelp() {
     echo "selfl [OPTION...] [DIRECTORY...]"
@@ -79,6 +77,8 @@ parseargs() {
 main() {
     if ! [ "$directory" ]
     then
+        [ "$git" ] && initgithash="$( git rev-parse HEAD )"
+
         until [ -e "$sel" ] && [ ! -d "$sel" ]
         do
             [ -d "$sel" ] && cdsafe "$sel"
@@ -92,7 +92,21 @@ main() {
                         exit
                     }
 
-                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; git ls-files )"
+                    fls="$( 
+                        find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while read -r i
+                        do 
+                            cdsafe "$i"
+
+                            if [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD )" = "$initgithash" ]
+                            then
+                                printf "%s\n" "$i"
+                            fi
+
+                            cdsafe ..
+                        done | sort
+
+                        git ls-files
+                    )"
                 else
                     fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
                 fi
@@ -104,7 +118,21 @@ main() {
                         exit
                     }
 
-                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d' )"
+                    fls="$( 
+                        find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | while read -r i
+                        do 
+                            cdsafe "$i"
+
+                            if [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD )" = "$initgithash" ]
+                            then
+                                printf "%s\n" "$i"
+                            fi
+
+                            cdsafe ..
+                        done | sort
+
+                        git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d'
+                    )"
                 else
                     fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort )"
                 fi
