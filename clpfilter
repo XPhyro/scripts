@@ -12,4 +12,4 @@ lckfl="$( getfl clplck )"
 }
 
 touch "$lckfl"
-xclip -o -sel clip | "$@" | xclip -sel clip
+xclip -o -sel clip | "$@" | sponge | xclip -sel clip
