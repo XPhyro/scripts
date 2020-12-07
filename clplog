@@ -5,21 +5,27 @@
 fl="$( getfl clp )"
 lckfl="$( getfl clplck )"
 lastclp="$( xclip -o -sel clip )"
+oldclp="$lastclp"
 
 while true
 do
     while clipnotify
     do
         [ -f "$lckfl" ] && {
-            rm "$lckfl" && lastclp="$( xclip -o -sel clip )"
+            rm "$lckfl" && {
+                oldclp="$lastclp"
+                lastclp="$( xclip -o -sel clip )"
+            }
             continue
         }
 
         clp="$( xclip -o -sel clip )"
         [ "$( printf "%s" "$clp" | sed '/^\s*$/d' )" = "" ] && continue
-        [ "$clp" = "$lastclp" ] || {
+        if [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ]
+        then
             printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$( date +%s )" "$( printf "%s\n" "$clp" | tr '\n' '' )" >> "$fl"
             lastclp="$clp"
-        }
+            oldclp=""
+        fi
     done
 done
