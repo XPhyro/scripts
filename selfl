@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Select a file or a directory using dmenu.
+# TODO: Make -d respect -g.
 
 printhelp() {
     echo "selfl [OPTION...] [DIRECTORY...]"
