@@ -18,6 +18,9 @@ fi
 if [ "$KA" ]
 then
     ka="$KA"
+elif [ "$KC" ]
+then
+    kc="$KC"
 else
     willka=1
 fi
@@ -35,9 +38,22 @@ then
     fi
 fi
 
-if [ "$( ps aux | grep "$grp" | grep -vE "\s+grep\s+" )" = "" ]
+prc="$( ps aux | grep "$grp" | grep -vE "\s+grep\s+" )"
+if [ "$prc" = "" ]
 then
     "$exe"
 else
-    killall "$ka"
+    if [ "$kc" ]
+    then
+        n="$kc"
+        printf "%s\n" "$prc" | while read -r i
+        do
+            [ "$n" = "0" ] && break
+            n=$(( $n - 1 ))
+
+            kill "$( printf "%s" "$i" | awk '{print $2}' )"
+        done
+    else
+        killall "$ka"
+    fi
 fi
