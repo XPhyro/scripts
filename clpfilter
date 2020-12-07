@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+# Filter clipboard with a command.
+
+lckfl="$( getfl clplck )"
+
+[ -f "$lckfl" ] && {
+    while [ -f "$lckfl" ]
+        sleep 0.1
+    do :; done
+
+    sleep 0.1
+}
+
+touch "$lckfl"
+xclip -o -sel clip | "$@" | xclip -sel clip
