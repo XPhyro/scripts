@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
-xclip -o -sel clip | osd_cat -p middle -A center -f "-*-helvetica-bold-r-*-*-*-180-*-*-*-*-*-*" -c white -O 1 -u black -d 0
+clp="$( xclip -o -sel clip )"
+printf "%s" "$clp" | osd_cat -p middle -A center -f "-*-helvetica-bold-r-*-*-*-180-*-*-*-*-*-*" -c white -O 1 -u black -d 0 -l "$( printf "%s" "$clp" | wc -l )"
