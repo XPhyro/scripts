@@ -6,10 +6,14 @@ cleanexit() {
     exit
 }
 
+log() {
+    printf "[update]: %s\n" "$1"
+}
+
 lckfl="$( getfl upabllck )"
 
 [ -f "$lckfl" ] && {
-    echo "Lock file is present, waiting..."
+    log "Lock file is present, waiting..."
 
     while [ -f "$lckfl" ]
     do
@@ -23,7 +27,8 @@ touch "$lckfl"
 
 # yay -Syu # --noconfirm
 
-printf "[update]: Reading updateables.\n\n"
+log "Reading updateables.
+"
 
 lst="$( getfl upabl )"
 
@@ -34,19 +39,19 @@ do
     loc="$( echo "$i" | awk -F ";" '{print $1}' )"
     cmd="$( echo "$i" | awk -F ";" '{print $2}' )"
 
-    echo "[update]: Parsing $loc."
+    log "Parsing $loc."
 
     cd "$( getloc "$loc" )" || {
-        echo "[update]: Could not find location $loc."
+        log "Could not find location $loc."
         continue
     }
 
-    echo "[update]: Pulling updates."
+    log "Pulling updates."
     if [ "$( git pull | tail -n 1 | grep --color=never -o " up to date.$" )" = " up to date." ] 
     then
-        echo "[update]: Already up to date."
+        log "Already up to date."
     else
-        $cmd
+        $cmd || log "Failed to update $loc."
     fi
 
     echo
@@ -54,4 +59,4 @@ done < "$lst"
 
 rm "$lckfl"
 
-echo "[update]: Done."
+log "Done."
