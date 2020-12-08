@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Same as sort -utk but does not sort.
+
+f="$1"
+c="$2"
+shift 2
+awk -F "$f" '!_[$'"$c"']++' "$@"
