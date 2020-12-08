@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
-# Same as unique, but can work with unordered input.
+# Same as uniq, but can work with unordered input.
 
 awk '!seen[$0]++' $@
