@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+fl="$( getfl zoom )"
+
+n=1
+while read -r i
+do
+    lst="$lst$n - $( printf "%s" "$i" | awk -F '' '{print $1,"-",$2}' )
+"
+    table="$table
+$n$( printf "%s" "$i" | awk -F '' '{print $3}' )"
+
+    n=$(( n + 1 ))
+done < "$fl"
+
+sel="$(printf "%s" "$lst" | dmenu -i -l 20)"
+
+[ "$sel" ] || exit
+
+xdg-open "$( printf "%s" "$table" | grep "^$( printf "%s" "$sel" | awk '{print $1}' )" | awk -F '' '{print $2}' )"
