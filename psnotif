@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Watches processes and notifies when none of the given processes are present.
 
-for i in "$@"
+for i
 do
     while [ "$( ps -o pid= "$i" )" ]
     do

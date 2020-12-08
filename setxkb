@@ -8,7 +8,7 @@ xset -r 9
 
 xset r rate 250 40
 
-for i in "$@"
+for i
 do
     [ "$i" = "-s" ] || [ "$i" = "--super" ] && {
         xmodmap -e "keycode 108 = Super_R"

@@ -14,7 +14,7 @@ usa="$( getloc usa )"
 lsa="$( getloc lsa )"
 mim="$( getfl mim )"
 
-for i in "$@"
+for i
 do
     # find desktop file
     dtf="$( grep "$( mimetype "$i" | awk '{print $2}' )" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//' )"

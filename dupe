@@ -10,7 +10,7 @@ getnewpath() {
     fi
 }
 
-for i in "$@"
+for i
 do
     newpath="$( getnewpath "$i" )"
     cp -r "$i" "$newpath"

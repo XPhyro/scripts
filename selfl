@@ -31,7 +31,7 @@ cdsafe() {
 }
 
 parseargs() {
-    for i in "$@"
+    for i
     do
         if [ "${i%"${i#?}"}" = "-" ]
         then

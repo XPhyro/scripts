@@ -3,7 +3,7 @@
 
 tmp="$( mktemp )"
 
-for i in "$@"
+for i
 do
     if [ -L "$i" ]
     then

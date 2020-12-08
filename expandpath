@@ -44,7 +44,7 @@ expandpath() {
 
 if [ "$1" ]
 then
-    for i in "$@"
+    for i
     do
         expandpath "$i"
     done

@@ -4,7 +4,7 @@
 
 check() {
     isdir=0
-    for i in "$@"
+    for i
     do
         [ -f "$i" ] || [ -d "$i" ] || { 
             echo "$i does not exist."
@@ -15,7 +15,7 @@ check() {
     done
 
     [ "$isdir" = "1" ] && {
-        for i in "$@"
+        for i
         do
             [ -d "$i" ] || {
                 echo "Cannot swap a file and a directory."

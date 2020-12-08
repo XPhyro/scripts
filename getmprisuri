@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-for i in "$@"
+for i
 do
     [ "$i" = "-d" ] || [ "$i" = "--detect" ] && detect="1"
 done

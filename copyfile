@@ -10,7 +10,7 @@ xclip "$1" -sel clip -t "$t"
 
 # does not work
 #echo "" | xclip -sel clip
-#for i in "$@"
+#for i
 #do
 #    prev="$( xclip -o -sel clip )"
 #    t="$( file -b --mime-type "$i" )"

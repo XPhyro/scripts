@@ -9,7 +9,7 @@ then
     exit
 fi
 
-for i in "$@"
+for i
 do
     [ "$i" = "*" ] && {
         awk '{print $2}' "$loc"
@@ -17,7 +17,7 @@ do
     }
 done
 
-for i in "$@"
+for i
 do
     expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$loc" | awk '{print $2}' )" )"
 done

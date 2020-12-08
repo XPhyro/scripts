@@ -9,7 +9,7 @@ log() {
     printf "[resln]: %s\n" "$1"
 }
 
-for i in "$@"
+for i
 do
     [ -L "$i" ] || {
         log "\"$i\" does not exist or is not a symlink, ignoring."
