@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env sh
 # Mount a remote drive with rclone based on the given drive code.
 # TODO: Add support for non-cached mounting via argument parsing.
 
@@ -10,4 +10,4 @@ in
 esac
 
 [ -d /mnt/"$name" ] || sudo mkdir /mnt/"$name"
-sudo rclone mount --daemon --allow-other --vfs-cache-mode writes "$1": /mnt/"$name"
+sudo rclone mount --daemon --allow-other --vfs-cache-mode full --cache-dir ~/data/rclone --vfs-cache-max-age 0h5m0s "$1": /mnt/"$name"
