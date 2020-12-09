@@ -1,21 +1,36 @@
 #!/usr/bin/env sh
 # Select a file or a directory using dmenu.
 # TODO: Make -d respect -g.
+# TODO: Add support for multiple -e.
 
 printhelp() {
     printf "%s\n" "selfl [OPTION...] [DIRECTORY...]"
     printf "%s\n" "   -a, --absolute"
-    printf "%s\n" "       Prints absolute path instead of relative."
+    printf "%s\n" "       Print absolute path instead of relative."
     printf "%s\n" "   -d, --directory"
-    printf "%s\n" "       Only shows directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
+    printf "%s\n" "       Only show directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
+    printf "%s\n" "   -E, --extended-regex"
+    printf "%s\n" "       Interpret PATTERNs as extended regular expressions. Overwrites -FGP."
+    printf "%s\n" "   -e PATTERN, --regex PATTERN"
+    printf "%s\n" "       Only show entries that are matched by the given regular expression. Only the last given pattern will be used."
+    printf "%s\n" "   -F, --fixed-strings"
+    printf "%s\n" "       Interpret PATTERNs as fixed strings. Overwrites -EGP."
+    printf "%s\n" "   -G, --basic-regex"
+    printf "%s\n" "       Interpret PATTERNs as basic regular expressions. This is the default interpretation. Overwrites -EFP."
     printf "%s\n" "   -g, --git"
-    printf "%s\n" "       Use git ls-files to list files. Does nothing if -d is given."
+    printf "%s\n" "       Use git ls-files to show files. Does nothing if -d is given."
     printf "%s\n" "   -H, --with-directory"
     printf "%s\n" "       Print initial directory with the selections."
     printf "%s\n" "   -h, --help"
     printf "%s\n" "       Print help message."
+    printf "%s\n" "   -i, --ignore-case"
+    printf "%s\n" "       Ignore case distinctions in PATTERNs and entries."
+    printf "%s\n" "   -P, --perl-regex"
+    printf "%s\n" "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG."
     printf "%s\n" "   -s, --show-hidden"
-    printf "%s\n" "       Shows hidden directories/files."
+    printf "%s\n" "       Show hidden directories/files."
+    printf "%s\n" "   -v, --invert-match"
+    printf "%s\n" "       Only show entries that are not matched by PATTERNs."
 }
 
 printusage() {
@@ -47,13 +62,21 @@ parseargs() {
                 do
                     opt="$( printf "%s" "$sopt" | cut -c1 )"
 
-                    case "$opt" in
+                    case "$opt"
+                    in
                         a) absolute="1";;
                         d) directory="1";;
+                        E) regextype="-E";;
+                        e) shift; regex="$1";;
+                        F) regextype="-F";;
+                        G) regextype="-G";;
                         g) git="1";;
-                        h) printhelp; exit;;
                         H) printinitpwd="1";;
+                        h) printhelp; exit;;
+                        i) ignorecase="-i";;
+                        P) regextype="-P";;
                         s) showhidden="1";;
+                        v) invertmatch="-v";;
                         *) printusage "-$opt"; exit;;
                     esac
 
@@ -62,13 +85,21 @@ parseargs() {
             else
                 opt="$( printf "%s" "$1" | cut -c3- )"
                 
-                case "$opt" in
+                case "$opt"
+                in
                     absolute       ) absolute="1";;
                     directory      ) directory="1";;
+                    extended-regex ) regextype="-E";;
+                    regex          ) shift; regex="$1";;
+                    fixed-strings  ) regextype="-F";;
+                    basic-regex    ) regextype="-G";;
                     git            ) git="1";;
-                    help           ) printhelp; exit;;
                     with-directory ) printinitpwd="1";;
+                    help           ) printhelp; exit;;
+                    ignore-case    ) ignorecase="-i";;
+                    perl-regex     ) regextype="-P";;
                     show-hidden    ) showhidden="1";;
+                    invert-match   ) invertmatch="-v";;
                     *              ) printusage "--$opt"; exit;;
                 esac
             fi
@@ -79,6 +110,12 @@ parseargs() {
 
         shift
     done
+}
+
+grepfls() {
+    [ "$regex" ] && {
+        fls="$( printf "%s" "$fls" | grep $regextype $ignorecase $invertmatch -e "$regex" )"
+    }
 }
 
 main() {
@@ -145,6 +182,8 @@ main() {
                 fi
             fi
 
+            grepfls
+
             if [ "$PWD" = "/" ]
             then
                 sel="$( printf "%s" "$fls"  | dmenu -i )"
@@ -185,6 +224,8 @@ main() {
             else
                 fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P\n" | sort )"
             fi
+
+            grepfls
 
             if [ "$PWD" = "/" ]
             then
