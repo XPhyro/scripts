@@ -50,7 +50,7 @@ else
         printf "%s\n" "$prc" | while read -r i
         do
             [ "$n" = "0" ] && break
-            n=$(( $n - 1 ))
+            n=$(( n - 1 ))
 
             kill "$( printf "%s" "$i" | awk '{print $2}' )"
         done

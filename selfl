@@ -19,7 +19,7 @@ printhelp() {
 }
 
 printusage() {
-    printf "Option [$1] is not valid.\n\n"
+    printf "Option [%s] is not valid.\n\n" "$1"
     printhelp
 }
 
@@ -213,8 +213,10 @@ then
     do
         cdsafe "$i"
 
-        initpwd="$PWD" main
+        initpwd="$PWD"
+        main
     done
 else
-    initpwd="$PWD" main
+    initpwd="$PWD"
+    main
 fi
