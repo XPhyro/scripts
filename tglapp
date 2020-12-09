@@ -56,5 +56,6 @@ else
         done
     else
         killall "$ka"
+        killall "$ka" # some apps are problematic, hence the second killall.
     fi
 fi
