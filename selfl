@@ -3,19 +3,19 @@
 # TODO: Make -d respect -g.
 
 printhelp() {
-    echo "selfl [OPTION...] [DIRECTORY...]"
-    echo "   -a, --absolute"
-    echo "       Prints absolute path instead of relative."
-    echo "   -d, --directory"
-    echo "       Only shows directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
-    echo "   -g, --git"
-    echo "       Use git ls-files to list files. Does nothing if -d is given."
-    echo "   -H, --with-directory"
-    echo "       Print initial directory with the selections."
-    echo "   -h, --help"
-    echo "       Print help message."
-    echo "   -s, --show-hidden"
-    echo "       Shows hidden directories/files."
+    printf "%s\n" "selfl [OPTION...] [DIRECTORY...]"
+    printf "%s\n" "   -a, --absolute"
+    printf "%s\n" "       Prints absolute path instead of relative."
+    printf "%s\n" "   -d, --directory"
+    printf "%s\n" "       Only shows directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
+    printf "%s\n" "   -g, --git"
+    printf "%s\n" "       Use git ls-files to list files. Does nothing if -d is given."
+    printf "%s\n" "   -H, --with-directory"
+    printf "%s\n" "       Print initial directory with the selections."
+    printf "%s\n" "   -h, --help"
+    printf "%s\n" "       Print help message."
+    printf "%s\n" "   -s, --show-hidden"
+    printf "%s\n" "       Shows hidden directories/files."
 }
 
 printusage() {
@@ -23,21 +23,25 @@ printusage() {
     printhelp
 }
 
+logerr() {
+    printf "ERROR: %s\n" "$1"
+}
+
 cdsafe() {
     cd "$1" 2> /dev/null || {
-        echo "ERROR: Could not cd to $1, exiting."
+        logerr "Could not cd to $1, exiting."
         exit
     }
 }
 
 parseargs() {
-    for i
+    while [ "$1" ]
     do
-        if [ "${i%"${i#?}"}" = "-" ]
+        if [ "${1%"${1#?}"}" = "-" ]
         then
-            if ! [ "${i%"${i#??}"}" = "--" ]
+            if ! [ "${1%"${1#??}"}" = "--" ]
             then
-                sopt="$( printf "%s" "$i" | cut -c2- )"
+                sopt="$( printf "%s" "$1" | cut -c2- )"
 
                 while [ "$sopt" ]
                 do
@@ -56,7 +60,7 @@ parseargs() {
                     sopt="$( printf "%s" "$sopt" | cut -c2- )"
                 done
             else
-                opt="$( printf "%s" "$i" | cut -c3- )"
+                opt="$( printf "%s" "$1" | cut -c3- )"
                 
                 case "$opt" in
                     absolute       ) absolute="1";;
@@ -69,9 +73,11 @@ parseargs() {
                 esac
             fi
         else
-            initdirs="$initdirs$i
+            initdirs="$initdirs$1
 "
         fi
+
+        shift
     done
 }
 
@@ -89,7 +95,7 @@ main() {
                 if [ "$git" ]
                 then
                     [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
-                        echo "ERROR: Not a git repository, exiting."
+                        logerr "Not a git repository, exiting."
                         exit
                     }
 
@@ -115,7 +121,7 @@ main() {
                 if [ "$git" ]
                 then
                     [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
-                        echo "ERROR: Not a git repository, exiting."
+                        logerr "Not a git repository, exiting."
                         exit
                     }
 
