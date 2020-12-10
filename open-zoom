@@ -17,4 +17,5 @@ sel="$(printf "%s" "$lst" | dmenu -i -l 20)"
 
 [ "$sel" ] || exit
 
-xdg-open "$( printf "%s" "$table" | grep "^$( printf "%s" "$sel" | awk '{print $1}' )" | awk -F '' '{print $2}' )"
+url="$( printf "%s" "$table" | grep "^$( printf "%s" "$sel" | awk '{print $1}' )" | awk -F '' '{print $2}' )"
+$( [ "$( printf "%s" "$url" | sed 's,://.*$,,' )" = "zoommtg" ] && printf "firejail" ) xdg-open "$url"
