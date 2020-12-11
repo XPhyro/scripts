@@ -5,7 +5,7 @@ case "$1"
 in
     one) name="onedrive";;
     open) name="opendrive";;
-    *) echo "No drive code given, exiting."; exit;;
+    *) printf "%s\n" "No drive code given, exiting."; exit;;
 
 esac
 

@@ -13,8 +13,8 @@ printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
 
 while read -r i
 do
-    cmd="$( echo "$i" | awk '{print $1}' )"
-    loc="$( echo "$i" | awk '{print $2}' )"
+    cmd="$( printf "%s" "$i" | awk '{print $1}' )"
+    loc="$( printf "%s" "$i" | awk '{print $2}' )"
     if [ "$( printf "%s" "$cmd" | wc -c )" -lt 3 ]
     then
         space="$( printf "\t\t" )"
@@ -29,8 +29,8 @@ printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
 
 while read -r i
 do
-    cmd="$( echo "$i" | awk '{print $1}' )"
-    loc="$( echo "$i" | awk '{print $2}' )"
+    cmd="$( printf "%s" "$i" | awk '{print $1}' )"
+    loc="$( printf "%s" "$i" | awk '{print $2}' )"
     if [ "$( printf "%s" "$cmd" | wc -c )" -lt 3 ]
     then
         space="$( printf "\t\t" )"

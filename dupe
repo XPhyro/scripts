@@ -6,7 +6,7 @@ getnewpath() {
     then
         getnewpath "$1"_
     else
-        echo "$1"_
+        printf "%s" "$1"_
     fi
 }
 
@@ -14,5 +14,5 @@ for i
 do
     newpath="$( getnewpath "$i" )"
     cp -r "$i" "$newpath"
-    echo "$newpath"
+    printf "%s\n" "$newpath"
 done

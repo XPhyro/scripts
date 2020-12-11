@@ -7,7 +7,7 @@ check() {
     for i
     do
         [ -f "$i" ] || [ -d "$i" ] || { 
-            echo "$i does not exist."
+            printf "%s\n" "$i does not exist."
             exit 1 
         }
         
@@ -18,7 +18,7 @@ check() {
         for i
         do
             [ -d "$i" ] || {
-                echo "Cannot swap a file and a directory."
+                printf "%s\n" "Cannot swap a file and a directory."
                 exit 1
             }
         done
@@ -36,16 +36,16 @@ swap() {
     fi
 
     tmp="$( mktemp )"
-    [ "$tmp" = "" ] && echo "Could not create tmp file."
-    cp -r "$tocopy" "$tmp" || { echo "Could not copy $tocopy to $tmp."; exit 1; }
-    cp -r "$other" "$tocopy" || { echo "Could not copy $other to $tocopy. (tmp: $tmp)"; exit 1; }
-    cp -r "$tmp" "$other" || { echo "Could not copy $tmp to $other."; exit 1; }
-    rm "$tmp" || echo "Could not remove $tmp."
+    [ "$tmp" = "" ] && printf "%s\n" "Could not create tmp file."
+    cp -r "$tocopy" "$tmp" || { printf "%s\n" "Could not copy $tocopy to $tmp."; exit 1; }
+    cp -r "$other" "$tocopy" || { printf "%s\n" "Could not copy $other to $tocopy. (tmp: $tmp)"; exit 1; }
+    cp -r "$tmp" "$other" || { printf "%s\n" "Could not copy $tmp to $other."; exit 1; }
+    rm "$tmp" || printf "%s\n" "Could not remove $tmp."
 }
 
 if [ "$3" ]
 then
-    echo "At most two arguments are accepted."
+    printf "%s\n" "At most two arguments are accepted."
 elif [ "$2" ]
 then
     check "$1" "$2"
@@ -55,5 +55,5 @@ then
     check "$1" "$1"_
     swap "$1" "$1"_
 else
-    echo "At least one argument is needed."
+    printf "%s\n" "At least one argument is needed."
 fi

@@ -5,4 +5,4 @@
 chargeThreshold=92
 
 cap="$( cat /sys/class/power_supply/BAT0/capacity )"
-[ "$cap" -lt "$chargeThreshold" ] && echo "$cap 🔋"
+[ "$cap" -lt "$chargeThreshold" ] && printf "%s\n" "$cap 🔋"

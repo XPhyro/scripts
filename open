@@ -15,7 +15,7 @@ then
         vim "$paths"
     fi
 else
-    echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
+    printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
 fi
 
 #inputpaths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
@@ -32,10 +32,10 @@ fi
 #        vim $paths
 #    fi
 #else
-#    echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
+#    printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
 #fi
 #
-###echo "$inputpaths" | while read -r i
+###printf "%s" "$inputpaths" | while read -r i
 ###do
 ###    [ -f "$i" ] && {
 ###        paths="$paths $i"
@@ -53,5 +53,5 @@ fi
 ###        vim $paths
 ###    fi
 ###else
-###    echo "No such executable$( [ "$2" ] && echo s ) named { $( echo "$@" | sed 's/ /, /g' ) }."
+###    printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
 ###fi

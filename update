@@ -36,8 +36,8 @@ while read -r i
 do
     [ "$( printf "%s" "$i" | sed -E 's/^\s+//' | cut -c1 )" = "#" ] && continue
 
-    loc="$( echo "$i" | awk -F ";" '{print $1}' )"
-    cmd="$( echo "$i" | awk -F ";" '{print $2}' )"
+    loc="$( printf "%s" "$i" | awk -F ";" '{print $1}' )"
+    cmd="$( printf "%s" "$i" | awk -F ";" '{print $2}' )"
 
     log "Parsing $loc."
 

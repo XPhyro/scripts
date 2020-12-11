@@ -4,7 +4,7 @@
 grep -E '\s*"[0-9]+"\s*".*"$' "$( getfl steamlibdirs )" | awk -F '"' '{print $4}' | while read -r i
 do
     cd "$i/steamapps" || {
-        echo "Could not cd into '$i/steamapps', passing."
+        printf "%s\n" "Could not cd into '$i/steamapps', passing."
         continue
     }
 

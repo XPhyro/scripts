@@ -3,11 +3,11 @@
 
 device="$( bluetoothctl paired-devices | awk '{$1=""; print substr($0,2)}' | sort -r | dmenu -i -p 'Which device to connect to?' )"
 
-if echo "$device" | awk '{print $1}' | xargs -r bluetoothctl connect
+if printf "%s" "$device" | awk '{print $1}' | xargs -r bluetoothctl connect
 then
-    notify-send -t 1000 "🎧 $( echo "$device" | awk '{$1=""; print substr($0,2)}' )" "Connected via bluetooth"
+    notify-send -t 1000 "🎧 $( printf "%s" "$device" | awk '{$1=""; print substr($0,2)}' )" "Connected via bluetooth"
 else
-    notify-send -t 1000 "❌ $( echo "$device" | awk '{$1=""; print substr($0,2)}' )" "ERROR: Connection via bluetooth failed"
+    notify-send -t 1000 "❌ $( printf "%s" "$device" | awk '{$1=""; print substr($0,2)}' )" "ERROR: Connection via bluetooth failed"
 fi
 
 statbarset

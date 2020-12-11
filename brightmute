@@ -13,4 +13,4 @@ else
     val="0"
 fi
 
-echo "$val" > "$fl"
+printf "%s" "$val" > "$fl"

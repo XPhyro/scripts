@@ -2,13 +2,13 @@
 # Overwrite a file.
 
 cp "$@" || {
-    echo "Could not overwrite:" "$@"
+    printf "%s\n" "Could not overwrite:" "$@"
     exit 1
 }
 
-paths="$( echo "$@" | sed 's/\s.*$//' )"
+paths="$( printf "%s" "$@" | sed 's/\s.*$//' )"
 
 rm "$paths" || {
-    echo "Could not remove:" "$paths"
+    printf "%s\n" "Could not remove:" "$paths"
     exit 1
 }

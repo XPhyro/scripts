@@ -24,13 +24,13 @@ compile() {
 if [ "$1" = "" ]
 then
     fl="main"
-    echo "No file name given, assuming main."
+    printf "%s\n" "No file name given, assuming main."
 else
-    fl="$( echo "$1" | sed 's/\.tex$//' )"
+    fl="$( printf "%s" "$1" | sed 's/\.tex$//' )"
 fi
 
 [ -f "$fl.tex" ] || {
-    echo "No such file exists."
+    printf "%s\n" "No such file exists."
     exit
 }
 
@@ -38,8 +38,8 @@ clean
 compile
 
 pss="$( ps aux )"
-[ "$( echo "$pss" | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
-# [ "$( echo "$pss" | grep "pdflatexstp $@" | grep -v "grep.*pdflatexstp $@" )" = "" ] && exit
+[ "$( printf "%s" "$pss" | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
+# [ "$( printf "%s" "$pss" | grep "pdflatexstp $@" | grep -v "grep.*pdflatexstp $@" )" = "" ] && exit
 
 while true
 do

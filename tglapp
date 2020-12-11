@@ -34,7 +34,7 @@ then
         [ "$willexe" = "1" ] && exe="$PROCESS"
         [ "$willka" = "1" ] && ka="$PROCESS"
     else
-        echo "Not enough environment variables."
+        printf "%s\n" "Not enough environment variables."
         exit 1
     fi
 fi

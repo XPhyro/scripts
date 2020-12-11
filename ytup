@@ -32,43 +32,43 @@ done < "$UPLSTDR"
 
 while read -r i
 do
-    echo "[ytup]: Parsing file: $i"
+    printf "%s\n" "[ytup]: Parsing file: $i"
 
     name="$( basename "$i" )"
-    echo "[ytup]: Detected name; $name"
+    printf "%s\n" "[ytup]: Detected name; $name"
 
     root="$( echo "$i" | sed 's/\/.*//' )"
-    echo "[ytup]: Detected root: $root"
+    printf "%s\n" "[ytup]: Detected root: $root"
 
     grep -Fxq "$name" "$LOG" && continue
 
     touch metadata.json
-    echo "{\"title\":\"$root - $name\",\"description\":\"$name\",\"privacyStatus\":\"unlisted\",\"embeddable\":true,\"publicStatsViewable\":false,\"categoryId\":\"20\"," > metadata.json
+    printf "%s\n" "{\"title\":\"$root - $name\",\"description\":\"$name\",\"privacyStatus\":\"unlisted\",\"embeddable\":true,\"publicStatsViewable\":false,\"categoryId\":\"20\"," > metadata.json
 
     case "$root" in
         "League of Legends")
-            echo "\"playlistIds\":[\"$LOLID\"]}" >> metadata.json
+            printf "%s\n" "\"playlistIds\":[\"$LOLID\"]}" >> metadata.json
             ;;
         "noire")
-            echo "\"playlistIds\":[\"$EMID\"]}" >> metadata.json
+            printf "%s\n" "\"playlistIds\":[\"$EMID\"]}" >> metadata.json
             ;;
         "Payday 2")
-            echo "\"playlistIds\":[\"$PD2ID\"]}" >> metadata.json
+            printf "%s\n" "\"playlistIds\":[\"$PD2ID\"]}" >> metadata.json
             ;;
         "PUBGLite-Win64-Shipping")
-            echo "\"playlistIds\":[\"$PUBGID\"]}" >> metadata.json
+            printf "%s\n" "\"playlistIds\":[\"$PUBGID\"]}" >> metadata.json
             ;;
         "Live")
-            echo "\"playlistIds\":[\"$VALID\"]}" >> metadata.json
+            printf "%s\n" "\"playlistIds\":[\"$VALID\"]}" >> metadata.json
             ;;
         "Base Profile")
-            echo "\"playlistIds\":[\"$OTHID\"]}" >> metadata.json
+            printf "%s\n" "\"playlistIds\":[\"$OTHID\"]}" >> metadata.json
             ;;
         *)
-            echo "No case for $root"
+            printf "%s\n" "No case for $root"
             continue
             ;;
     esac
 
-    ytuploader -metaJSON metadata.json -metaJSONout "metadataout/metadataout_$i""_.json" -filename "$i" && echo "$name" >> "$LOG"
+    ytuploader -metaJSON metadata.json -metaJSONout "metadataout/metadataout_$i""_.json" -filename "$i" && printf "%s" "$name" >> "$LOG"
 done < "$UPLSTFL"

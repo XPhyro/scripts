@@ -9,7 +9,7 @@ cleanexit() {
 
 cdsafe() {
     cd "$1" || {
-        echo "Could not cd to $1, exiting."
+        printf "%s\n" "Could not cd to $1, exiting."
         exit
     }
 }

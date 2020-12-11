@@ -2,8 +2,8 @@
 # Adjust displays with xrandr.
 
 xr="$( xrandr )"
-hdmic="$( echo "$xr" | grep -o "HDMI-0 connected" )"
-dvic="$( echo "$xr" | grep -o "DVI-I-2-1 connected" )"
+hdmic="$( printf "%s" "$xr" | grep -o "HDMI-0 connected" )"
+dvic="$( printf "%s" "$xr" | grep -o "DVI-I-2-1 connected" )"
 
 mode="2560x1080"
 rot="normal"

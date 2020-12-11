@@ -4,11 +4,11 @@
 stat="$( pacmd list-sinks | grep -A 30 "name: <$( voldefsink )>" )"
 
 # TODO: If the line indices are not constant, use grep.
-if [ "$( echo "$stat" | sed '11q;d' | awk '{print $2}' )" = "yes" ]
+if [ "$( printf "%s" "$stat" | sed '11q;d' | awk '{print $2}' )" = "yes" ]
 then
     glyph="🔇"
 else
     glyph="🔈"
 fi
 
-echo "$( echo "$stat" | sed '7q;d' | awk '{print $5}' | sed 's/%//' ) $glyph"
+printf "%s\n" "$( echo "$stat" | sed '7q;d' | awk '{print $5}' | sed 's/%//' ) $glyph"

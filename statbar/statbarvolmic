@@ -4,4 +4,4 @@
 stat="$( pacmd list-sources | grep -A 30 "name: <$( voldefsource )>" )"
 
 # TODO: If the line indices are not constant, use grep.
-[ "$( echo "$stat" | sed '11q;d' | awk '{print $2}' )" = "yes" ] || echo "🎤"
+[ "$( printf "%s" "$stat" | sed '11q;d' | awk '{print $2}' )" = "yes" ] || printf "%s\n" "🎤"

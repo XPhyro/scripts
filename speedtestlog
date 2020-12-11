@@ -2,25 +2,25 @@
 # Use speedtest to test internet connection and log the results. speedtestlogp can be used to print the logs.
 
 ping -c 1 speedtest.net > /dev/null 2>&1 || {
-    echo "Cannot reach speedtest.net servers, exiting."
+    printf "%s\n" "Cannot reach speedtest.net servers, exiting."
     exit 1
 }
 
-echo "Testing..."
+printf "%s\n" "Testing..."
 
 result="$( speedtest || { 
-    echo "Test failed, exiting."
+    printf "%s\n" "Test failed, exiting."
     exit 1
 } )"
 
-log="$( date +%s );$( echo "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' );$( echo "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//' );$( echo "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}' );$( echo "$result" | grep "Download:" | awk '{print $2" "$3}' );$( echo "$result" | grep "Upload:" | awk '{print $2" "$3}')"
+log="$( date +%s );$( printf "%s" "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' );$( echo "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//' );$( echo "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}' );$( echo "$result" | grep "Download:" | awk '{print $2" "$3}' );$( echo "$result" | grep "Upload:" | awk '{print $2" "$3}')"
 
 echo
-echo "$log" | sed 's/;/\n/g'
+printf "%s" "$log" | sed 's/;/\n/g'
 printf "\nLogging results...\n"
 
 fl="$( getfl stl )"
 
-echo "$log" >> "$fl"
+printf "%s" "$log" >> "$fl"
 
-echo "Done."
+printf "%s\n" "Done."
