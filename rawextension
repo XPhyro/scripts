@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+for i
+do
+    ext="$( printf "%s" "$i" | sed 's/^.*\.//' )"
+
+    [ "$ext" = "$i" ] && ext=""
+
+    printf "%s\n" "$ext"
+done
