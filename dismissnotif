@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+xdotool mousemove --screen 0 2537 37 click 1
