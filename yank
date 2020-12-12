@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+fl="$( getfl ynk )"
+
+dmenu -i < "$fl" | awk -F ";" '{print $1}' | xclip -sel clip
