@@ -4,7 +4,7 @@
 # This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
 
 clean() {
-    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.pdf" "$fl.toc"
+    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.pdf" "$fl.toc" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py"
 }
 
 compile() {
