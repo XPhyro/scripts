@@ -15,6 +15,12 @@ file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
 
 [ "$file" ] || exit
 
+if ! [ "$file" = "$newfile" ] && ! printf "%s" "$files" | grep -Fxq "$file"
+then
+    printf "%s" "$file" > "$dir/${newfile}_$( printf "%s\n" "" | dmenu -p "Title for \"$dir/$newfile\":" )"
+    exit
+fi
+
 [ "$file" = "$newfile" ] && isnew=1
 
 if [ "$isnew" = "1" ]
