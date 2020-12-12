@@ -6,7 +6,7 @@ xclip "$1" -sel clip -t "$t"
 
 # does not work (copies only the first)
 #t="$( file -b --mime-type "$1" )"
-#xclip $@ -sel clip  -t "$t"
+#xclip "$@" -sel clip  -t "$t"
 
 # does not work
 #echo "" | xclip -sel clip

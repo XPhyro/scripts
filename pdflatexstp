@@ -39,7 +39,7 @@ compile
 
 pss="$( ps aux )"
 [ "$( printf "%s" "$pss" | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
-# [ "$( printf "%s" "$pss" | grep "pdflatexstp $@" | grep -v "grep.*pdflatexstp $@" )" = "" ] && exit
+# [ "$( printf "%s" "$pss" | grep "pdflatexstp "$@"" | grep -v "grep.*pdflatexstp "$@"" )" = "" ] && exit
 
 while true
 do
