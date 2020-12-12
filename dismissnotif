@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
+# TODO: Make this work with the currently focused screen.
 xdotool mousemove --screen 0 2537 37 click 1
