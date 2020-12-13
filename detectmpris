@@ -2,12 +2,12 @@
 
 apps="$( ps -eocommand )"
 
-if printf "%s" "$apps" | grep -q "^vlc"
-then
-    app="vlc"
-elif printf "%s" "$apps" | grep -q "^/opt/spotify/spotify$"
+if printf "%s" "$apps" | grep -q "^/opt/spotify/spotify$"
 then
     app="spotify"
+elif printf "%s" "$apps" | grep -q "^vlc"
+then
+    app="vlc"
 fi
 
-printf "%s" "$app"
+printf "%s\n" "$app"
