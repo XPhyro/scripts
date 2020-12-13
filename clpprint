@@ -2,6 +2,8 @@
 
 clp="$( xclip -o -sel clip )"
 l="$( printf "%s" "$clp" | wc -l )"
-[ "$l" = "0" ] && l=1
+[ "$l" = "0" ]
+
+: $(( l += 1 ))
 
 printf "%s" "$clp" | osd_cat -p middle -A center -f "-*-helvetica-bold-r-*-*-*-180-*-*-*-*-*-*" -c white -O 1 -u black -d 0 -l "$l"
