@@ -6,13 +6,14 @@ hasCycled="true"
 
 case "$currentKeymap"
 in
-    gb) setxkbmap tr && setxkb;;
-    tr) setxkbmap gb && setxkb -s;;
+    gb) setxkbmap tr;;
+    tr) setxkbmap gb;;
     *) hasCycled="false";;
 esac
 
 if "$hasCycled"
 then
+    setxkb
     notify-send -t 500 "⌨ $( xkb-switch )" "Changed current keymap"
     statbarset
 else
