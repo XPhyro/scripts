@@ -2,6 +2,7 @@
 # Compile and show its PDF of a TeX file, then compile it every time it is accessed/modified/etc.
 # Compilation on access is wanted behaviour.
 # This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
+# TODO: Make argument parsing more convenient.
 
 clean() {
     rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.pdf" "$fl.toc" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py"
@@ -36,6 +37,14 @@ fi
 
 clean
 compile
+
+for i
+do
+    if [ "$i" = "-o" ] || [ "$i" = "--once" ]
+    then
+        exit
+    fi
+done
 
 pss="$( ps aux )"
 [ "$( printf "%s" "$pss" | grep "zathura $fl.pdf" | grep -v "grep.*zathura $fl.pdf" )" = "" ] && zathura "$fl.pdf" &
