@@ -2,6 +2,7 @@
 # Select a file or a directory using dmenu.
 # TODO: Make -d respect -g.
 # TODO: Add support for multiple -e.
+# TODO: Extract argument parsing into a stand-alone script, if possible.
 
 printhelp() {
     printf "%s\n" "selfl [OPTION...] [DIRECTORY...]"
