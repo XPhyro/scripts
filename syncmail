@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# Sync mail and notify if new mail exists.
+
+mbsync -a > /dev/null
+
+for i in "$HOME/.local/share/mail/"*
+do
+	acc="$( printf "%s" "$i" | sed "s/.*\///" )"
+	count=$( find "$HOME/.local/share/mail/$acc/INBOX/new/" "$HOME/.local/share/mail/$acc/Inbox/new/" "$HOME/.local/share/mail/$acc/inbox/new/" -type f -newer "$HOME/.config/mutt/.mailsynclastrun" 2> /dev/null | wc -l )
+
+    [ "$count" -gt 0 ] && notify-send -u critical -t 5000 "📬 syncmail [$count]" "$count new mail$( [ "$count" -gt 1 ] && printf "s" ) in $( grep "^set from" "$HOME/.config/mutt/accounts/$acc.muttrc" | tail -n 1 | sed -E 's/set\s+from\s*=\s*"?(.*[^"])"?/\1/' )." &
+done
+
+notmuch new > /dev/null
+
+touch "$HOME/.config/mutt/.syncmailtime"

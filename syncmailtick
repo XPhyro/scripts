@@ -5,7 +5,7 @@ sleep 15s
 
 while true
 do
-    mailsync
+    syncmail
     statbarset
     sleep 180s
 done
