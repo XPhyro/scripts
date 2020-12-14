@@ -3,6 +3,6 @@
 
 while inotifywait -e modify -r -q -q @~/.dotfiles-sensitive/.git ~/.dotfiles-sensitive
 do
-    sleep 7200
+    sleep 2h
     ~/.dotfiles-sensitive/dotfilesbak-sensitive
 done
