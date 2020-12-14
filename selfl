@@ -49,6 +49,13 @@ cdsafe() {
     }
 }
 
+assertarg() {
+    [ "$3" ] || {
+        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
+        exit 1
+    }
+}
+
 parseargs() {
     while [ "$1" ]
     do
@@ -67,7 +74,7 @@ parseargs() {
                         a) absolute="1";;
                         d) directory="1";;
                         E) regextype="-E";;
-                        e) shift; regex="$1";;
+                        e) shift; assertarg "-e" "REGEX" "$1"; regex="$1";;
                         F) regextype="-F";;
                         G) regextype="-G";;
                         g) git="1";;
@@ -90,7 +97,7 @@ parseargs() {
                     absolute       ) absolute="1";;
                     directory      ) directory="1";;
                     extended-regex ) regextype="-E";;
-                    regex          ) shift; regex="$1";;
+                    regex          ) shift; assertarg "-e" "REGEX" "$1"; regex="$1";;
                     fixed-strings  ) regextype="-F";;
                     basic-regex    ) regextype="-G";;
                     git            ) git="1";;
