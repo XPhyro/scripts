@@ -55,6 +55,7 @@ else
             kill "$( printf "%s" "$i" | awk '{print $2}' )"
         done
     else
+        # TODO: Make double killing into an option.
         killall "$ka"
         killall "$ka" # some apps are problematic, hence the second killall.
     fi
