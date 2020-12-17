@@ -1,0 +1,79 @@
+# vim: filetype=sh
+
+printhelp() {
+    printf "%s\n" "scriptname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]"
+    printf "%s\n" "   -a ARGUMENT, --argument ARGUMENT"
+    printf "%s\n" "       Do something with argument."
+    printf "%s\n" "   -o, --option"
+    printf "%s\n" "       Enable some option. Can be overridden with -i."
+    printf "%s\n" "   -i, --inverse-option"
+    printf "%s\n" "       Disable some option. Can be overridden with -o."
+    printf "%s\n" "   -t, --option-type"
+    printf "%s\n" "       Set some option. Can be overridden with other types."
+    printf "%s\n" "   -h, --help"
+    printf "%s\n" "       Print help message."
+}
+
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1"
+    printhelp
+}
+
+assertarg() {
+    [ "$3" ] || {
+        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
+        exit 1
+    }
+}
+
+register_directories_and_files() {
+    for i
+    do
+        # register directories and files here
+    done
+}
+
+parseargs() {
+    while [ "$1" ]
+    do
+        if [ "${1%"${1#?}"}" = "-" ]
+        then
+            if ! [ "${1%"${1#??}"}" = "--" ]
+            then
+                sopt="$( printf "%s" "$1" | cut -c2- )"
+
+                while [ "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        a) shift; assertarg "-e" "REGEX" "$1"; argument="$1";;
+                        o) option="1";;
+                        i) option="0";;
+                        t) optiontype="-T";;
+                        h) printhelp; exit;;
+                        *) printusage "-$opt"; exit;;
+                    esac
+
+                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                done
+            else
+                opt="$( printf "%s" "$1" | cut -c3- )"
+                
+                case "$opt"
+                in
+                    argument       ) shift; assertarg "-e" "REGEX" "$1"; argument="$1";;
+                    option         ) option="1";;
+                    inverse-option ) option="0";;
+                    option-type    ) optiontype="-T";;
+                    help           ) printhelp; exit;;
+                    ""             ) shift; register_directories_and_files; break;;
+                    *              ) printusage "--$opt"; exit;;
+                esac
+            fi
+        fi
+
+        shift
+    done
+}
