@@ -26,13 +26,6 @@ assertarg() {
     }
 }
 
-register_directories_and_files() {
-    for i
-    do
-        # register directories and files here
-    done
-}
-
 parseargs() {
     while [ "$1" ]
     do
@@ -68,12 +61,19 @@ parseargs() {
                     inverse-option ) option="0";;
                     option-type    ) optiontype="-T";;
                     help           ) printhelp; exit;;
-                    ""             ) shift; register_directories_and_files; break;;
+                    ""             ) shift; break;;
                     *              ) printusage "--$opt"; exit;;
                 esac
             fi
+        else
+            # positional argument
         fi
 
         shift
+    done
+
+    for i
+    do
+        # guaranteed positional argument
     done
 }
