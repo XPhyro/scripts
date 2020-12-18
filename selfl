@@ -4,7 +4,7 @@
 # TODO: Add support for multiple -e.
 
 printhelp() {
-    printf "%s\n" "selfl [OPTION...] [DIRECTORY...]"
+    printf "%s\n" "selfl [OPTION...] [DIRECTORY...] -- [DIRECTORY...]"
     printf "%s\n" "   -a, --absolute"
     printf "%s\n" "       Print absolute path instead of relative."
     printf "%s\n" "   -d, --directory"
@@ -43,7 +43,7 @@ logerr() {
 }
 
 cdsafe() {
-    cd "$1" 2> /dev/null || {
+    cd -- "$1" 2> /dev/null || {
         logerr "Could not cd to $1, exiting."
         exit
     }
@@ -107,6 +107,7 @@ parseargs() {
                     perl-regex     ) regextype="-P";;
                     show-hidden    ) showhidden="1";;
                     invert-match   ) invertmatch="-v";;
+                    ""             ) shift; break;;
                     *              ) printusage "--$opt"; exit;;
                 esac
             fi
@@ -116,6 +117,12 @@ parseargs() {
         fi
 
         shift
+    done
+
+    for i
+    do
+        initdirs="$initdirs$1
+"
     done
 }
 
