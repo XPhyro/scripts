@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+# Refresh documents. Designed to be used with cron.
+
+fl="$( getfl refdoc )"
+
+while read -r i
+do
+    willeval="$( printf "%s" "$i" | awk -F ';' '{printf $1}' )"
+    dir="$( printf "%s" "$i" | awk -F ';' '{printf $2}' )"
+    cmd="$( printf "%s" "$i" | awk -F ';' '{printf $3}' )"
+
+    [ "$willeval" = "1" ] && {
+        dir="$( eval $dir )"
+    }
+
+    cd "$dir" || {
+        printf "Could not cd to %s, continuing.\n" "$dir"
+        continue
+    }
+
+    $cmd
+done < "$fl"
