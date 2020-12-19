@@ -147,7 +147,7 @@ main() {
                 then
                     [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
                         logerr "Not a git repository, exiting."
-                        exit
+                        return
                     }
 
                     fls="$( 
@@ -173,7 +173,7 @@ main() {
                 then
                     [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
                         logerr "Not a git repository, exiting."
-                        exit
+                        return
                     }
 
                     fls="$( 
@@ -213,9 +213,11 @@ main() {
                 sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
             fi
 
-            printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
+            printf "%s" "$fls" | grep -Fxq "$sel" || {
+                [ "$sel" ] && sel="$( expandpath "$sel" )"
+            }
 
-            [ "$sel" ] || exit
+            [ "$sel" ] || return
         done
 
         [ "$printinitpwd" ] && printinitpwd="$initpwd: "
@@ -227,7 +229,6 @@ main() {
             printf "%s%s\n" "$printinitpwd" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
         fi
     else
-
         while true
         do
             [ -d "$sel" ] && cdsafe "$sel"
@@ -260,7 +261,7 @@ main() {
                     realpath --relative-to="$initpwd" "$PWD"
                 fi
 
-                break
+                return
             }
         done
     fi
@@ -270,8 +271,10 @@ parseargs "$@"
 
 if [ "$initdirs" ]
 then
+    masterinitpwd="$PWD"
     printf "%s" "$initdirs" | while read -r i
     do
+        cdsafe "$masterinitpwd"
         cdsafe "$i"
 
         initpwd="$PWD"
