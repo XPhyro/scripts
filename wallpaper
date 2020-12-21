@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+fls="$( find "$( getloc wallpaper )" -mindepth 1 -maxdepth 1 -type f )"
+
+while true
+do
+    printf "%s" "$fls" | while read -r i
+    do
+        hsetroot -cover "$i"
+        sleep 15m
+    done
+done
