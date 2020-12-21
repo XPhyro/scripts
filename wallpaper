@@ -2,6 +2,11 @@
 
 fls="$( find "$( getloc wallpaper )" -mindepth 1 -maxdepth 1 -type f )"
 
+[ "$1" = "1" ] && {
+    fls="$( printf "%s" "$fls" | shuf )"
+    shift
+}
+
 if [ "$2" ]
 then
     [ "$1" ] && {
