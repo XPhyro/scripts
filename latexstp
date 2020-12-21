@@ -12,16 +12,16 @@ clean() {
 
 compile() {
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    pdflatex -draftmode -shell-escape -halt-on-error "$fl" || {
+    xelatex -draftmode -shell-escape -halt-on-error "$fl" || {
         clean
-        pdflatex -draftmode -shell-escape -halt-on-error "$fl"
+        xelatex -draftmode -shell-escape -halt-on-error "$fl"
     }
     bibtex "$fl"
     biber "$fl"
     makeindex "$fl".idx
     # makeindex -s style.gls ...
-    pdflatex -draftmode -shell-escape -halt-on-error "$fl"
-    pdflatex -shell-escape -halt-on-error "$fl"
+    xelatex -draftmode -shell-escape -halt-on-error "$fl"
+    xelatex -shell-escape -halt-on-error "$fl"
 }
 
 if [ "$1" = "" ]
