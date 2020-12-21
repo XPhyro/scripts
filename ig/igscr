@@ -55,7 +55,7 @@ then
     sort -o "$newfollow1" "$newfollow1"
 fi
 
-for i in "$@"
+for i
 do
     [ "$i" = "-l" ] && {
         genlst
