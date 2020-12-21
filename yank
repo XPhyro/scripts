@@ -1,5 +1,15 @@
 #!/usr/bin/env sh
 
 fl="$( getfl ynk )"
+lckfl="$( getfl clplck )"
 
+[ -f "$lckfl" ] && {
+    while [ -f "$lckfl" ]
+        sleep 0.1
+    do :; done
+
+    sleep 0.1
+}
+
+touch "$lckfl"
 dmenu -i < "$fl" | awk -F ";" '{print $1}' | xclip -sel clip
