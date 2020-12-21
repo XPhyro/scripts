@@ -2,11 +2,21 @@
 
 fls="$( find "$( getloc wallpaper )" -mindepth 1 -maxdepth 1 -type f )"
 
+sleep "$1"
+
+hsetroot -cover "$( printf "%s" "$fls" | head -n 1 )"
+
+sleep "$2"
+
+hsetroot -cover "$( printf "%s" "$fls" | head -n 1 )"
+
+sleep "$3"
+
 while true
 do
     printf "%s" "$fls" | while read -r i
     do
         hsetroot -cover "$i"
-        sleep 15m
+        sleep "$4"
     done
 done
