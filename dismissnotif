@@ -1,4 +1,10 @@
 #!/usr/bin/env sh
 
-# TODO: Make this work with the currently focused screen.
-xdotool mousemove --screen 0 2537 37 click 1 mousemove restore
+eval $( xdotool getmouselocation --shell )
+
+if [ "$Y" -gt 1080 ]
+then
+    xdotool mousemove 1897 1117 click 1 mousemove restore
+else
+    xdotool mousemove 2537 37 click 1 mousemove restore
+fi
