@@ -42,7 +42,7 @@ fi
 prc="$( ps aux | grep "$grp" | grep -vE "\s+grep\s+" )"
 if [ "$prc" = "" ]
 then
-    "$exe"
+    $exe
 else
     if [ "$kc" ]
     then
