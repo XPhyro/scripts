@@ -15,9 +15,9 @@ do
     download="$( printf "%s" "$i" | awk -F \; '{print $5}' )"
     upload="$( printf "%s" "$i" | awk -F \; '{print $6}' )"
 
-    pingav="$( printf "%s" "scale = 10; $pingav + $( printf "%s" "$ping" | awk '{print $1}' )" | bc )"
-    dowav="$( printf "%s" "scale = 10; $dowav + $( printf "%s" "$download" | awk '{print $1}' )" | bc )"
-    upav="$( printf "%s" "scale = 10; $upav + $( printf "%s" "$upload" | awk '{print $1}' )" | bc )"
+    pingav="$( printf "%s\n" "scale = 10; $pingav + $( printf "%s" "$ping" | awk '{print $1}' )" | bc )"
+    dowav="$( printf "%s\n" "scale = 10; $dowav + $( printf "%s" "$download" | awk '{print $1}' )" | bc )"
+    upav="$( printf "%s\n" "scale = 10; $upav + $( printf "%s" "$upload" | awk '{print $1}' )" | bc )"
 
     printf "%s\n%s\n%s\n%s\n%s\n%s\n\n" \
         "Time    : $( date --date @"$time" )" \
@@ -32,6 +32,6 @@ count="$( wc -l < "$fl" )"
 
 # assuming the inout will be in ms and Mbit/s
 printf "%s\n%s\n%s\n" \
-    "Ping average    : $( printf "%s" "scale = 2; $pingav / $count" | bc ) ms" \
-    "Download average: $( printf "%s" "scale = 2; $dowav / $count" | bc ) Mbit/s" \
-    "Upload average  : $( printf "%s" "scale = 2; $upav / $count" | bc ) Mbit/s"
+    "Ping average    : $( printf "%s\n" "scale = 2; $pingav / $count" | bc ) ms" \
+    "Download average: $( printf "%s\n" "scale = 2; $dowav / $count" | bc ) Mbit/s" \
+    "Upload average  : $( printf "%s\n" "scale = 2; $upav / $count" | bc ) Mbit/s"

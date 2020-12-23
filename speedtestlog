@@ -17,10 +17,10 @@ log="$( date +%s );$( printf "%s" "$result" | grep "Testing from" | sed -e 's/Te
 
 echo
 printf "%s" "$log" | sed 's/;/\n/g'
-printf "\nLogging results...\n"
+printf "\n\nLogging results...\n"
 
 fl="$( getfl stl )"
 
-printf "%s" "$log" >> "$fl"
+printf "%s\n" "$log" >> "$fl"
 
 printf "%s\n" "Done."
