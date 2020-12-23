@@ -20,7 +20,9 @@ while true
 do
     printf "%s" "$fls" | while read -r i
     do
+        cmp -s "$i" "$last" && continue
         hsetroot -cover "$i"
+        last="$i"
         sleep "$4"
     done
 
