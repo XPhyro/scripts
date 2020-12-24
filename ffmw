@@ -1,0 +1,203 @@
+#!/usr/bin/env sh
+# ffmpeg wrapper for actions I commonly use.
+
+printhelp() {
+    printf "%s\n" "ffmw SUBCOMMAND [OPTIONs...] [FILEs...] -- [FILEs...]"
+    printf "%s\n" ""
+    printf "%s\n" "Valid subcommands: concat, help."
+    printf "%s\n" ""
+    printf "%s\n" "  concat [INFILEs...] [OUTFILE]"
+    printf "%s\n" "    -F COMMAND, --filter COMMAND"
+    printf "%s\n" "        Pass filenames through COMMAND before processing. If -s is not passed, the filenames will be passed in a file."
+    printf "%s\n" "    -f, --force"
+    printf "%s\n" "        Overwrite the output file if it exists."
+    printf "%s\n" "    -i, --interactive"
+    printf "%s\n" "        Prompt before overwriting the output file if it exists."
+    printf "%s\n" "    -m MOVEFILE, --move-to MOVEFILE"
+    printf "%s\n" "        Move OUTFILE to to MOVEFILE after concatenation is finished."
+    printf "%s\n" "    -n, --no-clobber"
+    printf "%s\n" "        Do nothing if the output file exists."
+    printf "%s\n" "    -r, --remove"
+    printf "%s\n" "        Remove INFILEs if concatenation succeeded."
+    printf "%s\n" "    -s, --stdin"
+    printf "%s\n" "        Instead of passing filenames in a file, pass them from stdin to the filter command. This has no effect if -F is not passed."
+    printf "%s\n" ""
+    printf "%s\n" "  help"
+    printf "%s\n" "    All options are ignored."
+    printf "%s\n" ""
+    printf "%s\n" "Options for all subcommands are:"
+    printf "%s\n" ""
+    printf "%s\n" "    -h, --help"
+    printf "%s\n" "        Print help message."
+    printf "%s\n" "    -q, --quiet"
+    printf "%s\n" "        Suppress stdout. Pass twice to also suppress stderr."
+}
+
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1"
+    printhelp
+}
+
+assertarg() {
+    [ "$3" ] || {
+        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
+        exit 1
+    }
+}
+
+assertcmd() {
+    [ "$1" ] && printf "concat\nhelp\n" | grep -Fxq "$1" && return
+    printf "Expected subcommand, exiting.\n\n"
+    printhelp
+    exit 1
+}
+
+parseargs() {
+    [ "$1" ] || assertcmd
+
+    if [ "${1%"${1#?}"}" = "-" ]
+    then
+        if ! [ "$1" = "-h" ] || [ "$1" = "--help" ]
+        then
+            assertcmd
+        fi
+    else
+        cmd="$1"
+        assertcmd "$cmd"
+        shift
+    fi
+
+
+    case "$cmd"
+    in
+        concat)
+            while [ "$1" ]
+            do
+                if [ "${1%"${1#?}"}" = "-" ]
+                then
+                    if ! [ "${1%"${1#??}"}" = "--" ]
+                    then
+                        sopt="$( printf "%s" "$1" | cut -c2- )"
+
+                        while [ "$sopt" ]
+                        do
+                            opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                            case "$opt"
+                            in
+                                F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
+                                f) overwrite="-y";;
+                                i) overwrite="";;
+                                m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
+                                n) overwrite="-n";;
+                                r) remove="1";;
+                                s) stdin="1";;
+                                *) printusage "-$opt"; exit;;
+                            esac
+
+                            sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                        done
+                    else
+                        opt="$( printf "%s" "$1" | cut -c3- )"
+                        
+                        case "$opt"
+                        in
+                            filter      ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
+                            force       ) overwrite="-y";;
+                            interactive ) overwrite="";;
+                            move-to     ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                            no-clobber  ) overwrite="-n";;
+                            remove      ) remove="1";;
+                            stdin       ) stdin="1";;
+                            ""          ) shift; break;;
+                            *           ) printusage "--$opt"; exit;;
+                        esac
+                    fi
+                else
+                    argv="$argv
+$1"
+                fi
+
+                shift
+            done
+
+            for i
+            do
+                argv="$argv
+$1"
+            done
+
+            argv="$( printf "%s" "$argv" | tail -n +2 )"
+
+            infls="$( printf "%s" "$argv" | head -n -1 )"
+            outfl="$( printf "%s" "$argv" | tail -n 1 )"
+
+            [ "$( printf "%s\n" "$infls" | wc -l )" -lt 2 ] && {
+                printf "At least 2 in files and exactly one out file are required, exiting.\n"
+                exit 1
+            }
+
+            printf "%s" "$infls" | grep -Fxq "$outfl" && {
+                printf "OUTFILE cannot be included in INFILES, exiting.\n"
+                exit 1
+            }
+
+            ;;
+        help)
+            ;;
+    esac
+}
+
+concat() {
+    lstfl="$( mktemp -p . )"
+    trap 'rm "$lstfl"' HUP INT QUIT TERM
+
+    printf "%s\n" "$infls" | while read -r i
+    do
+        [ -f "$i" ] || {
+            printf "No such file [$i], exiting.\n"
+            exit 1
+        }
+
+        printf "file '%s'\n" "$i" >> "$lstfl"
+    done
+
+    [ "$filter" ] && {
+        if [ "$stdin" ] 
+        then
+            $filter < "$lstfl" | sponge "$lstfl"
+        else
+            $filter "$lstfl" | sponge "$lstfl"
+        fi
+    }
+
+    ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" && [ "$remove" ] && printf "%s\n" "$infls" | while read -r i
+    do
+        rm "$i"
+    done
+
+    [ "$movefile" ] && {
+        if [ "$overwrite" = "-y" ]
+        then
+            mv -f "$outfl" "$movefile"
+        elif [ "$overwrite" = "-n" ]
+        then
+            mv -n "$outfl" "$movefile"
+        else
+            mv -i "$outfl" "$movefile"
+        fi
+    }
+
+    [ -f "$lstfl" ] && rm "$lstfl"
+}
+
+main() {
+    case "$cmd"
+    in
+        concat ) concat;;
+        help   ) printhelp;;
+    esac
+}
+
+parseargs "$@"
+main
