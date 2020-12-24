@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+# Get the directory of a file with a code.
+# TODO: Add ordering by usage to match faster.
+
+fls="$HOME/documents/sys-admin/files"
+
+if [ $# -eq 0 ]
+then
+    exit
+fi
+
+for i
+do
+    [ "$i" = "*" ] && {
+        awk '{print $2}' "$fls"
+        exit
+    }
+done
+
+for i
+do
+    dirname "$( expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$fls" | awk '{print $2}' )" )" )"
+done

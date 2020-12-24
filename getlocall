@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+# Get a directory or the directory of a file with a code.
+# TODO: Add ordering by usage to match faster.
+
+locfl="$HOME/documents/sys-admin/locations"
+flsfl="$HOME/documents/sys-admin/files"
+
+if [ $# -eq 0 ]
+then
+    exit
+fi
+
+for i
+do
+    [ "$i" = "*" ] && {
+        awk '{print $2}' "$loc"
+        exit
+    }
+done
+
+for i
+do
+    loc="$( printf "%s\n" "$( grep -E "^$i\s+.*" "$locfl" | awk '{print $2}' )" )"
+    [ "$loc" ] || {
+        loc="$( printf "%s\n" "$( grep -E "^$i\s+.*" "$flsfl" | awk '{print $2}' )" )"
+        [ "$loc" ] && loc="$( dirname "$loc" )/"
+    }
+    expandpath "$loc"
+done
