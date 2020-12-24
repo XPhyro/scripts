@@ -1,5 +1,3 @@
-# vim: filetype=sh
-
 printhelp() {
     printf "%s\n" "scriptname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]"
     printf "%s\n" "   -a ARGUMENT, --argument ARGUMENT"

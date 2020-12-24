@@ -1,5 +1,3 @@
-# vim: filetype=sh
-
 unset -f clr
 unset -f clrl
 
