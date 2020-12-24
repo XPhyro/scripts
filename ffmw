@@ -163,7 +163,7 @@ concat() {
             exit 1
         }
 
-        printf "file '%s'\n" "$i" >> "$lstfl"
+        printf "%s\n" "$i" >> "$lstfl"
     done
 
     [ "$filter" ] && {
@@ -175,12 +175,19 @@ concat() {
         fi
     }
 
-    ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" && [ "$remove" ] && printf "%s\n" "$infls" | while read -r i
+    [ "$movefirst" ] && movefile="$( head -n 1 "$lstfl" )"
+
+    awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
+
+    ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
+        printf "ffmpeg failed, exiting.\n"
+        exit 1
+    }
+
+    [ "$remove" ] && printf "%s\n" "$infls" | while read -r i
     do
         rm "$i"
     done
-
-    [ "$movefirst" ] && movefile="$( head -n 1 "$lstfl" )"
 
     [ "$movefile" ] && {
         if [ "$overwrite" = "-y" ]
