@@ -13,6 +13,8 @@ desc=""
 a=0
 maxa=1
 
+rm "$lckfl"
+
 notifwatch | while read -r i
 do
     arr="$( printf "%s" "$i" | grep "^\s*array \[$" )"
