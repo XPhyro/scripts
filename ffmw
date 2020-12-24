@@ -13,8 +13,10 @@ printhelp() {
     printf "%s\n" "        Overwrite the output file if it exists."
     printf "%s\n" "    -i, --interactive"
     printf "%s\n" "        Prompt before overwriting the output file if it exists."
+    printf "%s\n" "    -M, --move-to-first"
+    printf "%s\n" "        Move OUTFILE to the first INFILE after concatenation is finished. First INFILE is computed after option -F is processed. This overrides -m if present."
     printf "%s\n" "    -m MOVEFILE, --move-to MOVEFILE"
-    printf "%s\n" "        Move OUTFILE to to MOVEFILE after concatenation is finished."
+    printf "%s\n" "        Move OUTFILE to MOVEFILE after concatenation is finished. This is overridden by -M if present."
     printf "%s\n" "    -n, --no-clobber"
     printf "%s\n" "        Do nothing if the output file exists."
     printf "%s\n" "    -r, --remove"
@@ -88,6 +90,7 @@ parseargs() {
                                 F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
                                 f) overwrite="-y";;
                                 i) overwrite="";;
+                                M) movefirst="1";;
                                 m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
                                 n) overwrite="-n";;
                                 r) remove="1";;
@@ -102,15 +105,16 @@ parseargs() {
                         
                         case "$opt"
                         in
-                            filter      ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
-                            force       ) overwrite="-y";;
-                            interactive ) overwrite="";;
-                            move-to     ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
-                            no-clobber  ) overwrite="-n";;
-                            remove      ) remove="1";;
-                            stdin       ) stdin="1";;
-                            ""          ) shift; break;;
-                            *           ) printusage "--$opt"; exit;;
+                            filter        ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
+                            force         ) overwrite="-y";;
+                            interactive   ) overwrite="";;
+                            move-to       ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                            no-clobber    ) overwrite="-n";;
+                            move-to-first ) movefirst="1";;
+                            remove        ) remove="1";;
+                            stdin         ) stdin="1";;
+                            ""            ) shift; break;;
+                            *             ) printusage "--$opt"; exit;;
                         esac
                     fi
                 else
@@ -175,6 +179,8 @@ concat() {
     do
         rm "$i"
     done
+
+    [ "$movefirst" ] && movefile="$( head -n 1 "$lstfl" )"
 
     [ "$movefile" ] && {
         if [ "$overwrite" = "-y" ]
