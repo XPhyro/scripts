@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+lckfl="$( getfl notifloglck )"
+
+[ -f "$lckfl" ] && {
+    while [ -f "$lckfl" ]
+        sleep 0.1
+    do :; done
+
+    sleep 0.1
+}
+
+touch "$lckfl"

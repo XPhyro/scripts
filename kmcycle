@@ -11,6 +11,8 @@ in
     *) hasCycled="false";;
 esac
 
+lcknotiflog
+
 if "$hasCycled"
 then
     setxkb

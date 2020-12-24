@@ -2,9 +2,9 @@
 # List clipped text logged by clplog and copy a selected one using dmenu.
 # This script and clplog assume that the copied string does not contain the character .
 
-sel="$( perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' "$( getfl clp )" | tail -n +3 | head -n -1 | dmenu -snp -i -l 8 -sel 200000000 -p "yank" )"
+sel="$( perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' "$( getfl clplog )" | tail -n +3 | head -n -1 | dmenu -snp -i -l 8 -sel 200000000 -p "yank" )"
 
 [ "$sel" ] && {
-    touch "$( getfl clplck )"
+    lckclplog
     printf "%s" "$sel" | tr '' '\n' | xclip -sel clip
 }

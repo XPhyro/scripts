@@ -4,6 +4,7 @@
 # TODO: Add support for multi-line title/description of notifications.
 
 fl="$( getfl notiflog )"
+lckfl="$( getfl notifloglck )"
 beg="##beg##"
 end="##end##"
 
@@ -18,6 +19,11 @@ do
     [ -z "$arr" ] || {
         [ "$a" = "0" ] && {
             a="$maxa"
+
+            [ -f "$lckfl" ] && {
+                rm "$lckfl"
+                continue
+            }
 
             printf "%s\n%s\n%s\n%s\n%s\n" \
                 "$beg" \

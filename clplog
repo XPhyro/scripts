@@ -2,8 +2,8 @@
 # Log clipped text as a daemon (though it does not fork out). clplogynk be used to list and copy these with rofi.
 # This script and clplogynk assume that the copied string does not contain the character .
 
-fl="$( getfl clp )"
-lckfl="$( getfl clplck )"
+fl="$( getfl clplog )"
+lckfl="$( getfl clploglck )"
 lastclp="$( xclip -o -sel clip )"
 oldclp="$lastclp"
 
