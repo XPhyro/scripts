@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Prints the logs taken by uplog.
+# TODO: Add option to filter the file with head/tail.
 
 while read -r i
 do

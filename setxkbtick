@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
-while true
+while sleep 2h
 do
-    sleep 2h
-    setxkb -s
+    setxkb
 done
