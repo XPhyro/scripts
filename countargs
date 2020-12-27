@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-n=0
-for i
-do
-    : $(( n += 1 ))
-done
-
-printf "%s\n" "$n"
