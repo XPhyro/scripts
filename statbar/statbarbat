@@ -4,5 +4,5 @@
 # My battery is fully charged at 92.
 chargeThreshold=90
 
-cap="$( cat /sys/class/power_supply/BAT0/capacity )"
+cap="$( < /sys/class/power_supply/BAT0/capacity )"
 [ "$cap" -lt "$chargeThreshold" ] && printf "%s\n" "$cap 🔋"

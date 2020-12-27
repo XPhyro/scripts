@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Print content of file.
 
-for i
+getfl "$@" | while read -r i
 do
-    fl="$( getfl "$i" )"
-    [ -e "$fl" ] && [ ! -d "$fl" ] && cat "$fl"
+    cat "$i" 2> /dev/null
 done
