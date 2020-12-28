@@ -1,74 +1,143 @@
 #!/usr/bin/env sh
 # ffmpeg wrapper for actions I commonly use.
 
+subcommands="concat help"
+
 printhelp() {
-    printf "%s\n" "ffmw SUBCOMMAND [OPTIONs...] [FILEs...] -- [FILEs...]"
-    printf "%s\n" ""
-    printf "%s\n" "Valid subcommands: concat, help."
-    printf "%s\n" ""
-    printf "%s\n" "  concat [INFILEs...] [OUTFILE]"
-    printf "%s\n" "    -F COMMAND, --filter COMMAND"
-    printf "%s\n" "        Pass filenames through COMMAND before processing. If -s is not passed, the filenames will be passed in a file."
-    printf "%s\n" "    -f, --force"
-    printf "%s\n" "        Overwrite the output file if it exists."
-    printf "%s\n" "    -i, --interactive"
-    printf "%s\n" "        Prompt before overwriting the output file if it exists."
-    printf "%s\n" "    -M, --move-to-first"
-    printf "%s\n" "        Move OUTFILE to the first INFILE after concatenation is finished. First INFILE is computed after option -F is processed. This overrides -m if present."
-    printf "%s\n" "    -m MOVEFILE, --move-to MOVEFILE"
-    printf "%s\n" "        Move OUTFILE to MOVEFILE after concatenation is finished. This is overridden by -M if present."
-    printf "%s\n" "    -n, --no-clobber"
-    printf "%s\n" "        Do nothing if the output file exists."
-    printf "%s\n" "    -r, --remove"
-    printf "%s\n" "        Remove INFILEs if concatenation succeeded."
-    printf "%s\n" "    -s, --stdin"
-    printf "%s\n" "        Instead of passing filenames in a file, pass them from stdin to the filter command. This has no effect if -F is not passed."
-    printf "%s\n" ""
-    printf "%s\n" "  help"
-    printf "%s\n" "    All options are ignored."
-    printf "%s\n" ""
-    printf "%s\n" "Options for all subcommands are:"
-    printf "%s\n" ""
-    printf "%s\n" "    -h, --help"
-    printf "%s\n" "        Print help message."
-    printf "%s\n" "    -q, --quiet"
-    printf "%s\n" "        Suppress stdout. Pass twice to also suppress stderr."
+    case "$1"
+    in
+        concat)
+            cat << EOF
+  concat [INFILEs...] [OUTFILE]
+    -F COMMAND, --filter COMMAND
+        Pass filenames through COMMAND before processing. If -s is not passed, the filenames will be passed in a file.
+    -f, --force
+        Overwrite the output file if it exists.
+    -h, --help
+        Print help message.
+    -i, --interactive
+        Prompt before overwriting the output file if it exists.
+    -M, --move-to-first
+        Move OUTFILE to the first INFILE after concatenation is finished. First INFILE is computed after option -F is processed. This overrides -m if present.
+    -m MOVEFILE, --move-to MOVEFILE
+        Move OUTFILE to MOVEFILE after concatenation is finished. This is overridden by -M if present.
+    -n, --no-clobber
+        Do nothing if the output file exists.
+    -r, --remove
+        Remove INFILEs if concatenation succeeded.
+    -s, --stdin
+        Instead of passing filenames in a file, pass them from stdin to the filter command. This has no effect if -F is not passed.
+
+EOF
+            ;;
+        help)
+            cat << EOF
+  help
+    All options are ignored.
+EOF
+            ;;
+        *)
+            cat << EOF
+ffmw SUBCOMMAND [OPTIONs...] [FILEs...] -- [FILEs...]
+
+Global options:
+    -h, --help
+        Print help message.
+    -l, --loud
+        Reverse a single -q option.
+    -q, --quiet
+        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed.
+
+EOF
+            printf "Valid subcommands: %s\n\n" "$subcommands"
+            for i in $subcommands
+            do
+                printhelp "$i"
+            done
+            ;;
+    esac
 }
 
 printusage() {
     printf "Option [%s] is not valid.\n\n" "$1"
-    printhelp
+    printhelp "$2"
+}
+
+printferr() {
+    >&2 printf "$@"
 }
 
 assertarg() {
     [ "$3" ] || {
-        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
+        printferr "Expected %s argument to %s, exiting.\n" "$2" "$1"
         exit 1
     }
 }
 
 assertcmd() {
-    [ "$1" ] && printf "concat\nhelp\n" | grep -Fxq "$1" && return
-    printf "Expected subcommand, exiting.\n\n"
-    printhelp
-    exit 1
+    if [ "$1" ]
+    then
+        iscmdvalid="0"
+        for i in $subcommands
+        do
+            [ "$i" = "$1" ] && iscmdvalid="1"
+        done
+        [ "$iscmdvalid" = "1" ] || {
+            printferr "Subcommand [%s] is not valid, exiting.\n" "$1"
+            exit 1
+        }
+    else
+        printferr "Expected subcommand, exiting.\n"
+        exit 1
+    fi
 }
 
 parseargs() {
     [ "$1" ] || assertcmd
 
-    if [ "${1%"${1#?}"}" = "-" ]
-    then
-        if ! [ "$1" = "-h" ] || [ "$1" = "--help" ]
+    while [ "$1" ]
+    do
+        if [ "${1%"${1#?}"}" = "-" ]
         then
-            assertcmd
-        fi
-    else
-        cmd="$1"
-        assertcmd "$cmd"
-        shift
-    fi
+            if ! [ "${1%"${1#??}"}" = "--" ]
+            then
+                sopt="$( printf "%s" "$1" | cut -c2- )"
 
+                while [ "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        h) printhelp; exit;;
+                        l) loud="${loud}1";;
+                        q) quiet="${quiet}1";;
+                        *) printusage "-$opt"; exit;;
+                    esac
+
+                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                done
+            else
+                opt="$( printf "%s" "$1" | cut -c3- )"
+                
+                case "$opt"
+                in
+                    help  ) printhelp; exit;;
+                    loud  ) loud="${loud}1";;
+                    quiet ) quiet="${quiet}1";;
+                    *     ) printusage "--$opt"; exit;;
+                esac
+            fi
+        else
+            break
+        fi
+
+        shift
+    done
+
+    cmd="$1"
+    assertcmd "$cmd"
+    shift
 
     case "$cmd"
     in
@@ -89,13 +158,14 @@ parseargs() {
                             in
                                 F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
                                 f) overwrite="-y";;
+                                h) printhelp "concat"; exit;;
                                 i) overwrite="";;
                                 M) movefirst="1";;
                                 m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
                                 n) overwrite="-n";;
                                 r) remove="1";;
                                 s) stdin="1";;
-                                *) printusage "-$opt"; exit;;
+                                *) printusage "-$opt" "concat"; exit;;
                             esac
 
                             sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -107,6 +177,7 @@ parseargs() {
                         in
                             filter        ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
                             force         ) overwrite="-y";;
+                            help          ) printhelp "concat"; exit;;
                             interactive   ) overwrite="";;
                             move-to       ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
                             no-clobber    ) overwrite="-n";;
@@ -114,7 +185,7 @@ parseargs() {
                             remove        ) remove="1";;
                             stdin         ) stdin="1";;
                             ""            ) shift; break;;
-                            *             ) printusage "--$opt"; exit;;
+                            *             ) printusage "--$opt" "concat"; exit;;
                         esac
                     fi
                 else
@@ -137,17 +208,28 @@ $1"
             outfl="$( printf "%s" "$argv" | tail -n 1 )"
 
             [ "$( printf "%s\n" "$infls" | wc -l )" -lt 2 ] && {
-                printf "At least 2 in files and exactly one out file are required, exiting.\n"
+                printferr "At least 2 in files and exactly one out file are required, exiting.\n"
                 exit 1
             }
 
             printf "%s" "$infls" | grep -Fxq "$outfl" && {
-                printf "OUTFILE cannot be included in INFILES, exiting.\n"
+                printferr "OUTFILE cannot be included in INFILES, exiting.\n"
                 exit 1
             }
 
             ;;
         help)
+            for i
+            do
+                if [ "$i" = "-h" ] || [ "$i" = "--help" ]
+                then
+                    printhelp "help"
+                else
+                    printusage "$i" "help"
+                    break
+                fi
+            done
+            exit
             ;;
     esac
 }
@@ -159,7 +241,7 @@ concat() {
     printf "%s\n" "$infls" | while read -r i
     do
         [ -f "$i" ] || {
-            printf "No such file [$i], exiting.\n"
+            printferr "No such file [$i], exiting.\n"
             exit 1
         }
 
@@ -180,7 +262,8 @@ concat() {
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
     ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
-        printf "ffmpeg failed, exiting.\n"
+        printferr "ffmpeg failed, exiting.\n"
+        [ -f "$lstfl" ] && rm "$lstfl"
         exit 1
     }
 
@@ -213,4 +296,15 @@ main() {
 }
 
 parseargs "$@"
-main
+
+qldiff=$(( "$( printf "%s" "$quiet" | wc -c )" - "$( printf "%s" "$loud" | wc -c )" ))
+
+if [ "$qldiff" = 1 ]
+then
+    main > /dev/null
+elif [ "$qldiff" -gt 1 ]
+then
+    main > /dev/null 2>&1
+else
+    main
+fi
