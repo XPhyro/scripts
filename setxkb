@@ -10,7 +10,14 @@ xset r rate 250 40
 
 xmodmap -e "keycode 108 = Super_R"
 
-case "$( xkb-switch )"
+if [ "$1" ]
+then
+    km="$1"
+else
+    km="$( xkb-switch )"
+fi
+
+case "$km"
 in
     gb) xmodmap -e "keycode 135 = Menu";;
     tr) xmodmap -e "keycode 135 = ISO_Level3_Shift";;

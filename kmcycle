@@ -1,13 +1,19 @@
 #!/usr/bin/env sh
 # Toggle X keymap.
 
-currentKeymap="$( xkb-switch )"
+setkm() {
+    setxkbmap "$1"
+    setxkb "$1"
+    km="$1"
+}
+
+km="$( xkb-switch )"
 hasCycled="true"
 
-case "$currentKeymap"
+case "$km"
 in
-    gb) setxkbmap tr;;
-    tr) setxkbmap gb;;
+    gb) setkm tr;;
+    tr) setkm gb;;
     *) hasCycled="false";;
 esac
 
@@ -15,9 +21,8 @@ lcknotiflog
 
 if "$hasCycled"
 then
-    setxkb
-    notify-send -t 500 "⌨ $( xkb-switch )" "Changed current keymap"
+    notify-send -t 500 "⌨ $km" "Changed current keymap"
     statbarset
 else
-    notify-send -t 1000 "❌ $currentKeymap" "Current keymap unknown"
+    notify-send -t 1000 "❌ $km" "Current keymap unknown"
 fi
