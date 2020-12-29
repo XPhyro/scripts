@@ -8,5 +8,5 @@ xset -r 9
 
 xset r rate 250 40
 
-# xmodmap -e "keycode 108 = ISO_Level3_Shift"
 xmodmap -e "keycode 108 = Super_R"
+xmodmap -e "keycode 135 = ISO_Level3_Shift"
