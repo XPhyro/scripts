@@ -7,7 +7,12 @@
 # TODO: Make default xelatex or lualatex.
 
 clean() {
-    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.pdf" "$fl.toc" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py"
+    cleanaux
+    rm "$fl.pdf" > /dev/null 2>&1
+}
+
+cleanaux() {
+    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.toc" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py" > /dev/null 2>&1
 }
 
 compile() {
@@ -44,6 +49,7 @@ for i
 do
     if [ "$i" = "-o" ] || [ "$i" = "--once" ]
     then
+        cleanaux
         exit
     fi
 done
