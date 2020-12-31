@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # ffmpeg wrapper for actions I commonly use.
+# TODO: Add cut and compress subcommands.
 
 subcommands="concat help"
 
