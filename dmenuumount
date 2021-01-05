@@ -1,40 +1,43 @@
 #!/bin/sh
 # A dmenu prompt to unmount drives. Provides you with mounted partitions, select one to unmount. Drives mounted at /, /boot and /home will not be options to unmount.
-# Taken from Luke Smith's voidrice.
+# Adapted from Luke Smith's voidrice.
 
 unmountusb() {
-	[ -z "$drives" ] && exit
-	chosen=$(printf "%s" "$drives" | dmenu -i -p "Unmount which drive?" | awk '{print $1}')
-	[ -z "$chosen" ] && exit
+	[ "$drives" ] || exit 1
+
+	chosen="$( printf "%s" "$drives" | dmenu -i -p "Unmount which drive?" | awk '{print $1}' )"
+	[ "$chosen" ] || exit 1
+
 	sudo -A umount "$chosen" && notify-send "💻 Drive unmounting" "$chosen unmounted."
-	}
+}
 
-unmountandroid() { \
-	chosen=$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?")
-	[ -z "$chosen" ] && exit
+unmountandroid() {
+	chosen="$( awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?" )"
+	[ "$chosen" ] || exit 1
+
 	sudo -A umount -l "$chosen" && notify-send "🤖 Android unmounting" "$chosen unmounted."
-	}
+}
 
-asktype() { \
+asktype() {
 	case "$(printf "Drive\\nAndroid" | dmenu -i -p "Unmount a drive or Android device?")" in
-		USB) unmountusb ;;
-		Android) unmountandroid ;;
+		USB     ) unmountusb ;;
+		Android ) unmountandroid ;;
+        *       ) exit 0;;
 	esac
-	}
+}
 
-drives=$(lsblk -nrpo "name,type,size,mountpoint" | awk '$2=="part"&&$4!~/\/boot|\/home$|SWAP/&&length($4)>1{printf "%s (%s)\n",$4,$3}')
+drives="$( lsblk -nrpo "name,type,size,mountpoint" | awk '$2=="part"&&$4!~/\/boot|\/home$|SWAP/&&length($4)>1{printf "%s (%s)\n",$4,$3}' )"
 
-if ! grep simple-mtpfs /etc/mtab; then
-	[ -z "$drives" ] && printf "%s\n" "No drives to unmount." &&  exit
-	printf "%s\n" "Unmountable drive detected."
+if ! grep simple-mtpfs /etc/mtab
+then
+	[ "$drives" ] || exit 0
+
 	unmountusb
 else
-	if [ -z "$drives" ]
+	if [ "$drives" ]
 	then
-		printf "%s\n" "Unmountable Android device detected."
-	       	unmountandroid
+        asktype
 	else
-		printf "%s\n" "Unmountable drive(s) and Android device(s) detected."
-		asktype
+        unmountandroid
 	fi
 fi
