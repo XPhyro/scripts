@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+
+sig="$( printf "STOP\nCONT\n" | dmenu -i -p "Suspend process:" )"
+
+[ "$sig" != "STOP" ] && [ "$sig" != "CONT" ] && exit 1
+
+pss="$( ps auxww --sort=-pcpu | awk '!($1=$3=$4=$5=$6=$7=$9=$10="")' | sed 's/\s\+/ /g' | tail -n +2 | sed 's/^\s\+//' )"
+
+case "$sig"
+in
+    STOP) sigstat="S";;
+    CONT) sigstat="T";;
+esac
+
+pss="$( printf "%s\n" "$pss" | awk '{if (substr($2, 0, 1) == "'"$sigstat"'") { $2=""; print }}' | sed 's/\s\+/ /g' )"
+
+[ "$pss" ] || exit 0
+
+selps="$( printf "%s\n" "$pss" | sed 's/^[^ ]\+\s\+//' | sort -u | dmenu -i -l 20 -p "Process to $sig:" )"
+
+[ "$selps" ] || exit 0
+
+escapedselps="$( printf "%s\n" "$selps" | sed 's/[[^.\$*]/\\&/g' )"
+pss="$( printf "%s\n" "$pss" | grep "$escapedselps$" )"
+
+[ "$pss" ] || exit 0
+
+if [ "$( printf "%s\n" "$pss" | wc -l )" = "1" ]
+then
+    selps="$pss"
+else
+    selps="$( printf "%s\n" "$pss" | dmenu -i -l 20 -p "Entry to $sig:" )"
+fi
+
+[ "$selps" ] && printf "%s\n" "$selps" | awk '{print $1}' | xargs -r -I {} kill "-$sig" {}
