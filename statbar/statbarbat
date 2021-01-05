@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 # Query battery status.
 
-# My battery is fully charged at 92.
-chargeThreshold=90
+bat="/sys/class/power_supply/BAT0"
+cap="$( < "$bat/capacity" )"
 
-cap="$( < /sys/class/power_supply/BAT0/capacity )"
-[ "$cap" -lt "$chargeThreshold" ] && printf "%s\n" "$cap 🔋"
+if [ "$cap" != "100" ] && [ "$( < "$bat/current_now" )" != "0" ]
+then
+    printf "%s\n" "$cap 🔋"
+fi
