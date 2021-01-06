@@ -3,9 +3,11 @@
 lckfl="$( getfl clploglck )"
 
 [ -f "$lckfl" ] && {
-    while [ -f "$lckfl" ]
+    while true
+    do
         sleep 0.1
-    do :; done
+        [ -f "$lckfl" ] || break
+    done
 
     sleep 0.1
 }
