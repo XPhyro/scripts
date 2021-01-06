@@ -4,7 +4,7 @@
 base="$( getloc igg )"
 log="igscrpp.log"
 
-cd "$base" || exit
+cd "$base" || exit 0
 
 touch "$log"
 

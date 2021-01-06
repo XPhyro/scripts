@@ -6,7 +6,7 @@ case "$1"
 in
     one) name="onedrive";;
     open) name="opendrive";;
-    *) printf "%s\n" "No drive code given, exiting."; exit;;
+    *) printf "%s\n" "No drive code given, exiting."; exit 0;;
 esac
 
 [ -d /mnt/"$name" ] || sudo mkdir /mnt/"$name"

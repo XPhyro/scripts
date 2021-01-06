@@ -3,7 +3,7 @@
 
 cleanexit() {
     rm "$lckfl"
-    exit
+    exit 0
 }
 
 log() {

@@ -6,14 +6,14 @@ loc="$HOME/documents/sys-admin/locations"
 
 if [ $# -eq 0 ]
 then
-    exit
+    exit 0
 fi
 
 for i
 do
     [ "$i" = "*" ] && {
         awk '{print $2}' "$loc"
-        exit
+        exit 0
     }
 done
 

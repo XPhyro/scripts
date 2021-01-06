@@ -7,7 +7,7 @@ xclip -h 2>/dev/null || exit 1
 
 chosen=$(cut -d ';' -f1 "${XDG_DATA_HOME:-$HOME}/code/rsrc/unicode/unicode-characters" | dmenu -i -l 20 | sed "s/ .*//")
 
-[ "$chosen" != "" ] || exit
+[ "$chosen" != "" ] || exit 0
 
 # If you run this command with an argument, it will automatically insert the character.
 if [ -n "$1" ]; then

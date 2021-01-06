@@ -13,7 +13,7 @@ done
 # find a fix and use sh
 [ "$cdevs" = "" ] && {
     printf "%s\n" "No connected device, exiting."
-    exit
+    exit 0
 }
 
 if [ "$( printf "%s\n" "$cdevs" | wc -l )" = 1 ]
@@ -21,7 +21,7 @@ then
     ddev="$cdevs"
 else
     ddev="$( printf "%s" "$cdevs" | dmenu -i -p "Device to disconnect:" )"
-    [ "$ddev" = "" ] && exit
+    [ "$ddev" = "" ] && exit 0
 fi
 
 ddevname="$( bluetoothctl info "$i" | grep -m 1 Alias: | sed 's/.*Alias:\s*//' )"

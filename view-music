@@ -4,14 +4,14 @@
 dir="$( getloc mu )"
 cd "$dir" || {
     notify-send "view-music" "Could not cd to $dir."
-    exit
+    exit 0
 }
 
 fls="$( find . -mindepth 2 -iname "*.pdf" -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||' )"
 
 fl="$( printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:" )"
 
-[ "$fl" = "" ] && exit
+[ "$fl" = "" ] && exit 0
 
 cmd="xdg-open"
 
@@ -29,7 +29,7 @@ done
 
 if [ -z "$cmd" ] || [ -z "$fl" ] 
 then
-    exit
+    exit 0
 fi
 
 notify-send -t 2000 "view-music" "Opening $( basename "$fl" ) with $cmd."

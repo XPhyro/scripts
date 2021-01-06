@@ -110,10 +110,10 @@ parseargs() {
 
                     case "$opt"
                     in
-                        h) printhelp; exit;;
+                        h) printhelp; exit 0;;
                         l) loud="${loud}1";;
                         q) quiet="${quiet}1";;
-                        *) printusage "-$opt"; exit;;
+                        *) printusage "-$opt"; exit 0;;
                     esac
 
                     sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -123,10 +123,10 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    help  ) printhelp; exit;;
+                    help  ) printhelp; exit 0;;
                     loud  ) loud="${loud}1";;
                     quiet ) quiet="${quiet}1";;
-                    *     ) printusage "--$opt"; exit;;
+                    *     ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else
@@ -159,14 +159,14 @@ parseargs() {
                             in
                                 F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
                                 f) overwrite="-y";;
-                                h) printhelp "concat"; exit;;
+                                h) printhelp "concat"; exit 0;;
                                 i) overwrite="";;
                                 M) movefirst="1";;
                                 m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
                                 n) overwrite="-n";;
                                 r) remove="1";;
                                 s) stdin="1";;
-                                *) printusage "-$opt" "concat"; exit;;
+                                *) printusage "-$opt" "concat"; exit 0;;
                             esac
 
                             sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -178,7 +178,7 @@ parseargs() {
                         in
                             filter        ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
                             force         ) overwrite="-y";;
-                            help          ) printhelp "concat"; exit;;
+                            help          ) printhelp "concat"; exit 0;;
                             interactive   ) overwrite="";;
                             move-to       ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
                             no-clobber    ) overwrite="-n";;
@@ -186,7 +186,7 @@ parseargs() {
                             remove        ) remove="1";;
                             stdin         ) stdin="1";;
                             ""            ) shift; break;;
-                            *             ) printusage "--$opt" "concat"; exit;;
+                            *             ) printusage "--$opt" "concat"; exit 0;;
                         esac
                     fi
                 else
@@ -230,7 +230,7 @@ $1"
                     break
                 fi
             done
-            exit
+            exit 0
             ;;
     esac
 }

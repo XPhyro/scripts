@@ -18,7 +18,7 @@ in
     *) exit 1
 esac
 
-[ "$lst" ] || exit
+[ "$lst" ] || exit 0
 
 name="$( printf "%s" "$lst" | awk -F '' '{print $2}' | dmenu -i -l 20 -p "Select playlist:" )"
 printf "%s" "$lst" | grep "$name$" | head -n 1 | awk -F '' '{print $1}'

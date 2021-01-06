@@ -13,12 +13,12 @@ newfile="$newfile"_"$( date +"%Y-%m-%d_%H-%M-%S" )"
 
 file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
 
-[ "$file" ] || exit
+[ "$file" ] || exit 0
 
 if ! [ "$file" = "$newfile" ] && ! printf "%s" "$files" | grep -Fxq "$file"
 then
     printf "%s" "$file" > "$dir/${newfile}_$( printf "%s\n" "" | dmenu -p "Title for \"$dir/$newfile\":" )"
-    exit
+    exit 0
 fi
 
 [ "$file" = "$newfile" ] && isnew=1

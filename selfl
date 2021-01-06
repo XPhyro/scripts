@@ -45,7 +45,7 @@ logerr() {
 cdsafe() {
     cd -- "$1" 2> /dev/null || {
         logerr "Could not cd to $1, exiting."
-        exit
+        exit 0
     }
 }
 
@@ -79,12 +79,12 @@ parseargs() {
                         G) regextype="-G";;
                         g) git="1";;
                         H) printinitpwd="1";;
-                        h) printhelp; exit;;
+                        h) printhelp; exit 0;;
                         i) ignorecase="-i";;
                         P) regextype="-P";;
                         s) showhidden="1";;
                         v) invertmatch="-v";;
-                        *) printusage "-$opt"; exit;;
+                        *) printusage "-$opt"; exit 0;;
                     esac
 
                     sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -102,13 +102,13 @@ parseargs() {
                     basic-regex    ) regextype="-G";;
                     git            ) git="1";;
                     with-directory ) printinitpwd="1";;
-                    help           ) printhelp; exit;;
+                    help           ) printhelp; exit 0;;
                     ignore-case    ) ignorecase="-i";;
                     perl-regex     ) regextype="-P";;
                     show-hidden    ) showhidden="1";;
                     invert-match   ) invertmatch="-v";;
                     ""             ) shift; break;;
-                    *              ) printusage "--$opt"; exit;;
+                    *              ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else

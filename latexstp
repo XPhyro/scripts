@@ -39,7 +39,7 @@ fi
 
 [ -f "$fl.tex" ] || {
     printf "%s\n" "No such file exists."
-    exit
+    exit 0
 }
 
 clean
@@ -50,7 +50,7 @@ do
     if [ "$i" = "-o" ] || [ "$i" = "--once" ]
     then
         cleanaux
-        exit
+        exit 0
     fi
 done
 
