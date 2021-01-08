@@ -8,52 +8,50 @@ printhelp() {
     case "$1"
     in
         concat)
-            cat << EOF
-  concat [INFILEs...] [OUTFILE]
-    -F COMMAND, --filter COMMAND
-        Pass filenames through COMMAND before processing. If -s is not passed, the filenames will be passed in a file.
-    -f, --force
-        Overwrite the output file if it exists.
-    -h, --help
-        Print help message.
-    -i, --interactive
-        Prompt before overwriting the output file if it exists.
-    -M, --move-to-first
-        Move OUTFILE to the first INFILE after concatenation is finished. First INFILE is computed after option -F is processed. This overrides -m if present.
-    -m MOVEFILE, --move-to MOVEFILE
-        Move OUTFILE to MOVEFILE after concatenation is finished. This is overridden by -M if present.
-    -n, --no-clobber
-        Do nothing if the output file exists.
-    -r, --remove
-        Remove INFILEs if concatenation succeeded.
-    -s, --stdin
-        Instead of passing filenames in a file, pass them from stdin to the filter command. This has no effect if -F is not passed.
-
-EOF
+            printf "%s\n" \
+                "  concat [INFILEs...] [OUTFILE]" \
+                "    -F COMMAND, --filter COMMAND" \
+                "        Pass filenames through COMMAND before processing. If -s is not passed, the filenames will be passed in a file." \
+                "    -f, --force" \
+                "        Overwrite the output file if it exists." \
+                "    -h, --help" \
+                "        Print help message." \
+                "    -i, --interactive" \
+                "        Prompt before overwriting the output file if it exists." \
+                "    -M, --move-to-first" \
+                "        Move OUTFILE to the first INFILE after concatenation is finished. First INFILE is computed after option -F is processed. This overrides -m if present." \
+                "    -m MOVEFILE, --move-to MOVEFILE" \
+                "        Move OUTFILE to MOVEFILE after concatenation is finished. This is overridden by -M if present." \
+                "    -n, --no-clobber" \
+                "        Do nothing if the output file exists." \
+                "    -r, --remove" \
+                "        Remove INFILEs if concatenation succeeded." \
+                "    -s, --stdin" \
+                "        Instead of passing filenames in a file, pass them from stdin to the filter command. This has no effect if -F is not passed."
             ;;
         help)
-            cat << EOF
-  help
-    All options are ignored.
-EOF
+            printf "%s\n" \
+                "  help" \
+                "    All options are ignored."
             ;;
         *)
-            cat << EOF
-ffmw SUBCOMMAND [OPTIONs...] [FILEs...] -- [FILEs...]
+            printf "%s\n" \
+                "ffmw SUBCOMMAND [OPTIONs...] [FILEs...] -- [FILEs...]" \
+                "" \
+                "Global options:" \
+                "    -h, --help" \
+                "        Print help message." \
+                "    -l, --loud" \
+                "        Reverse a single -q option." \
+                "    -q, --quiet" \
+                "        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed." \
 
-Global options:
-    -h, --help
-        Print help message.
-    -l, --loud
-        Reverse a single -q option.
-    -q, --quiet
-        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed.
-
-EOF
-            printf "Valid subcommands: %s\n\n" "$subcommands"
+            printf "\nValid subcommands: %s\n\n" "$subcommands"
+            lastsubcmd="$( printf "%s" "$subcommands" | sed 's/.*\s//' )"
             for i in $subcommands
             do
                 printhelp "$i"
+                [ "$i" = "$lastsubcmd" ] || printf "\n"
             done
             ;;
     esac

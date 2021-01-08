@@ -4,33 +4,34 @@
 # TODO: Add support for multiple -e.
 
 printhelp() {
-    printf "%s\n" "selfl [OPTION...] [DIRECTORY...] -- [DIRECTORY...]"
-    printf "%s\n" "   -a, --absolute"
-    printf "%s\n" "       Print absolute path instead of relative."
-    printf "%s\n" "   -d, --directory"
-    printf "%s\n" "       Only show directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory."
-    printf "%s\n" "   -E, --extended-regex"
-    printf "%s\n" "       Interpret PATTERNs as extended regular expressions. Overwrites -FGP."
-    printf "%s\n" "   -e PATTERN, --regex PATTERN"
-    printf "%s\n" "       Only show entries that are matched by the given regular expression. Only the last given pattern will be used."
-    printf "%s\n" "   -F, --fixed-strings"
-    printf "%s\n" "       Interpret PATTERNs as fixed strings. Overwrites -EGP."
-    printf "%s\n" "   -G, --basic-regex"
-    printf "%s\n" "       Interpret PATTERNs as basic regular expressions. This is the default interpretation. Overwrites -EFP."
-    printf "%s\n" "   -g, --git"
-    printf "%s\n" "       Use git ls-files to show files. Does nothing if -d is given."
-    printf "%s\n" "   -H, --with-directory"
-    printf "%s\n" "       Print initial directory with the selections."
-    printf "%s\n" "   -h, --help"
-    printf "%s\n" "       Print help message."
-    printf "%s\n" "   -i, --ignore-case"
-    printf "%s\n" "       Ignore case distinctions in PATTERNs and entries."
-    printf "%s\n" "   -P, --perl-regex"
-    printf "%s\n" "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG."
-    printf "%s\n" "   -s, --show-hidden"
-    printf "%s\n" "       Show hidden directories/files."
-    printf "%s\n" "   -v, --invert-match"
-    printf "%s\n" "       Only show entries that are not matched by PATTERNs."
+    printf "%s\n" \
+        "selfl [OPTION...] [DIRECTORY...] -- [DIRECTORY...]" \
+        "   -a, --absolute" \
+        "       Print absolute path instead of relative." \
+        "   -d, --directory" \
+        "       Only show directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory." \
+        "   -E, --extended-regex" \
+        "       Interpret PATTERNs as extended regular expressions. Overwrites -FGP." \
+        "   -e PATTERN, --regex PATTERN" \
+        "       Only show entries that are matched by the given regular expression. Only the last given pattern will be used." \
+        "   -F, --fixed-strings" \
+        "       Interpret PATTERNs as fixed strings. Overwrites -EGP." \
+        "   -G, --basic-regex" \
+        "       Interpret PATTERNs as basic regular expressions. This is the default interpretation. Overwrites -EFP." \
+        "   -g, --git" \
+        "       Use git ls-files to show files. Does nothing if -d is given." \
+        "   -H, --with-directory" \
+        "       Print initial directory with the selections." \
+        "   -h, --help" \
+        "       Print help message." \
+        "   -i, --ignore-case" \
+        "       Ignore case distinctions in PATTERNs and entries." \
+        "   -P, --perl-regex" \
+        "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG." \
+        "   -s, --show-hidden" \
+        "       Show hidden directories/files." \
+        "   -v, --invert-match" \
+        "       Only show entries that are not matched by PATTERNs."
 }
 
 printusage() {
