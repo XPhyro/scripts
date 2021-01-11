@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+[ "$UID" != 0 ] && {
+    printf "This script needs to be executed as root.\n"
+    exit 1
+}
+
 devs="$( lsblk -rpo "name,label,mountpoint" )"
 
 while read -r i
@@ -13,6 +18,8 @@ do
         devlabel="$( printf "$( printf "%s" "$j" | awk '{print $2}' )" )"
         devmp="$( printf "%s" "$j" | awk '{print $3}' )"
 
-        [ "$devlabel" = "$label" ] && [ -z "$devmp" ] && sudo mount "$devname" "$mp" > /dev/null
+        [ "$devlabel" = "$label" ] && [ -z "$devmp" ] && mount "$devname" "$mp" > /dev/null
     done
 done < "$( getfl mounts )"
+
+exit 0 # to not make systemd freak out
