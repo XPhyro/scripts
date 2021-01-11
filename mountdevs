@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+devs="$( lsblk -rpo "name,label,mountpoint" )"
+
+while read -r i
+do
+    label="$( printf "%s" "$i" | awk -F '' '{print $1}' )"
+    mp="$( printf "%s" "$i" | awk -F '' '{print $2}' )"
+
+    printf "%s" "$devs" | while read -r j
+    do
+        devname="$( printf "%s" "$j" | awk '{print $1}' )"
+        devlabel="$( printf "$( printf "%s" "$j" | awk '{print $2}' )" )"
+        devmp="$( printf "%s" "$j" | awk '{print $3}' )"
+
+        [ "$devlabel" = "$label" ] && [ -z "$devmp" ] && sudo mount "$devname" "$mp" > /dev/null
+    done
+done < "$( getfl mounts )"
