@@ -213,17 +213,17 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i )"
+                sel="$( printf "%s" "$fls"  | dmenu -i -p "$PWD" )"
             elif [ "$git" ]
             then
                 if contains "$( realpath "$PWD/.." )" "$( git rev-parse --show-toplevel )"
                 then
-                    sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+                    sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$PWD" )"
                 else
-                    sel="$( printf "%s" "$fls"  | dmenu -i )"
+                    sel="$( printf "%s" "$fls"  | dmenu -i -p "$PWD" )"
                 fi
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$PWD" )"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || {
@@ -257,9 +257,9 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i )"
+                sel="$( printf "%s" "$fls"  | dmenu -i -p "$PWD" )"
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i )"
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$PWD" )"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
