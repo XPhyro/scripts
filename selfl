@@ -26,6 +26,8 @@ printhelp() {
         "       Print help message." \
         "   -i, --ignore-case" \
         "       Ignore case distinctions in PATTERNs and entries." \
+        "   -l COUNT, --line-count COUNT" \
+        "       Count of lines that dmenu will show." \
         "   -P, --perl-regex" \
         "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG." \
         "   -p TEXT, --prompt TEXT" \
@@ -64,6 +66,7 @@ assertarg() {
 }
 
 setdefargs(){
+    linecount="0"
     root="/"
 }
 
@@ -92,6 +95,7 @@ parseargs() {
                         H) printinitpwd="1";;
                         h) printhelp; exit 0;;
                         i) ignorecase="-i";;
+                        l) shift; assertarg "-l" "COUNT" "$1"; linecount="$1";;
                         P) regextype="-P";;
                         p) shift; prompt="$1"; customprompt="1";;
                         R) rootasinit="1";;
@@ -111,17 +115,18 @@ parseargs() {
                     absolute       ) absolute="1";;
                     directory      ) directory="1";;
                     extended-regex ) regextype="-E";;
-                    regex          ) shift; assertarg "-e" "REGEX" "$1"; regex="$1";;
+                    regex          ) shift; assertarg "--regex" "REGEX" "$1"; regex="$1";;
                     fixed-strings  ) regextype="-F";;
                     basic-regex    ) regextype="-G";;
                     git            ) git="1";;
                     with-directory ) printinitpwd="1";;
                     help           ) printhelp; exit 0;;
                     ignore-case    ) ignorecase="-i";;
+                    line-count     ) shift; assertarg "--line-count" "COUNT" "$1"; linecount="$1";;
                     perl-regex     ) regextype="-P";;
                     prompt         ) shift; prompt="$1"; customprompt="1";;
                     root-as-init   ) rootasinit="1";;
-                    root           ) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
+                    root           ) shift; assertarg "--root" "ROOT" "$1"; root="$1"; rootasinit="0";;
                     show-hidden    ) showhidden="1";;
                     invert-match   ) invertmatch="-v";;
                     ""             ) shift; break;;
@@ -226,17 +231,17 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
+                sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
             elif [ "$git" ]
             then
                 if contains "$( realpath "$PWD/.." )" "$( git rev-parse --show-toplevel )"
                 then
-                    sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
+                    sel="$( printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
                 else
-                    sel="$( printf "%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
+                    sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
                 fi
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || {
@@ -270,9 +275,9 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
+                sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
