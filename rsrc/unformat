@@ -1,3 +1,5 @@
+# vim: ft=sh
+
 unset -f clr
 unset -f clrl
 
