@@ -28,6 +28,10 @@ printhelp() {
         "       Ignore case distinctions in PATTERNs and entries." \
         "   -P, --perl-regex" \
         "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG." \
+        "   -R, --root-as-init" \
+        "       Define the root as the initial directory." \
+        "   -r ROOT, --root ROOT" \
+        "       Define a custom root instead of /." \
         "   -s, --show-hidden" \
         "       Show hidden directories/files." \
         "   -v, --invert-match" \
@@ -57,6 +61,10 @@ assertarg() {
     }
 }
 
+setdefargs(){
+    root="/"
+}
+
 parseargs() {
     while [ "$1" ]
     do
@@ -83,6 +91,8 @@ parseargs() {
                         h) printhelp; exit 0;;
                         i) ignorecase="-i";;
                         P) regextype="-P";;
+                        r) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
+                        R) rootasinit="1";;
                         s) showhidden="1";;
                         v) invertmatch="-v";;
                         *) printusage "-$opt"; exit 0;;
@@ -106,6 +116,8 @@ parseargs() {
                     help           ) printhelp; exit 0;;
                     ignore-case    ) ignorecase="-i";;
                     perl-regex     ) regextype="-P";;
+                    root           ) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
+                    root-as-init   ) rootasinit="1";;
                     show-hidden    ) showhidden="1";;
                     invert-match   ) invertmatch="-v";;
                     ""             ) shift; break;;
@@ -199,7 +211,7 @@ main() {
 
             grepfls
 
-            if [ "$PWD" = "/" ]
+            if [ "$PWD" = "$root" ]
             then
                 sel="$( printf "%s" "$fls"  | dmenu -i )"
             elif [ "$git" ]
@@ -243,7 +255,7 @@ main() {
 
             grepfls
 
-            if [ "$PWD" = "/" ]
+            if [ "$PWD" = "$root" ]
             then
                 sel="$( printf "%s" "$fls"  | dmenu -i )"
             else
@@ -268,6 +280,7 @@ main() {
     fi
 }
 
+setdefargs
 parseargs "$@"
 
 if [ "$initdirs" ]
@@ -279,6 +292,8 @@ then
         cdsafe "$i"
 
         initpwd="$PWD"
+        [ "$rootasinit" = "1" ] && root="$initpwd"
+
         main
     done
 else
