@@ -31,8 +31,8 @@ screenname="$screenname-$( date +%s )"
 csf="$( printf "0\n1" | dmenu -p "Compute scale factors?" )"
 equals "$csf" 0 1 || exit 1
 
-tmp="$( mktemp --suffix ".html" )"
-screen -dmS "$screenname" sh -c 'simc "armory='"$region"','"$realm"','"$selchar"'" "calculate_scale_factors='"$csf"'" "html='$tmp'"'
+outfl="$( getloc "wowsim" )/$screenname.html"
+screen -dmS "$screenname" sh -c 'simc "armory='"$region"','"$realm"','"$selchar"'" "calculate_scale_factors='"$csf"'" "html='$outfl'"'
 
 pid="$( ps -el --no-headers | grep "$( screen -ls | grep -F ".$screenanme (Detached)" | awk '{print $1}' | awk -F '.' '{print $1}' )" | grep simc | head -n 1 | awk '{print $4}' )"
 
@@ -47,15 +47,18 @@ equals "$( printf "y\nn" | dmenu -i -p "See simulation progress?" )" y yes && "$
 
 pids="$( sudo strace -e trace=none -e signal=none -q -p "$pid" 2>&1 | awk '{print $4}' )"
 
-if [ "$pids" != "0" ] || [ "$( wc -c "$tmp" )" = 0 ]
+if [ "$pids" != "0" ] || [ "$( wc -c "$outfl" )" = 0 ]
 then
-    equals "$( printf "y\nn" | dmenu -i -p "Simulation failed (exit code $pid), would you like to see the report anyways?" )" y yes || exit "$pids"
+    equals "$( printf "y\nn" | dmenu -i -p "Simulation failed (exit code $pid), would you like to see the report anyways?" )" y yes || {
+        rm -f "$outfl"
+        exit "$pids"
+    }
 else
     notify-send -t 1000 "Simulation finished" "Opening simulation report with $BROWSER."
 fi
 
-"$BROWSER" --new-window "$tmp" || {
-    "$BROWSER" "$tmp" || {
-        xph-open "$tmp" || xdg-open "$tmp"
+"$BROWSER" --new-window "$outfl" || {
+    "$BROWSER" "$outfl" || {
+        xph-open "$outfl" || xdg-open "$outfl"
     }
 }
