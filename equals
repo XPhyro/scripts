@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+val="$1"
+shift
+
+for i
+do
+    [ "$val" = "$i" ] && exit 0
+done
+
+exit 1
