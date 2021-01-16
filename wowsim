@@ -2,39 +2,46 @@
 # TODO: Save reports.
 
 exitnotif() {
-    notify-send -t 3000 "wowsim" "ERROR: $@"
+    notify-send -t 3000 "wowsim" "ERROR: $1"
     exit 1
 }
 
-region="eu"
-realm="kazzak"
-chars="xphyro
-yphyro
-zphyro
-wphyro
-vphyro
-sphyro"
-
-selchar="$( printf "%s" "$chars" | dmenu -i )"
-[ -z "$selchar" ] && exit 1
-
-screenname="simc-$selchar"
-
-prevscreenname="$( screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)" )" 
-[ "$prevscreenname" ] && equals "$( printf "y\nn" | dmenu -i -p "A simulation for $selchar already exists. Would you like to see its progress instead?" )" y yes && {
-    "$TERMINAL" -e screen -r "$( printf "%s" "$prevscreenname" | awk '{print $1}' | awk -F '.' '{print $2}' )"
-    exit 0
+ynq() {
+    equals "$( printf "y\nn" | dmenu -i -p "$1" )" y yes
 }
 
-screenname="$screenname-$( date +%s )"
+if ynq "Use a simulation template?"
+then
+    simcargs="$( selfl -R "$( getloc wowsimt )" | head -n 1 )"
+else
+    simloc="$( getloc wowsimt )"
+    region="$( cat "$simloc/.region" )"
+    realm="$( cat "$simloc/.realm" )"
+    chars="$( cat "$simloc/.chars" )"
 
-csf="$( printf "0\n1" | dmenu -p "Compute scale factors?" )"
-equals "$csf" 0 1 || exit 1
+    selchar="$( printf "%s" "$chars" | dmenu -i )"
+    [ -z "$selchar" ] && exit 1
 
-outfl="$( getloc "wowsim" )/$screenname.html"
-screen -dmS "$screenname" sh -c 'simc "armory='"$region"','"$realm"','"$selchar"'" "calculate_scale_factors='"$csf"'" "html='$outfl'"'
+    screenname="simc-$selchar"
 
-pid="$( ps -el --no-headers | grep "$( screen -ls | grep -F ".$screenanme (Detached)" | awk '{print $1}' | awk -F '.' '{print $1}' )" | grep simc | head -n 1 | awk '{print $4}' )"
+    prevscreenname="$( screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)" )" 
+    [ "$prevscreenname" ] && ynq "A simulation for $selchar already exists. Would you like to see its progress instead?" && {
+        "$TERMINAL" -e screen -r "$( printf "%s" "$prevscreenname" | awk '{print $1}' | awk -F '.' '{print $2}' )"
+        exit 0
+    }
+
+    screenname="$screenname-$( date +%s )"
+
+    csf="$( printf "0\n1" | dmenu -p "Compute scale factors?" )"
+    equals "$csf" 0 1 || exit 1
+
+    simcargs="'armory=$region,$realm,$selchar' 'calculate_scale_factors=$csf'"
+fi
+
+outfl="$( getloc "wowsimd" )/$screenname.html"
+screen -dmS "$screenname" sh -c "simc $simcargs 'html=$outfl'"
+
+pid="$( ps -el --no-headers | grep "$( screen -ls | grep -F ".$screenname" | awk '{print $1}' | awk -F '.' '{print $1}' )" | grep simc | head -n 1 | awk '{print $4}' )"
 
 kill -0 "$pid" || exitnotif "Simulation could not start."
 
@@ -43,13 +50,13 @@ Region   : $region
 Realm    : $realm
 Character: $selchar"
 
-equals "$( printf "y\nn" | dmenu -i -p "See simulation progress?" )" y yes && "$TERMINAL" -e screen -r "$screenname"
+ynq "See simulation progress?" && "$TERMINAL" -e screen -r "$screenname"
 
 pids="$( sudo strace -e trace=none -e signal=none -q -p "$pid" 2>&1 | awk '{print $4}' )"
 
 if [ "$pids" != "0" ] || [ "$( wc -c "$outfl" )" = 0 ]
 then
-    equals "$( printf "y\nn" | dmenu -i -p "Simulation failed (exit code $pid), would you like to see the report anyways?" )" y yes || {
+    ynq "Simulation failed (exit code $pids), would you like to see the report anyways?" || {
         rm -f "$outfl"
         exit "$pids"
     }
