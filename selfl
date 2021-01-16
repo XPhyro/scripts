@@ -94,8 +94,8 @@ parseargs() {
                         i) ignorecase="-i";;
                         P) regextype="-P";;
                         p) shift; prompt="$1"; customprompt="1";;
-                        r) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
                         R) rootasinit="1";;
+                        r) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
                         s) showhidden="1";;
                         v) invertmatch="-v";;
                         *) printusage "-$opt"; exit 0;;
@@ -120,8 +120,8 @@ parseargs() {
                     ignore-case    ) ignorecase="-i";;
                     perl-regex     ) regextype="-P";;
                     prompt         ) shift; prompt="$1"; customprompt="1";;
-                    root           ) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
                     root-as-init   ) rootasinit="1";;
+                    root           ) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
                     show-hidden    ) showhidden="1";;
                     invert-match   ) invertmatch="-v";;
                     ""             ) shift; break;;
