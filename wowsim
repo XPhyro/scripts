@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# TODO: Save reports.
 
 exitnotif() {
     notify-send -t 3000 "wowsim" "ERROR: $1"
@@ -12,7 +11,7 @@ ynq() {
 
 if ynq "Use a simulation template?"
 then
-    simcargs="$( selfl -R "$( getloc wowsimt )" | head -n 1 )"
+    simcargs="$( selfl -Rl 20 "$( getloc wowsimt )" | head -n 1 )"
 else
     simloc="$( getloc wowsimt )"
     region="$( cat "$simloc/.region" )"
