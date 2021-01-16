@@ -28,6 +28,8 @@ printhelp() {
         "       Ignore case distinctions in PATTERNs and entries." \
         "   -P, --perl-regex" \
         "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG." \
+        "   -p TEXT, --prompt TEXT" \
+        "       Show custom dmenu prompt." \
         "   -R, --root-as-init" \
         "       Define the root as the initial directory." \
         "   -r ROOT, --root ROOT" \
@@ -91,6 +93,7 @@ parseargs() {
                         h) printhelp; exit 0;;
                         i) ignorecase="-i";;
                         P) regextype="-P";;
+                        p) shift; prompt="$1"; customprompt="1";;
                         r) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
                         R) rootasinit="1";;
                         s) showhidden="1";;
@@ -116,6 +119,7 @@ parseargs() {
                     help           ) printhelp; exit 0;;
                     ignore-case    ) ignorecase="-i";;
                     perl-regex     ) regextype="-P";;
+                    prompt         ) shift; prompt="$1"; customprompt="1";;
                     root           ) shift; assertarg "-r" "ROOT" "$1"; root="$1"; rootasinit="0";;
                     root-as-init   ) rootasinit="1";;
                     show-hidden    ) showhidden="1";;
@@ -143,6 +147,15 @@ grepfls() {
     [ "$regex" ] && {
         fls="$( printf "%s" "$fls" | grep $regextype $ignorecase $invertmatch -e "$regex" )"
     }
+}
+
+getprompt() {
+    if [ "$customprompt" = "1" ]
+    then
+        printf "%s" "$prompt"
+    else
+        printf "%s" "$PWD"
+    fi
 }
 
 main() {
@@ -213,17 +226,17 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i -p "$PWD" )"
+                sel="$( printf "%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
             elif [ "$git" ]
             then
                 if contains "$( realpath "$PWD/.." )" "$( git rev-parse --show-toplevel )"
                 then
-                    sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$PWD" )"
+                    sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
                 else
-                    sel="$( printf "%s" "$fls"  | dmenu -i -p "$PWD" )"
+                    sel="$( printf "%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
                 fi
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$PWD" )"
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || {
@@ -257,9 +270,9 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i -p "$PWD" )"
+                sel="$( printf "%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$PWD" )"
+                sel="$( printf "..\n%s" "$fls"  | dmenu -i -p "$( getprompt )" )"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
