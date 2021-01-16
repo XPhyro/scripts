@@ -11,9 +11,20 @@ ynq() {
 
 if ynq "Use a simulation template?"
 then
-    simcargs="$( selfl -Rl 20 "$( getloc wowsimt )" | head -n 1 )"
+    tfl="$( selfl -aRl 20 "$( getloc wowsimt )" | head -n 1 )"
+
+    armory="$( grep "^\s*armory=.*" "$tfl" | tail -n 1 | sed 's/^\s*armory=//' )"
+
+    region="$( printf "%s" "$armory" | awk -F ',' '{print $1}' )"
+    realm="$( printf "%s" "$armory" | awk -F ',' '{print $2}' )"
+    selchar="$( printf "%s" "$armory" | awk -F ',' '{print $3}' )"
+
+    screenname="simc-$selchar-$( date +%s )"
+
+    simcargs="'$tfl'"
 else
     simloc="$( getloc wowsimt )"
+
     region="$( cat "$simloc/.region" )"
     realm="$( cat "$simloc/.realm" )"
     chars="$( cat "$simloc/.chars" )"
@@ -25,7 +36,7 @@ else
 
     prevscreenname="$( screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)" )" 
     [ "$prevscreenname" ] && ynq "A simulation for $selchar already exists. Would you like to see its progress instead?" && {
-        "$TERMINAL" -e screen -r "$( printf "%s" "$prevscreenname" | awk '{print $1}' | awk -F '.' '{print $2}' )"
+        "$TERMINAL" -e screen -r "$( printf "%s" "$prevscreenname" | awk '{print $1}' | awk -F '.' '{print $2}' )" > /dev/null
         exit 0
     }
 
@@ -47,9 +58,9 @@ kill -0 "$pid" || exitnotif "Simulation could not start."
 notify-send -t 3000 "Simulation started" "\
 Region   : $region
 Realm    : $realm
-Character: $selchar"
+Character: $selchar" &
 
-ynq "See simulation progress?" && "$TERMINAL" -e screen -r "$screenname"
+ynq "See simulation progress?" && kill -0 "$pid" && "$TERMINAL" -e screen -r "$screenname" > /dev/null &
 
 pids="$( sudo strace -e trace=none -e signal=none -q -p "$pid" 2>&1 | awk '{print $4}' )"
 
@@ -63,8 +74,8 @@ else
     notify-send -t 1000 "Simulation finished" "Opening simulation report with $BROWSER."
 fi
 
-"$BROWSER" --new-window "$outfl" || {
-    "$BROWSER" "$outfl" || {
-        xph-open "$outfl" || xdg-open "$outfl"
+"$BROWSER" --new-window "$outfl" > /dev/null || {
+    "$BROWSER" "$outfl" > /dev/null || {
+        xph-open "$outfl" > /dev/null || xdg-open "$outfl" > /dev/null
     }
 }
