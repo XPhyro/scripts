@@ -19,6 +19,8 @@ then
     realm="$( printf "%s" "$armory" | awk -F ',' '{print $2}' )"
     selchar="$( printf "%s" "$armory" | awk -F ',' '{print $3}' )"
 
+    # TODO: Add an an option to override character for this template.
+
     screenname="simc-$selchar-$( date +%s )"
 
     simcargs="'$tfl'"
@@ -73,6 +75,8 @@ then
 else
     notify-send -t 1000 "Simulation finished" "Opening simulation report with $BROWSER."
 fi
+
+# TODO: If currently focused on wow, wait until focus is lost.
 
 "$BROWSER" --new-window "$outfl" > /dev/null || {
     "$BROWSER" "$outfl" > /dev/null || {
