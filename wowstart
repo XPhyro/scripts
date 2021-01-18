@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+lutris lutris:rungame/world-of-warcraft
+sleep 1
+restart-sxhkd
