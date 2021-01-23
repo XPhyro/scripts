@@ -1,5 +1,7 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-lutris lutris:rungame/world-of-warcraft
-sleep 1
-restart-sxhkd
+WINEPREFIX=/games/wow-tsm wine '/games/wow-tsm/drive_c/Program Files (x86)/TradeSkillMaster Application/app/TSMApplication.exe' &!
+
+"$( getloc prog )/RaiderIO/AppRun" &!
+
+screen -dmS wow sh -c 'lutris lutris:rungame/world-of-warcraft'
