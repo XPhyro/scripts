@@ -59,6 +59,7 @@ else
     else
         # TODO: Make double killing into an option.
         killall "$ka"
+        sleep 0.1
         killall "$ka" # some apps are problematic, hence the second killall.
         exit 1
     fi
