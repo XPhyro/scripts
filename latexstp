@@ -12,7 +12,7 @@ clean() {
 }
 
 cleanaux() {
-    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.toc" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py" > /dev/null 2>&1
+    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.toc" "$fl.bcf" "$fl.run.xml" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py" > /dev/null 2>&1
 }
 
 compile() {
