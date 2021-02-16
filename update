@@ -12,6 +12,14 @@ log() {
 
 lckfl="$( getfl upabllck )"
 
+for i
+do
+    if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]
+    then
+        [ -f "$lckfl" ] && rm -f "$lckfl" && exit 0
+    fi
+done
+
 [ -f "$lckfl" ] && {
     log "Lock file is present, waiting..."
 
