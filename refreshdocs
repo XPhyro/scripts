@@ -5,6 +5,7 @@ fl="$( getfl refdoc )"
 
 while read -r i
 do
+    [ "$( printf "%s" "$i" | cut -c1 )" = "#" ] && continue
     willeval="$( printf "%s" "$i" | awk -F ';' '{printf $1}' )"
     dir="$( printf "%s" "$i" | awk -F ';' '{printf $2}' )"
     cmd="$( printf "%s" "$i" | awk -F ';' '{printf $3}' )"
