@@ -1,0 +1,85 @@
+#!/usr/bin/env sh
+
+exitnotif() {
+    notify-send -t 3000 "wowsim" "ERROR: $1"
+    exit 1
+}
+
+ynq() {
+    equals "$( printf "y\nn" | dmenu -i -p "$1" )" y yes
+}
+
+if ynq "Use a simulation template?"
+then
+    tfl="$( selfl -aRl 20 "$( getloc wowsimt )" | head -n 1 )"
+
+    armory="$( grep "^\s*armory=.*" "$tfl" | tail -n 1 | sed 's/^\s*armory=//' )"
+
+    region="$( printf "%s" "$armory" | awk -F ',' '{print $1}' )"
+    realm="$( printf "%s" "$armory" | awk -F ',' '{print $2}' )"
+    selchar="$( printf "%s" "$armory" | awk -F ',' '{print $3}' )"
+
+    # TODO: Add an an option to override character for this template.
+
+    screenname="simc-$selchar-$( date +%s )"
+
+    simcargs="'$tfl'"
+else
+    simloc="$( getloc wowsimt )"
+
+    region="$( cat "$simloc/.region" )"
+    realm="$( cat "$simloc/.realm" )"
+    chars="$( cat "$simloc/.chars" )"
+
+    selchar="$( printf "%s" "$chars" | dmenu -i )"
+    [ -z "$selchar" ] && exit 1
+
+    screenname="simc-$selchar"
+
+    prevscreenname="$( screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)" )" 
+    [ "$prevscreenname" ] && ynq "A simulation for $selchar already exists. Would you like to see its progress instead?" && {
+        "$TERMINAL" -e screen -r "$( printf "%s" "$prevscreenname" | awk '{print $1}' | awk -F '.' '{print $2}' )" > /dev/null
+        exit 0
+    }
+
+    screenname="$screenname-$( date +%s )"
+
+    csf="$( printf "0\n1" | dmenu -p "Compute scale factors?" )"
+    equals "$csf" 0 1 || exit 1
+
+    simcargs="'armory=$region,$realm,$selchar' 'calculate_scale_factors=$csf'"
+fi
+
+outfl="$( getloc "wowsimd" )/$screenname.html"
+screen -dmS "$screenname" sh -c "simc $simcargs 'html=$outfl'"
+
+pid="$( ps -el --no-headers | grep "$( screen -ls | grep -F ".$screenname" | awk '{print $1}' | awk -F '.' '{print $1}' )" | grep simc | head -n 1 | awk '{print $4}' )"
+
+kill -0 "$pid" || exitnotif "Simulation could not start."
+
+notify-send -t 3000 "Simulation started" "\
+Region   : $region
+Realm    : $realm
+Character: $selchar" &
+
+ynq "See simulation progress?" && kill -0 "$pid" && "$TERMINAL" -e screen -r "$screenname" > /dev/null &
+
+pids="$( sudo strace -e trace=none -e signal=none -q -p "$pid" 2>&1 | awk '{print $4}' )"
+
+if [ "$pids" != "0" ] || [ "$( wc -c "$outfl" )" = 0 ]
+then
+    ynq "Simulation failed (exit code $pids), would you like to see the report anyways?" || {
+        rm -f "$outfl"
+        exit "$pids"
+    }
+else
+    notify-send -t 1000 "Simulation finished" "Opening simulation report with $BROWSER."
+fi
+
+# TODO: If currently focused on wow, wait until focus is lost.
+
+"$BROWSER" --new-window "$outfl" > /dev/null || {
+    "$BROWSER" "$outfl" > /dev/null || {
+        xph-open "$outfl" > /dev/null || xdg-open "$outfl" > /dev/null
+    }
+}
