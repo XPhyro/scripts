@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Find music scores in PDF format, prompt them with dmenu and open the selected one.
+# TODO: Ask how many times the document should be opened and open that many. After all of the documents are closed, ask whether the amount was satisfactory, then save the amount such that it will not be asked the next time if it was satisfactory; else, ask for a new number and if given, save that instead.
 
 dir="$( getloc mu )"
 cd "$dir" || {
