@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+fl="$( mktemp --suffix ".png" )"
+
+import "$fl" && copyfile "$fl" && rm "$fl"
