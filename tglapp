@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 # Toggle an application on/off (i.e. launch or kill it).
 # TODO: Instead of using environmental variables, parse arguments.
+# TODO: Add option to toggle applications based on a keycode. When toggling on, note the PID of the created process to a file named the keycode and when toggling off, kill the PID noted in the file named the keycode. Use it to toggle things like spt.
+# TODO: Add option to force toggle applications, i.e. toggle on or toggle off. If they are already toggled on or toggled off, do nothing instead of toggling.
+# TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. and make the user select an application via dmenu, then toggle the selected application. This could be made into a more generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.).
 
 if [ "$GREP" ]
 then
