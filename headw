@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+# Like head, but for words.
+
+if [ "$#" = 0 ]
+then
+    end=3
+else
+    end="$( printf "%s" "$1" | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' )"
+    [ -z "$end" ] && exit 1
+fi
+
+awk -v end="$end" '{for (i = end + 1; i <= NF; i++) $i = ""; printf $0}' | sed 's/\s*$//'
+printf "\n"
