@@ -2,4 +2,11 @@
 
 fl="$( mktemp --suffix ".png" )"
 
-import "$fl" && copyfile "$fl" && rm "$fl"
+if import "$fl"
+then
+    copyfile "$fl"
+else
+    notify-send "❌ cpscr" "Failed to capture screenshot."
+fi
+
+rm "$fl"
