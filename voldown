@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Decrease the volume of the default pulseaudio sink.
-
-pactl set-sink-volume "$( voldefsink )" -5%
