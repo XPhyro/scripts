@@ -1,23 +1,65 @@
 #!/usr/bin/env sh
 
-killall "$1" && exit 0
+stopiffl() {
+    [ -f "$stopfl" ] && {
+        rm -f "$stopfl"
+        exit 0
+    }
+}
 
-case "$1"
+stopfl="$( getfl stopwowmacro )"
+
+[ "$1" = toggle ] && {
+    touch "$stopfl"
+    sleep 0.25
+    [ -f "$stopfl" ] || exit 0
+    rm -f "$stopfl"
+    shift
+}
+
+trap 'stopiffl' INT TERM
+
+stopiffl
+
+until rm "$stopfl"
+do
+    touch "$stopfl"
+    sleep 0.25
+done 2> /dev/null
+
+cmd="$1"
+shift
+
+case "$cmd"
 in
     lmb) 
         sleep 2
-        while true
+        while stopiffl
         do
             xdotool click 1
             sleep 0.1
         done
         ;;
-    x) 
-        while true
+    var) 
+        while stopiffl
         do
-            xdotool type "$( dmenu -p "key sequence:" )"
+            xdotool type "$*"
             sleep 0.1
         done
+        ;;
+    dmenu) 
+        text="$( dmenu -p "key sequence:" )"
+        echo aa
+        while stopiffl
+        do
+            echo bbb
+            xdotool type "$text"
+            sleep 0.1
+        done
+        ;;
+    end)
+        touch "$stopfl"
+        exit 0
         ;;
     *) exit 1;;
 esac
