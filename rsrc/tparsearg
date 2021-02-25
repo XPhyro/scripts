@@ -44,11 +44,11 @@ parseargs() {
 
                     case "$opt"
                     in
-                        a) shift; assertarg "-e" "REGEX" "$1"; argument="$1";;
+                        a) shift; assertarg "-a" "ARGUMENT" "$1"; argument="$1";;
                         c) shift; canbeemptyargument="$1";;
                         o) option="1";;
                         i) option="0";;
-                        t) optiontype="-T";;
+                        t) optiontype="-t";;
                         h) printhelp; exit;;
                         *) printusage "-$opt"; exit;;
                     esac
@@ -60,11 +60,11 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    argument              ) shift; assertarg "-e" "REGEX" "$1"; argument="$1";;
+                    argument              ) shift; assertarg "--argument" "ARGUMENT" "$1"; argument="$1";;
                     can-be-empty-argument ) shift; canbeemptyargument="$1";;
                     option                ) option="1";;
                     inverse-option        ) option="0";;
-                    option-type           ) optiontype="-T";;
+                    option-type           ) optiontype="--option-type";;
                     help                  ) printhelp; exit;;
                     ""                    ) shift; break;;
                     *                     ) printusage "--$opt"; exit;;
