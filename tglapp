@@ -1,69 +1,124 @@
 #!/usr/bin/env sh
 # Toggle an application on/off (i.e. launch or kill it).
-# TODO: Instead of using environmental variables, parse arguments.
-# TODO: Add option to toggle applications based on a keycode. When toggling on, note the PID of the created process to a file named the keycode and when toggling off, kill the PID noted in the file named the keycode. Use it to toggle things like spt.
-# TODO: Add option to force toggle applications, i.e. toggle on or toggle off. If they are already toggled on or toggled off, do nothing instead of toggling.
+# TODO: Add an option to force toggle applications, i.e. toggle on or toggle off. If they are already toggled on or off respectively, do nothing instead of toggling the state.
 # TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. and make the user select an application via dmenu, then toggle the selected application. This could be made into a more generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.).
 
-if [ "$GREP" ]
-then
-    grp="$GREP"
-else
-    willgrp=1
-fi
+printhelp() {
+    printf "%s\n" \
+    "scriptname [OPTION...] COMMAND -- COMMAND" \
+    "   -h, --help" \
+    "       Print help message." \
+    "   -K, --auto-keycode" \
+    "       Automatically assign a hash-like keycode to the given command. Overrides -k." \
+    "   -k KEYCODE, --keycode KEYCODE" \
+    "       Use KEYCODE to identify the given command. Overrides -K." \
+    "   -t TIMEOUT, --timeout TIMEOUT" \
+    "       When specified, wait TIMEOUT amount and SIGKILL the process if not terminated yet. The format is the same as in the sleep command."
+}
 
-if [ "$EXEC" ]
-then
-    exe="$EXEC"
-else
-    willexe=1
-fi
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1"
+    printhelp
+}
 
-if [ "$KA" ]
-then
-    ka="$KA"
-elif [ "$KC" ]
-then
-    kc="$KC"
-else
-    willka=1
-fi
-
-if [ "$willgrp" = "1" ] || [ "$willexe" = "1" ] || [ "$willka" = "1" ]
-then
-    if [ "$PROCESS" ]
-    then
-        [ "$willgrp" = "1" ] && grp="$PROCESS"
-        [ "$willexe" = "1" ] && exe="$PROCESS"
-        [ "$willka" = "1" ] && ka="$PROCESS"
-    else
-        printf "%s\n" "Not enough environment variables."
+assertarg() {
+    [ "$3" ] || {
+        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
         exit 1
-    fi
-fi
+    }
+}
 
-prc="$( ps aux | grep "$grp" | grep -vE "\s+grep\s+" )"
-if [ "$prc" = "" ]
-then
-    $exe
-    exit 0
-else
-    if [ "$kc" ]
+parseargs() {
+    while [ "$1" ]
+    do
+        if [ "${1%"${1#?}"}" = "-" ]
+        then
+            if ! [ "${1%"${1#??}"}" = "--" ]
+            then
+                sopt="$( printf "%s" "$1" | cut -c2- )"
+
+                while [ "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        K) autokeycode="1";;
+                        k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1"; autokeycode="0";;
+                        t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
+                        h) printhelp; exit;;
+                        *) printusage "-$opt"; exit;;
+                    esac
+
+                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                done
+            else
+                opt="$( printf "%s" "$1" | cut -c3- )"
+                
+                case "$opt"
+                in
+                    auto-keycode          ) autokeycode="1";;
+                    keycode               ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1"; autokeycode="0";;
+                    timeout               ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
+                    help                  ) printhelp; exit;;
+                    ""                    ) shift; break;;
+                    *                     ) printusage "--$opt"; exit;;
+                esac
+            fi
+        else
+            cmd="$cmd \"$1\""
+        fi
+
+        shift
+    done
+
+    for i
+    do
+        cmd="$cmd \"$i\""
+    done
+}
+
+logerr() {
+    printf "[ERROR]: %s\n" "$@"
+}
+
+validateargs() {
+    [ -z "$cmd" ] && logerr "Command cannot be empty."
+}
+
+setargs() {
+    [ "$autokeycode" = "1" ] && keycode="$( printf "%s" "$cmd" | xxh128sum | awk '{print $1}' | tr -d '\n' )"
+}
+
+main() {
+    flsdir="$( getloc --safe tglapp )"
+
+    if ! [ -z "$keycode" ]
     then
-        n="$kc"
-        printf "%s\n" "$prc" | while read -r i
-        do
-            [ "$n" = "0" ] && break
-            n=$(( n - 1 ))
-
-            kill "$( printf "%s" "$i" | awk '{print $2}' )"
-            exit 2
-        done
+        keyfl="$flsdir/$keycode"
+        if [ -f $keyfl ]
+        then
+            pid="$( cat "$keyfl" )"
+            kill "$pid" && {
+                rm -f "$keyfl"
+                [ -z "$timeout" ] || {
+                    sleep "$timeout"
+                    kill -s KILL "$pid"
+                }
+            }
+        else
+            # TODO: Use exec instead of eval and log $$ instead of $!.
+            eval "( $cmd ) &"
+            printf "%s" "$!" > "$keyfl"
+            wait
+        fi
     else
-        # TODO: Make double killing into an option.
-        killall "$ka"
-        sleep 0.1
-        killall "$ka" # some apps are problematic, hence the second killall.
-        exit 1
+        # TODO: Implement grep, kill count, killall and other things that existed in the previous version of tglapp that did not have keycodes.
+        echo
     fi
-fi
+}
+
+parseargs "$@"
+validateargs
+setargs
+main
