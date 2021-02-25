@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+locate "$@" | while read -r i
+do
+    [ -f "$i" ] && printf "$i\n"
+done
