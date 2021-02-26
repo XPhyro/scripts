@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
 
-until EXEC="wallpaper 1 0.2s 0.5s 2s 15m" GREP="sh $HOME/code/sh/wallpaper" KC="2" tglapp
-do
-    continue
-done
+tglapp -K -- wallpaper 1 0.2s 0.5s 2s 15m
