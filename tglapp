@@ -82,8 +82,13 @@ logerr() {
     printf "[ERROR]: %s\n" "$@"
 }
 
+logerrq() {
+    logerr "$@"
+    exit 1
+}
+
 validateargs() {
-    [ -z "$cmd" ] && logerr "Command cannot be empty."
+    [ -z "$cmd" ] && logerrq "Command cannot be empty."
 }
 
 setargs() {
