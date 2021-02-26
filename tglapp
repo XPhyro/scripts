@@ -5,15 +5,13 @@
 
 printhelp() {
     printf "%s\n" \
-    "scriptname [OPTION...] COMMAND -- COMMAND" \
+    "tglapp [OPTION...] COMMAND -- COMMAND" \
     "   -h, --help" \
     "       Print help message." \
-    "   -K, --auto-keycode" \
-    "       Automatically assign a hash-like keycode to the given command. Overrides -k." \
     "   -k KEYCODE, --keycode KEYCODE" \
-    "       Use KEYCODE to identify the given command. Overrides -K." \
+    "       Use KEYCODE to identify the given command instead of using a auto-computed hash." \
     "   -t TIMEOUT, --timeout TIMEOUT" \
-    "       When specified, wait TIMEOUT amount and SIGKILL the process if not terminated yet. The format is the same as in the sleep command."
+    "       When specified, wait TIMEOUT amount and SIGKILL the process if not terminated yet. The TIMEOUT format is the same as in the sleep command."
 }
 
 printusage() {
@@ -43,8 +41,7 @@ parseargs() {
 
                     case "$opt"
                     in
-                        K) autokeycode="1";;
-                        k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1"; autokeycode="0";;
+                        k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
                         t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
                         h) printhelp; exit;;
                         *) printusage "-$opt"; exit;;
@@ -57,12 +54,11 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    auto-keycode          ) autokeycode="1";;
-                    keycode               ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1"; autokeycode="0";;
-                    timeout               ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
-                    help                  ) printhelp; exit;;
-                    ""                    ) shift; break;;
-                    *                     ) printusage "--$opt"; exit;;
+                    keycode ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
+                    timeout ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
+                    help    ) printhelp; exit;;
+                    ""      ) shift; break;;
+                    *       ) printusage "--$opt"; exit;;
                 esac
             fi
         else
@@ -92,39 +88,33 @@ validateargs() {
 }
 
 setargs() {
-    [ "$autokeycode" = "1" ] && keycode="$( printf "%s" "$cmd" | xxh128sum | awk '{print $1}' | tr -d '\n' )"
+    [ -z "$keycode" ] && keycode="$( printf "%s" "$cmd" | xxh128sum | awk '{print $1}' | tr -d '\n' )"
 }
 
 main() {
     flsdir="$( getloc --safe tglapp )" # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/tglapp as /tmp is volatile on most systems.
 
-    if ! [ -z "$keycode" ]
+    keyfl="$flsdir/$keycode"
+    if [ -f $keyfl ]
     then
-        keyfl="$flsdir/$keycode"
-        if [ -f $keyfl ]
+        pid="$( cat "$keyfl" )"
+        if kill -s 0 "$pid"
         then
-            pid="$( cat "$keyfl" )"
-            if kill -s 0 "$pid"
-            then
-                kill "$pid" && {
-                    rm -f "$keyfl"
-                    [ -z "$timeout" ] || {
-                        sleep "$timeout"
-                        kill -s KILL "$pid"
-                    }
-                }
-            else
+            kill "$pid" && {
                 rm -f "$keyfl"
-            fi
+                [ -z "$timeout" ] || {
+                    sleep "$timeout"
+                    kill -s KILL "$pid"
+                }
+            }
         else
-            # TODO: Use exec instead of eval and log $$ instead of $!.
-            eval "( $cmd ) &"
-            printf "%s" "$!" > "$keyfl"
-            wait
+            rm -f "$keyfl"
         fi
     else
-        # TODO: Should grep, kill count, killall and other things that existed in the previous version of tglapp without keycodes be implemented here?
-        eval "( $cmd )"
+        # TODO: Use exec instead of eval and log $$ instead of $!.
+        eval "( $cmd ) &"
+        printf "%s" "$!" > "$keyfl"
+        wait
     fi
 }
 
