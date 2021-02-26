@@ -91,7 +91,7 @@ setargs() {
 }
 
 main() {
-    flsdir="$( getloc --safe tglapp )"
+    flsdir="$( getloc --safe tglapp )" # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/tglapp as /tmp is volatile on most systems.
 
     if ! [ -z "$keycode" ]
     then
@@ -99,13 +99,18 @@ main() {
         if [ -f $keyfl ]
         then
             pid="$( cat "$keyfl" )"
-            kill "$pid" && {
-                rm -f "$keyfl"
-                [ -z "$timeout" ] || {
-                    sleep "$timeout"
-                    kill -s KILL "$pid"
+            if kill -s 0 "$pid"
+            then
+                kill "$pid" && {
+                    rm -f "$keyfl"
+                    [ -z "$timeout" ] || {
+                        sleep "$timeout"
+                        kill -s KILL "$pid"
+                    }
                 }
-            }
+            else
+                rm -f "$keyfl"
+            fi
         else
             # TODO: Use exec instead of eval and log $$ instead of $!.
             eval "( $cmd ) &"
