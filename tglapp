@@ -118,8 +118,8 @@ main() {
             wait
         fi
     else
-        # TODO: Implement grep, kill count, killall and other things that existed in the previous version of tglapp that did not have keycodes.
-        echo
+        # TODO: Should grep, kill count, killall and other things that existed in the previous version of tglapp without keycodes be implemented here?
+        eval "( $cmd )"
     fi
 }
 
