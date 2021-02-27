@@ -16,6 +16,11 @@ mim="$( getfl mim )"
 
 for i
 do
+    [ "$( mimetype --brief "$i" | cut -d/ -f-1 )" = "text" ] && {
+        eval "$EDITOR \"$i\""
+        continue
+    }
+
     # find desktop file
     dtf="$( grep "$( mimetype "$i" | awk '{print $2}' )" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//' )"
 
