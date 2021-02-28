@@ -2,6 +2,7 @@
 # Toggle an application on/off (i.e. launch or kill it).
 # TODO: Add an option to force toggle applications, i.e. toggle on or toggle off. If they are already toggled on or off respectively, do nothing instead of toggling the state.
 # TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. and make the user select an application via dmenu, then toggle the selected application. This could be made into a more generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.).
+# TODO: Add an option to replace the current instance of the application with the new instance. Allow the new instance to be different if -k is passed. If -k is not passed, but this new option is, just "restart" the application.
 
 printhelp() {
     printf "%s\n" \
