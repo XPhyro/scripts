@@ -13,10 +13,25 @@ for i
 do
     case "$i"
     in
-        "*"       ) awk '{print $2}' "$locfl"; exit 0;;
+        "*"       ) wild="1";;
         -s|--safe ) safe="1";;
     esac
 done
+
+[ "$wild" = "1" ] && {
+    if [ "$safe" = "1" ]
+    then
+        awk '{print $2}' "$locfl" | while read -r i
+        do
+            mkdir -p -- "$i"
+            printf "%s\n" "$i"
+        done
+    else
+        awk '{print $2}' "$locfl"
+    fi
+
+    exit 0
+}
 
 for i
 do
