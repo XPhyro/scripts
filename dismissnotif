@@ -1,11 +1,3 @@
 #!/usr/bin/env sh
-# TODO: Incorporate mondef.
 
-eval $( xdotool getmouselocation --shell )
-
-if [ "$Y" -gt 1080 ]
-then
-    xdotool mousemove 1897 1117 click 1 mousemove restore
-else
-    xdotool mousemove 2537 37 click 1 mousemove restore
-fi
+xdotool mousemove $( xrandr --listactivemonitors | grep ".*$( mondef )$" | awk '{print $3}' | tr -c 0-9 " "  | awk '{print ($1 + $5 - 23)" "($6 + 37)}' ) click 1 mousemove restore
