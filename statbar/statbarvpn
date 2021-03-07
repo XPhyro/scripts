@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+[ "$( protonvpn s | grep Status: | awk '{print $2}' )" = "Connected" ] && printf "%s\n" "🖥"

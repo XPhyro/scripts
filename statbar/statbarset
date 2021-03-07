@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Draw status bar.
 
-xsetroot -name "$( { statbarcaps; statbarnum; statbartp; statbarkm; statbarmail; statbaravlsyu; statbarbat; statbarvolmic; statbarspeak; statbarvol; statbardate; } | sed ':a;N;$!ba;s/\n/ \| /g' )"
+xsetroot -name "$( { statbarcaps; statbarnum; statbartp; statbarkm; statbarmail; statbaravlsyu; statbarvpn; statbarbat; statbarvolmic; statbarspeak; statbarvol; statbardate; } | sed ':a;N;$!ba;s/\n/ \| /g' )"
