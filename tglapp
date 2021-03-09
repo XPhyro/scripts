@@ -1,18 +1,24 @@
 #!/usr/bin/env sh
 # Toggle an application on/off (i.e. launch or kill it).
-# TODO: Add an option to force toggle applications, i.e. toggle on or toggle off. If they are already toggled on or off respectively, do nothing instead of toggling the state.
-# TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. and make the user select an application via dmenu, then toggle the selected application. This could be made into a more generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.).
-# TODO: Add an option to replace the current instance of the application with the new instance. Allow the new instance to be different if -k is passed. If -k is not passed, but this new option is, just "restart" the application.
+# TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. This could be made into a generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.). # TODO: Use this with sxhkd.
+# TODO: Add an option to replace the current instance of the application with the new instance. Allow the new instance to be different if -k is passed. If -k is not passed, but this new option is, just "restart" the application. # TODO: Use this, along with -T on, in .xinitrc.
+# TODO: Add an option to register an already running application. Instead of toggling the application, just register the given pid, checking that the pid exists. If -k is passed, register to the given keycode. Else, query the command that is running as the pid and compute the hash based on that.
 
 printhelp() {
     printf "%s\n" \
     "tglapp [OPTION...] COMMAND -- COMMAND" \
+    "   -f, --force-state" \
+    "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following -n." \
     "   -h, --help" \
     "       Print help message." \
     "   -k KEYCODE, --keycode KEYCODE" \
     "       Use KEYCODE to identify the given command instead of using a auto-computed hash." \
+    "   -n, --no-force-state" \
+    "       Inhibit -f. Inhibited by a following -f." \
+    "   -T STATE, --toggle STATE" \
+    "       The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}." \
     "   -t TIMEOUT, --timeout TIMEOUT" \
-    "       When specified, wait TIMEOUT amount and SIGKILL the process if not terminated yet. The TIMEOUT format is the same as in the sleep command."
+    "       Wait TIMEOUT amount and SIGKILL the process if not terminated yet. The TIMEOUT format is the same as in the sleep command. Multiple timeout amounts can be passed as a single argument, separated with whitespace."
 }
 
 printusage() {
@@ -22,7 +28,7 @@ printusage() {
 
 assertarg() {
     [ "$3" ] || {
-        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
+        printf "[ERROR]: Expected %s argument to %s, exiting.\n" "$2" "$1"
         exit 1
     }
 }
@@ -42,9 +48,12 @@ parseargs() {
 
                     case "$opt"
                     in
-                        k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
-                        t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
+                        f) forcestate="1";;
                         h) printhelp; exit;;
+                        k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
+                        n) forcestate="0";;
+                        T) shift; assertarg "-T" "STATE" "$1"; state="$1";;
+                        t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
                         *) printusage "-$opt"; exit;;
                     esac
 
@@ -55,11 +64,14 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    keycode ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
-                    timeout ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
-                    help    ) printhelp; exit;;
-                    ""      ) shift; break;;
-                    *       ) printusage "--$opt"; exit;;
+                    force-state    ) forcestate="1";;
+                    help           ) printhelp; exit;;
+                    keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
+                    no-force-state ) forcestate="0";;
+                    toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
+                    timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
+                    ""             ) shift; break;;
+                    *              ) printusage "--$opt"; exit;;
                 esac
             fi
         else
@@ -84,12 +96,48 @@ logerrq() {
     exit 1
 }
 
-validateargs() {
+logargcaseerrq() {
+    argname="$( printf "%s" "$1" | PERLIO=:utf8 perl -pe '$_=uc' )"
+    shift
+    logerrq "$argname must be one of {$( printf "%s, " "$@" | sed 's/, $//' )}."
+}
+
+validargcase() {
+    arg="$1"
+    argname="$2"
+    shift 2
+    [ -z "$arg" ] || {
+        for i
+        do
+            [ "$arg" = "$i" ] && return 0
+        done
+        logargcaseerrq "$argname" "$@"
+    }
+}
+
+validargs() {
     [ -z "$cmd" ] && logerrq "Command cannot be empty."
+    validargcase "$state" "state" "on" "off"
+    [ "$( printf "%s " "$timeout" | sed -E -e 's/[^0-9]\.[^0-9]/ERROR/' -e 's/([0-9]*(\.[0-9]*)?[smh]?\s+)+//' )" != "" ] && logerrq "TIMEOUT is invalid. See sleep --help for details."
 }
 
 setargs() {
     [ -z "$keycode" ] && keycode="$( printf "%s" "$cmd" | xxh128sum | awk '{print $1}' | tr -d '\n' )"
+}
+
+runcmd() {
+    eval "( $cmd ) &" 
+    printf "%s" "$!" > "$keyfl"
+}
+
+stopcmd() {
+    kill "$pid" && {
+        rm -f "$keyfl"
+        [ -z "$timeout" ] || {
+            sleep "$timeout"
+            kill -s KILL "$pid" 2> /dev/null
+        }
+    }
 }
 
 main() {
@@ -101,25 +149,39 @@ main() {
         pid="$( cat "$keyfl" )"
         if kill -s 0 "$pid"
         then
-            kill "$pid" && {
-                rm -f "$keyfl"
-                [ -z "$timeout" ] || {
-                    sleep "$timeout"
-                    kill -s KILL "$pid"
-                }
-            }
+            if [ -z "$state" ] || [ "$state" = "off" ]
+            then
+                stopcmd
+            elif [ "$forcestate" = "1" ]
+            then
+                stopcmd
+                runcmd
+                wait
+            fi
         else
-            rm -f "$keyfl"
+            if [ -z "$state" ] || [ "$state" = "off" ]
+            then
+                rm -f "$keyfl"
+            elif [ "$state" = "on" ]
+            then
+                runcmd
+                wait
+            fi
         fi
     else
-        # TODO: Use exec instead of eval and log $$ instead of $!.
-        eval "( $cmd ) &"
-        printf "%s" "$!" > "$keyfl"
-        wait
+        if [ -z "$state" ] || [ "$state" = "on" ]
+        then
+            runcmd
+        elif [ "$forcestate" = "1" ]
+        then
+            runcmd
+            pid="$( cat "$keyfl" )"
+            stopcmd
+        fi
     fi
 }
 
 parseargs "$@"
-validateargs
+validargs
 setargs
 main
