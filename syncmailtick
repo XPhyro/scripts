@@ -1,11 +1,18 @@
 #!/usr/bin/env sh
 # Sync mails as a daemon (though it does not fork out).
 
+if [ "$#" -gt 0 ]
+then
+    timeout="$*"
+else
+    timeout=180s
+fi
+
 sleep 15s
 
 while true
 do
     syncmail
     statbarset
-    sleep 180s
+    sleep $timeout
 done
