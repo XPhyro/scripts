@@ -8,7 +8,7 @@ printhelp() {
     printf "%s\n" \
     "tglapp [OPTION...] COMMAND -- COMMAND" \
     "   -c, --clean" \
-    "       Clean PIDs after dead processes." \
+    "       Clean PIDs after dead processes and exit." \
     "   -f, --force-state" \
     "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following -n." \
     "   -h, --help" \
@@ -17,6 +17,8 @@ printhelp() {
     "       Use KEYCODE to identify the given command instead of using a auto-computed hash." \
     "   -n, --no-force-state" \
     "       Inhibit -f. Inhibited by a following -f." \
+    "   -s, --status" \
+    "       Only query the status of the command; exit with code 0 if state is on, else exit with code 1." \
     "   -T STATE, --toggle STATE" \
     "       The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}." \
     "   -t TIMEOUT, --timeout TIMEOUT" \
@@ -55,6 +57,7 @@ parseargs() {
                         h) printhelp; exit;;
                         k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
                         n) forcestate="0";;
+                        s) status="1";;
                         T) shift; assertarg "-T" "STATE" "$1"; state="$1";;
                         t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
                         *) printusage "-$opt"; exit;;
@@ -72,6 +75,7 @@ parseargs() {
                     help           ) printhelp; exit;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
                     no-force-state ) forcestate="0";;
+                    status         ) status="1";;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
                     timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
                     ""             ) shift; break;;
@@ -147,6 +151,13 @@ stopcmd() {
 main() {
     flsdir="$( getloc --safe tglapp )" # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/tglapp as /tmp is volatile on most systems.
 
+    keyfl="$flsdir/$keycode"
+
+    [ "$status" = "1" ] && {
+        [ -f "$keyfl" ] && pid="$( cat "$keyfl" )" && kill -s 0 "$pid" 2> /dev/null && exit 0
+        exit 1
+    }
+
     [ "$willclean" = "1" ] && {
         for i in "$flsdir"/*
         do
@@ -156,7 +167,6 @@ main() {
         exit 0
     }
 
-    keyfl="$flsdir/$keycode"
     if [ -f $keyfl ]
     then
         pid="$( cat "$keyfl" )"
