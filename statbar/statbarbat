@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
+
 # Query battery status.
 
 bat="/sys/class/power_supply/BAT0"
 cap="$( < "$bat/capacity" )"
 
-if [ "$cap" != "100" ] && [ "$( < "$bat/current_now" )" != "0" ]
-then
-    printf "%s\n" "$cap 🔋"
-fi
+( [ "$cap" != "100" ] && [ "$( < "$bat/current_now" )" != "0" ] && printf "%s\n" "$cap 🔋" ) > "$( getloc statbar )/7_statbarbat"

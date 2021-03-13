@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Dump all packages that can be updated.
 
-yay -Qu > "$HOME/.avlsyu"
+yay -Qu | wc -l > "$HOME/.avlsyu"

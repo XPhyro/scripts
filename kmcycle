@@ -22,7 +22,6 @@ lcknotiflog
 if "$hasCycled"
 then
     notify-send -t 500 "⌨ $km" "Changed current keymap"
-    statbarset
 else
     notify-send -t 1000 "❌ $km" "Current keymap unknown"
 fi

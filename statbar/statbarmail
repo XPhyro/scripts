@@ -4,4 +4,4 @@
 
 unread="$(find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/INBOX/new/* -type f 2>/dev/null | wc -l 2>/dev/null)"
 
-[ "$unread" = 0 ] || printf "%s\n" "${unread} 📧" 2>/dev/null
+( [ "$unread" = 0 ] || printf "%s\n" "${unread} 📧" 2>/dev/null ) > "$( getloc statbar )/4_statbarmail"

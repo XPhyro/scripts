@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Draw status bar.
 
-xsetroot -name "$( { statbarcaps; statbarnum; statbartp; statbarkm; statbarmail; statbaravlsyu; statbarvpn; statbarbat; statbarvolmic; statbarspeak; statbarvol; statbardate; } | sed ':a;N;$!ba;s/\n/ \| /g' )"
+xsetroot -name "$( find "$( getloc statbar )" -mindepth 1 -maxdepth 1 -type f | sort -V | xargs -rI '{}' cat '{}' | sed ':a;N;$!ba;s/\n/ \| /g' )"

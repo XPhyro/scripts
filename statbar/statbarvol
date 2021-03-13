@@ -11,4 +11,4 @@ else
     glyph="🔈"
 fi
 
-printf "%s\n" "$( echo "$stat" | sed '7q;d' | awk '{print $5}' | sed 's/%//' ) $glyph"
+printf "%s\n" "$( echo "$stat" | sed '7q;d' | awk '{print $5}' | sed 's/%//' ) $glyph" > "$( getloc statbar )/10_statbarvol"

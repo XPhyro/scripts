@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 # Query updateable packages.
 
-[ "$( wc -c < ~/.avlsyu )" -gt 1 ] && printf "%s\n" "$( wc -l < ~/.avlsyu ) 📦"
+l="$( < ~/.avlsyu )"
+( [ "$l" -gt 0 ] && printf "%s\n" "$l 📦" ) > "$( getloc statbar )/5_statbaravlsyu"
