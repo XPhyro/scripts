@@ -3,6 +3,6 @@
 # Query battery status.
 
 bat="/sys/class/power_supply/BAT0"
-cap="$( < "$bat/capacity" )"
+cap="$( cat "$bat/capacity" )"
 
-( [ "$cap" != "100" ] && [ "$( < "$bat/current_now" )" != "0" ] && printf "%s\n" "$cap 🔋" ) > "$( getloc statbar )/7_statbarbat"
+( [ "$cap" != "100" ] && [ "$( cat "$bat/current_now" )" != "0" ] && printf "%s\n" "$cap 🔋" ) > "$( getloc statbar )/7_statbarbat"

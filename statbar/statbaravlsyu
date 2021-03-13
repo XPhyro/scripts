@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 # Query updateable packages.
 
-l="$( < ~/.avlsyu )"
+l="$( cat ~/.avlsyu )"
 ( [ "$l" -gt 0 ] && printf "%s\n" "$l 📦" ) > "$( getloc statbar )/5_statbaravlsyu"
