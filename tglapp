@@ -7,6 +7,8 @@
 printhelp() {
     printf "%s\n" \
     "tglapp [OPTION...] COMMAND -- COMMAND" \
+    "   -c, --clean" \
+    "       Clean PIDs after dead processes." \
     "   -f, --force-state" \
     "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following -n." \
     "   -h, --help" \
@@ -48,6 +50,7 @@ parseargs() {
 
                     case "$opt"
                     in
+                        c) willclean="1";;
                         f) forcestate="1";;
                         h) printhelp; exit;;
                         k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
@@ -64,6 +67,7 @@ parseargs() {
                 
                 case "$opt"
                 in
+                    clean          ) willclean="1";;
                     force-state    ) forcestate="1";;
                     help           ) printhelp; exit;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
@@ -116,7 +120,7 @@ validargcase() {
 }
 
 validargs() {
-    [ -z "$cmd" ] && logerrq "Command cannot be empty."
+    [ -z "$cmd" ] && [ "$willclean" != "1" ] && logerrq "Command cannot be empty."
     validargcase "$state" "state" "on" "off"
     [ "$( printf "%s " "$timeout" | sed -E -e 's/[^0-9]\.[^0-9]/ERROR/' -e 's/([0-9]*(\.[0-9]*)?[smh]?\s+)+//' )" != "" ] && logerrq "TIMEOUT is invalid. See sleep --help for details."
 }
@@ -143,11 +147,20 @@ stopcmd() {
 main() {
     flsdir="$( getloc --safe tglapp )" # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/tglapp as /tmp is volatile on most systems.
 
+    [ "$willclean" = "1" ] && {
+        for i in "$flsdir"/*
+        do
+            pid="$( cat "$i" )"
+            kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
+        done
+        exit 0
+    }
+
     keyfl="$flsdir/$keycode"
     if [ -f $keyfl ]
     then
         pid="$( cat "$keyfl" )"
-        if kill -s 0 "$pid"
+        if kill -s 0 "$pid" 2> /dev/null
         then
             if [ -z "$state" ] || [ "$state" = "off" ]
             then
