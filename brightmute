@@ -2,7 +2,7 @@
 # Log the current brightness, then set it to 0 if it is not 0 else set it to the previously logged value. This only affects the laptop screen on my system.
 
 fl="$( getfl brtcch )"
-val="$( < "$fl" )"
+val="$( cat "$fl" )"
 
 if [ "$val" = "0" ]
 then
