@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Print content of file.
+# Print the contents of files with given codes.
 
 getfl "$@" | while read -r i
 do

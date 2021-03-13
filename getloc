@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Get a directory with a code.
+# Get directories with given codes.
 # TODO: Add ordering by usage to match faster.
 
 locfl="$HOME/documents/sys-admin/locations"
