@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-
 # Query battery status.
 
 bat="/sys/class/power_supply/BAT0"
