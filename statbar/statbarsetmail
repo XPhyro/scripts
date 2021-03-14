@@ -6,4 +6,5 @@ do
     sleep 0.25s
 done
 
+statbarmail
 statbarset
