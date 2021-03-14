@@ -1,28 +1,92 @@
 #!/usr/bin/env sh
 # Edit given links.
 
-tmp="$( mktemp )"
+clean() {
+    rm -f "$tmpfl" "$origtmpfl" 2> /dev/null
+}
 
-for i
+trap clean INT EXIT TERM
+
+tmpfl="$( mktemp )"
+
+if [ -t 0 ]
+then
+    for i
+    do
+        if [ -L "$i" ]
+        then
+            dest="$( readlink "$i" )"
+        elif [ -d "$i" ]
+        then
+            dest="DIRECTORY"
+        elif [ -e "$i" ]
+        then
+            dest="REGULAR FILE"
+        else
+            dest="NO FILE"
+        fi
+
+        printf "%s -> %s\n" "$i" "$dest" >> "$tmpfl"
+    done
+else
+    while read -r i
+    do
+        if [ -L "$i" ]
+        then
+            dest="$( readlink "$i" )"
+        elif [ -d "$i" ]
+        then
+            dest="DIRECTORY"
+        elif [ -e "$i" ]
+        then
+            dest="REGULAR FILE"
+        else
+            dest="NO FILE"
+        fi
+
+        printf "%s -> %s\n" "$i" "$dest" >> "$tmpfl"
+    done <&0
+fi
+
+origtmpfl="$( mktemp )"
+cp -f "$tmpfl" "$origtmpfl"
+
+eval "'$EDITOR' '$tmpfl'"
+
+cmp -s "$origtmpfl" "$tmpfl" && exit 0
+
+while read -r i
 do
-    if [ -L "$i" ]
-    then
-        printf "%s\n\nPath of symlink is: %s" "$( readlink "$i" )" "$i" > "$tmp"
-        "$EDITOR" "$tmp"
-        ln -sf "$( head -n 1 "$tmp" )" "$i"
-    elif [ ! -e "$i" ]
-    then
-        printf "\n\nPath of symlinks is: %s" "$i" > "$tmp"
-        "$EDITOR" "$tmp"
-        ln -sf "$( head -n 1 "$tmp" )" "$i"
-    else
-        printf "%s exists, overwrite? (y/N): " "$i"
-        read -r ans
+    fl="$( printf "%s" "$i" | awk -F ' -> ' '{print $1}' )"
+    symlink="$( printf "%s" "$i" | awk -F ' -> ' '{print $2}' )"
 
-        [ "$ans" != "${ans#[Yy]}" ] && {
-            printf "\n\nPath of symlinks is: %s" "$i" > "$tmp"
-            "$EDITOR" "$tmp"
-            ln -sf "$( head -n 1 "$tmp" )" "$i"
-        }
+    if [ -z "$symlink" ] || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] || [ "$symlink" = "NO FILE" ]
+    then
+        continue
     fi
-done
+
+    if [ -L "$fl" ]
+    then
+        rm -f "$fl"
+    elif [ -d "$fl" ]
+    then
+        [ -e "$symlink" ] || {
+            printf "Refusing to overwrite directory [$fl] as the destination [$symlink] does not exist.\n"
+            continue
+        }
+
+        printf "Overwriting directory [$fl] with a symlink to [$symlink].\n"
+        rm -rf "$fl"
+    elif [ -e "$fl" ]
+    then
+        [ -e "$symlink" ] || {
+            printf "Refusing to overwrite file [$fl] as the destination [$symlink] does not exist.\n"
+            continue
+        }
+
+        printf "Overwriting file [$fl] with a symlink to [$symlink].\n"
+        rm -f "$fl"
+    fi
+
+    ln -sf "$symlink" "$fl"
+done < "$tmpfl"
