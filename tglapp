@@ -124,7 +124,12 @@ validargcase() {
 }
 
 validargs() {
-    [ -z "$cmd" ] && [ "$willclean" != "1" ] && logerrq "Command cannot be empty."
+    [ -z "$cmd" ] && [ "$willclean" != "1" ] && {
+        if [ "$state" = "on" ] || [ -z "$keycode" ]
+        then
+            logerrq "Command cannot be empty."
+        fi
+    }
     validargcase "$state" "state" "on" "off"
     [ "$( printf "%s " "$timeout" | sed -E -e 's/[^0-9]\.[^0-9]/ERROR/' -e 's/([0-9]*(\.[0-9]*)?[smh]?\s+)+//' )" != "" ] && logerrq "TIMEOUT is invalid. See sleep --help for details."
 }
