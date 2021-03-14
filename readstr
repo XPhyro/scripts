@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+read str
+printf "%s" "$str"
