@@ -167,7 +167,7 @@ main() {
         exit 0
     }
 
-    if [ -f $keyfl ]
+    if [ -f "$keyfl" ]
     then
         pid="$( cat "$keyfl" )"
         if kill -s 0 "$pid" 2> /dev/null
