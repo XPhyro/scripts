@@ -1,6 +1,4 @@
 #!/usr/bin/env sh
 
-fl="$( getfl ynk )"
-
 lckclplog
-dmenu < "$fl" | awk -F ";" '{print $1}' | tr -d '\n' | xclip -sel clip
+dmenu < "$( getfl ynk )" | awk -F ";" '{print $2}' | sed 's/^ //' | tr -d '\n' | xclip -sel clip
