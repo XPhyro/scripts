@@ -30,6 +30,13 @@ printusage() {
     printhelp
 }
 
+capturestdin() {
+    [ -t 0 ] || {
+        stdinfl="$( mktemp )"
+        sponge "$stdinfl" <&0
+    }
+}
+
 assertarg() {
     [ "$3" ] || {
         printf "[ERROR]: Expected %s argument to %s, exiting.\n" "$2" "$1"
@@ -139,7 +146,12 @@ setargs() {
 }
 
 runcmd() {
-    eval "( $cmd ) &" 
+    if [ -z "$stdinfl" ]
+    then
+        eval "( $cmd ) &"
+    else
+        eval "( $cmd ) < '$stdinfl' &"
+    fi
     printf "%s" "$!" > "$keyfl"
 }
 
@@ -209,7 +221,13 @@ main() {
     fi
 }
 
+clean() {
+    [ -f "$stdinfl" ] && rm -f "$stdinfl"
+}
+
+capturestdin
 parseargs "$@"
 validargs
 setargs
 main
+clean
