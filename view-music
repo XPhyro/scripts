@@ -18,7 +18,7 @@ cmd="xdg-open"
 
 for i
 do
-    if [ ! -z "$cmdget" ]
+    if [ -n "$cmdget" ]
     then
         cmd="$i"
         unset cmdget

@@ -15,7 +15,7 @@ setfile() {
 }
 
 openfile() {
-    [ ! -z "$file" ] || return
+    [ -n "$file" ] || return
 
     xph-open "$file"
 }
@@ -27,7 +27,7 @@ do
         then
             sopt="${i:1}"
 
-            while [ ! -z "$sopt" ]
+            while [ -n "$sopt" ]
             do
                 opt="${sopt:0:1}"
 
@@ -78,12 +78,12 @@ else
 
         loc="$( getloc "$i" )"
 
-        [ ! -z "$loc" ] && {
+        [ -n "$loc" ] && {
             cd "$loc" || continue
 
             setfile
 
-            [ ! -z "$file" ] || continue
+            [ -n "$file" ] || continue
 
             if [ "$ro" = 1 ]
             then

@@ -2,4 +2,4 @@
 # Choose a manual, generate its PDF and open it with zathura.
 
 entry="$( apropos . | dmenu -l 20 | awk '{print $1}' )"
-[ ! -z "$entry" ] && man -Tpdf "$entry" | zathura -
+[ -n "$entry" ] && man -Tpdf "$entry" | zathura -

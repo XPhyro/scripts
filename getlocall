@@ -21,9 +21,9 @@ done
 for i
 do
     loc="$( printf "%s\n" "$( grep -E "^$i\s+.*" "$locfl" | awk '{print $2}' )" )"
-    [ ! -z "$loc" ] || {
+    [ -n "$loc" ] || {
         loc="$( printf "%s\n" "$( grep -E "^$i\s+.*" "$flsfl" | awk '{print $2}' )" )"
-        [ ! -z "$loc" ] && loc="$( dirname "$loc" )/"
+        [ -n "$loc" ] && loc="$( dirname "$loc" )/"
     }
     expandpath "$loc"
 done
