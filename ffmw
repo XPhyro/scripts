@@ -102,7 +102,7 @@ parseargs() {
             then
                 sopt="$( printf "%s" "$1" | cut -c2- )"
 
-                while [ "$sopt" ]
+                while [ ! -z "$sopt" ]
                 do
                     opt="$( printf "%s" "$sopt" | cut -c1 )"
 
@@ -149,7 +149,7 @@ parseargs() {
                     then
                         sopt="$( printf "%s" "$1" | cut -c2- )"
 
-                        while [ "$sopt" ]
+                        while [ ! -z "$sopt" ]
                         do
                             opt="$( printf "%s" "$sopt" | cut -c1 )"
 
@@ -247,8 +247,8 @@ concat() {
         printf "%s\n" "$i" >> "$lstfl"
     done
 
-    [ "$filter" ] && {
-        if [ "$stdin" ] 
+    [ ! -z "$filter" ] && {
+        if [ ! -z "$stdin" ] 
         then
             $filter < "$lstfl" | sponge "$lstfl"
         else
@@ -256,7 +256,7 @@ concat() {
         fi
     }
 
-    [ "$movefirst" ] && movefile="$( head -n 1 "$lstfl" )"
+    [ ! -z "$movefirst" ] && movefile="$( head -n 1 "$lstfl" )"
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
@@ -266,12 +266,12 @@ concat() {
         exit 1
     }
 
-    [ "$remove" ] && printf "%s\n" "$infls" | while read -r i
+    [ ! -z "$remove" ] && printf "%s\n" "$infls" | while read -r i
     do
         rm "$i"
     done
 
-    [ "$movefile" ] && {
+    [ ! -z "$movefile" ] && {
         if [ "$overwrite" = "-y" ]
         then
             mv -f "$outfl" "$movefile"

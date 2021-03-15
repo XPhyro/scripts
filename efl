@@ -4,5 +4,5 @@
 for i
 do
     file="$( getfl "$i" )"
-    [ "$file" ] && eval "'$EDITOR' '$file'"
+    [ ! -z "$file" ] && eval "'$EDITOR' '$file'"
 done

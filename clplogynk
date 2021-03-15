@@ -4,7 +4,7 @@
 
 sel="$( perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' "$( getfl clplog )" | tail -n +3 | head -n -1 | dmenu -snp -i -l 8 -sel 200000000 -p "yank" )"
 
-[ "$sel" ] && {
+[ ! -z "$sel" ] && {
     lckclplog
     printf "%s" "$sel" | tr '' '\n' | xclip -sel clip
 }

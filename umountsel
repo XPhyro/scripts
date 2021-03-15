@@ -3,17 +3,17 @@
 # Adapted from Luke Smith's voidrice.
 
 unmountusb() {
-	[ "$drives" ] || exit 1
+	[ ! -z "$drives" ] || exit 1
 
 	chosen="$( printf "%s" "$drives" | dmenu -i -p "Unmount which drive?" | awk '{print $1}' )"
-	[ "$chosen" ] || exit 1
+	[ ! -z "$chosen" ] || exit 1
 
 	sudo -A umount "$chosen" && notify-send "💻 Drive unmounting" "$chosen unmounted."
 }
 
 unmountandroid() {
 	chosen="$( awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?" )"
-	[ "$chosen" ] || exit 1
+	[ ! -z "$chosen" ] || exit 1
 
 	sudo -A umount -l "$chosen" && notify-send "🤖 Android unmounting" "$chosen unmounted."
 }
@@ -30,11 +30,11 @@ drives="$( lsblk -nrpo "name,type,size,mountpoint" | awk '$2=="part"&&$4!~/\/boo
 
 if ! grep simple-mtpfs /etc/mtab
 then
-	[ "$drives" ] || exit 0
+	[ ! -z "$drives" ] || exit 0
 
 	unmountusb
 else
-	if [ "$drives" ]
+	if [ ! -z "$drives" ]
 	then
         asktype
 	else

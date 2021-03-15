@@ -24,21 +24,21 @@ do
     # find desktop file
     dtf="$( grep "$( mimetype "$i" | awk '{print $2}' )" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//' )"
 
-    [ "$dtf" ] || {
+    [ ! -z "$dtf" ] || {
         xdg-open "$i"
         continue
     }
 
     lf="$( find "$lsa" -name "$dtf" | sort | head -n 1 )"
 
-    [ "$lf" ] && {
+    [ ! -z "$lf" ] && {
         open "$i" "$lf"
         continue
     }
 
     uf="$( find "$usa" -name "$dtf" | sort | head -n 1 )"
 
-    [ "$uf" ] && {
+    [ ! -z "$uf" ] && {
         open "$i" "$uf"
         continue
     }

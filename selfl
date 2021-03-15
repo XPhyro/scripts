@@ -79,7 +79,7 @@ parseargs() {
             then
                 sopt="$( printf "%s" "$1" | cut -c2- )"
 
-                while [ "$sopt" ]
+                while [ ! -z "$sopt" ]
                 do
                     opt="$( printf "%s" "$sopt" | cut -c1 )"
 
@@ -149,7 +149,7 @@ parseargs() {
 }
 
 grepfls() {
-    [ "$regex" ] && {
+    [ ! -z "$regex" ] && {
         fls="$( printf "%s" "$fls" | grep $regextype $ignorecase $invertmatch -e "$regex" )"
     }
 }
@@ -164,17 +164,17 @@ getprompt() {
 }
 
 main() {
-    if ! [ "$directory" ]
+    if ! [ ! -z "$directory" ]
     then
-        [ "$git" ] && initgithash="$( git rev-parse HEAD )"
+        [ ! -z "$git" ] && initgithash="$( git rev-parse HEAD )"
 
         until [ -e "$sel" ] && [ ! -d "$sel" ]
         do
             [ -d "$sel" ] && cdsafe "$sel"
 
-            if [ "$showhidden" ]
+            if [ ! -z "$showhidden" ]
             then
-                if [ "$git" ]
+                if [ ! -z "$git" ]
                 then
                     [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
                         logerr "Not a git repository, exiting."
@@ -200,7 +200,7 @@ main() {
                     fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
                 fi
             else
-                if [ "$git" ]
+                if [ ! -z "$git" ]
                 then
                     [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
                         logerr "Not a git repository, exiting."
@@ -232,7 +232,7 @@ main() {
             if [ "$PWD" = "$root" ]
             then
                 sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
-            elif [ "$git" ]
+            elif [ ! -z "$git" ]
             then
                 if contains "$( realpath "$PWD/.." )" "$( git rev-parse --show-toplevel )"
                 then
@@ -245,15 +245,15 @@ main() {
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || {
-                [ "$sel" ] && sel="$( expandpath "$sel" )"
+                [ ! -z "$sel" ] && sel="$( expandpath "$sel" )"
             }
 
-            [ "$sel" ] || return
+            [ ! -z "$sel" ] || return
         done
 
-        [ "$printinitpwd" ] && printinitpwd="$initpwd: "
+        [ ! -z "$printinitpwd" ] && printinitpwd="$initpwd: "
 
-        if [ "$absolute" ]
+        if [ ! -z "$absolute" ]
         then
             printf "%s%s\n" "$printinitpwd" "$PWD/$sel"
         else
@@ -264,7 +264,7 @@ main() {
         do
             [ -d "$sel" ] && cdsafe "$sel"
 
-            if [ "$showhidden" ]
+            if [ ! -z "$showhidden" ]
             then
                 fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort )"
             else
@@ -282,10 +282,10 @@ main() {
 
             printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
 
-            [ "$sel" ] || {
-                [ "$printinitpwd" ] && printinitpwd="$initpwd: "
+            [ ! -z "$sel" ] || {
+                [ ! -z "$printinitpwd" ] && printinitpwd="$initpwd: "
 
-                if [ "$absolute" ]
+                if [ ! -z "$absolute" ]
                 then
                     printf "%s%s\n" "$printinitpwd" "$PWD"
                 else
@@ -301,7 +301,7 @@ main() {
 setdefargs
 parseargs "$@"
 
-if [ "$initdirs" ]
+if [ ! -z "$initdirs" ]
 then
     masterinitpwd="$PWD"
     printf "%s" "$initdirs" | while read -r i

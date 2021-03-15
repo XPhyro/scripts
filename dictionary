@@ -2,7 +2,7 @@
 
 loc="$( getloc dic )"
 
-lang="$( find "$loc" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | dmenu -i )"; [ "$lang" ] || exit 1
-ft="$( printf "dictionary\nthesaurus\n" | dmenu -i )"; [ "$ft" ] || exit 1
+lang="$( find "$loc" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | dmenu -i )"; [ ! -z "$lang" ] || exit 1
+ft="$( printf "dictionary\nthesaurus\n" | dmenu -i )"; [ ! -z "$ft" ] || exit 1
 
 dmenu -F -i -snp -l 20 < "$loc/$lang/$ft" &> /dev/null # TODO: Should the output be copied to the system clipboard?

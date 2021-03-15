@@ -38,7 +38,7 @@ parseargs() {
             then
                 sopt="$( printf "%s" "$1" | cut -c2- )"
 
-                while [ "$sopt" ]
+                while [ ! -z "$sopt" ]
                 do
                     opt="$( printf "%s" "$sopt" | cut -c1 )"
 

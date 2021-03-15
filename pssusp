@@ -14,16 +14,16 @@ esac
 
 pss="$( printf "%s\n" "$pss" | awk '{if (substr($2, 0, 1) == "'"$sigstat"'") { $2=""; print }}' | sed 's/\s\+/ /g' )"
 
-[ "$pss" ] || exit 0
+[ ! -z "$pss" ] || exit 0
 
 selps="$( printf "%s\n" "$pss" | sed 's/^[^ ]\+\s\+//' | sort -u | dmenu -i -l 20 -p "Process to $sig:" )"
 
-[ "$selps" ] || exit 0
+[ ! -z "$selps" ] || exit 0
 
 escapedselps="$( printf "%s\n" "$selps" | sed 's/[[^.\$*]/\\&/g' )"
 pss="$( printf "%s\n" "$pss" | grep "$escapedselps$" )"
 
-[ "$pss" ] || exit 0
+[ ! -z "$pss" ] || exit 0
 
 if [ "$( printf "%s\n" "$pss" | wc -l )" = "1" ]
 then
@@ -32,4 +32,4 @@ else
     selps="$( printf "%s\n" "$pss" | dmenu -i -l 20 -p "Entry to $sig:" )"
 fi
 
-[ "$selps" ] && printf "%s\n" "$selps" | awk '{print $1}' | xargs -r -I {} kill "-$sig" {}
+[ ! -z "$selps" ] && printf "%s\n" "$selps" | awk '{print $1}' | xargs -r -I {} kill "-$sig" {}
