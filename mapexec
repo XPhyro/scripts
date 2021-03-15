@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines. Basically 'batch' but better.
+# Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically 'batch' but better.
 
 printhelp() {
     printf "%s\n" \
