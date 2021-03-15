@@ -328,7 +328,10 @@ main() {
     ogtmpfl="$( mktemp )"
     tmpfl="$( mktemp )"
 
+    [ -t 0 ] && logerrq "stdin is closed"
     sponge "$ogtmpfl" <&0
+    [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
+
     cp -f "$ogtmpfl" "$tmpfl"
 
     eval "'$EDITOR' -- '$tmpfl' < /dev/tty"
