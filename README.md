@@ -6,7 +6,7 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 - For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
 ## Notable Scripts
-- *mapexec*: Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines. Basically [batch](https://github.com/alexherbo2/batch) but (in my opinion) better.
+- *mapexec*: Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch) but (in my opinion) better.
 - *selfl*: Select a file or directory with dmenu.
 - *ffmw*: ffmpeg wrapper for common actions I use.
 - *tglapp*: Toggle an application on/off based on hashcodes.
