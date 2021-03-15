@@ -49,8 +49,8 @@ parseargs() {
                         o) option="1";;
                         i) option="0";;
                         t) optiontype="-t";;
-                        h) printhelp; exit;;
-                        *) printusage "-$opt"; exit;;
+                        h) printhelp; exit 0;;
+                        *) printusage "-$opt"; exit 0;;
                     esac
 
                     sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -65,9 +65,9 @@ parseargs() {
                     option                ) option="1";;
                     inverse-option        ) option="0";;
                     option-type           ) optiontype="--option-type";;
-                    help                  ) printhelp; exit;;
+                    help                  ) printhelp; exit 0;;
                     ""                    ) shift; break;;
-                    *                     ) printusage "--$opt"; exit;;
+                    *                     ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else

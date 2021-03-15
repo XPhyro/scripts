@@ -61,13 +61,13 @@ parseargs() {
                     in
                         c) willclean="1";;
                         f) forcestate="1";;
-                        h) printhelp; exit;;
+                        h) printhelp; exit 0;;
                         k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
                         n) forcestate="0";;
                         s) status="1";;
                         T) shift; assertarg "-T" "STATE" "$1"; state="$1";;
                         t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
-                        *) printusage "-$opt"; exit;;
+                        *) printusage "-$opt"; exit 0;;
                     esac
 
                     sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -79,14 +79,14 @@ parseargs() {
                 in
                     clean          ) willclean="1";;
                     force-state    ) forcestate="1";;
-                    help           ) printhelp; exit;;
+                    help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
                     no-force-state ) forcestate="0";;
                     status         ) status="1";;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
                     timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
                     ""             ) shift; break;;
-                    *              ) printusage "--$opt"; exit;;
+                    *              ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else
