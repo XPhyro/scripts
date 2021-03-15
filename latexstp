@@ -3,8 +3,6 @@
 # Compilation on access is intended behaviour.
 # This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
 # TODO: Make argument parsing more convenient.
-# TODO: Add option to use pdflatex, xelatex and lualatex.
-# TODO: Make default xelatex or lualatex.
 
 clean() {
     cleanaux
