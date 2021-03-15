@@ -11,7 +11,7 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 - *ffmw*: ffmpeg wrapper for common actions I use.
 - *tglapp*: Toggle an application on/off based on hashcodes.
 - *eln*: Batch edit or create symlinks.
-- *latexstp*: Basically latexmk but sucks less and is less bloated.
+- *latexstp*: Basically latexmk but sucks *less* and is more minimal.
 
 ## Related
 - You can find my gpup management scripts [here](https://github.com/XPhyro/gpupmanager).
