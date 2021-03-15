@@ -299,7 +299,7 @@ setdefargs() {
 }
 
 validateargs() {
-    [ -z "$unmodifcmd" ] && [ -z "$modifcmd" ] && [ -z "$wipecmd" ] && [ -z "$allcmd" ] && logq "Nothing to do"
+    ( [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ] ) && ( [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ] ) && ( [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ] ) && ( [ -z "$allcmd" ] || [ "$allcmd" = ":" ] ) && logq "Nothing to do"
 }
 
 processargs() {
@@ -327,9 +327,13 @@ main() {
     ogtmpfl="$( mktemp )"
     tmpfl="$( mktemp )"
 
-    [ -t 0 ] && logerrq "stdin is closed"
-    sponge "$ogtmpfl" <&0
-    [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
+    if [ ! -t 0 ]
+    then
+        cp -f /dev/stdin "$ogtmpfl"
+        [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
+    else
+        find . -mindepth 1 -maxdepth 1 -type f -or -type l -printf "%P\n" | sed '/^\./d' > "$ogtmpfl"
+    fi
 
     cp -f "$ogtmpfl" "$tmpfl"
 
