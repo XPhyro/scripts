@@ -12,7 +12,7 @@ xset r rate 250 40
 
 xmodmap -e "keycode 108 = Super_R"
 
-if [ "$1" ]
+if [ -n "$1" ]
 then
     km="$1"
 else

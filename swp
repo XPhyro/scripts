@@ -50,7 +50,7 @@ elif [ "$2" ]
 then
     check "$1" "$2"
     swap "$1" "$2"
-elif [ "$1" ]
+elif [ -n "$1" ]
 then
     check "$1" "$1"_
     swap "$1" "$1"_

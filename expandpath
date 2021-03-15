@@ -42,7 +42,7 @@ expandpath() {
     printf '%s\n' "${result%:}"
 }
 
-if [ "$1" ]
+if [ -n "$1" ]
 then
     for i
     do

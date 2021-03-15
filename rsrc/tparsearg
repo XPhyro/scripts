@@ -30,7 +30,7 @@ assertarg() {
 }
 
 parseargs() {
-    while [ "$1" ]
+    while [ -n "$1" ]
     do
         if [ "${1%"${1#?}"}" = "-" ]
         then
