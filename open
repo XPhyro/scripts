@@ -8,50 +8,7 @@ paths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
 
 if [ "$paths" ] 
 then
-    if [ "$EDITOR" ]
-    then
-        "$EDITOR" "$paths"
-    else
-        vim "$paths"
-    fi
+    eval "'$EDITOR' '$paths'"
 else
     printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
 fi
-
-#inputpaths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
-#
-###paths=""
-#
-#paths="$inputpaths"
-#if ! [ "$paths" ]
-#then
-#    if [ "$EDITOR" ]
-#    then
-#        "$EDITOR" $paths
-#    else
-#        vim $paths
-#    fi
-#else
-#    printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
-#fi
-#
-###printf "%s" "$inputpaths" | while read -r i
-###do
-###    [ -f "$i" ] && {
-###        paths="$paths $i"
-###        haspath="1"
-###        echo aaaaa
-###    }
-###done
-###
-###if ! [ "$haspath" ]
-###then
-###    if [ "$EDITOR" ]
-###    then
-###        "$EDITOR" $paths
-###    else
-###        vim $paths
-###    fi
-###else
-###    printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
-###fi

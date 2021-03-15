@@ -17,7 +17,7 @@ mim="$( getfl mim )"
 for i
 do
     [ "$( mimetype --brief "$i" | cut -d/ -f-1 )" = "text" ] && {
-        eval "$EDITOR \"$i\""
+        eval "'$EDITOR' '$i'"
         continue
     }
 
