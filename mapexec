@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines. Basically 'batch' but better.
 
 printhelp() {
     printf "%s\n" \
@@ -21,8 +22,10 @@ printhelp() {
     "       Toggle recording positional arguments as commands to run against unmodified elements." \
     "   --no-wiped" \
     "       Stop recording positional arguments as commands to run against unmodified elements." \
-    "   -s CHARS, --substitute CHARS" \
-    "       Substitute [CHARS][if] with the value of i/f in the command. Default CHARS is [@$]. i represents the initial value of the line and f represents the final value. They might be the same, or be empty depending on the input and the edit. Escaped chars will not be substituted." \
+    "   -q, --quote" \
+    "      Automatically add quotes in the command." \
+    "   --no-quote" \
+    "      Revert -q." \
     "   -h, --help" \
     "       Print help message."
 }
@@ -34,7 +37,7 @@ printusage() {
 
 assertarg() {
     [ -z "$3" ] && {
-        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
+        printf "Expected %s argument to %s, aborting.\n" "$2" "$1"
         exit 1
     }
 }
@@ -47,18 +50,12 @@ logargerrq() {
 registercmd() {
     cmd="$1"
 
-    if [ "$( printf "%s" "$cmd" | wc -c )" = 2 ] && [ -z "$( printf "%s" "$cmd" | sed "s/[if]$//" | tr -d "$varchars" )" ]
-    then
-        f=\"
-        cmd="$( printf "%s" "$cmd" | sed 's/^./$/' )"
-    else
-        f=\'
-    fi
+    [ "$autoquote" = "1" ] && quote=\'
 
-    [ "$(( (cmdpos & CMD_MODIFIED) == CMD_MODIFIED ))" -eq 1 ] && modifcmd="$modifcmd $f$cmd$f"
-    [ "$(( (cmdpos & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -eq 1 ] && unmodifcmd="$unmodifcmd $f$cmd$f"
-    [ "$(( (cmdpos & CMD_WIPED) == CMD_WIPED ))" -eq 1 ] && wipecmd="$wipecmd $f$cmd$f"
-    [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -eq 1 ] && allcmd="$allcmd '$cmd'"
+    [ "$(( (cmdpos & CMD_MODIFIED) == CMD_MODIFIED ))" -eq 1 ] && modifcmd="$modifcmd $quote$cmd$quote"
+    [ "$(( (cmdpos & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -eq 1 ] && unmodifcmd="$unmodifcmd $quote$cmd$quote"
+    [ "$(( (cmdpos & CMD_WIPED) == CMD_WIPED ))" -eq 1 ] && wipecmd="$wipecmd $quote$cmd$quote"
+    [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -eq 1 ] && allcmd="$allcmd $quote$cmd$quote"
 }
 
 parseargs() {
@@ -112,7 +109,6 @@ parseargs() {
                                 fi
                             }
                             ;;
-                        s) shift; assertarg "-s" "CHARS" "$1"; varchars="$1";;
                         a) 
                             if [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -ne 1 ]
                             then
@@ -165,7 +161,7 @@ parseargs() {
                                 cmdpos="$(( cmdpos & ~CMD_WIPED ))"
                             fi
                             ;;
-                        s) shift; assertarg "-s" "CHARS" "$1"; varchars="$1";;
+                        q) shift; autoquote="1";;
                         h) printhelp; exit 0;;
                         *) printusage "-$opt"; exit 0;;
                     esac
@@ -269,7 +265,8 @@ parseargs() {
                     no-modified   ) cmdpos="$(( cmdpos & ~CMD_MODIFIED ))";;
                     no-unmodified ) cmdpos="$(( cmdpos & ~CMD_UNMODIFIED ))";;
                     no-wiped      ) cmdpos="$(( cmdpos & ~CMD_WIPED ))";;
-                    substitute    ) shift; assertarg "--substitute" "CHARS" "$1"; varchars="$1";;
+                    quote         ) shift; autoquote="1";;
+                    no-quote      ) shift; autoquote="0";;
                     help          ) printhelp; exit 0;;
                     ""            ) shift; break;;
                     *             ) printusage "--$opt"; exit 0;;
@@ -303,7 +300,7 @@ setdefargs() {
 }
 
 validateargs() {
-    [ -z "$unmodifcmd" ] && [ -z "$modifcmd" ] && [ -z "$wipecmd" ] && [ -z "$allcmd" ] && logq "Nothing to do, exiting."
+    [ -z "$unmodifcmd" ] && [ -z "$modifcmd" ] && [ -z "$wipecmd" ] && [ -z "$allcmd" ] && logq "Nothing to do, aborting."
 }
 
 processargs() {
@@ -336,8 +333,10 @@ main() {
 
     eval "'$EDITOR' -- '$tmpfl' < /dev/tty"
 
+    [ ! -s "$tmpfl" ] && logerrq "File is wiped, aborting."
+
     lc="$( wc -l < "$ogtmpfl" )"
-    [ "$lc" -ne "$( wc -l < "$tmpfl" )" ] && logerrq "Line count changed, exiting."
+    [ "$lc" -ne "$( wc -l < "$tmpfl" )" ] && logerrq "Line count changed, aborting."
 
     while read -r i <&3 && read -r f <&4
     do
