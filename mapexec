@@ -300,7 +300,7 @@ setdefargs() {
 }
 
 validateargs() {
-    [ -z "$unmodifcmd" ] && [ -z "$modifcmd" ] && [ -z "$wipecmd" ] && [ -z "$allcmd" ] && logq "Nothing to do, aborting."
+    [ -z "$unmodifcmd" ] && [ -z "$modifcmd" ] && [ -z "$wipecmd" ] && [ -z "$allcmd" ] && logq "Nothing to do"
 }
 
 processargs() {
@@ -311,12 +311,12 @@ processargs() {
 }
 
 logq() {
-    printf "%s\n" "$@"
+    printf "%s, exiting.\n" "$@"
     exit 0
 }
 
 logerrq() {
-    printf "[ERROR]: %s\n" "$@" >&2
+    printf "[ERROR]: %s, aborting.\n" "$@" >&2
     exit 1
 }
 
@@ -333,10 +333,10 @@ main() {
 
     eval "'$EDITOR' -- '$tmpfl' < /dev/tty"
 
-    [ ! -s "$tmpfl" ] && logerrq "File is wiped, aborting."
+    [ ! -s "$tmpfl" ] && logerrq "File is wiped"
 
     lc="$( wc -l < "$ogtmpfl" )"
-    [ "$lc" -ne "$( wc -l < "$tmpfl" )" ] && logerrq "Line count changed, aborting."
+    [ "$lc" -ne "$( wc -l < "$tmpfl" )" ] && logerrq "Line count changed"
 
     while read -r i <&3 && read -r f <&4
     do
