@@ -332,7 +332,7 @@ main() {
         cp -f /dev/stdin "$ogtmpfl"
         [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
     else
-        find . -mindepth 1 -maxdepth 1 -type f -or -type l -printf "%P\n" | sed '/^\./d' > "$ogtmpfl"
+        find . -mindepth 1 -maxdepth 1 -printf "%P\n" -type f -or -type l | sed '/^\./d' > "$ogtmpfl"
     fi
 
     cp -f "$ogtmpfl" "$tmpfl"
