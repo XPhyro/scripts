@@ -2,5 +2,5 @@
 
 locate "$@" | while read -r i
 do
-    [ -d "$i" ] && printf "$i\n"
+    [ -d "$i" ] && printf "%s\n" "$i"
 done

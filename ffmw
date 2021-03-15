@@ -63,6 +63,7 @@ printusage() {
 }
 
 printferr() {
+    # shellcheck disable=SC2059
     >&2 printf "$@"
 }
 

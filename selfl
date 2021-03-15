@@ -164,7 +164,7 @@ getprompt() {
 }
 
 main() {
-    if ! [ -n "$directory" ]
+    if [ -z "$directory" ]
     then
         [ -n "$git" ] && initgithash="$( git rev-parse HEAD )"
 

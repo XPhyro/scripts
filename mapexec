@@ -286,7 +286,6 @@ parseargs() {
 }
 
 setdefargs() {
-    varchars='@$'
     cmdpos=0
     cmdinit=0
     CMD_MODIFIED=1

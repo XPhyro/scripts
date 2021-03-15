@@ -8,4 +8,5 @@ readchar() {
 }
 
 readchar char
+# shellcheck disable=SC2154
 printf "%s" "$char"

@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
+# shellcheck disable=SC2046
 xdotool mousemove $( xrandr --listactivemonitors | grep ".*$( mondef )$" | awk '{print $3}' | tr -c 0-9 " "  | awk '{print ($1 + $5 - 23)" "($6 + 37)}' ) click 1 mousemove restore
