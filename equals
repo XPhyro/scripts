@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Exits with code 0 if the first given argument equals any of the other arguments, else exits with code 1.
 
+[ "$#" -lt 2 ] && exit 1
+
 val="$1"
 shift
 
