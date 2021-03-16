@@ -1,12 +1,15 @@
 #!/usr/bin/env sh
-# Return whether "$1" is contained in "$2".
-# TODO: Does not work correctly, fix.
+# Return whether the first argument contains any of the other arguments.
 
-case "$1" in
-    *"$2"*)
-        exit 0
-        ;;
-    *)
-        exit 1
-        ;;
-esac
+arg="$1"
+shift
+
+for i
+do
+    case "$arg"
+    in
+        *"$i"* ) exit 0 ;;
+    esac
+done
+
+exit 1
