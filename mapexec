@@ -59,6 +59,40 @@ registercmd() {
     [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -eq 1 ] && allcmd="$allcmd $quote$cmd$quote"
 }
 
+flipcmd() {
+    CMD_METHOD="$1"
+    methodcmd="$2"
+    if [ "$(( (cmdpos & CMD_METHOD) == CMD_METHOD ))" -ne 1 ]
+    then
+        cmdpos="$(( cmdpos | CMD_METHOD ))"
+        if [ "$(( (cmdinit & CMD_METHOD) == CMD_METHOD ))" -ne 1 ]
+        then
+            eval "$methodcmd="
+            cmdinit="$(( cmdinit | CMD_METHOD ))"
+        fi
+    else
+        cmdpos="$(( cmdpos & ~CMD_METHOD ))"
+    fi
+}
+
+flipasyncinternal() {
+    contains "$1" "$2" && {
+        if [ -n "$( eval "\$$3" )" ]
+        then
+            unset "$3"
+        else
+            eval "$3='&'"
+        fi
+    }
+}
+
+flipasync() {
+    flipasyncinternal "$1" "a" "allasync"
+    flipasyncinternal "$1" "m" "modifasync"
+    flipasyncinternal "$1" "u" "unmodifasync"
+    flipasyncinternal "$1" "w" "wipeasync"
+}
+
 parseargs() {
     while [ -n "$1" ]
     do
@@ -74,96 +108,13 @@ parseargs() {
 
                     case "$opt"
                     in
-                        A) 
-                            shift
-                            [ -n "$( printf "%s" "$1" | tr -d 'amuw' )" ] && logargerrq "-A" "$1"
-                            contains "$1" "a" && {
-                                if [ -n "$allasync" ]
-                                then
-                                    unset allasync
-                                else
-                                    allasync="&"
-                                fi
-                            }
-                            contains "$1" "m" && {
-                                if [ -n "$modifasync" ]
-                                then
-                                    unset modifasync
-                                else
-                                    modifasync="&"
-                                fi
-                            }
-                            contains "$1" "u" && {
-                                if [ -n "$unmodifasync" ]
-                                then
-                                    unset unmodifasync
-                                else
-                                    unmodifasync="&"
-                                fi
-                            }
-                            contains "$1" "w" && {
-                                if [ -n "$wipeasync" ]
-                                then
-                                    unset wipeasync
-                                else
-                                    wipeasync="&"
-                                fi
-                            }
-                            ;;
-                        a) 
-                            if [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -ne 1 ]
-                            then
-                                cmdpos="$(( cmdpos | CMD_ALL ))"
-                                if [ "$(( (cmdinit & CMD_ALL) == CMD_ALL ))" -ne 1 ]
-                                then
-                                    allcmd=""
-                                    cmdinit="$(( cmdinit | CMD_ALL ))"
-                                fi
-                            else
-                                cmdpos="$(( cmdpos & ~CMD_ALL ))"
-                            fi
-                            ;;
-                        m) 
-                            if [ "$(( (cmdpos & CMD_MODIFIED) == CMD_MODIFIED ))" -ne 1 ]
-                            then
-                                cmdpos="$(( cmdpos | CMD_MODIFIED ))"
-                                if [ "$(( (cmdinit & CMD_MODIFIED) == CMD_MODIFIED ))" -ne 1 ]
-                                then
-                                    modifcmd=""
-                                    cmdinit="$(( cmdinit | CMD_MODIFIED ))"
-                                fi
-                            else
-                                cmdpos="$(( cmdpos & ~CMD_MODIFIED ))"
-                            fi
-                            ;;
-                        u) 
-                            if [ "$(( (cmdpos & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -ne 1 ]
-                            then
-                                cmdpos="$(( cmdpos | CMD_UNMODIFIED ))"
-                                if [ "$(( (cmdinit & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -ne 1 ]
-                                then
-                                    unmodifcmd=""
-                                    cmdinit="$(( cmdinit | CMD_UNMODIFIED ))"
-                                fi
-                            else
-                                cmdpos="$(( cmdpos & ~CMD_UNMODIFIED ))"
-                            fi
-                            ;;
-                        w) 
-                            if [ "$(( (cmdpos & CMD_WIPED) == CMD_WIPED ))" -ne 1 ]
-                            then
-                                cmdpos="$(( cmdpos | CMD_WIPED ))"
-                                if [ "$(( (cmdinit & CMD_WIPED) == CMD_WIPED ))" -ne 1 ]
-                                then
-                                    wipecmd=""
-                                    cmdinit="$(( cmdinit | CMD_WIPED ))"
-                                fi
-                            else
-                                cmdpos="$(( cmdpos & ~CMD_WIPED ))"
-                            fi
-                            ;;
-                        q) shift; autoquote="1";;
-                        h) printhelp; exit 0;;
+                        A) shift; parseargs --async "$1";;
+                        a) parseargs --all;;
+                        m) parseargs --modified;;
+                        u) parseargs --unmodified;;
+                        w) parseargs --wiped;;
+                        q) parseargs --quote;;
+                        h) parseargs --help;;
                         *) printusage "-$opt"; exit 0;;
                     esac
 
@@ -174,94 +125,11 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    async) 
-                        shift
-                        [ -n "$( printf "%s" "$1" | tr -d 'amuw' )" ] && logargerrq "--async" "$1"
-                        contains "$1" "a" && {
-                            if [ -n "$allasync" ]
-                            then
-                                unset allasync
-                            else
-                                allasync="&"
-                            fi
-                        }
-                        contains "$1" "m" && {
-                            if [ -n "$modifasync" ]
-                            then
-                                unset modifasync
-                            else
-                                modifasync="&"
-                            fi
-                        }
-                        contains "$1" "u" && {
-                            if [ -n "$unmodifasync" ]
-                            then
-                                unset unmodifasync
-                            else
-                                unmodifasync="&"
-                            fi
-                        }
-                        contains "$1" "w" && {
-                            if [ -n "$wipeasync" ]
-                            then
-                                unset wipeasync
-                            else
-                                wipeasync="&"
-                            fi
-                        }
-                        ;;
-                    all) 
-                        if [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -ne 1 ]
-                        then
-                            cmdpos="$(( cmdpos | CMD_ALL ))"
-                            if [ "$(( (cmdinit & CMD_ALL) == CMD_ALL ))" -ne 1 ]
-                            then
-                                allcmd=""
-                                cmdinit="$(( cmdinit | CMD_ALL ))"
-                            fi
-                        else
-                            cmdpos="$(( cmdpos & ~CMD_ALL ))"
-                        fi
-                        ;;
-                    modified) 
-                        if [ "$(( (cmdpos & CMD_MODIFIED) == CMD_MODIFIED ))" -ne 1 ]
-                        then
-                            cmdpos="$(( cmdpos | CMD_MODIFIED ))"
-                            if [ "$(( (cmdinit & CMD_MODIFIED) == CMD_MODIFIED ))" -ne 1 ]
-                            then
-                                modifcmd=""
-                                cmdinit="$(( cmdinit | CMD_MODIFIED ))"
-                            fi
-                        else
-                            cmdpos="$(( cmdpos & ~CMD_MODIFIED ))"
-                        fi
-                        ;;
-                    unmodified) 
-                        if [ "$(( (cmdpos & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -ne 1 ]
-                        then
-                            cmdpos="$(( cmdpos | CMD_UNMODIFIED ))"
-                            if [ "$(( (cmdinit & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -ne 1 ]
-                            then
-                                unmodifcmd=""
-                                cmdinit="$(( cmdinit | CMD_UNMODIFIED ))"
-                            fi
-                        else
-                            cmdpos="$(( cmdpos & ~CMD_UNMODIFIED ))"
-                        fi
-                        ;;
-                    wiped) 
-                        if [ "$(( (cmdpos & CMD_WIPED) == CMD_WIPED ))" -ne 1 ]
-                        then
-                            cmdpos="$(( cmdpos | CMD_WIPED ))"
-                            if [ "$(( (cmdinit & CMD_WIPED) == CMD_WIPED ))" -ne 1 ]
-                            then
-                                wipecmd=""
-                                cmdinit="$(( cmdinit | CMD_WIPED ))"
-                            fi
-                        else
-                            cmdpos="$(( cmdpos & ~CMD_WIPED ))"
-                        fi
-                        ;;
+                    async         ) shift; [ -n "$( printf "%s" "$1" | tr -d 'amuw' )" ] && logargerrq "--async" "$1"; flipasync "$1";;
+                    all           ) flipcmd "$CMD_ALL" "allcmd";;
+                    modified      ) flipcmd "$CMD_MODIFIED" "modifcmd";;
+                    unmodified    ) flipcmd "$CMD_UNMODIFIED" "unmodifcmd";;
+                    wiped         ) flipcmd "$CMD_WIPED" "wipecmd";;
                     no-all        ) cmdpos="$(( cmdpos & ~CMD_ALL ))";;
                     no-modified   ) cmdpos="$(( cmdpos & ~CMD_MODIFIED ))";;
                     no-unmodified ) cmdpos="$(( cmdpos & ~CMD_UNMODIFIED ))";;
