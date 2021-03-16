@@ -4,31 +4,31 @@
 
 printhelp() {
     printf "%s\n" \
-    "mapexec [OPTION...] [COMMAND...] -- [COMMAND...]" \
-    "   -A CHARS, --async CHARS" \
-    "       Toggle asynchronous command execution for given cases. CHARS can include [amuw]." \
-    "   -a, --all" \
-    "       Toggle recording positional arguments as commands to run against all elements." \
-    "   --no-all" \
-    "       Stop recording positional arguments as commands to run against all elements." \
-    "   -m, --modified" \
-    "       Toggle recording positional arguments as commands to run against modified elements." \
-    "   --no-modified" \
-    "       Stop recording positional arguments as commands to run against modified elements." \
-    "   -u, --unmodified" \
-    "       Toggle reording positional arguments as commands to run against unmodified elements." \
-    "   --no-unmodified" \
-    "       Stop reording positional arguments as commands to run against unmodified elements." \
-    "   -w, --wiped" \
-    "       Toggle recording positional arguments as commands to run against unmodified elements." \
-    "   --no-wiped" \
-    "       Stop recording positional arguments as commands to run against unmodified elements." \
-    "   -q, --quote" \
-    "      Automatically add quotes in the command." \
-    "   --no-quote" \
-    "      Revert -q." \
-    "   -h, --help" \
-    "       Print help message."
+        "mapexec [OPTION...] [COMMAND...] -- [COMMAND...]" \
+        "   -A CHARS, --async CHARS" \
+        "       Toggle asynchronous command execution for given cases. CHARS can include [amuw]." \
+        "   -a, --all" \
+        "       Toggle recording positional arguments as commands to run against all elements." \
+        "   --no-all" \
+        "       Stop recording positional arguments as commands to run against all elements." \
+        "   -m, --modified" \
+        "       Toggle recording positional arguments as commands to run against modified elements." \
+        "   --no-modified" \
+        "       Stop recording positional arguments as commands to run against modified elements." \
+        "   -u, --unmodified" \
+        "       Toggle reording positional arguments as commands to run against unmodified elements." \
+        "   --no-unmodified" \
+        "       Stop reording positional arguments as commands to run against unmodified elements." \
+        "   -w, --wiped" \
+        "       Toggle recording positional arguments as commands to run against unmodified elements." \
+        "   --no-wiped" \
+        "       Stop recording positional arguments as commands to run against unmodified elements." \
+        "   -q, --quote" \
+        "      Automatically add quotes in the command." \
+        "   --no-quote" \
+        "      Revert -q." \
+        "   -h, --help" \
+        "       Print help message."
 }
 
 printusage() {
