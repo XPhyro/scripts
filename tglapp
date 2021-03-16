@@ -14,7 +14,7 @@ printhelp() {
         "   -h, --help" \
         "       Print help message." \
         "   -k KEYCODE, --keycode KEYCODE" \
-        "       Use KEYCODE to identify the given command instead of using a auto-computed hash." \
+        "       Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /." \
         "   -n, --no-force-state" \
         "       Inhibit -f. Inhibited by a following -f." \
         "   -s, --status" \
@@ -139,6 +139,7 @@ validargs() {
     }
     validargcase "$state" "state" "on" "off"
     [ "$( printf "%s " "$timeout" | sed -E -e 's/[^0-9]\.[^0-9]/ERROR/' -e 's/([0-9]*(\.[0-9]*)?[smh]?\s+)+//' )" != "" ] && logerrq "TIMEOUT is invalid. See sleep --help for details."
+    contains "$keycode" "/" && logerrq "KEYCODE cannot contain /."
 }
 
 setargs() {
