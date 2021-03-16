@@ -36,8 +36,8 @@ done
 for i
 do
     loc="$( expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$locfl" | awk '{print $2}' )" )" )"
-    [ -z "$loc" ] || {
-        mkdir -p -- "$loc"
+    [ -n "$loc" ] && {
+        [ "$safe" = "1" ] && mkdir -p -- "$loc"
         printf "%s\n" "$loc"
     }
 done
