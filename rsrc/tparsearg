@@ -36,7 +36,7 @@ parseargs() {
         then
             if ! [ "${1%"${1#??}"}" = "--" ]
             then
-                sopt="$( printf "%s" "$1" | cut -c2- )"
+                sopt="${1#?}"
 
                 while [ -n "$sopt" ]
                 do
@@ -44,23 +44,23 @@ parseargs() {
 
                     case "$opt"
                     in
-                        a) shift; assertarg "-a" "ARGUMENT" "$1"; argument="$1";;
-                        c) shift; canbeemptyargument="$1";;
-                        o) option="1";;
-                        i) option="0";;
-                        t) optiontype="-t";;
-                        h) printhelp; exit 0;;
+                        a) shift; parseargs --argument "$1";;
+                        c) shift; parseargs --can-be-empty-argument "$1";;
+                        o) parseargs --option;;
+                        i) parseargs --inverse-option;;
+                        t) parseargs --option-type;;
+                        h) parseargs --help;;
                         *) printusage "-$opt"; exit 0;;
                     esac
 
-                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                    sopt="${sopt#?}"
                 done
             else
-                opt="$( printf "%s" "$1" | cut -c3- )"
+                opt="${1#??}"
                 
                 case "$opt"
                 in
-                    argument              ) shift; assertarg "--argument" "ARGUMENT" "$1"; argument="$1";;
+                    argument              ) shift; assertarg "-a, --argument" "ARGUMENT" "$1"; argument="$1";;
                     can-be-empty-argument ) shift; canbeemptyargument="$1";;
                     option                ) option="1";;
                     inverse-option        ) option="0";;
@@ -71,7 +71,7 @@ parseargs() {
                 esac
             fi
         else
-            # positional argument
+            : # positional argument
         fi
 
         shift
@@ -79,6 +79,6 @@ parseargs() {
 
     for i
     do
-        # guaranteed positional argument
+        : # guaranteed positional argument
     done
 }
