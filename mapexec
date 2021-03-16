@@ -6,7 +6,7 @@ printhelp() {
     printf "%s\n" \
         "mapexec [OPTION...] [COMMAND...] -- [COMMAND...]" \
         "   -A CHARS, --async CHARS" \
-        "       Toggle asynchronous command execution for given cases. CHARS can include [amuw]." \
+        "       Toggle asynchronous command execution for given cases. CHARS can include [amuw]. Toggling will be done for every occurence of [amuw]." \
         "   -a, --all" \
         "       Toggle recording positional arguments as commands to run against all elements." \
         "   --no-all" \
@@ -75,22 +75,35 @@ flipcmd() {
     fi
 }
 
-flipasyncinternal() {
-    contains "$1" "$2" && {
-        if [ -n "$( eval "\$$3" )" ]
-        then
-            unset "$3"
-        else
-            eval "$3='&'"
-        fi
-    }
-}
-
 flipasync() {
-    flipasyncinternal "$1" "a" "allasync"
-    flipasyncinternal "$1" "m" "modifasync"
-    flipasyncinternal "$1" "u" "unmodifasync"
-    flipasyncinternal "$1" "w" "wipeasync"
+    chars="$1"
+    while [ -n "$chars" ]
+    do
+        c="${chars%"${chars#?}"}"
+        while read -r i <&3 && read -r j <&4
+        do
+            [ "$c" = "$i" ] && {
+                if [ -n "$( eval "printf '%s' \"\$$j\"" )" ]
+                then
+                    unset "$j"
+                else
+                    eval "$j='&'"
+                fi
+            }
+            
+        done 3<<EOF3 4<<EOF4
+a
+m
+u
+w
+EOF3
+allasync
+modifasync
+unmodifasync
+wipeasync
+EOF4
+        chars="${chars#?}"
+    done
 }
 
 parseargs() {
@@ -100,7 +113,7 @@ parseargs() {
         then
             if ! [ "${1%"${1#??}"}" = "--" ]
             then
-                sopt="$( printf "%s" "$1" | cut -c2- )"
+                sopt="${1#?}"
 
                 while [ -n "$sopt" ]
                 do
@@ -118,10 +131,10 @@ parseargs() {
                         *) printusage "-$opt"; exit 0;;
                     esac
 
-                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                    sopt="${sopt#?}"
                 done
             else
-                opt="$( printf "%s" "$1" | cut -c3- )"
+                opt="${1#??}"
                 
                 case "$opt"
                 in
