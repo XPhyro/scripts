@@ -2,7 +2,7 @@
 
 printhelp() {
     printf "%s\n" \
-    "scriptname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]" \
+        "scriptname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]" \
     "   -a ARGUMENT, --argument ARGUMENT" \
     "       Do something with argument." \
     "   -c ARGUMENT, --can-be-empty-argument ARGUMENT" \
