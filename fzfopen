@@ -67,7 +67,7 @@ do
     }
 done
 
-if ! [ "$@" ]
+if [ "$#" -eq 0 ]
 then
     setfile
     openfile
