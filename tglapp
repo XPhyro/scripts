@@ -6,23 +6,23 @@
 
 printhelp() {
     printf "%s\n" \
-    "tglapp [OPTION...] COMMAND -- COMMAND" \
-    "   -c, --clean" \
-    "       Clean PIDs after dead processes and exit." \
-    "   -f, --force-state" \
-    "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following -n." \
-    "   -h, --help" \
-    "       Print help message." \
-    "   -k KEYCODE, --keycode KEYCODE" \
-    "       Use KEYCODE to identify the given command instead of using a auto-computed hash." \
-    "   -n, --no-force-state" \
-    "       Inhibit -f. Inhibited by a following -f." \
-    "   -s, --status" \
-    "       Only query the status of the command; exit with code 0 if state is on, else exit with code 1." \
-    "   -T STATE, --toggle STATE" \
-    "       The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}." \
-    "   -t TIMEOUT, --timeout TIMEOUT" \
-    "       Wait TIMEOUT amount and SIGKILL the process if not terminated yet. The TIMEOUT format is the same as in the sleep command. Multiple timeout amounts can be passed as a single argument, separated with whitespace."
+        "tglapp [OPTION...] COMMAND -- COMMAND" \
+        "   -c, --clean" \
+        "       Clean PIDs after dead processes and exit." \
+        "   -f, --force-state" \
+        "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following -n." \
+        "   -h, --help" \
+        "       Print help message." \
+        "   -k KEYCODE, --keycode KEYCODE" \
+        "       Use KEYCODE to identify the given command instead of using a auto-computed hash." \
+        "   -n, --no-force-state" \
+        "       Inhibit -f. Inhibited by a following -f." \
+        "   -s, --status" \
+        "       Only query the status of the command; exit with code 0 if state is on, else exit with code 1." \
+        "   -T STATE, --toggle STATE" \
+        "       The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}." \
+        "   -t TIMEOUT, --timeout TIMEOUT" \
+        "       Wait TIMEOUT amount and SIGKILL the process if not terminated yet. The TIMEOUT format is the same as in the sleep command. Multiple timeout amounts can be passed as a single argument, separated with whitespace."
 }
 
 printusage() {
@@ -51,7 +51,7 @@ parseargs() {
         then
             if ! [ "${1%"${1#??}"}" = "--" ]
             then
-                sopt="$( printf "%s" "$1" | cut -c2- )"
+                sopt="${1#?}"
 
                 while [ -n "$sopt" ]
                 do
@@ -70,10 +70,10 @@ parseargs() {
                         *) printusage "-$opt"; exit 0;;
                     esac
 
-                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                    sopt="${sopt#?}"
                 done
             else
-                opt="$( printf "%s" "$1" | cut -c3- )"
+                opt="${1#??}"
                 
                 case "$opt"
                 in
