@@ -60,6 +60,7 @@ printhelp() {
 printusage() {
     printf "Option [%s] is not valid.\n\n" "$1"
     printhelp "$2"
+    exit 1
 }
 
 printferr() {
@@ -112,7 +113,7 @@ parseargs() {
                         h) printhelp; exit 0;;
                         l) loud="${loud}1";;
                         q) quiet="${quiet}1";;
-                        *) printusage "-$opt"; exit 0;;
+                        *) printusage "-$opt";;
                     esac
 
                     sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -125,7 +126,7 @@ parseargs() {
                     help  ) printhelp; exit 0;;
                     loud  ) loud="${loud}1";;
                     quiet ) quiet="${quiet}1";;
-                    *     ) printusage "--$opt"; exit 0;;
+                    *     ) printusage "--$opt";;
                 esac
             fi
         else
@@ -165,7 +166,7 @@ parseargs() {
                                 n) overwrite="-n";;
                                 r) remove="1";;
                                 s) stdin="1";;
-                                *) printusage "-$opt" "concat"; exit 0;;
+                                *) printusage "-$opt" "concat";;
                             esac
 
                             sopt="$( printf "%s" "$sopt" | cut -c2- )"
@@ -185,7 +186,7 @@ parseargs() {
                             remove        ) remove="1";;
                             stdin         ) stdin="1";;
                             ""            ) shift; break;;
-                            *             ) printusage "--$opt" "concat"; exit 0;;
+                            *             ) printusage "--$opt" "concat";;
                         esac
                     fi
                 else
@@ -224,12 +225,11 @@ $1"
                 if [ "$i" = "-h" ] || [ "$i" = "--help" ]
                 then
                     printhelp "help"
+                    exit 0
                 else
                     printusage "$i" "help"
-                    break
                 fi
             done
-            exit 0
             ;;
     esac
 }
@@ -297,14 +297,14 @@ main() {
 
 parseargs "$@"
 
-qldiff=$(( "$( printf "%s" "$quiet" | wc -c )" - "$( printf "%s" "$loud" | wc -c )" ))
+qldiff=$(( $( printf "%s" "$quiet" | wc -c ) - $( printf "%s" "$loud" | wc -c ) ))
 
-if [ "$qldiff" = 1 ]
+if [ "$qldiff" -eq 1 ]
 then
     main > /dev/null
 elif [ "$qldiff" -gt 1 ]
 then
-    main > /dev/null 2>&1
+    main 2>&1 > /dev/null
 else
     main
 fi
