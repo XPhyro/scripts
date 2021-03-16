@@ -211,7 +211,7 @@ main() {
 
     if [ ! -t 0 ]
     then
-        cp -f /dev/stdin "$ogtmpfl"
+        cp -f /dev/stdin "$ogtmpfl" # TODO: Late capturing of stdin might be a problem later on, beware.
         [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
     else
         find . -mindepth 1 -maxdepth 1 -printf "%P\n" -type f -or -type l | sort -dV | sed '/^\./d' > "$ogtmpfl"
