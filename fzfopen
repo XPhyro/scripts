@@ -6,9 +6,7 @@ setfile() {
 }
 
 openfile() {
-    [ -n "$file" ] || return
-
-    xph-open "$file"
+    [ -n "$file" ] && xph-open "$file"
 }
 
 if [ "$#" -eq 0 ]
@@ -18,17 +16,10 @@ then
 else
     for i
     do
-        [ "${i:0:1}" = "-" ] && continue
-
         loc="$( getloc "$i" )"
 
-        [ -n "$loc" ] && {
-            cd "$loc" || continue
-
+        [ -d "$loc" ] && cd "$loc" && {
             setfile
-
-            [ -n "$file" ] || continue
-
             openfile
         }
     done
