@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 # Select a file using fzf and open it using xph-open.
 
-printhelpelement() {
-    printf "%s\n\t\t%s\n" "$1" "$2"
-}
-
-printhelp() {
-    printhelpelement "-h, --help" "print this help message, then exit"
-    printhelpelement "-r, --read-only" "print the file to stdout instead of xdg-opening it"
-}
-
 setfile() {
     file="$( fzf )"
 }
@@ -19,53 +10,6 @@ openfile() {
 
     xph-open "$file"
 }
-
-for i
-do
-    [ "${i:0:1}" = "-" ] && {
-        if ! [ "${i:1:1}" = "-" ]
-        then
-            sopt="${i:1}"
-
-            while [ -n "$sopt" ]
-            do
-                opt="${sopt:0:1}"
-
-                case "$opt" in
-                    r)
-                        ro=1
-                        ;;
-                    h)
-                        printhelp
-                        exit 0
-                        ;;
-                    *)
-                        printf "%s\n" "-$opt is not a valid option, exiting."
-                        exit 1
-                        ;;
-                esac
-
-                sopt="${sopt:1}"
-            done
-        else
-            lopt="${i:2}"
-            
-            case "$lopt" in
-                read-only)
-                    ro=1
-                    ;;
-                help)
-                    printhelp
-                    exit 0
-                    ;;
-                *)
-                    printf "%s\n" "--$lopt is not a valid option, exiting."
-                    exit 1
-                    ;;
-            esac
-        fi
-    }
-done
 
 if [ "$#" -eq 0 ]
 then
@@ -85,12 +29,7 @@ else
 
             [ -n "$file" ] || continue
 
-            if [ "$ro" = 1 ]
-            then
-                printf "%s\n" "$file"
-            else
-                openfile
-            fi
+            openfile
         }
     done
 fi
