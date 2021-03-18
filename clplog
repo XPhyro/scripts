@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # Log clipped text as a daemon (though it does not fork out). clplogynk be used to list and copy these with rofi.
 # This script and clplogynk assume that the copied string does not contain the character .
+# TODO: Only log if the string is not a special file when invoked with 'file' (after being dumped into a file), or check for non-printable characters and do not log if it has non-printable characters.
 
 logfl="$( readlink -m "$( getfl clplog )" )"
 bakdir="$( readlink -m "$( getloc clplogbak )" )"
