@@ -59,7 +59,7 @@ do
     then
         log "Already up to date."
     else
-        eval "$cmd" || log "Failed to update $loc."
+        eval "( $cmd )" || log "Failed to update $loc."
     fi
 
     echo
