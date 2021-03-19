@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 # Edit given links.
-# TODO: Use mapexec.
 
 clean() {
     rm -f "$tmpfl" "$origtmpfl" 2> /dev/null
@@ -56,13 +55,11 @@ eval "'$EDITOR' '$tmpfl'"
 
 cmp -s "$origtmpfl" "$tmpfl" && exit 0
 
-while read -r i
+while IFS=' -> ' read -r fl symlink <&3 && IFS=' -> ' read -r ogfl ogsymlink <&4
 do
-    fl="$( printf "%s" "$i" | awk -F ' -> ' '{print $1}' )"
-    symlink="$( printf "%s" "$i" | awk -F ' -> ' '{print $2}' )"
-
-    if [ -z "$symlink" ] || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] || [ "$symlink" = "NO FILE" ]
+    if [ "$fl" != "$ogfl" ] || [ -z "$symlink" ] || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] || [ "$symlink" = "NO FILE" ] || [ "$symlink" = "$ogsymlink" ]
     then
+        printf "Ignoring line [$fl -> $symlink].\n"
         continue
     fi
 
@@ -90,4 +87,4 @@ do
     fi
 
     ln -sf "$symlink" "$fl"
-done < "$tmpfl"
+done 3< "$tmpfl" 4< "$origtmpfl"
