@@ -3,6 +3,7 @@
 # Compilation on access is intended behaviour.
 # This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
 # TODO: Make argument parsing more convenient.
+# TODO: Limit CPU usage of xelatex. ([cpulimit ... -- xelatex ...] did not work)
 
 clean() {
     cleanaux
