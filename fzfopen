@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # Select a file using fzf and open it using xph-open.
 
-setfile() {
+main() {
     file="$( fzf )"
-}
-
-openfile() {
+    [ $? -ne 0 ] && exit $?
     [ -n "$file" ] && xph-open "$file"
 }
 
@@ -13,8 +11,7 @@ if [ "$#" -eq 0 ]
 then
     while true
     do
-        setfile
-        openfile
+        main
     done
 else
     while true
@@ -22,11 +19,7 @@ else
         for i
         do
             loc="$( getloc "$i" )"
-
-            [ -d "$loc" ] && cd "$loc" && {
-                setfile
-                openfile
-            }
+            [ -d "$loc" ] && cd "$loc" && main
         done
     done
 fi
