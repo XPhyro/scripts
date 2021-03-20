@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+while IFS=" " read -r i j
+do
+    contains "$i" / && {
+        printf "Keycode cannot contain /, aborting.\n"
+        exit 1
+    }
+    
+    printf "%s\n" "$j" | expandpath > "$HOME/documents/sys-admin/files-container/$i"
+done < "$HOME/documents/sys-admin/files"
