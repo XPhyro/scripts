@@ -1,25 +1,5 @@
 #!/usr/bin/env sh
-# Get files with given codes.
-# TODO: Add ordering by usage to match faster.
+# Get a file with the given code.
 
-fls="$HOME/documents/sys-admin/files"
-
-if [ $# -eq 0 ]
-then
-    exit 0
-fi
-
-for i
-do
-    [ "$i" = "*" ] && {
-        awk '{print $2}' "$fls"
-        exit 0
-    }
-done
-
-list="$( cat "$fls" )"
-
-for i
-do
-    printf "%s" "$list" | grep -E "^$i\s+.*"
-done | awk '{print $2}' | expandpath
+cat "$HOME/documents/sys-admin/files-container/$1" 2> /dev/null
+exit $?
