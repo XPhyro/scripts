@@ -66,7 +66,7 @@ do
     fi
 done
 
-( xdg-open "$fl.pdf" 2>&1 > /dev/null & )  2>&1 > /dev/null # TODO: Write in a more sane way.
+( eval "'$READER' '$fl.pdf'" 2>&1 > /dev/null & )  2>&1 > /dev/null # TODO: Write in a more sane way.
 exitonwrite &
 ( main & ) 2>&1 > /dev/null
 eval "'$EDITOR' '$fl.tex'"
