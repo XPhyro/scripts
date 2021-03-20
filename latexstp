@@ -57,12 +57,8 @@ printf "%s" "$pss" | grep -q "zathura $fl.pdf" || zathura "$fl.pdf" &
 
 while true
 do
-    inotifywait "$fl.tex"
-
+    inotifywait -e move_self "$fl.tex"
     while [ ! -f "$fl.tex" ]; do sleep 0.1s; done
-
-    # clean # to prevent permanent halting of compilation in the case of corrupted files
     compile
-
     while [ ! -f "$fl.tex" ]; do sleep 0.1s; done
 done
