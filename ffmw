@@ -304,7 +304,7 @@ then
     main > /dev/null
 elif [ "$qldiff" -gt 1 ]
 then
-    main 2>&1 > /dev/null
+    main > /dev/null 2>&1
 else
     main
 fi

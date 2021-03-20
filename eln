@@ -59,7 +59,7 @@ while IFS=' -> ' read -r fl symlink <&3 && IFS=' -> ' read -r ogfl ogsymlink <&4
 do
     if [ "$fl" != "$ogfl" ] || [ -z "$symlink" ] || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] || [ "$symlink" = "NO FILE" ] || [ "$symlink" = "$ogsymlink" ]
     then
-        printf "Ignoring line [$fl -> $symlink].\n"
+        printf "Ignoring line [%s -> %s].\n" "$fl" "$symlink"
         continue
     fi
 

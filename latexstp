@@ -29,7 +29,7 @@ compile() {
 }
 
 exitonwrite() {
-    inotifywait -e close_write,close_nowrite "$fl.tex" 2>&1 > /dev/null
+    inotifywait -e close_write,close_nowrite "$fl.tex" > /dev/null 2>&1
     cleanaux
     exit 0
 }
@@ -37,8 +37,8 @@ exitonwrite() {
 main() {
     while true
     do
-        inotifywait -e move_self "$fl.tex" 2>&1 > /dev/null
-        compile 2>&1 > /dev/null
+        inotifywait -e move_self "$fl.tex" > /dev/null 2>&1
+        compile > /dev/null 2>&1
     done
 }
 
@@ -56,7 +56,7 @@ fi
 }
 
 clean
-compile 2>&1 > /dev/null
+compile > /dev/null 2>&1
 
 for i
 do
@@ -67,7 +67,7 @@ do
     fi
 done
 
-( eval "'$READER' '$fl.pdf'" 2>&1 > /dev/null & )  2>&1 > /dev/null # TODO: Write in a more sane way.
+eval "'$READER' '$fl.pdf'" > /dev/null 2>&1 &
 exitonwrite &
-( main & ) 2>&1 > /dev/null
+main > /dev/null 2>&1 &
 eval "'$EDITOR' '$fl.tex'"
