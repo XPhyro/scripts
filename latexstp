@@ -15,16 +15,30 @@ cleanaux() {
 
 compile() {
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    xelatex -draftmode -shell-escape -halt-on-error "$fl" || {
-        clean
-        xelatex -draftmode -shell-escape -halt-on-error "$fl"
+    xelatex -shell-escape -halt-on-error "$fl" || {
+        cleanaux
+        xelatex -shell-escape -halt-on-error "$fl"
     }
     bibtex "$fl"
     biber "$fl"
-    makeindex "$fl".idx
+    makeindex "$fl".idx 2> /dev/null
     # makeindex -s style.gls ...
-    xelatex -draftmode -shell-escape -halt-on-error "$fl"
     xelatex -shell-escape -halt-on-error "$fl"
+    xelatex -shell-escape -halt-on-error "$fl"
+}
+
+exitonwrite() {
+    inotifywait -e close_write,close_nowrite "$fl.tex" 2>&1 > /dev/null
+    cleanaux
+    exit 0
+}
+
+main() {
+    while true
+    do
+        inotifywait -e move_self "$fl.tex" 2>&1 > /dev/null
+        compile 2>&1 > /dev/null
+    done
 }
 
 if [ "$1" = "" ]
@@ -41,7 +55,7 @@ fi
 }
 
 clean
-compile
+compile 2>&1 > /dev/null
 
 for i
 do
@@ -52,13 +66,7 @@ do
     fi
 done
 
-pss="$( ps aux )"
-printf "%s" "$pss" | grep -q "zathura $fl.pdf" || zathura "$fl.pdf" &
-
-while true
-do
-    inotifywait -e move_self "$fl.tex"
-    while [ ! -f "$fl.tex" ]; do sleep 0.1s; done
-    compile
-    while [ ! -f "$fl.tex" ]; do sleep 0.1s; done
-done
+( xdg-open "$fl.pdf" 2>&1 > /dev/null & )  2>&1 > /dev/null # TODO: Write in a more sane way.
+exitonwrite &
+( main & ) 2>&1 > /dev/null
+eval "'$EDITOR' '$fl.tex'"
