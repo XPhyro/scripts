@@ -17,7 +17,9 @@ do
     }
 done
 
+list="$( cat "$fls" )"
+
 for i
 do
-    expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$fls" | awk '{print $2}' )" )"
-done
+    printf "%s" "$list" | grep -E "^$i\s+.*"
+done | awk '{print $2}' | expandpath
