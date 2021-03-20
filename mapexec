@@ -181,7 +181,7 @@ setdefargs() {
 }
 
 validateargs() {
-    ( [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ] ) && ( [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ] ) && ( [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ] ) && ( [ -z "$allcmd" ] || [ "$allcmd" = ":" ] ) && logq "Nothing to do"
+    { [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ]; } && { [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ]; } && { [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ]; } && { [ -z "$allcmd" ] || [ "$allcmd" = ":" ]; } && logq "Nothing to do"
 }
 
 processargs() {
@@ -230,13 +230,17 @@ main() {
     do
         if [ "$i" = "$f" ]
         then
+            # shellcheck disable=SC2154
             eval "( $unmodifcmd ) $unmodifasync"
         elif [ -z "$f" ]
         then
+            # shellcheck disable=SC2154
             eval "( $wipecmd ) $wipeasync"
         else
+            # shellcheck disable=SC2154
             eval "( $modifcmd ) $modifasync"
         fi
+        # shellcheck disable=SC2154
         eval "( $allcmd ) $allasync"
     done 3< "$ogtmpfl" 4< "$tmpfl"
 }

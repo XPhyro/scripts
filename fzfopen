@@ -3,6 +3,7 @@
 
 main() {
     file="$( fzf )"
+    # shellcheck disable=SC2181
     [ $? -ne 0 ] && exit $?
     [ -n "$file" ] && xph-open "$file"
 }
