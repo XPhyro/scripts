@@ -11,16 +11,22 @@ openfile() {
 
 if [ "$#" -eq 0 ]
 then
-    setfile
-    openfile
-else
-    for i
+    while true
     do
-        loc="$( getloc "$i" )"
+        setfile
+        openfile
+    done
+else
+    while true
+    do
+        for i
+        do
+            loc="$( getloc "$i" )"
 
-        [ -d "$loc" ] && cd "$loc" && {
-            setfile
-            openfile
-        }
+            [ -d "$loc" ] && cd "$loc" && {
+                setfile
+                openfile
+            }
+        done
     done
 fi
