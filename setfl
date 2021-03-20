@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
+flsfl="$HOME/documents/sys-admin/files"
+sort -o "$flsfl" "$flsfl"
+container="$flsfl-container"
+rm -rf "$container"
+mkdir -p "$container"
+
 while IFS=" " read -r i j
 do
     contains "$i" / && {
@@ -7,5 +13,5 @@ do
         exit 1
     }
     
-    printf "%s\n" "$j" | expandpath > "$HOME/documents/sys-admin/files-container/$i"
-done < "$HOME/documents/sys-admin/files"
+    printf "%s\n" "$j" | expandpath > "$container/$i"
+done < "$flsfl"

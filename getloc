@@ -1,43 +1,5 @@
 #!/usr/bin/env sh
 # Get directories with given codes.
-# TODO: Add ordering by usage to match faster.
 
-locfl="$HOME/documents/sys-admin/locations"
-
-if [ $# -eq 0 ]
-then
-    exit 0
-fi
-
-for i
-do
-    case "$i"
-    in
-        "*"       ) wild="1";;
-        -s|--safe ) safe="1";;
-    esac
-done
-
-[ "$wild" = "1" ] && {
-    if [ "$safe" = "1" ]
-    then
-        awk '{print $2}' "$locfl" | while read -r i
-        do
-            mkdir -p -- "$i"
-            printf "%s\n" "$i"
-        done
-    else
-        awk '{print $2}' "$locfl"
-    fi
-
-    exit 0
-}
-
-for i
-do
-    loc="$( expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$locfl" | awk '{print $2}' )" )" )"
-    [ -n "$loc" ] && {
-        [ "$safe" = "1" ] && mkdir -p -- "$loc"
-        printf "%s\n" "$loc"
-    }
-done
+cat "$HOME/documents/sys-admin/locations-container/$1" 2> /dev/null
+exit $?
