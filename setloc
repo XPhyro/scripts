@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+locfl="$HOME/documents/sys-admin/locations"
+sort -o "$locfl" "$locfl"
+container="$locfl-container"
+rm -rf "$container"
+mkdir -p "$container"
+
+while IFS=" " read -r i j
+do
+    contains "$i" / && {
+        printf "Keycode cannot contain /, aborting.\n"
+        exit 1
+    }
+    
+    printf "%s\n" "$j" | expandpath > "$container/$i"
+done < "$locfl"
