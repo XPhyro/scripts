@@ -215,6 +215,7 @@ main() {
         if [ -z "$state" ] || [ "$state" = "on" ]
         then
             runcmd
+            wait
         elif [ "$forcestate" = "1" ]
         then
             runcmd
