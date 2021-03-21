@@ -1,30 +1,20 @@
 #!/usr/bin/env sh
 
-fls="$( find "$( getloc wa )" -mindepth 1 -maxdepth 1 -type f )"
-
-[ "$1" = "1" ] && {
-    shuffle="1"
-    fls="$( printf "%s" "$fls" | shuf )"
-    shift
-}
+waloc="$( getloc wa )" || exit 1
+fls="$( find "$waloc" -mindepth 1 -maxdepth 1 -type f | shuf )"
+i="$( printf "%s" "$fls" | head -n 1 )"
 
 sleep "$1"
-hsetroot -cover "$( printf "%s" "$fls" | head -n 1 )"
-
+hsetroot -cover "$i"
 sleep "$2"
-hsetroot -cover "$( printf "%s" "$fls" | head -n 1 )"
-
+hsetroot -cover "$i"
 sleep "$3"
 
 while true
 do
-    printf "%s" "$fls" | while read -r i
-    do
-        cmp -s "$i" "$last" && continue
-        hsetroot -cover "$i"
-        last="$i"
-        sleep "$4"
-    done
-
-    [ "$shuffle" = "1" ] && fls="$( printf "%s" "$fls" | shuf )"
+    cmp -s "$i" "$last" && continue
+    hsetroot -cover "$i"
+    last="$i"
+    sleep "$4"
+    i="$( printf "%s\n" "$fls" | awk -v count=1 'BEGIN { srand() } rand() < count / ++n { if (n <= count) { s[n] = $0 } else { s[1+int(rand()*count)] = $0 } } END { for (i in s) print s[i] }' )"
 done
