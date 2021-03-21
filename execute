@@ -3,5 +3,6 @@
 
 . ~/.zshrc
 
-to_exec=$(echo "" | dmenu -l 0) 
-$to_exec & disown
+cmd="$( printf "" | dmenu -l 0 )"
+eval "( $cmd ) &"
+disown
