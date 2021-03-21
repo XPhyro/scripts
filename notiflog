@@ -3,8 +3,14 @@
 
 # TODO: Add support for multi-line title/description of notifications.
 
-fl="$( getfl notiflog )"
-lckfl="$( getfl notifloglck )"
+fl="$( getfl notiflog )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
+lckfl="$( getfl notifloglck )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 beg="##beg##"
 end="##end##"
 

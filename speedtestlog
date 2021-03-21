@@ -19,7 +19,10 @@ echo
 printf "%s" "$log" | sed 's/;/\n/g'
 printf "\n\nLogging results...\n"
 
-fl="$( getfl stl )"
+fl="$( getfl stl )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 
 printf "%s\n" "$log" >> "$fl"
 

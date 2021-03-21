@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 # Print logged results of speedtestlog.
 
-fl="$( getfl stl )"
+fl="$( getfl stl )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 pingav="0.0"
 dowav="0.0"
 upav="0.0"

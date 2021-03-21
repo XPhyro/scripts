@@ -10,7 +10,10 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckfl="$( getfl upabllck )"
+lckfl="$( getfl upabllck )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 
 for i
 do
@@ -38,7 +41,10 @@ touch "$lckfl"
 log "Reading updateables.
 "
 
-lst="$( getfl upabl )"
+lst="$( getfl upabl )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 
 while read -r i
 do

@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 
-fl="$( getfl zoom )"
+fl="$( getfl zoom )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 
 n=1
 while read -r i

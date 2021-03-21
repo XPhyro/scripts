@@ -10,9 +10,18 @@ open() {
     fi
 }
 
-usa="$( getloc usa )"
-lsa="$( getloc lsa )"
-mim="$( getfl mim )"
+usa="$( getloc usa )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
+lsa="$( getloc lsa )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
+mim="$( getfl mim )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 
 for i
 do

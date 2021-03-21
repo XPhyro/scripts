@@ -25,7 +25,10 @@ then
 
     simcargs="'$tfl'"
 else
-    simloc="$( getloc wowsimt )"
+    simloc="$( getloc wowsimt )" || {
+        printf "[ERROR]: getloc failed, aborting.\n"
+        exit 1
+    }
 
     region="$( cat "$simloc/.region" )"
     realm="$( cat "$simloc/.realm" )"

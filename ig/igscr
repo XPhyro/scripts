@@ -40,7 +40,10 @@ genlst() {
 
 trap cleanexit INT
 
-iggdir="$( getloc igg )"
+iggdir="$( getloc igg )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
 cdsafe "$iggdir"
 
 newfollow1="$( dupe follow )"

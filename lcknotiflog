@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 
-lckfl="$( getfl notifloglck )"
+lckfl="$( getfl notifloglck )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 
 [ -f "$lckfl" ] && {
     while true

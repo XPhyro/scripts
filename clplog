@@ -5,7 +5,10 @@
 
 logfl="$( readlink -m "$( getfl clplog )" )"
 bakdir="$( readlink -m "$( getloc clplogbak )" )"
-lckfl="$( getfl clploglck )"
+lckfl="$( getfl clploglck )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
 lastclp="$( xclip -o -sel clip )"
 oldclp="$lastclp"
 

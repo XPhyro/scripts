@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 # Scrape profile photos of instagram accounts. First igscr should be run to generate JSON files.
 
-base="$( getloc igg )"
+base="$( getloc igg )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
 log="igscrpp.log"
 
 cd "$base" || exit 0
