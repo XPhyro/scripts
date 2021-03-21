@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
-# Print the contents of files with given codes.
+# Print the content of file with the given code.
 
-getfl "$@" | while read -r i
-do
-    cat "$i" 2> /dev/null
-done
+cat "$( getfl "$1" )" 2> /dev/null
+exit $?
