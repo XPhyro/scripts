@@ -3,6 +3,6 @@
 
 for i
 do
-    file="$( getfl "$i" )"
-    [ -n "$file" ] && eval "'$EDITOR' '$file'"
+    file="$( getfl "$i" )" || continue
+    eval "'$EDITOR' '$file'"
 done
