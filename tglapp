@@ -168,7 +168,9 @@ stopcmd() {
 }
 
 main() {
-    flsdir="$( getloc --safe tglapp )" # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/tglapp as /tmp is volatile on most systems.
+    flsdir="$( getloc tglapp )" # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/tglapp as /tmp is volatile on most systems.
+    [ -z "$flsdir" ] && logerrq "No tglapp location is set."
+    mkdir -p "$flsdir"
 
     keyfl="$flsdir/$keycode"
 
@@ -178,6 +180,7 @@ main() {
     }
 
     [ "$willclean" = "1" ] && {
+        [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning."
         for i in "$flsdir"/*
         do
             pid="$( cat "$i" )"
