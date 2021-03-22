@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Watch notifications.
-
-dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'"
