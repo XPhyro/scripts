@@ -2,7 +2,9 @@
 # Toggle X keymap.
 
 setkm() {
-    setxkbmap "$1" && km="$1"
+    setxkbmap "$1"
+    setxkb "$1"
+    km="$1"
 }
 
 km="$( xkb-switch )"
