@@ -10,7 +10,6 @@ do
 "
 done
 
-# if sh is used instead of zsh, this part always exits
 # TODO: If sh is used instead of zsh, this part always exits. Fix.
 [ -z "$cdevs" ] && {
     printf "No connected device, exiting.\n"
