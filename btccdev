@@ -1,14 +1,18 @@
 #!/usr/bin/env sh
 # Connect to a previously paired bluetooth device.
-# TODO: If the paired device is connected, do not show it as an option.
 
-device="$( bluetoothctl paired-devices | awk '{$1=""; print substr($0,2)}' | sort -r | dmenu -i -p 'Which device to connect to?' )"
+bluetoothctl paired-devices | while read -r _ i devname
+do
+    [ "$( qdbus --system org.bluez "/org/bluez/hci0/dev_$( printf "%s" "$i" | tr ':' '_' )" org.bluez.Device1.Connected )" != "true" ] && printf "%s %s\n" "$i" "$devname"
+done | sort -r | dmenu -i -p 'Which device to connect to?' | IFS= read -r dev
 
-if printf "%s" "$device" | awk '{print $1}' | xargs -r bluetoothctl connect
+[ -z "$dev" ] && exit 0
+
+devname="$( printf "%s" "$dev" | awk '{$1=""; print substr($0,2)}' )"
+
+if printf "%s" "$dev" | awk '{print $1}' | xargs -r bluetoothctl connect
 then
-    notify-send -t 1000 "🎧 $( printf "%s" "$device" | awk '{$1=""; print substr($0,2)}' )" "Connected via bluetooth"
+    notify-send -t 1000 "✔ $devname" "Connected to device."
 else
-    notify-send -t 1000 "❌ $( printf "%s" "$device" | awk '{$1=""; print substr($0,2)}' )" "ERROR: Connection via bluetooth failed"
+    notify-send -t 1000 "❌ $devname" "Could not connect to device."
 fi
-
-statbarset
