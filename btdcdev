@@ -4,15 +4,16 @@
 devs="$( bluetoothctl paired-devices | awk '{print $2}' )"
 cdevs=""
 
-printf "%s" "$devs" | while read -r i
+printf "%s\n" "$devs" | while read -r i
 do
-    [ "$( qdbus --system org.bluez "/org/bluez/hci0/dev_$( printf "%s" "$i" | sed 's/:/_/g' )" org.bluez.Device1.Connected )" = "true" ] && cdevs="$( printf "%s%s\n" "$cdevs" "$i" )"
+    [ "$( qdbus --system org.bluez "/org/bluez/hci0/dev_$( printf "%s" "$i" | sed 's/:/_/g' )" org.bluez.Device1.Connected )" = "true" ] && cdevs="$cdevs$i
+"
 done
 
 # if sh is used instead of zsh, this part always exits
 # find a fix and use sh
-[ "$cdevs" = "" ] && {
-    printf "%s\n" "No connected device, exiting."
+[ -z "$cdevs" ] && {
+    printf "No connected device, exiting.\n"
     exit 0
 }
 
