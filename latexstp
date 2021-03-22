@@ -18,7 +18,7 @@ compile() {
     # Adapted from https://tex.stackexchange.com/a/8792/199300
     xelatex -shell-escape -halt-on-error "$fl" || {
         cleanaux
-        xelatex -shell-escape -halt-on-error "$fl"
+        xelatex -shell-escape -halt-on-error "$fl" || return 1
     }
     bibtex "$fl"
     biber "$fl"
