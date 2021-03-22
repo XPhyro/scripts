@@ -4,13 +4,10 @@
 killall sxhkd && wassxhkd="1"
 
 setxkbmap -option "caps:escape"
-
+xmodmap -e "keycode 108 = Super_R"
 xmodmap -e "keycode 9 = Caps_Lock"
 xset -r 9
-
 xset r rate 250 40
-
-xmodmap -e "keycode 108 = Super_R"
 
 if [ -n "$1" ]
 then
