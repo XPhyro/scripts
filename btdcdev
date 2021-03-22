@@ -14,19 +14,19 @@ cdevs="$( bluetoothctl paired-devices | while read -r _ i _
 
 if [ "$( printf "%s\n" "$cdevs" | wc -l )" = 1 ]
 then
-    ddev="$cdevs"
+    dev="$cdevs"
 else
-    ddev="$( printf "%s" "$cdevs" | dmenu -i -p "Device to disconnect:" )"
-    [ "$ddev" = "" ] && exit 0
+    dev="$( printf "%s" "$cdevs" | dmenu -i -p "Device to disconnect:" )"
+    [ "$dev" = "" ] && exit 0
 fi
 
-ddevname="$( bluetoothctl info "$i" | grep -m 1 Alias: | sed 's/.*Alias:\s*//' )"
+devname="$( bluetoothctl info "$i" | grep -m 1 Alias: | sed 's/.*Alias:\s*//' )"
 
-if bluetoothctl disconnect "$ddev"
+if bluetoothctl disconnect "$dev"
 then
-    notify-send -t 1000 "✔  $ddevname" "Device disconnected."
+    notify-send -t 1000 "✔  $devname" "Device disconnected."
 else
-    notify-send -t 1000 "❌ $ddevname" "Could not disconnect device."
+    notify-send -t 1000 "❌ $devname" "Could not disconnect device."
 fi
 
 statbarset
