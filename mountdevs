@@ -9,7 +9,7 @@ devs="$( lsblk -rpo "name,label,mountpoint" )"
 
 while IFS='' read -r label mp _
 do
-    printf "%s" "$devs" | while read -r devname devlabel devmp _
+    printf "%s\n" "$devs" | while read -r devname devlabel devmp _
     do
         [ "$devlabel" = "$label" ] && [ -z "$devmp" ] && mount "$devname" "$mp"
     done
