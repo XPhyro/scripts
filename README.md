@@ -3,7 +3,7 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 
 ## Notice that
 - Some of these scripts assume that some of the other scripts are in your path.
-- In some scripts, GNU specific options are used.
+- In some scripts, GNU specific options are used (ex.: sed -i).
 - All scripts were written with only Linux in mind. They might not be portable to non-Linux systems. Very rarely, Arch Linux is assumed.
 - For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
