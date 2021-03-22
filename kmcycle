@@ -2,26 +2,14 @@
 # Toggle X keymap.
 
 setkm() {
-    setxkbmap "$1"
-    setxkb "$1"
-    km="$1"
+    setxkbmap "$1" && km="$1"
 }
 
 km="$( xkb-switch )"
-hasCycled="true"
 
 case "$km"
 in
     gb) setkm tr;;
     tr) setkm gb;;
-    *) hasCycled="false";;
+    *) exit 1;;
 esac
-
-lcknotiflog
-
-if "$hasCycled"
-then
-    notify-send -t 500 "⌨ $km" "Changed current keymap"
-else
-    notify-send -t 1000 "❌ $km" "Current keymap unknown"
-fi
