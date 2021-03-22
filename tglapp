@@ -178,7 +178,7 @@ main() {
     }
 
     [ "$willclean" = "1" ] && {
-        [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning."
+        [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "$flsdir"/*
         do
             pid="$( cat "$i" )"
