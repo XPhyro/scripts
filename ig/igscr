@@ -30,7 +30,7 @@ genlst() {
     cdsafe "$iggdir"
 
     igdirs="$( find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' )"
-    printf "%s" "$igdirs" | while read -r i
+    printf "%s\n" "$igdirs" | while read -r i
     do
         find "$i" -printf "%f\n" | grep -E ".*(jpg|mp4|part)" | sort -n > "$i/ig.list"
     done

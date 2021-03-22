@@ -304,7 +304,7 @@ parseargs "$@"
 if [ -n "$initdirs" ]
 then
     masterinitpwd="$PWD"
-    printf "%s" "$initdirs" | while read -r i
+    printf "%s\n" "$initdirs" | while read -r i
     do
         cdsafe "$masterinitpwd"
         cdsafe "$i"
