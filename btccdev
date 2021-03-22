@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Connect to a previously paired bluetooth device.
+# TODO: If the paired device is connected, do not show it as an option.
 
 device="$( bluetoothctl paired-devices | awk '{$1=""; print substr($0,2)}' | sort -r | dmenu -i -p 'Which device to connect to?' )"
 
