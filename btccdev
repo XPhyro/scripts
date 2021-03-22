@@ -4,7 +4,7 @@
 bluetoothctl paired-devices | while read -r _ i devname
 do
     [ "$( qdbus --system org.bluez "/org/bluez/hci0/dev_$( printf "%s" "$i" | tr ':' '_' )" org.bluez.Device1.Connected )" != "true" ] && printf "%s %s\n" "$i" "$devname"
-done | sort -r | dmenu -i -p 'Which device to connect to?' | IFS= read -r dev
+done | sort -r | dmenu -i -p 'Which device to connect to?' | IFS= read -r dev # TODO: Do not prompt with dmenu if no entry is available.
 
 [ -z "$dev" ] && exit 0
 

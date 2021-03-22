@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Disconnect from a bluetooth device. Prompts a selection if more than one device is connected.
+# TODO: Show device names in dmenu.
 
 cdevs="$( bluetoothctl paired-devices | while read -r _ i _
     do
@@ -28,5 +29,3 @@ then
 else
     notify-send -t 1000 "❌ $devname" "Could not disconnect device."
 fi
-
-statbarset
