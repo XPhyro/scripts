@@ -87,9 +87,9 @@ parseargs() {
                     no-force-state ) forcestate="0";;
                     status         ) status="1";;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
-                    timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts
-$1"; signals="$signals
-$2"; shift;;
+                    timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts$1
+"; signals="$signals$2
+"; shift;;
                     ""             ) shift; break;;
                     *              ) printusage "--$opt"; exit 0;;
                 esac
@@ -133,11 +133,6 @@ validargcase() {
         done
         logargcaseerrq "$argname" "$@"
     }
-}
-
-preprocessargs() {
-    [ -n "$timeouts" ] && timeouts="$( printf "%s\n" "$timeouts" | tail -n +2 )"
-    [ -n "$signals" ] && signals="$( printf "%s\n" "$signals" | tail -n +2 )"
 }
 
 validargs() {
@@ -250,7 +245,6 @@ clean() {
 
 capturestdin
 parseargs "$@"
-preprocessargs
 validargs
 processargs
 main
