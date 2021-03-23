@@ -60,14 +60,14 @@ parseargs() {
 
                     case "$opt"
                     in
-                        c) willclean="1";;
-                        f) forcestate="1";;
-                        h) printhelp; exit 0;;
-                        k) shift; assertarg "-k" "KEYCODE" "$1"; keycode="$1";;
-                        n) forcestate="0";;
-                        s) status="1";;
-                        T) shift; assertarg "-T" "STATE" "$1"; state="$1";;
-                        t) shift; assertarg "-t" "TIMEOUT" "$1"; timeout="$1";;
+                        c) parseargs --clean;;
+                        f) parseargs --force;;
+                        h) parseargs --help;;
+                        k) shift; parseargs --keycode "$1";;
+                        n) parseargs --no-force-state;;
+                        s) parseargs --status;;
+                        T) shift; parseargs --toggle "$1";;
+                        t) shift; parseargs --timeout "$1";;
                         *) printusage "-$opt"; exit 0;;
                     esac
 
