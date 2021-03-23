@@ -12,9 +12,9 @@ sleep "$3"
 
 while true
 do
-    cmp -s "$i" "$last" && continue
+    [ -z "$last" ] && i="$( printf "%s\n" "$fls" | awk -v count=1 'BEGIN { srand() } rand() < count / ++n { if (n <= count) { s[n] = $0 } else { s[1+int(rand()*count)] = $0 } } END { for (i in s) print s[i] }' )"
+    cmp -s "$i" "$last" 2> /dev/null && continue
     hsetroot -cover "$i"
     last="$i"
     sleep "$4"
-    i="$( printf "%s\n" "$fls" | awk -v count=1 'BEGIN { srand() } rand() < count / ++n { if (n <= count) { s[n] = $0 } else { s[1+int(rand()*count)] = $0 } } END { for (i in s) print s[i] }' )"
 done
