@@ -22,11 +22,25 @@ printusage() {
     printhelp
 }
 
+logerrq() {
+    printf "[ERROR]: %s\n" "$1"
+    exit 1
+}
+
 assertarg() {
-    [ -z "$3" ] && {
-        printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
-        exit 1
-    }
+    [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
+}
+
+assertfl() {
+    [ -e "$1" ] || logerrq "No such file as $1, exiting."
+}
+
+assertrfl() {
+    [ -f "$1" ] || logerrq "No such regular file as $1, exiting."
+}
+
+assertdir() {
+    [ -d "$1" ] || logerrq "No such directory as $1, exiting."
 }
 
 parseargs() {
@@ -60,17 +74,18 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    argument              ) shift; assertarg "-a, --argument" "ARGUMENT" "$1"; argument="$1";;
-                    can-be-empty-argument ) shift; canbeemptyargument="$1";;
-                    option                ) option="1";;
-                    inverse-option        ) option="0";;
-                    option-type           ) optiontype="--option-type";;
+                    argument              ) shift; assertarg "-a, --argument" "ARGUMENT" "$1"; optargument="$1";;
+                    can-be-empty-argument ) shift; optcanbeemptyargument="$1";;
+                    option                ) optoption="1";;
+                    inverse-option        ) optoption="0";;
+                    option-type           ) optoptiontype="--option-type";;
                     help                  ) printhelp; exit 0;;
                     ""                    ) shift; break;;
                     *                     ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else
+            assertfl "$1" # change according to needs
             : # positional argument
         fi
 
@@ -79,6 +94,7 @@ parseargs() {
 
     for i
     do
+        assertfl "$i" # change according to needs
         : # guaranteed positional argument
     done
 }
