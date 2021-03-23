@@ -2,72 +2,166 @@
 # Compile and show its PDF of a TeX file, then compile it every time it is accessed/modified/etc.
 # Compilation on access is intended behaviour.
 # This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
-# TODO: Make argument parsing more convenient.
 # TODO: Limit CPU usage of xelatex. ([cpulimit ... -- xelatex ...] did not work)
+# TODO: Should child latexstps be spawned for every positional argument? Should only one positional argument be accepted? Should the first positional argument be considered the source file and the rest just be opened along with the source file with the editor? Currently multiple are accepted, but only the first one is considered.
+
+printhelp() {
+    printf "%s\n" \
+        "latexstp [OPTION...] [FILES...] -- [FILES...]" \
+        "   -f, --force" \
+        "       Force compilation even if hash-check succeeds." \
+        "   --no-force" \
+        "       Revert -f." \
+        "   -o, --once" \
+        "       Compile once and exit." \
+        "   --no-once" \
+        "       Revert -o." \
+        "   -h, --help" \
+        "       Print help message."
+}
+
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1"
+    printhelp
+}
+
+logerrq() {
+    printf "[ERROR]: %s\n" "$1"
+    exit 1
+}
+
+assertarg() {
+    [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
+}
+
+assertfl() {
+    [ -f "$1" ] || logerrq "No such file as $1, exiting."
+}
+
+parseargs() {
+    while [ -n "$1" ]
+    do
+        if [ "${1%"${1#?}"}" = "-" ]
+        then
+            if ! [ "${1%"${1#??}"}" = "--" ]
+            then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        f) parseargs --force;;
+                        o) parseargs --once;;
+                        h) parseargs --help;;
+                        *) printusage "-$opt"; exit 0;;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt"
+                in
+                    force    ) optforce="1";;
+                    no-force ) optforce="0";;
+                    once     ) optonce="1";;
+                    no-once  ) optonce="0";;
+                    help     ) printhelp; exit 0;;
+                    ""       ) shift; break;;
+                    *        ) printusage "--$opt"; exit 0;;
+                esac
+            fi
+        else
+            assertfl "$1.tex"
+            fls="$1
+$fls"
+        fi
+
+        shift
+    done
+
+    for i
+    do
+        assertfl "$i.tex"
+        fls="$i
+$fls"
+    done
+}
+
+setdefargs() {
+    cachedir="$XDG_CACHE_HOME"
+    [ -z "$cachedir" ] && cachedir="$HOME/.cache"
+    cachedir="$cachedir/latexstp"
+}
+
+validargs() {
+    [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
+}
+
+processargs() {
+    fls="$( printf "%s\n" "$fls" | tac | tail -n +2 )"
+    srcfl="$( printf "%s\n" "$fls" | head -n 1 )"
+    srchashfl="$cachedir$( realpath "$srcfl.tex" )"
+    mkdir -p "$( dirname "$srchashfl" )"
+}
 
 clean() {
     cleanaux
-    rm "$fl.pdf" > /dev/null 2>&1
+    rm "$srcfl.pdf" > /dev/null 2>&1
 }
 
 cleanaux() {
-    rm "$fl.aux" "$fl.bbl" "$fl.blg" "$fl.lof" "$fl.log" "$fl.lot" "$fl.out" "$fl.toc" "$fl.bcf" "$fl.run.xml" "$fl.py" "$fl.py.err" "$fl.py.out" "latex.py" > /dev/null 2>&1
+    rm "$srcfl.aux" "$srcfl.bbl" "$srcfl.blg" "$srcfl.lof" "$srcfl.log" "$srcfl.lot" "$srcfl.out" "$srcfl.toc" "$srcfl.bcf" "$srcfl.run.xml" "$srcfl.py" "$srcfl.py.err" "$srcfl.py.out" "latex.py" > /dev/null 2>&1
 }
 
 compile() {
+    [ "$optforce" != "1" ] && [ -s "$srchashfl" ] && [ -s "$srcfl.pdf" ] && [ "$( sha512sum "$srcfl.tex" | awk '{print $1}' )" = "$( cat "$srchashfl" 2> /dev/null )" ] && return 0
+
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    xelatex -shell-escape -halt-on-error "$fl" || {
+    xelatex -shell-escape -halt-on-error "$srcfl" || {
         cleanaux
-        xelatex -shell-escape -halt-on-error "$fl" || return 1
+        xelatex -shell-escape -halt-on-error "$srcfl" || return 1
     }
-    bibtex "$fl"
-    biber "$fl"
-    makeindex "$fl".idx 2> /dev/null
+    bibtex "$srcfl"
+    biber "$srcfl"
+    makeindex "$srcfl".idx 2> /dev/null
     # makeindex -s style.gls ...
-    xelatex -shell-escape -halt-on-error "$fl"
-    xelatex -shell-escape -halt-on-error "$fl"
+    xelatex -shell-escape -halt-on-error "$srcfl"
+    xelatex -shell-escape -halt-on-error "$srcfl"
+
+    sha512sum "$srcfl.tex" | awk '{print $1}' > "$srchashfl"
 }
 
-exitonwrite() {
-    inotifywait -e close_write,close_nowrite "$fl.tex" > /dev/null 2>&1
-    cleanaux
-    exit 0
-}
-
-main() {
+loop() {
     while true
     do
-        inotifywait -e move_self "$fl.tex" > /dev/null 2>&1
+        inotifywait -e move_self "$srcfl.tex" > /dev/null 2>&1
         compile > /dev/null 2>&1
     done
 }
 
-if [ "$1" = "" ]
-then
-    fl="main"
-    printf "%s\n" "No file name given, assuming main."
-else
-    fl="$( printf "%s" "$1" | sed 's/\.tex$//' )"
-fi
+main() {
+    cleanaux
+    compile > /dev/null
 
-[ -f "$fl.tex" ] || {
-    printf "%s\n" "No such file exists."
-    exit 0
-}
-
-clean
-compile > /dev/null 2>&1
-
-for i
-do
-    if [ "$i" = "-o" ] || [ "$i" = "--once" ]
-    then
+    [ "$optonce" = "1" ] && {
         cleanaux
         exit 0
-    fi
-done
+    }
 
-eval "'$READER' '$fl.pdf'" > /dev/null 2>&1 &
-exitonwrite &
-main > /dev/null 2>&1 &
-eval "'$EDITOR' '$fl.tex'"
+    xdg-open "$srcfl.pdf" > /dev/null 2>&1 &
+    loop > /dev/null 2>&1 &
+    xdg-open "$srcfl.tex"
+    cleanaux
+    kill 0 2>&1
+}
+
+setdefargs
+parseargs "$@"
+validargs
+processargs
+main
