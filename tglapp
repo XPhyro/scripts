@@ -22,8 +22,8 @@ printhelp() {
         "       Only query the status of the command; exit with code 0 if state is on, else exit with code 1." \
         "   -T STATE, --toggle STATE" \
         "       The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}." \
-        "   -t TIMEOUT, --timeout TIMEOUT" \
-        "       Wait TIMEOUT amount and SIGKILL the process if not terminated yet. The TIMEOUT format is the same as in the sleep command. Multiple timeout amounts can be passed as a single argument, separated with whitespace."
+        "   -t TIMEOUT SIGNAL, --timeout TIMEOUT SIGNAL" \
+        "       Wait TIMEOUT amount and send SIGNAL to the process if not terminated yet. The TIMEOUT and SIGNAL formats are the same as in the sleep and kill commands respectively. If multiple -t options are passed, they will be executed in order. If no -t option is passed, a single TIMEOUT=0 and SIGNAL=TERM (or SIGNAL=15) will be used."
 }
 
 printusage() {
@@ -67,7 +67,7 @@ parseargs() {
                         n) parseargs --no-force-state;;
                         s) parseargs --status;;
                         T) shift; parseargs --toggle "$1";;
-                        t) shift; parseargs --timeout "$1";;
+                        t) shift; parseargs --timeout "$1" "$2"; shift;;
                         *) printusage "-$opt"; exit 0;;
                     esac
 
@@ -85,13 +85,15 @@ parseargs() {
                     no-force-state ) forcestate="0";;
                     status         ) status="1";;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
-                    timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; timeout="$1";;
+                    timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts
+$1"; signals="$signals
+$2"; shift;;
                     ""             ) shift; break;;
                     *              ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else
-            cmd="$cmd \"$1\""
+            cmd="$cmd '$1'"
         fi
 
         shift
@@ -99,7 +101,7 @@ parseargs() {
 
     for i
     do
-        cmd="$cmd \"$i\""
+        cmd="$cmd '$i'"
     done
 }
 
@@ -131,6 +133,11 @@ validargcase() {
     }
 }
 
+preprocessargs() {
+    [ -n "$timeouts" ] && timeouts="$( printf "%s\n" "$timeouts" | tail -n +2 )"
+    [ -n "$signals" ] && signals="$( printf "%s\n" "$signals" | tail -n +2 )"
+}
+
 validargs() {
     [ -z "$cmd" ] && [ "$willclean" != "1" ] && {
         if [ "$state" = "on" ] || [ -z "$keycode" ]
@@ -139,12 +146,18 @@ validargs() {
         fi
     }
     validargcase "$state" "state" "on" "off"
-    [ "$( printf "%s " "$timeout" | sed -E -e 's/[^0-9]\.[^0-9]/ERROR/' -e 's/([0-9]*(\.[0-9]*)?[smh]?\s+)+//' )" != "" ] && logerrq "TIMEOUT is invalid. See sleep --help for details."
+    [ -n "$timeouts" ] && printf "%s\n" "$timeouts" | grep -Exq '[^0-9]\.|\.[^0-9]|^[^0-9]*$' && logerrq "TIMEOUT is invalid. See sleep --help for valid syntax."
+    [ -n "$signals" ] && printf "%s\n" "$signals" | grep -Evxq 'HUP|INT|QUIT|ILL|TRAP|ABRT|BUS|FPE|KILL|USR1|SEGV|USR2|PIPE|ALRM|TERM|STKFLT|CHLD|CONT|STOP|TSTP|TTIN|TTOU|URG|XCPU|XFSZ|VTALRM|PROF|WINCH|POLL|PWR|SYS|(3[01]|[12][0-9]|[1-9])' && logerrq "SIGNAL is invalid. See kill -l or kill -L for valid signals."
     contains "$keycode" "/" && logerrq "KEYCODE cannot contain /."
 }
 
-setargs() {
+processargs() {
     [ -z "$keycode" ] && keycode="$( printf "%s" "$cmd" | xxh128sum | awk '{print $1}' | tr -d '\n' )"
+    if [ -z "$timeouts" ]
+    then
+        timeouts="0"
+        signals="TERM"
+    fi
 }
 
 runcmd() {
@@ -158,13 +171,18 @@ runcmd() {
 }
 
 stopcmd() {
-    kill "$pid" && {
-        rm -f "$keyfl"
-        [ -z "$timeout" ] || {
-            sleep "$timeout"
-            kill -s KILL "$pid" 2> /dev/null
-        }
-    }
+    while read -r timeout <&3 && read -r signal <&4
+    do
+        kill -s 0 "$pid" || break
+        sleep "$timeout"
+        kill -s "$signal" "$pid" 2> /dev/null
+    done 3<<EOF1 4<<EOF2
+$timeouts
+EOF1
+$signals
+EOF2
+
+    rm -f "$keyfl" 2> /dev/null
 }
 
 main() {
@@ -231,7 +249,8 @@ clean() {
 
 capturestdin
 parseargs "$@"
+preprocessargs
 validargs
-setargs
+processargs
 main
 clean
