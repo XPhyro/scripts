@@ -63,7 +63,7 @@ parseargs() {
                     case "$opt"
                     in
                         c) parseargs --clean;;
-                        f) parseargs --force;;
+                        f) parseargs --force-state;;
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
                         n) parseargs --no-force-state;;
