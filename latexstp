@@ -136,7 +136,7 @@ compile() {
     sha512sum "$srcfl.tex" | awk '{print $1}' > "$srchashfl"
 }
 
-loop() {
+compileloop() {
     while true
     do
         inotifywait -e move_self "$srcfl.tex" > /dev/null 2>&1
@@ -154,7 +154,7 @@ main() {
     }
 
     xdg-open "$srcfl.pdf" > /dev/null 2>&1 &
-    loop > /dev/null 2>&1 &
+    compileloop > /dev/null 2>&1 &
     xdg-open "$srcfl.tex"
     cleanaux
     kill 0 2>&1
