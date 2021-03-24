@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 # Log notifications.
 
-# TODO: Add support for multi-line title/description of notifications.
-
 fl="$( getfl notiflog )" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
@@ -14,39 +12,42 @@ lckfl="$( getfl notifloglck )" || {
 beg="##beg##"
 end="##end##"
 
-title=""
-desc=""
-a=0
-maxa=1
+rm -f "$lckfl" 2> /dev/null
 
-rm "$lckfl"
+event=""
+willreg=0
 
-dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'" | while read -r i
+dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'" | while IFS= read -r i
 do
-    arr="$( printf "%s" "$i" | grep "^\s*array \[$" )"
-    [ -z "$arr" ] || {
-        [ "$a" = "0" ] && {
-            a="$maxa"
+    [ "$willreg" = 1 ] && event="$event$i
+"
+    if [ "$i" = "   uint32 0" ]
+    then
+        willreg=1
+        continue
+    elif [ "$i" != "   int32 -1" ]
+    then
+        continue
+    fi
 
-            [ -f "$lckfl" ] && {
-                rm "$lckfl"
-                continue
-            }
-
-            printf "%s\n%s\n%s\n%s\n%s\n" \
-                "$beg" \
-                "$( date +%s )" \
-                "$title" \
-                "$desc" \
-                "$end" >> "$fl"
-
-            continue
-        }
-
-        a=$(( a - 1))
+    [ -f "$lckfl" ] && {
+        rm -f "$lckfl"
         continue
     }
 
-    title="$desc"
-    desc="$( printf "%s" "$i" | grep "^\s*string \".*\"$" | sed -e 's/\s*string "//' -e 's/"$//' )"
+    event="$( printf "%s" "$event" | sed '/^   array \[$/q' | head -n -1 | tail -n +2 )"
+    title="$( printf "%s\n" "$event" | head -n 1 | sed -E 's/   string "(.*)"$/\1/' )"
+    body="$( printf "%s\n" "$event" | tail -n +2 | sed -E -e '1s/   string "(.*)"?/\1/' -e '$s/"$//' )"
+
+    [ -z "$title" ] && [ -z "$body" ] && continue
+
+    printf "%s\n%s\n%s\n%s\n%s\n" \
+        "$beg" \
+        "$( date +%s )" \
+        "$title" \
+        "$body" \
+        "$end" >> "$fl"
+
+    event=""
+    willreg=0
 done
