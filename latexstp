@@ -87,8 +87,8 @@ $fls"
     for i
     do
         assertfl "$i.tex"
-        fls="$i
-$fls"
+        fls="$fls$i
+"
     done
 }
 
@@ -103,7 +103,6 @@ validargs() {
 }
 
 processargs() {
-    fls="$( printf "%s\n" "$fls" | tac | tail -n +2 )"
     srcfl="$( printf "%s\n" "$fls" | head -n 1 )"
     srchashfl="$cachedir$( realpath "$srcfl.tex" )"
     mkdir -p "$( dirname "$srchashfl" )"
