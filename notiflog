@@ -21,17 +21,19 @@ dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'" | whil
 do
     [ "$willreg" = 1 ] && event="$event$i
 "
-    if [ "$i" = "   uint32 0" ]
+    if contains "$i" "   uint32 "
     then
         willreg=1
         continue
-    elif [ "$i" != "   int32 -1" ]
+    elif ! contains "$i" "   int32 "
     then
         continue
     fi
 
     [ -f "$lckfl" ] && {
         rm -f "$lckfl"
+        event=""
+        willreg=0
         continue
     }
 
