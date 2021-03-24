@@ -119,7 +119,8 @@ cleanaux() {
 }
 
 compile() {
-    [ "$optforce" != "1" ] && [ -s "$srchashfl" ] && [ -s "$srcfl.pdf" ] && [ "$( sha512sum "$srcfl.tex" | awk '{print $1}' )" = "$( cat "$srchashfl" 2> /dev/null )" ] && return 0
+    srchash="$( sha512sum "$srcfl.tex" | awk '{print $1}' )"
+    [ "$optforce" != "1" ] && [ -s "$srchashfl" ] && [ -s "$srcfl.pdf" ] && [ "$srchash" = "$( cat "$srchashfl" 2> /dev/null )" ] && return 0
 
     # Adapted from https://tex.stackexchange.com/a/8792/199300
     xelatex -shell-escape -halt-on-error "$srcfl" || {
@@ -133,7 +134,7 @@ compile() {
     xelatex -shell-escape -halt-on-error "$srcfl"
     xelatex -shell-escape -halt-on-error "$srcfl"
 
-    sha512sum "$srcfl.tex" | awk '{print $1}' > "$srchashfl"
+    printf "%s\n" "$srchash" > "$srchashfl"
 }
 
 compileloop() {
