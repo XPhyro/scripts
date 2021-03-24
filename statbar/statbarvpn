@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Query VPN status.
 
-( [ "$( protonvpn s | grep Status: | awk '{print $2}' )" = "Connected" ] && printf "%s\n" "🌐" ) > "$( getloc statbar )/6_statbarvpn"
+{ [ "$( protonvpn s | grep Status: | awk '{print $2}' )" = "Connected" ] && printf "%s\n" "🌐"; } > "$( getloc statbar )/6_statbarvpn"
