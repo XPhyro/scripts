@@ -3,7 +3,6 @@
 # TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. This could be made into a generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.). # TODO: Use this with sxhkd.
 # TODO: Add an option to replace the current instance of the application with the new instance. Allow the new instance to be different if -k is passed. If -k is not passed, but this new option is, just "restart" the application. # TODO: Use this, along with -T on, in .xinitrc.
 # TODO: Add an option to register an already running application. Instead of toggling the application, just register the given pid, checking that the pid exists. If -k is passed, register to the given keycode. Else, query the command that is running as the pid and compute the hash based on that.
-# TODO: Is tglapp leaking applications when -fT on is passed? Or perhaps via some other way? There are too many instances of wallpaper present when restart-wallpaper -fT on is used. If so, fix.
 
 scriptname="$scriptname"
 
