@@ -3,7 +3,7 @@
 
 for i
 do
-    while [ "$( ps -o pid= "$i" )" ]
+    while [ -n "$( ps -o pid= "$i" )" ]
     do
         sleep 5
     done
