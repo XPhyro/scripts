@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Set X keyboard properties.
 
-killall sxhkd && wassxhkd="1"
+tglapp -T off sxhkd
 
 # caps_lock -> escape
 setxkbmap -option "caps:escape"
@@ -30,4 +30,4 @@ in
     tr) xmodmap -e "keycode 135 = ISO_Level3_Shift";;
 esac
 
-[ "$wassxhkd" = "1" ] && restart-sxhkd --no-kill
+restart-sxhkd

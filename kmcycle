@@ -4,7 +4,6 @@
 setkm() {
     setxkbmap "$1"
     setxkb "$1"
-    km="$1"
 }
 
 km="$( xkb-switch )"
