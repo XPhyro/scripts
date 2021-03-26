@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Restart sxhkd.
 
+cd "$HOME"
+
 for i
 do
     if [ "$i" = "-n" ] || [ "$i" = "--no-kill" ]
