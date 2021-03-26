@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+{ [ "$( dunstctl is-paused )" = "true" ] && printf "%s\n" "📮"; } > "$( getloc statbar )/7.7_statbarnotif"
