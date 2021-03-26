@@ -10,7 +10,8 @@ setxkbmap -option "caps:escape"
 # return -> backspace
 # backspace -> tab
 # tab -> return
-xmodmap -e "keycode 108 = Super_R" -e "keycode 9 = Caps_Lock" -e "keycode 36 = BackSpace" -e "keycode 22 = Tab" -e "keycode 23 = Return"
+xmodmap -e "keycode 108 = Super_R" -e "keycode 9 = Caps_Lock"
+# xmodmap -e "keycode 108 = Super_R" -e "keycode 9 = Caps_Lock" -e "keycode 36 = BackSpace" -e "keycode 22 = Tab" -e "keycode 23 = Return" # TODO: Brave does not respect the changes to Tab/BackSpace/Return. Report/fix and uncomment.
 xset -r 9
 xset -r 108
 xset -r 135
