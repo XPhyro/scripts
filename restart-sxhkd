@@ -2,14 +2,4 @@
 # Restart sxhkd.
 
 cd "$HOME"
-
-for i
-do
-    if [ "$i" = "-n" ] || [ "$i" = "--no-kill" ]
-    then
-        nokill="1"
-    fi
-done
-
-[ "$nokill" = "1" ] || killall sxhkd
-sxhkd &!
+tglapp -fT on sxhkd &!
