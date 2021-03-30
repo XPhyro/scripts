@@ -93,9 +93,7 @@ $fls"
 }
 
 setdefargs() {
-    cachedir="$XDG_CACHE_HOME"
-    [ -z "$cachedir" ] && cachedir="$HOME/.cache"
-    cachedir="$cachedir/latexstp"
+    cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}/latexstp"
 }
 
 validargs() {
