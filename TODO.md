@@ -7,3 +7,4 @@
 - Optimise [kmcycle](kmycle) and [setxkb](setxkb).
 - Write a todo manager which would be a generalised form of the deadline reminder.
 - Write a watson wrapper.
+- Use `xsel` instead of `xclip`.
