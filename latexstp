@@ -114,7 +114,7 @@ clean() {
 }
 
 cleanaux() {
-    rm "$srcfl.aux" "$srcfl.bbl" "$srcfl.blg" "$srcfl.lof" "$srcfl.log" "$srcfl.lot" "$srcfl.out" "$srcfl.toc" "$srcfl.bcf" "$srcfl.run.xml" "$srcfl.py" "$srcfl.py.err" "$srcfl.py.out" "latex.py" > /dev/null 2>&1
+    rm "$srcfl.aux" "$srcfl.bbl" "$srcfl.blg" "$srcfl.lof" "$srcfl.log" "$srcfl.lot" "$srcfl.out" "$srcfl.toc" "$srcfl.bcf" "$srcfl.run.xml" "$srcfl.py" "$srcfl.py.err" "$srcfl.py.out" "latex.py" "texput.log" > /dev/null 2>&1
 }
 
 compile() {
@@ -165,3 +165,5 @@ parseargs "$@"
 validargs
 processargs
 main
+compile > /dev/null 2>&1
+cleanaux
