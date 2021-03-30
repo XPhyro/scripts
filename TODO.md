@@ -6,3 +6,4 @@
 - Rewrite [tglapp](tglapp) in C. It proves very useful in a lot of situations, it could do with the performance boost even though it usually takes about 10ms to execute (empty subshell takes 4ms!).
 - Optimise [kmcycle](kmycle) and [setxkb](setxkb).
 - Write a todo manager which would be a generalised form of the deadline reminder.
+- Write a watson wrapper.
