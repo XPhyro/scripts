@@ -96,12 +96,10 @@ setdefargs() {
     cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}/latexstp"
 }
 
-validargs() {
-    [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
-}
-
 processargs() {
+    [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
     srcfl="$( printf "%s\n" "$fls" | head -n 1 )"
+    hardlinked "$srcfl" "$( basename "$srcfl" )" || logerrq "Source file must be in the current directory."
     srchashfl="$cachedir$( realpath "$srcfl.tex" )"
     mkdir -p "$( dirname "$srchashfl" )"
 }
@@ -160,7 +158,6 @@ main() {
 
 setdefargs
 parseargs "$@"
-validargs
 processargs
 main
 compile > /dev/null 2>&1
