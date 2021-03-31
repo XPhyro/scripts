@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically 'batch' but better.
 # TODO: Try not to abort when line count changed and find where elements were deleted with diff/git diff or something else. Present a confirmation to the user in case the guess is wrong.
+# TODO: Add an option to first start async processes and then execute the sync processes that would work both when -e is passed and otherwise. Alternatively, make this the default behaviour.
 
 printhelp() {
     printf "%s\n" \
