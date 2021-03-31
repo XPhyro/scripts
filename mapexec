@@ -8,25 +8,31 @@ printhelp() {
         "   -A CHARS, --async CHARS" \
         "       Toggle asynchronous command execution for given cases. CHARS can include [amuw]. Toggling will be done for every occurence of [amuw]." \
         "   -a, --all" \
-        "       Toggle recording positional arguments as commands to run against all elements." \
+        "       Toggle recording positional arguments as commands to run against all elements. Has no effect if -e is passed." \
         "   --no-all" \
-        "       Stop recording positional arguments as commands to run against all elements." \
+        "       Stop recording positional arguments as commands to run against all elements. Has no effect if -e is passed." \
+        "   -e, --editor" \
+        "       Instead of executing the command recorded through arguments, open up a prepared shell script with xdg-open and execute it after editing has finished. the script will be directly executed, so changing the shebang will change what it is interpreted with. When passed, command argument options have no effect. Commands are still recorded through arguments, thus they can still be used by passing --no-editor." \
+        "   --no-editor" \
+        "       Revert -e." \
+        "   -i INTERPRETER, --interpreter INTERPRETER" \
+        "       Change the default interpreter from sh to INTERPRETER. The full shebang will be '#!/usr/bin/env INTERPRETER'. Has no effect unless -e is passed." \
         "   -m, --modified" \
-        "       Toggle recording positional arguments as commands to run against modified elements." \
+        "       Toggle recording positional arguments as commands to run against modified elements. Has no effect if -e is passed." \
         "   --no-modified" \
-        "       Stop recording positional arguments as commands to run against modified elements." \
+        "       Stop recording positional arguments as commands to run against modified elements. Has no effect if -e is passed." \
         "   -u, --unmodified" \
-        "       Toggle reording positional arguments as commands to run against unmodified elements." \
+        "       Toggle reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
         "   --no-unmodified" \
-        "       Stop reording positional arguments as commands to run against unmodified elements." \
+        "       Stop reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
         "   -w, --wiped" \
-        "       Toggle recording positional arguments as commands to run against unmodified elements." \
+        "       Toggle recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
         "   --no-wiped" \
-        "       Stop recording positional arguments as commands to run against unmodified elements." \
+        "       Stop recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
         "   -q, --quote" \
-        "      Automatically add quotes in the command." \
+        "      Automatically add quotes in the command. Has no effect if -e is passed." \
         "   --no-quote" \
-        "      Revert -q." \
+        "      Revert -q. Has no effect if -e is passed." \
         "   -h, --help" \
         "       Print help message."
 }
@@ -123,6 +129,8 @@ parseargs() {
                     in
                         A) shift; parseargs --async "$1";;
                         a) parseargs --all;;
+                        e) parseargs --editor;;
+                        i) shift; parseargs --interpreter "$1";;
                         m) parseargs --modified;;
                         u) parseargs --unmodified;;
                         w) parseargs --wiped;;
@@ -140,6 +148,9 @@ parseargs() {
                 in
                     async         ) shift; [ -n "$( printf "%s" "$1" | tr -d 'amuw' )" ] && logargerrq "--async" "$1"; flipasync "$1";;
                     all           ) flipcmd "$CMD_ALL" "allcmd";;
+                    editor        ) genscript="1";;
+                    no-editor     ) genscript="0";;
+                    interpreter   ) shift; assertarg "-i, --interpreter" "INTERPRETER" "$1"; interpreter="$1";;
                     modified      ) flipcmd "$CMD_MODIFIED" "modifcmd";;
                     unmodified    ) flipcmd "$CMD_UNMODIFIED" "unmodifcmd";;
                     wiped         ) flipcmd "$CMD_WIPED" "wipecmd";;
@@ -178,10 +189,11 @@ setdefargs() {
     modifcmd=:
     wipecmd=:
     allcmd=:
+    interpreter="sh"
 }
 
 validateargs() {
-    { [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ]; } && { [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ]; } && { [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ]; } && { [ -z "$allcmd" ] || [ "$allcmd" = ":" ]; } && logq "Nothing to do"
+    [ "$genscript" != "1" ] && { [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ]; } && { [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ]; } && { [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ]; } && { [ -z "$allcmd" ] || [ "$allcmd" = ":" ]; } && logq "Nothing to do"
 }
 
 processargs() {
@@ -226,23 +238,84 @@ main() {
     lc="$( wc -l < "$ogtmpfl" )"
     [ "$lc" -ne "$( wc -l < "$tmpfl" )" ] && logerrq "Line count changed"
 
-    while read -r i <&3 && read -r f <&4
-    do
-        if [ "$i" = "$f" ]
-        then
+    if [ "$genscript" = "1" ]
+    then
+        scriptfl="$( mktemp --suffix ".$interpreter" )"
+        printf "%s\n" \
+"#!/usr/bin/env $interpreter
+# Wipe the file to abort.
+
+all() {
+    pre=\"\$1\"
+    post=\"\$2\"
+
+    :
+}
+
+unmodif() {
+    pre=\"\$1\"
+    post=\"\$1\"
+
+    :
+}
+
+modif() {
+    pre=\"\$1\"
+    post=\"\$2\"
+
+    :
+}
+
+wipe() {
+    pre=\"\$1\"
+    post=\"\$2\"
+
+    :
+}
+" > "$scriptfl"
+        while read -r i <&3 && read -r f <&4
+        do
+            if [ "$i" = "$f" ]
+            then
+                # shellcheck disable=SC2154
+                printf "unmodif '%s' %s\n" "$i" "$unmodifasync"
+            elif [ -z "$f" ]
+            then
+                # shellcheck disable=SC2154
+                printf "wipe '%s' '%s' %s\n" "$i" "$f" "$wipeasync"
+            else
+                # shellcheck disable=SC2154
+                printf "modif '%s' '%s' %s\n" "$i" "$f" "$modifasync"
+            fi
+
             # shellcheck disable=SC2154
-            eval "( $unmodifcmd ) $unmodifasync"
-        elif [ -z "$f" ]
-        then
+            printf "all '%s' '%s' %s\n" "$i" "$f" "$allasync"
+        done 3< "$ogtmpfl" 4< "$tmpfl" >> "$scriptfl"
+
+        xdg-open "$scriptfl"
+        [ -s "$scriptfl" ] && {
+            chmod +x "$scriptfl"
+            eval "'$scriptfl'"
+        }
+    else
+        while read -r i <&3 && read -r f <&4
+        do
+            if [ "$i" = "$f" ]
+            then
+                # shellcheck disable=SC2154
+                eval "( $unmodifcmd ) $unmodifasync"
+            elif [ -z "$f" ]
+            then
+                # shellcheck disable=SC2154
+                eval "( $wipecmd ) $wipeasync"
+            else
+                # shellcheck disable=SC2154
+                eval "( $modifcmd ) $modifasync"
+            fi
             # shellcheck disable=SC2154
-            eval "( $wipecmd ) $wipeasync"
-        else
-            # shellcheck disable=SC2154
-            eval "( $modifcmd ) $modifasync"
-        fi
-        # shellcheck disable=SC2154
-        eval "( $allcmd ) $allasync"
-    done 3< "$ogtmpfl" 4< "$tmpfl"
+            eval "( $allcmd ) $allasync"
+        done 3< "$ogtmpfl" 4< "$tmpfl"
+    fi
 }
 
 setdefargs
