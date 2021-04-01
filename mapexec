@@ -13,7 +13,7 @@ printhelp() {
         "   --no-all" \
         "       Stop recording positional arguments as commands to run against all elements. Has no effect if -e is passed." \
         "   -e, --editor" \
-        "       Instead of executing the command recorded through arguments, open up a prepared shell script with xdg-open and execute it after editing has finished. the script will be directly executed, so changing the shebang will change what it is interpreted with. When passed, command argument options have no effect. Commands are still recorded through arguments, thus they can still be used by passing --no-editor." \
+        "       Instead of executing the command recorded through arguments, open up a pre-prepared shell script in '\$EDITOR' and execute it after editing has finished. The script will be directly executed, so changing the shebang will change what it is interpreted with. When passed, command argument options have no effect. Commands are still recorded through arguments, thus they can still be used by passing --no-editor." \
         "   --no-editor" \
         "       Revert -e." \
         "   -i INTERPRETER, --interpreter INTERPRETER" \
@@ -218,6 +218,10 @@ clean() {
     rm -f "$ogtmpfl" "$tmpfl" 2> /dev/null
 }
 
+edit() {
+    eval "'$EDITOR' -- '$1' < /dev/tty"
+}
+
 main() {
     ogtmpfl="$( mktemp )"
     tmpfl="$( mktemp )"
@@ -232,7 +236,7 @@ main() {
 
     cp -f "$ogtmpfl" "$tmpfl"
 
-    eval "'$EDITOR' -- '$tmpfl' < /dev/tty"
+    edit "$tmpfl"
 
     [ ! -s "$tmpfl" ] && logerrq "File is wiped"
 
@@ -293,7 +297,8 @@ wipe() {
             printf "all '%s' '%s' %s\n" "$i" "$f" "$allasync"
         done 3< "$ogtmpfl" 4< "$tmpfl" >> "$scriptfl"
 
-        xdg-open "$scriptfl"
+        edit "$scriptfl"
+
         [ -s "$scriptfl" ] && {
             chmod +x "$scriptfl"
             eval "'$scriptfl'"
