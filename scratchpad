@@ -8,7 +8,7 @@ files="$( find "$dir" -type f -printf "%f\n" | sort -rV )"
 newfile="$( printf "%s" "$files" | head -n 1 | sed 's/_.*//' )"
 [ "$newfile" = "" ] && newfile=-1
 
-$(( newfile += 1 ))
+: $(( newfile += 1 ))
 newfile="$newfile"_"$( date +"%Y-%m-%d_%H-%M-%S" )"
 
 file="$( printf "%s\n%s" "$newfile" "$files" | dmenu -i )"
