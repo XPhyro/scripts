@@ -3,23 +3,26 @@
 # TODO: Add the ability to toggle applications from a file, i.e. add the ability to read from a file toggleable things like getloc etc. This could be made into a generic toggling system, using keycodes like in getloc etc. This way, key bindings in sxhkd will not be changed when an application used for a purpose changes (spt instead of spotify etc.). # TODO: Use this with sxhkd.
 # TODO: Add an option to replace the current instance of the application with the new instance. Allow the new instance to be different if -k is passed. If -k is not passed, but this new option is, just "restart" the application. # TODO: Use this, along with -T on, in .xinitrc.
 # TODO: Add an option to register an already running application. Instead of toggling the application, just register the given pid, checking that the pid exists. If -k is passed, register to the given keycode. Else, query the command that is running as the pid and compute the hash based on that.
-# TODO: Add an option to work based on the actual status rather than the perceived status. As an example, an application that is registered but dead should be started instead of being cleaned.
 
 scriptname="$scriptname"
 
 printhelp() {
     printf "%s\n" \
         "$scriptname [OPTION...] COMMAND -- COMMAND" \
+        "   -a, --actual" \
+        "       Use the actual status of applications to do work instead of the registered status. As an example, if an application is registered with a PID but is actually dead, the application will be cleaned and started if -P is passed. Inhibited by a following -p. See -p for more details." \
+        "   --no-actual" \
+        "       Use the registered status of applications to do work instead of the actual status. As an example, if an application is registered with a PID but is actually dead, the application will be just be cleaned -P is not passed. Inhibited by a following -P. See -P for more details." \
         "   -c, --clean" \
         "       Clean PIDs after dead processes and exit." \
         "   -f, --force-state" \
-        "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following -n." \
+        "       Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following --no-force-state." \
+        "   --no-force-state" \
+        "       Inhibit -f. Inhibited by a following -f." \
         "   -h, --help" \
         "       Print help message." \
         "   -k KEYCODE, --keycode KEYCODE" \
         "       Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /." \
-        "   -n, --no-force-state" \
-        "       Inhibit -f. Inhibited by a following -f." \
         "   -s, --status" \
         "       Only query the status of the command; exit with code 0 if state is on, else exit with code 1." \
         "   -T STATE, --toggle STATE" \
@@ -62,11 +65,11 @@ parseargs() {
 
                     case "$opt"
                     in
+                        a) parseargs --actual;;
                         c) parseargs --clean;;
                         f) parseargs --force-state;;
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
-                        n) parseargs --no-force-state;;
                         s) parseargs --status;;
                         T) shift; parseargs --toggle "$1";;
                         t) shift; parseargs --timeout "$1" "$2"; shift;;
@@ -80,11 +83,13 @@ parseargs() {
                 
                 case "$opt"
                 in
+                    actual         ) actual="1";;
+                    no-actual      ) actual="0";;
                     clean          ) willclean="1";;
                     force-state    ) forcestate="1";;
+                    no-force-state ) forcestate="0";;
                     help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
-                    no-force-state ) forcestate="0";;
                     status         ) status="1";;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
                     timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts$1
@@ -219,6 +224,10 @@ main() {
             if [ -z "$state" ] || [ "$state" = "off" ]
             then
                 rm -f "$keyfl"
+                [ "$actual" = "1" ] && {
+                    runcmd
+                    wait
+                }
             elif [ "$state" = "on" ]
             then
                 runcmd
