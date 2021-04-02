@@ -1,12 +1,4 @@
 #!/usr/bin/env sh
 # Force move without overwriting.
 
-fl="$1"
-path="$2"
-
-while [ -e "$path" ]
-do
-    path="$path"_
-done
-
-mv -n "$fl" "$path"
+mv -n "$fl" "$( getnewpath "$fl" )"

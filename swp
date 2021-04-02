@@ -1,59 +1,10 @@
 #!/usr/bin/env sh
-# Swap two files or directories.
-# Does not work with symlinks.
+# Swap two files.
 
-check() {
-    isdir=0
-    for i
-    do
-        [ -f "$i" ] || [ -d "$i" ] || { 
-            printf "%s\n" "$i does not exist."
-            exit 1 
-        }
-        
-        [ -d "$i" ] && isdir=1
-    done
-
-    [ "$isdir" = "1" ] && {
-        for i
-        do
-            [ -d "$i" ] || {
-                printf "%s\n" "Cannot swap a file and a directory."
-                exit 1
-            }
-        done
-    }
-}
-
-swap() {
-    if [ "$( stat -c%s "$1" )" -lt "$( stat -c%s "$2" )" ]
-    then
-        tocopy="$1"
-        other="$2"
-    else
-        tocopy="$2"
-        other="$1"
-    fi
-
-    tmp="$( mktemp )"
-    [ "$tmp" = "" ] && printf "%s\n" "Could not create tmp file."
-    cp -r "$tocopy" "$tmp" || { printf "%s\n" "Could not copy $tocopy to $tmp."; exit 1; }
-    cp -r "$other" "$tocopy" || { printf "%s\n" "Could not copy $other to $tocopy. (tmp: $tmp)"; exit 1; }
-    cp -r "$tmp" "$other" || { printf "%s\n" "Could not copy $tmp to $other."; exit 1; }
-    rm "$tmp" || printf "%s\n" "Could not remove $tmp."
-}
-
-if [ "$3" ]
-then
-    printf "%s\n" "At most two arguments are accepted."
-elif [ "$2" ]
-then
-    check "$1" "$2"
-    swap "$1" "$2"
-elif [ -n "$1" ]
-then
-    check "$1" "$1"_
-    swap "$1" "$1"_
-else
-    printf "%s\n" "At least one argument is needed."
-fi
+alias mv="mv -n"
+fl="$1"
+other="$2"
+tmp="$( getnewpath "$fl" )"
+mv "$fl" "$tmp"
+mv "$other" "$fl"
+mv "$tmp" "$other"

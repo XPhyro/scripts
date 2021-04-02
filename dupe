@@ -1,15 +1,6 @@
 #!/usr/bin/env sh
 # Duplicate given files and print the duplicate's paths in the format the originals were input.
 
-getnewpath() {
-    if [ -e "$1"_ ] || [ -d "$1"_ ]
-    then
-        getnewpath "$1"_
-    else
-        printf "%s" "$1"_
-    fi
-}
-
 for i
 do
     newpath="$( getnewpath "$i" )"
