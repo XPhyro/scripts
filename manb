@@ -1,11 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-if [ -z "$1" ]
+if [ "$#" -eq 0 ]
 then
     man bash | less +/^SHELL\ BUILTIN\ COMMANDS$
-elif [ -z "$2" ]
+elif [ "$#" -eq 1 ]
 then
     man bash | less +/^SHELL\ BUILTIN\ COMMANDS$''/"^       $1"''/"$1"
 else
-    printf "Only one argument is accepted.\n"
+    printf "%s\n" "At max one argument is accepted."
 fi
