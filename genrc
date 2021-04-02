@@ -6,6 +6,7 @@ files="$HOME/documents/sys-admin/files"
 ranger="$HOME/.dotfiles-sensitive/.config/ranger/rc.conf"
 
 rtmp="$( mktemp )"
+trap "rm -f '$rtmp'" INT EXIT TERM
 
 sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "$ranger"
 
@@ -46,3 +47,5 @@ printf "\n#\n##\n" >> "$rtmp"
 rnum="$( grep -n "### BEGIN AUTO-GENERATED ###" "$ranger" | sed 's/:.*//' )"
 
 sed -i "$rnum r $rtmp" "$ranger"
+
+rm -f "$rtmp"
