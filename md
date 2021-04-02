@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if [ "$@" ]
+if [ "$#" -ne 0 ]
 then
     mdv "$@"
 else

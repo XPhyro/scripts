@@ -3,7 +3,7 @@
 [ "$#" -lt 2 ] && return 1
 message="$1"
 shift
-if [ "$#" = 1 ]
+if [ "$#" -eq 1 ]
 then
     git add "$1" && git commit -m "$message $1"
 else
