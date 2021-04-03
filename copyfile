@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Copy a file respecting its type.
 
-lckclplog && xclip "$1" -sel clip -t "$( file -b --mime-type "$1" )"
+lck clplog && xclip "$1" -sel clip -t "$( file -b --mime-type "$1" )"

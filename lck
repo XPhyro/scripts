@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-lckfl="$( getfl clploglck )" || {
+lckfl="$( getfl "$1lck" )" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }

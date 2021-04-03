@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 # Filter clipboard with a command.
 
-lckclplog
+lck clplog
 xclip -o -sel clip | "$@" | sponge | xclip -sel clip
