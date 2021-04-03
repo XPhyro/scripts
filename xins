@@ -4,6 +4,10 @@
 printhelp() {
     printf "%s\n" \
         "xins [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]" \
+        "   -a, --async" \
+        "       Run commands asynchronously. Has no effect if -s is passed." \
+        "   --no-async" \
+        "       Revert -a." \
         "   -h, --help" \
         "       Print help message." \
         "   -R, --no-run-if-whitespace" \
@@ -49,6 +53,7 @@ parseargs() {
 
                     case "$opt"
                     in
+                        a) parseargs --async;;
                         R) parseargs --no-run-if-whitespace;;
                         r) parseargs --no-run-if-empty;;
                         s) parseargs --sponge;;
@@ -63,6 +68,8 @@ parseargs() {
                 
                 case "$opt"
                 in
+                    async                ) optasync="&";;
+                    no-async             ) optasync="";;
                     no-run-if-whitespace ) optnowhite="1";;
                     run-if-whitespace    ) optnowhite="0";;
                     no-run-if-empty      ) optnoempty="1";;
@@ -105,8 +112,10 @@ main() {
     else
         while IFS= read -r i
         do
-            eval "( $cmd ) < '$i'"
-        done
+            eval "printf '%s\n' '$i' | ( $cmd ) $optasync"
+        done < "$stdinfl"
+
+        wait
     fi
 }
 
