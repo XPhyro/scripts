@@ -1,0 +1,116 @@
+#!/usr/bin/env sh
+# Like xargs but for standard input.
+
+printhelp() {
+    printf "%s\n" \
+        "xins [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]" \
+        "   -h, --help" \
+        "       Print help message." \
+        "   -R, --no-run-if-whitespace" \
+        "       Do not run the command if standard input only contains whitespace." \
+        "   --run-if-whitespace" \
+        "       Revert -R." \
+        "   -r, --no-run-if-empty" \
+        "       Do not run the command if standard input is empty." \
+        "   --run-if-empty" \
+        "       Revert -r." \
+        "   -s, --sponge" \
+        "       Pass standard input as a whole instead of splitting by lines." \
+        "   --no-sponge" \
+        "       Revert -s."
+}
+
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1"
+    printhelp
+}
+
+logerrq() {
+    printf "[ERROR]: %s\n" "$1"
+    exit 1
+}
+
+assertarg() {
+    [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
+}
+
+parseargs() {
+    while [ -n "$1" ]
+    do
+        if [ "${1%"${1#?}"}" = "-" ]
+        then
+            if  [ "${1%"${1#??}"}" != "--" ]
+            then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        R) parseargs --no-run-if-whitespace;;
+                        r) parseargs --no-run-if-empty;;
+                        s) parseargs --sponge;;
+                        h) parseargs --help;;
+                        *) printusage "-$opt"; exit 0;;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+                
+                case "$opt"
+                in
+                    no-run-if-whitespace ) optnowhite="1";;
+                    run-if-whitespace    ) optnowhite="0";;
+                    no-run-if-empty      ) optnoempty="1";;
+                    run-if-empty         ) optnoempty="0";;
+                    sponge               ) optsponge="1";;
+                    no-sponge            ) optsponge="0";;
+                    help                 ) printhelp; exit 0;;
+                    ""                   ) shift; break;;
+                    *                    ) printusage "--$opt"; exit 0;;
+                esac
+            fi
+        else
+            cmd="$cmd '$1'"
+        fi
+
+        shift
+    done
+
+    for i
+    do
+        cmd="$cmd '$i'"
+    done
+}
+
+capturestdin() {
+    [ -t 0 ] && exit 0
+    stdinfl="$( mktemp )"
+    cp -f /dev/stdin "$stdinfl"
+}
+
+validstdin() {
+    [ "$optnoempty" = "1" ] && [ ! -s "$stdinfl" ] && exit 0
+    [ "$optnowhite" = "1" ] && [ "$( sed '/^\s*$/d' "$stdinfl" | wc -c )" = "0" ] && exit 0
+}
+
+main() {
+    if [ "$optsponge" = "1" ]
+    then
+        eval "( $cmd ) < '$stdinfl'"
+    else
+        while IFS= read -r i
+        do
+            eval "( $cmd ) < '$i'"
+        done
+    fi
+}
+
+parseargs "$@"
+capturestdin
+validstdin
+main
