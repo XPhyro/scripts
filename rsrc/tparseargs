@@ -98,3 +98,5 @@ parseargs() {
         : # guaranteed positional argument
     done
 }
+
+parseargs "$@"
