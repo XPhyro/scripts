@@ -1,7 +1,6 @@
 # To do
 - Integrate -pc option of dmenu into usable scripts.
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$( mondef )" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
-- Write an alternative to xargs for stdin. This would allow for nicer flow in some cases (ex. see line 7 of btccdev).
 - Rewrite [tglapp](tglapp) in C. It proves very useful in a lot of situations, it could do with the performance boost even though it usually takes about 10ms to execute (empty subshell takes 4ms!).
 - Optimise [kmcycle](kmycle) and [setxkb](setxkb).
 - Write a todo manager which would be a generalised form of the deadline reminder.
