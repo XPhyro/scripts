@@ -39,7 +39,7 @@ printhelp() {
 }
 
 printusage() {
-    printf "Option [%s] is not valid.\n\n" "$1"
+    printf "Option [%s] is not valid.\n\n" "$1" >&2
     printhelp
 }
 

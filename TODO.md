@@ -7,4 +7,3 @@
 - Write a watson wrapper.
 - Use `xsel` instead of `xclip`.
 - Write a script that would present the user with a dmenu menu of search engines (DuckDuckGo, Wikipedia, etc.), then present the user with another dmenu, this time empty, and use the entered string to construct a search query (URL) and open with xdg-open.
-- Make logerrq functions print to stderr.

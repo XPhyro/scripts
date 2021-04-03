@@ -21,12 +21,12 @@ printhelp() {
 }
 
 printusage() {
-    printf "Option [%s] is not valid.\n\n" "$1"
+    printf "Option [%s] is not valid.\n\n" "$1" >&2
     printhelp
 }
 
 logerrq() {
-    printf "[ERROR]: %s\n" "$1"
+    printf "[ERROR]: %s\n" "$1" >&2
     exit 1
 }
 
