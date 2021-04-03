@@ -39,7 +39,7 @@ printusage() {
 capturestdin() {
     [ -t 0 ] || {
         stdinfl="$( mktemp )"
-        sponge "$stdinfl" <&0
+        cp -f /dev/stdin "$stdinfl"
     }
 }
 
