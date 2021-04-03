@@ -94,7 +94,7 @@ flipasync() {
                 then
                     unset "$j"
                 else
-                    eval "$j='&'"
+                    eval "$j=' &'"
                 fi
             }
             
@@ -283,18 +283,18 @@ wipe() {
             if [ "$i" = "$f" ]
             then
                 # shellcheck disable=SC2154
-                printf "unmodif '%s' %s\n" "$i" "$unmodifasync"
+                printf "unmodif '%s'%s\n" "$i" "$unmodifasync"
             elif [ -z "$f" ]
             then
                 # shellcheck disable=SC2154
-                printf "wipe '%s' '%s' %s\n" "$i" "$f" "$wipeasync"
+                printf "wipe '%s' '%s'%s\n" "$i" "$f" "$wipeasync"
             else
                 # shellcheck disable=SC2154
-                printf "modif '%s' '%s' %s\n" "$i" "$f" "$modifasync"
+                printf "modif '%s' '%s'%s\n" "$i" "$f" "$modifasync"
             fi
 
             # shellcheck disable=SC2154
-            printf "all '%s' '%s' %s\n" "$i" "$f" "$allasync"
+            printf "all '%s' '%s'%s\n" "$i" "$f" "$allasync"
         done 3< "$ogtmpfl" 4< "$tmpfl" >> "$scriptfl"
 
         edit "$scriptfl"
