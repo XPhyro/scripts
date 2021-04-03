@@ -2,6 +2,7 @@
 # Change directory of mark.
 
 mark="$1"
+[ -z "$mark" ] && exit 1
 val="$2"
 mrkfl="$( getfl mrk )"
 
