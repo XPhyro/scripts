@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+# Change directory of mark.
+
+mark="$1"
+val="$2"
+mrkfl="$( getfl mrk )"
+
+[ "$mark" = "¬" ] || {
+    printf "Overwrite mark [$mark]? (y/N)\nCurrent value: $( grep "^$mark\s" "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g' )\nNew value    : $val\n"
+    equals "$( readchar )" Y y || exit 0
+}
+
+gawk -i inplace -v mrkfl="$mark" -v val="$val" '$1 == mrkfl {$2=val}1' "$mrkfl"
