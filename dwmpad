@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+lck dwmpad
+trap "rm -f '$( getfl dwmpadlck )'" INT EXIT TERM
+st -n dwmpad -e "$@"
