@@ -14,6 +14,8 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 - *[tglapp](tglapp)*: Toggle an application on/off based on hashcodes.
 - *[eln](eln)*: Batch edit or create symlinks.
 - *[latexstp](latexstp)*: Basically latexmk but sucks *less* and is more minimal.
+- *[xins](xins)*: Like xargs but for standard input.
+- *[kdialog](kdialog)*: kdialog wrapper to not use awful file dialogs.
 
 ## Related
 - You can find my gpup management scripts [here](https://github.com/XPhyro/gpupmanager).
