@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Log chosen files for kdialog from ranger.
+
+printf "%s\n" "$@" > "$( getfl rchoose )"

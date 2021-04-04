@@ -1,0 +1,74 @@
+#!/usr/bin/env sh
+# kdialog wrapper to not use awful file dialogs.
+# If using dwm or the like, you should export XDG_CURRENT_DESKTOP=kde in your shell profile and prepend XDG_CURRENT_DESKTOP="" in xdg-open.
+
+kdialog() {
+    exec /usr/bin/kdialog "$@"
+}
+
+peekargs() {
+    for i
+    do
+        case "$i"
+        in
+            --getopenfilename|--getsavefilename                 ) hasrelevantopt="1";;
+            -h|--help|--helpall|-v|--version|--author|--license ) kdialog "$@";;
+        esac
+    done
+
+    [ "$hasrelevantopt" != "1" ] && kdialog "$@"
+}
+
+parseargs() {
+    while [ -n "$1" ]
+    do
+        if [ "${1%"${1#??}"}" = "--" ]
+        then
+            opt="${1#??}"
+            
+            case "$opt"
+            in
+                getopenfilename ) optopenfile="1"; moptreg="1";;
+                getsavefilename ) optsavefile="1"; moptreg="1";;
+                getopenurl      ) optopenurl="1"; moptreg="1";;
+                getsaveurl      ) optsaveurl="1"; moptreg="1";;
+                *               ) moptreg="0";;
+            esac
+        else
+            if [ "$moptreg" = "1" ]
+            then
+                optargs="$optargs$1
+"
+            else
+                pargs="$pargs$1
+"
+            fi
+        fi
+
+        shift
+    done
+}
+
+processargs() {
+    optargs="$( printf "%s\n" "$optargs" | head -n 1 )"
+}
+
+main() {
+    rfl="$( getfl rchoose )"
+
+    if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]
+    then
+        dwmpad ranger "${optargs:-"$HOME"}" > /dev/null
+    elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]
+    then
+        printf "${optargs:-"$HOME/downloads"}" > "$rfl"
+        dwmpad $EDITOR "$rfl" > /dev/null
+    fi
+}
+
+peekargs "$@"
+parseargs "$@" > /dev/null 2>&1
+processargs > /dev/null 2>&1
+main > /dev/null 2>&1
+cat "$rfl" 2> /dev/null
+rm -f "$rfl" > /dev/null 2>&1
