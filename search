@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
 se="$( dmenu -F -l 20 -p "search engine:" < "$( getfl search )" | awk -F, '{print $NF}' )"
-[ -n "$se" ] && printf "%s\n" "$se" | sed "s/%s/$( printf "" | dmenu -l 0 -p "search term:" )/g" | xargs -r xdg-open
+[ -n "$se" ] && printf "%s\n" "$se" | sed "s/%s/$( printf "" | dmenu -l 0 -p "search term:" | tr -d '\n' | jq -sRr @uri )/g" | xargs -r xdg-open
