@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 # Print the default pulseaudio source.
 
 pactl info | tail -n 2 | head -n 1 | awk '{print $3}'
