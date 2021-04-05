@@ -3,21 +3,6 @@
 # TODO: Ask how many times the document should be opened and open that many. After all of the documents are closed, ask whether the amount was satisfactory, then save the amount such that it will not be asked the next time if it was satisfactory; else, ask for a new number and if given, save that instead.
 # TODO: Make this into a more general helper script to open a file in a directory based on some custom filtering/sorting, and use that helper script to do what this script currently does.
 
-dir="$( getloc mu )" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
-    exit 1
-}
-cd "$dir" || {
-    notify-send "view-music" "Could not cd to $dir."
-    exit 0
-}
-
-fls="$( find . -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||' )"
-
-fl="$( printf "%s" "$fls" | dmenu -F -i -l 20 -p "Select sheet music:" )"
-
-[ "$fl" = "" ] && exit 0
-
 cmd="xdg-open"
 
 while [ -n "$1" ]
@@ -30,10 +15,19 @@ do
     shift
 done
 
-if [ -z "$cmd" ] || [ -z "$fl" ] 
-then
+dir="$( getloc mu )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
+cd "$dir" || {
+    notify-send "view-music" "Could not cd to $dir."
     exit 0
-fi
+}
+
+fls="$( find . -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||' )"
+
+fl="$( printf "%s" "$fls" | dmenu -F -i -l 20 -p "Select sheet music:" )"
+[ -z "$fl" ] && exit 0
 
 notify-send -t 2000 "view-music" "Opening $( basename "$fl" ) with $cmd."
 eval "'$cmd' '$fl'"
