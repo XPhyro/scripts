@@ -2,4 +2,5 @@
 # Restart sxhkd.
 
 cd "$HOME"
+# shellcheck disable=SC1035,SC1072
 tglapp -fT on sxhkd &!

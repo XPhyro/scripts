@@ -7,7 +7,7 @@ val="$2"
 mrkfl="$( getfl mrk )"
 
 [ "$mark" = "¬" ] || {
-    printf "Overwrite mark [$mark]? (y/N)\nCurrent value: $( grep "^$mark\s" "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g' )\nNew value    : $val\n"
+    printf "Overwrite mark [%s]? (y/N)\nCurrent value: %s\nNew value    : %s\n" "$mark" "$( grep "^$mark\s" "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g' )" "$val"
     equals "$( readchar )" Y y || exit 0
 }
 

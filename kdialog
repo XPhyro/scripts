@@ -61,7 +61,8 @@ main() {
         dwmpad ranger "${optargs:-"$HOME"}" > /dev/null
     elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]
     then
-        printf "${optargs:-"$HOME/downloads"}" > "$rfl"
+        printf "%s" "${optargs:-"$HOME/downloads"}" > "$rfl"
+        # shellcheck disable=SC2086
         dwmpad $EDITOR "$rfl" > /dev/null
     fi
 }

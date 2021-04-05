@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Force move without overwriting.
 
-mv -n "$fl" "$( getnewpath "$fl" )"
+mv -n "$1" "$( getnewpath "$2" )"

@@ -183,6 +183,7 @@ runcmd() {
 }
 
 stopcmd() {
+    # shellcheck disable=SC2086
     env kill $killargs "$pid" 2> /dev/null && rm -f "$keyfl" 2> /dev/null
 }
 

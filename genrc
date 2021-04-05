@@ -6,6 +6,7 @@ files="$HOME/documents/sys-admin/files"
 ranger="$HOME/.dotfiles-sensitive/.config/ranger/rc.conf"
 
 rtmp="$( mktemp )"
+# shellcheck disable=SC2064
 trap "rm -f '$rtmp'" INT EXIT TERM
 
 sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "$ranger"
