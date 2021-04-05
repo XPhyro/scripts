@@ -20,16 +20,14 @@ fl="$( printf "%s" "$fls" | dmenu -F -i -l 20 -p "Select sheet music:" )"
 
 cmd="xdg-open"
 
-for i
+while [ -n "$1" ]
 do
-    if [ -n "$cmdget" ]
+    if [ "$1" = "-c" ] || [ "$1" = "--command" ]
     then
-        cmd="$i"
-        unset cmdget
-    elif [ "$i" = "-c" ] || [ "$i" = "--command" ]
-    then
-        cmdget="1"
+        shift
+        cmd="$1"
     fi
+    shift
 done
 
 if [ -z "$cmd" ] || [ -z "$fl" ] 
@@ -38,4 +36,4 @@ then
 fi
 
 notify-send -t 2000 "view-music" "Opening $( basename "$fl" ) with $cmd."
-"$cmd" "$fl"
+eval "'$cmd' '$fl'"
