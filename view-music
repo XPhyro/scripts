@@ -14,7 +14,7 @@ cd "$dir" || {
 
 fls="$( find . -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||' )"
 
-fl="$( printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:" )"
+fl="$( printf "%s" "$fls" | dmenu -F -i -l 20 -p "Select sheet music:" )"
 
 [ "$fl" = "" ] && exit 0
 
