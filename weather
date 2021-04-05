@@ -3,5 +3,5 @@
 # Designed to work as a scratchpad for dwm with st.
 
 curl wttr.in/Çankaya
-printf "\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K"
-read -r
+env printf "\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K"
+readchar > /dev/null
