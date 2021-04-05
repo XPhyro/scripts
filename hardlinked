@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-[ "$#" -eq 0 ] && exit 0
+[ "$#" -lt 2 ] && exit 0
 
 f="$( stat -c "%i %d" -- "$1" 2> /dev/null )"
 shift
