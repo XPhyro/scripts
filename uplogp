@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
-# Prints the logs taken by uplog.
+# Print the logs taken by uplog.
 
 awk '{print strftime("%a %Y-%m-%d %H:%M:%S", $1)}' "$( getfl uplog )"
