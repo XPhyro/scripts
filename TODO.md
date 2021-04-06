@@ -6,3 +6,4 @@
 - Write a todo manager which would be a generalised form of the deadline reminder.
 - Write a watson wrapper.
 - Use `xsel` instead of `xclip`.
+- Rewrite `lck`. See [this](https://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) and [this](http://mywiki.wooledge.org/BashFAQ/045).
