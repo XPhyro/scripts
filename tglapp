@@ -44,7 +44,7 @@ capturestdin() {
 }
 
 assertarg() {
-    [ "$3" ] || {
+    [ -z "$3" ] && {
         printf "[ERROR]: Expected %s argument to %s, exiting.\n" "$2" "$1"
         exit 1
     }

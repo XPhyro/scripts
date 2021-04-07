@@ -69,7 +69,7 @@ printferr() {
 }
 
 assertarg() {
-    [ "$3" ] || {
+    [ -z "$3" ] && {
         printferr "Expected %s argument to %s, exiting.\n" "$2" "$1"
         exit 1
     }

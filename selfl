@@ -59,7 +59,7 @@ cdsafe() {
 }
 
 assertarg() {
-    [ "$3" ] || {
+    [ -z "$3" ] && {
         printf "Expected %s argument to %s, exiting.\n" "$2" "$1"
         exit 1
     }
