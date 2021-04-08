@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
-# Compile and show its PDF of a TeX file, then compile it every time it is accessed/modified/etc.
-# Compilation on access is intended behaviour.
+# Compile and show its PDF of a TeX file, then compile it every time it is modified.
 # This was written as a more robust alternative to latexmk as it seemed to fail and/or get stuck quite a lot.
+#
 # TODO: Limit CPU usage of xelatex. ([cpulimit ... -- xelatex ...] did not work)
 # TODO: Should child latexstps be spawned for every positional argument? Should only one positional argument be accepted? Should the first positional argument be considered the source file and the rest just be opened along with the source file with the editor? Currently multiple are accepted, but only the first one is considered.
 
