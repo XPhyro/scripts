@@ -20,7 +20,7 @@ printhelp() {
         "   --no-force-state" \
         "       Inhibit -f. Inhibited by a following -f." \
         "   -h, --help" \
-        "       Print help message." \
+        "       Print help message and exit." \
         "   -k KEYCODE, --keycode KEYCODE" \
         "       Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /." \
         "   -s, --status" \
