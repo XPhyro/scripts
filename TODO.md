@@ -8,3 +8,4 @@
 - Use `xsel` instead of `xclip`.
 - Rewrite `lck`. See [this](https://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) and [this](http://mywiki.wooledge.org/BashFAQ/045).
 - Write a variant of `volappch` that toggles mute status.
+- Should `-a` be the default in `tglapp`.
