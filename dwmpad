@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# TODO: Allow force opening at a particular lock.
+# TODO: If lock 0 is selected, show a dwmpad that tracks the other locks. Show current resource usage, currently running command, when the lock was acquired, etc.
 
 lckdir="$( getloc dwmpadlck )" || {
     printf "[ERROR]: getloc failed, aborting.\n"
