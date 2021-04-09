@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-lck clplog
+lckget clplog
 dmenu < "$( getfl ynk )" | awk -F ";" '{print $2}' | sed 's/^ //' | tr -d '\n' | xclip -sel clip
