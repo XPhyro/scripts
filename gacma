@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-[ "$#" -lt 2 ] && return 1
+[ "$#" -lt 2 ] && exit 1
 message="$1"
 shift
 if [ "$#" -eq 1 ]
