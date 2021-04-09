@@ -30,5 +30,5 @@ lck="$(
     )"
 }
 
-st -n "dwmpad$lck" -t "dwmpad #$lck" -e "$@"
+st -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "dwmpad #$lck" "$@"
 rm -rf "${lckdir:?}/${lck:?}"
