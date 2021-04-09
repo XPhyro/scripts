@@ -1,6 +1,33 @@
 #!/usr/bin/env sh
 
-lckget dwmpad
-# shellcheck disable=SC2064
-trap "rm -f '$( getfl dwmpadlck )'" INT EXIT TERM
-st -n dwmpad -e "$@"
+lckdir="$( getloc dwmpadlck )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
+
+lck="$( 
+    lck=""
+    while true
+    do
+        lck="$( 
+            seq 0 9 | while IFS= read -r i
+            do
+                mkdir "$lckdir/$i" 2> /dev/null && {
+                    printf "%s" "$i"
+                    break
+                }
+            done
+        )"
+
+        [ -n "$lck" ] && {
+            printf "%s" "$lck"
+            break
+        }
+
+        sleep 5
+    done
+)"
+
+st -n "dwmpad$lck" -t "dwmpad #$lck" -e "$@"
+
+rm -rf "${lckdir:?}/$lck"
