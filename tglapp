@@ -251,6 +251,7 @@ main() {
 
 clean() {
     [ -f "$stdinfl" ] && rm -f "$stdinfl"
+    [ -f "$keyfl" ] && rm -f "$keyfl"
 }
 
 capturestdin
