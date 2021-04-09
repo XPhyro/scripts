@@ -6,28 +6,29 @@ lckdir="$( getloc dwmpadlck )" || {
 }
 
 lck="$( 
-    lck=""
-    while true
+    seq 1 2 | while IFS= read -r i
     do
-        lck="$( 
-            seq 0 9 | while IFS= read -r i
-            do
-                mkdir "$lckdir/$i" 2> /dev/null && {
-                    printf "%s" "$i"
-                    break
-                }
-            done
-        )"
-
-        [ -n "$lck" ] && {
-            printf "%s" "$lck"
+        mkdir "$lckdir/$i" 2> /dev/null && {
+            printf "%s" "$i"
             break
         }
-
-        sleep 5
     done
 )"
 
-st -n "dwmpad$lck" -t "dwmpad #$lck" -e "$@"
+[ -z "$lck" ] && {
+    notify-send -t 2000 "dwmpad" "All locks are occupied, waiting..." &
 
-rm -rf "${lckdir:?}/$lck"
+    lck="$(
+        while true 
+        do
+            i="$( inotifywait "$lckdir" -q -e "delete" --format "%f" )"
+            mkdir "$lckdir/$i" 2> /dev/null && {
+                printf "%s" "$i"
+                break
+            }
+        done
+    )"
+}
+
+st -n "dwmpad$lck" -t "dwmpad #$lck" -e "$@"
+rm -rf "${lckdir:?}/${lck:?}"
