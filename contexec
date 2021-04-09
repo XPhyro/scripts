@@ -3,7 +3,7 @@
 
 printhelp() {
     printf "%s\n" \
-        "pystp [OPTION...] [FILES...] -- [FILES...]" \
+        "contexec [OPTION...] [FILES...] -- [FILES...]" \
         "   -o, --once" \
         "       Exit after the first execution." \
         "   --no-once" \
