@@ -43,6 +43,10 @@ printhelp() {
                 "        Print help message." \
                 "    -l, --loud" \
                 "        Reverse a single -q option." \
+                "    -p, --print-performance" \
+                "        Print performance statistics after ffmpeg finishes." \
+                "    --no-print-performance" \
+                "        Revert -p." \
                 "    -q, --quiet" \
                 "        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed." \
 
@@ -112,6 +116,7 @@ parseargs() {
                     in
                         h) printhelp; exit 0;;
                         l) loud="${loud}1";;
+                        p) pperf="perf stat";;
                         q) quiet="${quiet}1";;
                         *) printusage "-$opt";;
                     esac
@@ -123,10 +128,12 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    help  ) printhelp; exit 0;;
-                    loud  ) loud="${loud}1";;
-                    quiet ) quiet="${quiet}1";;
-                    *     ) printusage "--$opt";;
+                    help                 ) printhelp; exit 0;;
+                    loud                 ) loud="${loud}1";;
+                    print-performance    ) pperf="perf stat";;
+                    no-print-performance ) pperf="";;
+                    quiet                ) quiet="${quiet}1";;
+                    *                    ) printusage "--$opt";;
                 esac
             fi
         else
@@ -261,7 +268,7 @@ concat() {
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
-    ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
+    $pperf ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
         printferr "ffmpeg failed, exiting.\n"
         [ -f "$lstfl" ] && rm "$lstfl"
         exit 1
