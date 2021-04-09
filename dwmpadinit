@@ -2,4 +2,4 @@
 
 printf "%s\n" "$1"
 shift
-"$@"
+exec "$@"
