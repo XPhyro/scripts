@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+lckfl="$( getfl "$1lck" )" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
+
+lck "$lckfl"
