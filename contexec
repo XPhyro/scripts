@@ -1,0 +1,122 @@
+#!/usr/bin/env sh
+# Execute a file every time it is modified.
+
+printhelp() {
+    printf "%s\n" \
+        "pystp [OPTION...] [FILES...] -- [FILES...]" \
+        "   -o, --once" \
+        "       Exit after the first execution." \
+        "   --no-once" \
+        "       Revert -o." \
+        "   -h, --help" \
+        "       Print help message."
+}
+
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1" >&2
+    printhelp
+}
+
+logerrq() {
+    printf "[ERROR]: %s\n" "$1" >&2
+    exit 1
+}
+
+assertarg() {
+    [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
+}
+
+assertfl() {
+    [ -f "$1" ] || logerrq "No such file as $1, exiting."
+}
+
+parseargs() {
+    while [ -n "$1" ]
+    do
+        if [ "${1%"${1#?}"}" = "-" ]
+        then
+            if [ "${1%"${1#??}"}" != "--" ]
+            then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        o) parseargs --once;;
+                        h) parseargs --help;;
+                        *) printusage "-$opt"; exit 0;;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt"
+                in
+                    once     ) optonce="1";;
+                    no-once  ) optonce="0";;
+                    help     ) printhelp; exit 0;;
+                    ""       ) shift; break;;
+                    *        ) printusage "--$opt"; exit 0;;
+                esac
+            fi
+        else
+            assertfl "$1"
+            fls="$1
+$fls"
+        fi
+
+        shift
+    done
+
+    for i
+    do
+        assertfl "$i"
+        fls="$fls$i
+"
+    done
+}
+
+processargs() {
+    [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
+    execfl="$( printf "%s\n" "$fls" | head -n 1 )"
+    execpath="$( realpath "$execfl" )"
+}
+
+execute() {
+    inotifywait -e move_self "$execfl" > /dev/null 2>&1
+    pid="$( cat "$pidfl" )"
+    kill -s 0 "$pid" && {
+        env kill -s INT --timeout 1000 TERM --timeout 1000 KILL "$pid" || logerrq "Could not kill PID $pid, exiting."
+    }
+    waitfl "$execpath" && sleep 0.5
+    while kill -s 0 "$pid"
+    do
+        sleep 0.1
+    done
+    "$execpath" &
+    printf "%s" "$!" > "$pidfl"
+}
+
+main() {
+    [ "$optonce" = "1" ] && {
+        inotifywait -e move_self "$execfl" > /dev/null 2>&1
+        eval "$execpath"
+        exit 0
+    }
+
+    pidfl="$( mktemp )"
+    while true
+    do
+        execute
+    done
+}
+
+parseargs "$@"
+processargs
+trap 'kill 0 2>&1' INT TERM EXIT
+main
