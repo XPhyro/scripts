@@ -154,7 +154,7 @@ validargs() {
 }
 
 processargs() {
-    [ -z "$keycode" ] && keycode="$( printf "%s" "$cmd" | xxh128sum | awk '{print $1}' | tr -d '\n' )"
+    [ -z "$keycode" ] && keycode="$( printf "%s" "$cmd" | sha512sum | awk '{print $1}' | tr -d '\n' )"
 
     if [ -z "$timeouts" ]
     then
