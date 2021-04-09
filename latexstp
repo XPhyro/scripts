@@ -9,7 +9,7 @@ printhelp() {
     printf "%s\n" \
         "latexstp [OPTION...] [FILES...] -- [FILES...]" \
         "   -f, --force" \
-        "       Force compilation even if hash-check succeeds." \
+        "       Force compile even if hash-check succeeds." \
         "   --no-force" \
         "       Revert -f." \
         "   -o, --once" \
@@ -152,6 +152,7 @@ main() {
     xdg-open "$srcfl.pdf" > /dev/null 2>&1 &
     compileloop > /dev/null 2>&1 &
     xdg-open "$srcfl.tex"
+    compile > /dev/null 2>&1
     cleanaux
     kill 0 2>&1
 }
@@ -160,5 +161,3 @@ setdefargs
 parseargs "$@"
 processargs
 main
-compile > /dev/null 2>&1
-cleanaux
