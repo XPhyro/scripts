@@ -8,7 +8,7 @@ lckdir="$( getloc dwmpadlck )" || {
 }
 
 lck="$( 
-    seq 1 2 | while IFS= read -r i
+    seq 1 9 | while IFS= read -r i
     do
         mkdir "$lckdir/$i" 2> /dev/null && {
             printf "%s" "$i"
