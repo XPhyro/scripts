@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-printf "%s\n" "$1"
+printf "%s - %s\n" "$1" "$( date +"%a %F %R" )"
 shift
 if [ "$#" -eq 0 ]
 then
