@@ -10,3 +10,4 @@
 - Write a variant of `volappch` that toggles mute status.
 - Should `-a` be the default in `tglapp`.
 - Write a script like `latexstp` for Python to be used with Matplotlib etc.
+- `wallpaper` does not work, fix.
