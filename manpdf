@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 # Choose a manual, generate its PDF and open it with zathura.
 
-entry="$( apropos . | dmenu -l 20 | awk '{print $1}' )"
-[ -n "$entry" ] && man -Tpdf "$entry" | zathura -
+apropos '' | dmenu -l 20 | awk '{print $1}' | xargs -r man -Tpdf | xins -Rs -- zathura -
