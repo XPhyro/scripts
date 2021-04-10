@@ -2,4 +2,9 @@
 
 printf "%s\n" "$1"
 shift
-exec "$@"
+if [ "$#" -eq 0 ]
+then
+    exec "$SHELL"
+else
+    exec "$@"
+fi
