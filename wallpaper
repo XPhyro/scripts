@@ -1,8 +1,13 @@
 #!/usr/bin/env sh
-# TODO: Assign random images per display. hsetroot does not seem to support this.
+# TODO: Assign different images per display. hsetroot does not seem to support this.
 
-waloc="$( getloc wa )" || exit 1
+waloc="$( getloc wa )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
+
 fls="$( find "$waloc" -mindepth 1 -maxdepth 1 -type f | shuf )"
+
 i="$( printf "%s" "$fls" | head -n 1 )"
 
 sleep "$1"
@@ -11,11 +16,10 @@ sleep "$2"
 hsetroot -cover "$i"
 sleep "$3"
 
-while true
+while printf "%s\n" "$fls" | awk -v count=1 'BEGIN { srand() } rand() < count / ++n { if (n <= count) { s[n] = $0 } else { s[1+int(rand()*count)] = $0 } } END { for (i in s) print s[i] }' | IFS= read -r i
 do
-    [ -z "$last" ] && i="$( printf "%s\n" "$fls" | awk -v count=1 'BEGIN { srand() } rand() < count / ++n { if (n <= count) { s[n] = $0 } else { s[1+int(rand()*count)] = $0 } } END { for (i in s) print s[i] }' )"
     cmp -s "$i" "$last" 2> /dev/null && continue
-    hsetroot -cover "$i"
+    hsetroot -cover "$i" > /dev/null
     last="$i"
     sleep "$4"
 done
