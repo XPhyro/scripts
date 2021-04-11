@@ -16,6 +16,8 @@ sleep "$2"
 hsetroot -cover "$i"
 sleep "$3"
 
+exit 0 # TODO: The following loop gets stuck and uses non-trivial amounts of processing power without ever changing the wallpaper, fix.
+
 while printf "%s\n" "$fls" | awk -v count=1 'BEGIN { srand() } rand() < count / ++n { if (n <= count) { s[n] = $0 } else { s[1+int(rand()*count)] = $0 } } END { for (i in s) print s[i] }' | IFS= read -r i
 do
     cmp -s "$i" "$last" 2> /dev/null && continue
