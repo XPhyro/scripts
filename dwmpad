@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # TODO: Allow force opening at a particular lock.
 # TODO: If lock 0 is selected, show a dwmpad that tracks the other locks. Show current resource usage, currently running command, when the lock was acquired, etc.
+# TODO: Add ability to define geometry. This would be useful for applications like spt where height is important, or with ranger where overall size is important to preview efficiently.
 
 lckdir="$( getloc dwmpadlck )" || {
     printf "[ERROR]: getloc failed, aborting.\n"
