@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 
-printf "%s - %s\n" "$1" "$( date +"%a %F %R" )"
-shift
+lckdir="$1"
+lck="$2"
+shift 2
+
+printf "%s " "$@" > "$lckdir/$lck/command"
+printf "%s" "$$" > "$lckdir/$lck/pid"
+printf "%s - %s\n" "dwmpad #$lck" "$( date +"%a %F %R" )"
+
 if [ "$#" -eq 0 ]
 then
     exec "$SHELL"
