@@ -12,3 +12,4 @@
 - Write a script like `latexstp` for Python to be used with Matplotlib etc.
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
 - In `latexstp` and `contexec`, show the output in a `dwmpad` and open the editor in the initialised terminal.
+- After scratchpad setting is implemented in dwm, add support in `dwmpad`.
