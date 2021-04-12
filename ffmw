@@ -245,7 +245,7 @@ concat() {
     lstfl="$( mktemp -p . )"
     trap 'rm "$lstfl"' HUP INT QUIT TERM
 
-    printf "%s\n" "$infls" | while read -r i
+    printf "%s\n" "$infls" | while IFS= read -r i
     do
         [ -f "$i" ] || {
             printferr "No such file [$i], exiting.\n"
@@ -274,7 +274,7 @@ concat() {
         exit 1
     }
 
-    [ -n "$remove" ] && printf "%s\n" "$infls" | while read -r i
+    [ -n "$remove" ] && printf "%s\n" "$infls" | while IFS= read -r i
     do
         rm "$i"
     done

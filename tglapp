@@ -162,7 +162,7 @@ processargs() {
         signals="TERM"
     fi
 
-    while read -r timeout <&3 && read -r signal <&4
+    while IFS= read -r timeout <&3 && IFS= read -r signal <&4
     do
         killargs="$killargs --timeout $timeout $signal"
     done 3<<EOF1 4<<EOF2

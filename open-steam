@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
 # Prompt installed steam games and run the selected one.
 
-grep -E '\s*"[0-9]+"\s*".*"$' "$( getfl steamlibdirs )" | awk -F '"' '{print $4}' | while read -r i
+grep -E '\s*"[0-9]+"\s*".*"$' "$( getfl steamlibdirs )" | awk -F '"' '{print $4}' | while IFS= read -r i
 do
     cd "$i/steamapps" || {
         printf "%s\n" "Could not cd into '$i/steamapps', passing."
         continue
     }
 
-    find . -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while read -r j
+    find . -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j
     do
         printf '%s\n' "$( grep '"appid"' "$j" | awk -F '"' '{print $4}') $(grep '"name"' "$j" | awk -F '"' '{print $4}' )"
     done

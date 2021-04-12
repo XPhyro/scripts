@@ -87,7 +87,7 @@ flipasync() {
     while [ -n "$chars" ]
     do
         c="${chars%"${chars#?}"}"
-        while read -r i <&3 && read -r j <&4
+        while IFS= read -r i <&3 && IFS= read -r j <&4
         do
             [ "$c" = "$i" ] && {
                 if [ -n "$( eval "printf '%s' \"\$$j\"" )" ]
@@ -278,7 +278,7 @@ wipe() {
     :
 }
 " > "$scriptfl"
-        while read -r i <&3 && read -r f <&4
+        while IFS= read -r i <&3 && IFS= read -r f <&4
         do
             if [ "$i" = "$f" ]
             then
@@ -304,7 +304,7 @@ wipe() {
             eval "'$scriptfl'"
         }
     else
-        while read -r i <&3 && read -r f <&4
+        while IFS= read -r i <&3 && IFS= read -r f <&4
         do
             if [ "$i" = "$f" ]
             then

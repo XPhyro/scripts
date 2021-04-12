@@ -9,7 +9,7 @@ pingav="0.0"
 dowav="0.0"
 upav="0.0"
 
-while read -r i
+while IFS= read -r i
 do
     time="$( printf "%s" "$i" | awk -F \; '{print $1}' )"
     isp="$( printf "%s" "$i" | awk -F \; '{print $2}' )"

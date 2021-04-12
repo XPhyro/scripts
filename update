@@ -46,7 +46,7 @@ lst="$( getfl upabl )" || {
     exit 1
 }
 
-while read -r i
+while IFS= read -r i
 do
     [ "$( printf "%s" "$i" | sed -E 's/^\s*//' | cut -c1 )" = "#" ] && continue
 

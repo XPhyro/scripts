@@ -182,7 +182,7 @@ main() {
                     }
 
                     fls="$( 
-                        find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while read -r i
+                        find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i
                         do 
                             cdsafe "$i"
 
@@ -208,7 +208,7 @@ main() {
                     }
 
                     fls="$( 
-                        find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while read -r i
+                        find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i
                         do 
                             cdsafe "$i"
 
@@ -304,7 +304,7 @@ parseargs "$@"
 if [ -n "$initdirs" ]
 then
     masterinitpwd="$PWD"
-    printf "%s\n" "$initdirs" | while read -r i
+    printf "%s\n" "$initdirs" | while IFS= read -r i
     do
         cdsafe "$masterinitpwd"
         cdsafe "$i"
