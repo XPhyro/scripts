@@ -13,3 +13,5 @@
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
 - In `latexstp` and `contexec`, show the output in a `dwmpad` and open the editor in the initialised terminal.
 - After scratchpad setting is implemented in dwm, add support in `dwmpad`.
+- Allow m to take input files. If an input file is given, mark the file; if not, mark the current working directory.
+- Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
