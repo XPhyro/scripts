@@ -163,6 +163,8 @@ dispatchcompiler() {
         $( printcleanaux )
     }
 
+    printf '[latexstp]: %s\n' \"Initialised in \$( pwd )\" 'Watching $srcfl.tex.'
+
     while true
     do
         inotifywait -qq -e move_self '$srcfl.tex'
