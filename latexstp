@@ -101,7 +101,19 @@ processargs() {
     srcfl="$( printf "%s\n" "$fls" | head -n 1 )"
     hardlinked "$srcfl" "$( basename "$srcfl" )" || logerrq "Source file must be in the current directory."
     srchashfl="$cachedir$( realpath "$srcfl.tex" )"
-    mkdir -p "$( dirname "$srchashfl" )"
+    mkdir -p "$( dirname "$srchashfl" )" || {
+        i="$srchashfl"
+        while true
+        do
+            [ -e "$i" ] && {
+                rm -rf "$i"
+                break
+            }
+            
+            i="$( dirname "$i" )"
+            [ "$i" = "$cachedir" ] && logerrq "Could not resolve cache, exiting."
+        done
+    }
 }
 
 clean() {
@@ -134,7 +146,8 @@ printcompile() {
     xelatex -shell-escape -halt-on-error '$srcfl'
     xelatex -shell-escape -halt-on-error '$srcfl'
     
-    printf '%s\n' \"\$srchash\" > '$srchashfl'"
+    printf '%s\n' \"\$srchash\" > '$srchashfl'
+    "
 }
 
 compile() {
