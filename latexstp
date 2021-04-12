@@ -16,6 +16,10 @@ printhelp() {
         "       Compile once and exit." \
         "   --no-once" \
         "       Revert -o." \
+        "   --shell-escape" \
+        "       Enable \write18." \
+        "   --no-shell-escape" \
+        "       Revert --shell-escape." \
         "   -h, --help" \
         "       Print help message."
 }
@@ -66,13 +70,15 @@ parseargs() {
 
                 case "$opt"
                 in
-                    force    ) optforce="1";;
-                    no-force ) optforce="0";;
-                    once     ) optonce="1";;
-                    no-once  ) optonce="0";;
-                    help     ) printhelp; exit 0;;
-                    ""       ) shift; break;;
-                    *        ) printusage "--$opt"; exit 0;;
+                    force            ) optforce="1";;
+                    no-force         ) optforce="0";;
+                    once             ) optonce="1";;
+                    no-once          ) optonce="0";;
+                    shell-escape     ) optshellesc="--shell-escape";;
+                    no-shell-escape  ) optshellesc="";;
+                    help             ) printhelp; exit 0;;
+                    ""               ) shift; break;;
+                    *                ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else
@@ -135,16 +141,16 @@ printcompile() {
     [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$( cat '$srchashfl' 2> /dev/null )\" ] && return 0
     
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    xelatex -shell-escape -halt-on-error '$srcfl' || {
+    xelatex $optshellesc -halt-on-error '$srcfl' || {
         cleanaux
-        xelatex -shell-escape -halt-on-error '$srcfl' || return 1
+        xelatex $optshellesc -halt-on-error '$srcfl' || return 1
     }
     bibtex '$srcfl'
     biber '$srcfl'
     makeindex '$srcfl'.idx 2> /dev/null
     # makeindex -s style.gls ...
-    xelatex -shell-escape -halt-on-error '$srcfl'
-    xelatex -shell-escape -halt-on-error '$srcfl'
+    xelatex $optshellesc -halt-on-error '$srcfl'
+    xelatex $optshellesc -halt-on-error '$srcfl'
     
     printf '%s\n' \"\$srchash\" > '$srchashfl'
     "
@@ -163,11 +169,12 @@ dispatchcompiler() {
         $( printcleanaux )
     }
 
-    printf '[latexstp]: %s\n' \"Initialised in \$( pwd )\" 'Watching $srcfl.tex.'
+    printf '[latexstp]: %s\n' \"Initialised in \$( pwd ).\" 'Watching $srcfl.tex.'
 
     while true
     do
         inotifywait -qq -e move_self '$srcfl.tex'
+        waitfl '$srcfl.tex'
         compile
     done
     "
