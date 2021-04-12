@@ -1,14 +1,9 @@
 #!/usr/bin/env sh
-# Open an executable file.
+# Open executable files.
 
-# TODO: Make this use where instead of type, reducing an awk.
-# TODO: This does not work for multiple inputs, fix.
+paths="$( type "$@" )" || {
+    printf "[ERROR]: Could not find %s.\n" "$( printf "%s\n" "$paths" | grep ".*: not found$" | sed -e 's/: not found$//' -e 's/$/, /' | tr -d '\n' | sed -e 's/, $//' )"
+    exit 1
+}
 
-paths="$( type "$@" 2>/dev/null | awk '{print $3}' )"
-
-if [ -n "$paths" ] 
-then
-    eval "'$EDITOR' '$paths'"
-else
-    printf "%s\n" "No such executable$( [ "$2" ] && printf "%s" "s" ) named { $( printf "%s" "$@" | sed 's/ /, /g' ) }."
-fi
+"$EDITOR" $( printf "%s\n" "$paths" | awk '{print $NF}' )
