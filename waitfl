@@ -11,4 +11,5 @@ do
         }
     done
     [ "$allexist" = "1" ] && exit 0
+    sleep 0.05
 done
