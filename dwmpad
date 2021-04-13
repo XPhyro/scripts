@@ -28,14 +28,44 @@ assertarg() {
 parseargs() {
     while [ -n "$1" ]
     do
-        case "$1"
-        in
-            -g|--geometry ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
-            -n|--number   ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
-            -h|--help     ) printhelp; exit 0;;
-            --            ) return 0;;
-            *             ) printusage "$1"; exit 0;;
-        esac
+        if [ "${1%"${1#?}"}" = "-" ]
+        then
+            if  [ "${1%"${1#??}"}" != "--" ]
+            then
+                sopt="${1#?}"
+                [ "$1" = a ] && echo b
+
+                while [ -n "$sopt" ]
+                do
+                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+
+                    case "$opt"
+                    in
+                        g) shift; parseargs --geometry "$1";;
+                        n) shift; parseargs --number "$1";;
+                        h) parseargs --help;;
+                        *) printusage "$1"; exit 0;;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+                [ "$1" = a ] && echo c
+                
+                case "$opt"
+                in
+                    geometry ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
+                    number   ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
+                    help     ) printhelp; exit 0;;
+                    ""       ) return 0;;
+                    *        ) printusage "$1"; exit 0;;
+                esac
+            fi
+        else
+            printusage "$1"
+            exit 0
+        fi
 
         shift
     done
