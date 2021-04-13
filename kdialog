@@ -58,7 +58,7 @@ main() {
 
     if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]
     then
-        dwmpad -- ranger "${optargs:-"$HOME"}" > /dev/null
+        dwmpad -g 160x50 -- ranger "${optargs:-"$HOME"}" > /dev/null
     elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]
     then
         printf "%s\n" "${optargs:-"$HOME/downloads"}" > "$rfl"
