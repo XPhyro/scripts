@@ -58,12 +58,12 @@ main() {
 
     if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]
     then
-        dwmpad ranger "${optargs:-"$HOME"}" > /dev/null
+        dwmpad -- ranger "${optargs:-"$HOME"}" > /dev/null
     elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]
     then
         printf "%s\n" "${optargs:-"$HOME/downloads"}" > "$rfl"
         # shellcheck disable=SC2086
-        dwmpad $EDITOR "$rfl" > /dev/null
+        dwmpad -- $EDITOR "$rfl" > /dev/null
     fi
 }
 
