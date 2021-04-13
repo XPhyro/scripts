@@ -16,3 +16,4 @@
 - Allow m to take input files. If an input file is given, mark the file; if not, mark the current working directory.
 - Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `contexec`, wrap each execution between printed headers. Also show the execution count.
+- In `dwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
