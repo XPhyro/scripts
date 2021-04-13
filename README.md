@@ -15,7 +15,8 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 - *[eln](eln)*: Batch edit or create symlinks.
 - *[latexstp](latexstp)*: Basically latexmk but sucks *less* and is more minimal.
 - *[xins](xins)*: Like xargs but for standard input.
-- *[kdialog](kdialog)*: kdialog wrapper to not use awful file dialogs.
+- *[kdialog](kdialog)*: kdialog wrapper to not use awful file dialogues.
+- *[dwmpad](dwmpad)*: Dynamic scratchpads for [dwm](https://dwm.suckless.org). See my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro).
 
 ## Related
 - You can find my gpup management scripts [here](https://github.com/XPhyro/gpupmanager).
