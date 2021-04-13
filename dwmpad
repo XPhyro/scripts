@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
-# TODO: Add ability to define geometry. This would be useful for applications like spt where height is important, or with ranger where overall size is important to preview efficiently.
 
 printhelp() {
     printf "%s\n" \
         "dwmpad [OPTION...] -- [COMMAND...]" \
+        "   -g GEOMETRY, --geometry GEOMETRY" \
+        "       Define the geometry that st should use. See st's manual for details." \
         "   -n NUMBER, --number NUMBER" \
         "       Use pad number NUMBER. Number can be an integer between 0 and 9. If 0 is passed, the given command is ignored and statistics about the other pads are shown." \
         "   -h, --help" \
@@ -29,10 +30,11 @@ parseargs() {
     do
         case "$1"
         in
-            -n|--number ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
-            -h|--help   ) printhelp; exit 0;;
-            --          ) return 0;;
-            *           ) printusage "$1"; exit 0;;
+            -g|--geometry ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
+            -n|--number   ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
+            -h|--help     ) printhelp; exit 0;;
+            --            ) return 0;;
+            *             ) printusage "$1"; exit 0;;
         esac
 
         shift
@@ -82,7 +84,7 @@ main() {
 
     [ -n "$1" ] && shift
 
-    st -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
+    st $optgeometry -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
     sleep 0.1
     rm -rf "${lckdir:?}/${lck:?}"
 }
