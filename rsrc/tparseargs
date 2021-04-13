@@ -14,7 +14,7 @@ printhelp() {
         "   -t, --option-type" \
         "       Set some option. Can be overridden with other types." \
         "   -h, --help" \
-        "       Print help message."
+        "       Print help message and exit."
 }
 
 printusage() {
