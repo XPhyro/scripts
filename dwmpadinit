@@ -4,13 +4,18 @@ lckdir="$1"
 lck="$2"
 shift 2
 
-printf "%s " "$@" > "$lckdir/$lck/command"
-printf "%s" "$$" > "$lckdir/$lck/pid"
-printf "%s - %s\n" "dwmpad #$lck" "$( date +"%a %F %R" )"
+[ "$lck" != "0" ] && {
+    printf "%s\n" "$@" > "$lckdir/$lck/command"
+    printf "%s" "$$" > "$lckdir/$lck/pid"
 
-if [ "$#" -eq 0 ]
-then
-    exec "$SHELL"
-else
-    exec "$@"
-fi
+    printf "%s - %s\n" "dwmpad #$lck" "$( date +"%a %F %R" )"
+
+    if [ "$#" -eq 0 ]
+    then
+        exec "$SHELL"
+    else
+        exec "$@"
+    fi
+}
+
+# TODO: Implement $lck=0 here.

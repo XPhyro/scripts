@@ -3,35 +3,92 @@
 # TODO: If lock 0 is selected, show a dwmpad that tracks the other locks. Show current resource usage, currently running command, when the lock was acquired, etc.
 # TODO: Add ability to define geometry. This would be useful for applications like spt where height is important, or with ranger where overall size is important to preview efficiently.
 
-lckdir="$( getloc dwmpadlck )" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+printhelp() {
+    printf "%s\n" \
+        "dwmpad [OPTION...] -- [COMMAND...]" \
+        "   -n NUMBER, --number NUMBER" \
+        "       Use pad number NUMBER. Number can be an integer between 0 and 9. If 0 is passed, the given command is ignored and statistics about the other pads are shown." \
+        "   -h, --help" \
+        "       Print help message and exit."
+}
+
+printusage() {
+    printf "Option [%s] is not valid.\n\n" "$1" >&2
+    printhelp
+}
+
+logerrq() {
+    printf "[ERROR]: %s\n" "$1" >&2
     exit 1
 }
 
-lck="$( 
-    seq 1 9 | while IFS= read -r i
+assertarg() {
+    [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
+}
+
+parseargs() {
+    while [ -n "$1" ]
     do
-        mkdir "$lckdir/$i" 2> /dev/null && {
-            printf "%s" "$i"
-            break
-        }
+        case "$1"
+        in
+            -n|--number ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
+            -h|--help   ) printhelp; exit 0;;
+            --          ) return 0;;
+            *           ) printusage "$1"; exit 0;;
+        esac
+
+        shift
     done
-)"
+}
 
-[ -z "$lck" ] && {
-    notify-send -t 2000 "dwmpad" "All locks are occupied, waiting..." &
+processargs() {
+    [ -n "$optnumber" ] && { [ "$( printf "%s" "$optnumber" | wc -c )" != "1" ] || [ -z "$( printf "%s" "$optnumber" | tr -dc '0-9' )" ]; } && logerrq "Invalid NUMBER passed, exiting."
+}
 
-    lck="$(
-        while true 
+main() {
+    lckdir="$( getloc dwmpadlck )" || {
+        printf "[ERROR]: getloc failed, aborting.\n"
+        exit 1
+    }
+
+    lck="$( 
+        printf "%s\n" "${optnumber:-"$( seq 1 9 )"}" | while IFS= read -r i
         do
-            i="$( inotifywait "$lckdir" -q -e "delete" --format "%f" )"
             mkdir "$lckdir/$i" 2> /dev/null && {
                 printf "%s" "$i"
                 break
             }
         done
     )"
+
+    [ -z "$lck" ] && {
+        notify-send -t 2000 "dwmpad" "Waiting for lock acquisition..." &
+
+        lck="$(
+            while true 
+            do
+                i="$( inotifywait "$lckdir" -q -e "delete" --format "%f" )"
+                [ -n "$optnumber" ] && [ "$i" != "$optnumber" ] && continue
+                mkdir "$lckdir/$i" 2> /dev/null && {
+                    printf "%s" "$i"
+                    break
+                }
+            done
+        )"
+    }
+
+    while [ -n "$1" ] && [ "$1" != "--" ]
+    do
+        shift
+    done
+
+    [ -n "$1" ] && shift
+
+    st -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
+    sleep 0.1
+    rm -rf "${lckdir:?}/${lck:?}"
 }
 
-st -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
-rm -rf "${lckdir:?}/${lck:?}"
+parseargs "$@"
+processargs
+main "$@"
