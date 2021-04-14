@@ -17,7 +17,7 @@ while IFS= read -r i
 do
     cmd="$( printf "%s" "$i" | awk '{print $1}' )"
     loc="$( printf "%s" "$i" | awk '{print $2}' )"
-    if [ "$( printf "%s" "$cmd" | wc -c )" -lt 3 ]
+    if [ "${#cmd}" -lt 3 ]
     then
         space="$( printf "\t\t" )"
     else
@@ -33,7 +33,7 @@ while IFS= read -r i
 do
     cmd="$( printf "%s" "$i" | awk '{print $1}' )"
     loc="$( printf "%s" "$i" | awk '{print $2}' )"
-    if [ "$( printf "%s" "$cmd" | wc -c )" -lt 3 ]
+    if [ "${#cmd}" -lt 3 ]
     then
         space="$( printf "\t\t" )"
     else

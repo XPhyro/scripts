@@ -79,7 +79,7 @@ parseargs() {
 }
 
 processargs() {
-    [ -n "$optnumber" ] && { [ "$( printf "%s" "$optnumber" | wc -c )" != "1" ] || [ -z "$( printf "%s" "$optnumber" | tr -dc '0-9' )" ]; } && logerrq "Invalid NUMBER passed, exiting."
+    [ -n "$optnumber" ] && { [ "${#optnumber}" -ne 1 ] || [ -z "$( printf "%s" "$optnumber" | tr -dc '0-9' )" ]; } && logerrq "Invalid NUMBER passed, exiting."
 }
 
 main() {

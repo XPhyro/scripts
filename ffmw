@@ -304,7 +304,7 @@ main() {
 
 parseargs "$@"
 
-qldiff=$(( $( printf "%s" "$quiet" | wc -c ) - $( printf "%s" "$loud" | wc -c ) ))
+qldiff=$(( "${#quiet}" - "${#loud}" ))
 
 if [ "$qldiff" -eq 1 ]
 then
