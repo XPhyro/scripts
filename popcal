@@ -6,5 +6,7 @@ date +"%a %F %R"
 echo
 cal -3
 echo
-calctdiff || exit 0
-read -r
+while calctdiff --exit-on-error
+do
+    :
+done
