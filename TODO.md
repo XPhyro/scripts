@@ -8,7 +8,7 @@
 - Use `xsel` instead of `xclip`.
 - Rewrite `lck`. See [this](https://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) and [this](http://mywiki.wooledge.org/BashFAQ/045).
 - Write a variant of `volappch` that toggles mute status.
-- Should `-a` be the default in `tglapp`.
+- Should `-a` be the default in `tglapp`?
 - Write a script like `latexstp` for Python to be used with Matplotlib etc.
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
 - In `contexec`, show the output in a `dwmpad` and open the editor in the initialised terminal.
@@ -22,3 +22,4 @@
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
 - Update PIDs passed to top when pads change in `dwmpadinit`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
+- Add `-d` and `-w` options in `dwmpad` that would be wrappers for the respective options of st.
