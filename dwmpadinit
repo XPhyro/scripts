@@ -18,4 +18,12 @@ shift 2
     fi
 }
 
-top -p "$( find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',' | sed 's/,$//' )"
+pids="$( find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',' | sed 's/,$//' )"
+
+[ -z "$pids" ] && {
+    printf "No pads to show. Press enter to exit.\n"
+    readstr
+    exit 0
+}
+
+exec top -p "$pids"
