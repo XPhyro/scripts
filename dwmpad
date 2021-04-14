@@ -25,6 +25,15 @@ assertarg() {
     [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
 }
 
+preprocessargs() {
+    argcmdcount=0
+    for i
+    do
+        : $(( argcmdcount += 1 ))
+        [ "$i" = "--" ] && break
+    done
+}
+
 parseargs() {
     while [ -n "$1" ]
     do
@@ -105,18 +114,14 @@ main() {
         )"
     }
 
-    while [ -n "$1" ] && [ "$1" != "--" ]
-    do
-        shift
-    done
-
-    [ -n "$1" ] && shift
+    shift "$argcmdcount"
 
     st $optgeometry -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
     sleep 0.1
     rm -rf "${lckdir:?}/${lck:?}"
 }
 
+preprocessargs "$@"
 parseargs "$@"
 processargs
 main "$@"
