@@ -1,8 +1,8 @@
 # To do
 - Integrate -pc option of dmenu into usable scripts.
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$( mondef )" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
-- Rewrite [tglapp](tglapp) in C. It proves very useful in a lot of situations, it could do with the performance boost even though it usually takes about 10ms to execute (empty subshell takes 4ms!).
-- Optimise [kmcycle](kmycle) and [setxkb](setxkb).
+- Rewrite `tglapp` in C. It proves very useful in a lot of situations, it could do with the performance boost even though it usually takes about 10ms to execute (empty subshell takes 4ms!).
+- Optimise `kmcycle` and `setxkb`.
 - Write a todo manager which would be a generalised form of the deadline reminder.
 - Write a watson wrapper.
 - Use `xsel` instead of `xclip`.
@@ -21,3 +21,4 @@
 - Add options in `latexstp` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
 - Update PIDs passed to top when pads change in `dwmpadinit`.
+- Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
