@@ -18,3 +18,5 @@
 - In `contexec`, wrap each execution between printed headers. Also show the execution count.
 - In `dwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - `dwmpad` in `latexstp` does not unlock before exiting, fix. This is probably because latexstp kills the child processes before exiting to not leave them running in the background until the terminal dies. A TERM trap in `dwmpad` might solve the issue.
+- Add options in `latexstp` to not open the source/output files.
+- Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
