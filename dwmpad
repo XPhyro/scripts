@@ -33,7 +33,6 @@ parseargs() {
             if  [ "${1%"${1#??}"}" != "--" ]
             then
                 sopt="${1#?}"
-                [ "$1" = a ] && echo b
 
                 while [ -n "$sopt" ]
                 do
@@ -51,7 +50,6 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                [ "$1" = a ] && echo c
                 
                 case "$opt"
                 in
