@@ -32,4 +32,4 @@ else
     selps="$( printf "%s\n" "$pss" | dmenu -i -l 20 -p "Entry to $sig:" )"
 fi
 
-[ -n "$selps" ] && printf "%s\n" "$selps" | awk '{print $1}' | xargs -r -I {} kill "-$sig" {}
+[ -n "$selps" ] && printf "%s\n" "$selps" | awk '{print $1}' | xargs -rI '{}' kill "-$sig" '{}'
