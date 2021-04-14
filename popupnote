@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+loc="$( getloc popupnote )" || {
+    printf "[ERROR]: getloc failed, aborting.\n"
+    exit 1
+}
+
+find "$loc" -mindepth 1 -maxdepth 1 -printf "%P\n" | dmenu -i -l 20 -p "popupnote:" | xargs -rI '{}' xdg-open "$loc/{}"
