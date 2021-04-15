@@ -24,3 +24,6 @@
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add `-d` and `-w` options in `dwmpad` that would be wrappers for the respective options of st.
 - Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
+- Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
+- In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
+- In `tglapp`, the forks created by the main executed command do not get killed. This creates problems in some situations, like shells creating subshells (ex. `while true; do something; done`). See `restart-wallpaper` for the current hack. Either add an option to kill the process group (or implement some other precaution for forks), or make this the default behaviour.
