@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
 tglapp -k restart-wallpaper "$@" -- wallpaper 15m
+kill 0 2> /dev/null
