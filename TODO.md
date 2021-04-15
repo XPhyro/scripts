@@ -22,7 +22,6 @@
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
 - Update PIDs passed to top when pads change in `dwmpadinit`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
-- Add `-d` and `-w` options in `dwmpad` that would be wrappers for the respective options of st.
 - Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
