@@ -23,3 +23,4 @@
 - Update PIDs passed to top when pads change in `dwmpadinit`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add `-d` and `-w` options in `dwmpad` that would be wrappers for the respective options of st.
+- Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
