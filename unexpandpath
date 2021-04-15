@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+# Unexpand ~.
+
+unexpandpath() {
+    path="$( printf "%s\n" "$1" | sed 's|/\+|/|g' )"
+    [ "${path#"${path%?}"}" = "/" ] && path="${path%?}"
+
+    case "$path"
+    in
+        /root*    ) printf "%s\n" "$path" | sed 's|^/root|~root|';;
+        "$HOME"*  ) printf "%s\n" "$path" | sed "s|^$HOME|~|";;
+        /home/*/* ) printf "%s\n" "$path" | ( IFS=/ read -r _ _ user rest
+            if id "$user" > /dev/null 2>&1
+            then
+                printf "~%s/%s\n" "$user" "$rest"
+            else
+                printf "%s\n" "$path"
+            fi ) ;;
+        /home/*   ) printf "%s\n" "$path" | ( IFS=/ read -r _ _ user
+            if id "$user" > /dev/null 2>&1
+            then
+                printf "~%s\n" "$user"
+            else
+                printf "%s\n" "$path"
+            fi ) ;;
+        *         ) printf "%s\n" "$path";;
+    esac
+}
+
+if [ -n "$1" ]
+then
+    for i
+    do
+        unexpandpath "$i"
+    done
+else
+    [ -t 0 ] || {
+        while read -r i 
+        do
+            unexpandpath "$i"
+        done < "${@:-/dev/stdin}"
+    }
+fi
