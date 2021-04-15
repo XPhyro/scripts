@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 # Remove color from stdin.
+# Taken from: https://stackoverflow.com/a/18000433/8403070.
 
 sed -r 's/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g'
