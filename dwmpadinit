@@ -5,15 +5,14 @@ lck="$2"
 shift 2
 
 [ "$lck" != "0" ] && {
-    [ "$#" -ne 0 ] && { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
     printf "%s\n" "$$" > "$lckdir/$lck/pid"
-
     printf "%s - %s\n" "dwmpad #$lck" "$( date +"%a %F %R" )"
 
     if [ "$#" -eq 0 ]
     then
         exec "$SHELL"
     else
+        { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
         exec "$@"
     fi
 }
