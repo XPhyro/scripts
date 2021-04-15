@@ -5,7 +5,7 @@ tglapp -sk clpprint && {
     exit 0
 }
 
-clp="$( xclip -o -sel clip 2> /dev/null )"
+clp="$( xclip -o -se c 2> /dev/null )"
 l="$( printf "%s" "$clp" | wc -l )"
 [ "$l" = "0" ] && exit 0
 

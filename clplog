@@ -9,7 +9,7 @@ lckfl="$( getfl clploglck )" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
-lastclp="$( xclip -o -sel clip )"
+lastclp="$( xclip -o -se c )"
 oldclp="$lastclp"
 
 [ -f "$lckfl" ] && rm "$lckfl"
@@ -21,12 +21,12 @@ do
         [ -f "$lckfl" ] && {
             rm "$lckfl" && {
                 oldclp="$lastclp"
-                lastclp="$( xclip -o -sel clip )"
+                lastclp="$( xclip -o -se c )"
             }
             continue
         }
 
-        clp="$( xclip -o -sel clip )"
+        clp="$( xclip -o -se c )"
         [ "$( printf "%s" "$clp" | sed '/^\s*$/d' )" = "" ] && continue
         if [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ]
         then
