@@ -3,8 +3,10 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 
 ## Notice that
 - Some of these scripts assume that some of the other scripts are in your path.
+- Some of these scripts assume that some of the programs/scripts from [c](https://github.com/XPhyro/c) or [py](https://github.com/XPhyro/py) are in your path.
+- None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU specific options are used (ex.: sed -i).
-- All scripts were written with only Linux in mind. They might not be portable to non-Linux systems. Very rarely, Arch Linux is assumed.
+- All scripts were written with only Linux in mind. Although they will oftenly be compatible with all Unix-like and Unix-derived systems, they might not always be portable to non-Linux systems. Very rarely, Arch Linux is assumed. Scripts assuming Arch Linux can be easily identified by name or explanation.
 - For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
 ## Notable scripts
