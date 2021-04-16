@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+path="$1"
+printf "$path\n" | (
+    IFS=. read -r name rest
+    while [ -e "${name}_.$rest" ]
+    do
+        name="$name"_
+    done
+    printf "%s\n" "${name}_.$rest"
+)
