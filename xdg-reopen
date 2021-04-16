@@ -4,4 +4,8 @@ logfl="$( getfl xdgopenlog )" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
-dmenu -sel 200000000 -l 20 -p 'xdg-reopen:' < "$logfl" | awk -F '' '{print $2}' | xargs -r xdg-open
+
+sel="$( dmenu -sel 200000000 -l 20 -p 'xdg-reopen:' < "$logfl" | ( IFS="; " read -r _ sel; printf "%s\n" "$i" ) )"
+[ -z "$sel" ] && exit 0
+lckget xdgopenlog
+xdg-open "$sel"
