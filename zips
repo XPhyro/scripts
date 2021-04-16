@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+format="$1"
+shift
+
+name="$( rawname "$1" )"
+case "$format"
+in
+    tar|gz|targz|.tar.gz )
+        tar czf "$name.tar.gz" "$@"
+        ;;
+    zip|.zip             )
+        zip -r "$name.zip" "$@"
+        ;;
+esac

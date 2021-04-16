@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+for i
+do
+    case "$i"
+    in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf "$@";;
+        *.tar.gz|*.tgz                 ) tar xzvf "$@";;
+        *.tar.xz|*.txz                 ) tar xJvf "$@";;
+        *.zip                          ) unzip "$@";;
+        *.rar                          ) unrar x "$@";;
+        # *.7z                           ) 7z x "$@";;
+        *                              ) 7z x "$@";;
+    esac
+done
