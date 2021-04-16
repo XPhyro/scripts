@@ -3,6 +3,7 @@
 ## Bugs
 - `dwmpad` in `latexstp` does not unlock before exiting, fix. This is probably because latexstp kills the child processes before exiting to not leave them running in the background until the terminal dies. A TERM trap in `dwmpad` might solve the issue.
 - In `tglapp`, the forks created by the main executed command do not get killed. This creates problems in some situations, like shells creating subshells (ex. `while true; do something; done`). See `restart-wallpaper` for the current hack. Either add an option to kill the process group (or implement some other precaution for forks), or make this the default behaviour.
+- Since `tglapp` leaves the forks, there was a workaround used in `restart-wallpaper` to kill the subshells of `wallpaper`. This causes issues in some situations. Until killing the forks in a sane way in `tglapp` is implemented, rewrite `wallpaper` with bash process redirections, etc., to not create (semi-)permanent subshells such as while true loops.
 
 ## Features
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
@@ -19,7 +20,7 @@
 
 ## New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$( mondef )" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
-- Write a todo manager which would be a generalised form of the deadline reminder.
+- **Write a todo manager which would be a generalised form of the deadline reminder.**
 - Write a watson wrapper.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
