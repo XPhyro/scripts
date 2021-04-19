@@ -1,7 +1,6 @@
 # To do
 
 ## Bugs
-- `dwmpad` in `latexstp` does not unlock before exiting, fix. This is probably because latexstp kills the child processes before exiting to not leave them running in the background until the terminal dies. A TERM trap in `dwmpad` might solve the issue.
 - In `tglapp`, the forks created by the main executed command do not get killed. This creates problems in some situations, like shells creating subshells (ex. `while true; do something; done`). See `restart-wallpaper` for the current hack. Either add an option to kill the process group (or implement some other precaution for forks), or make this the default behaviour.
 - Since `tglapp` leaves the forks, there was a workaround used in `restart-wallpaper` to kill the subshells of `wallpaper`. This causes issues in some situations. Until killing the forks in a sane way in `tglapp` is implemented, rewrite `wallpaper` with bash process redirections, etc., to not create (semi-)permanent subshells such as while true loops.
 

@@ -121,11 +121,15 @@ main() {
     shift "$argcmdcount"
 
     st $optdirectory $optgeometry -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
-    sleep 0.1
+}
+
+clean() {
     rm -rf "${lckdir:?}/${lck:?}"
 }
 
 preprocessargs "$@"
 parseargs "$@"
 processargs
+trap clean TERM
 main "$@"
+clean
