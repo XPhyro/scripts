@@ -17,12 +17,11 @@ shift 2
     fi
 }
 
-pids="$( find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',' | sed 's/,$//' )"
 
-[ -z "$pids" ] && {
-    printf "No pads to show. Press enter to exit.\n"
-    readstr
-    exit 0
-}
-
-exec top -p "$pids"
+while true
+do
+    pid="2147483647,$( find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',' )"
+    top -n 1 -p "${pid%?}"
+    tput civis
+    sleep 1
+done

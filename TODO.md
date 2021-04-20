@@ -12,7 +12,6 @@
 - In `dwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - Add options in `latexstp` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
-- Update PIDs passed to top when pads change in `dwmpadinit`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
 
@@ -32,3 +31,4 @@
 - Should `-a` be the default in `tglapp`?
 - Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
+- Optimise `dwmpadinit`'s PID updating with `inotifywait`.
