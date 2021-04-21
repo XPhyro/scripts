@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+[ -z "$SEP" ] && SEP="="
+
+while IFS= read -r i
+do
+    for j
+    do
+        from="${j%%"$SEP"*}"
+        to="${j#*"$SEP"}"
+        [ "$i" = "$from" ] && i="$to"
+        printf "%s\n" "$i"
+    done
+done <&0
