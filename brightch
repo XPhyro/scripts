@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Increase the brightness of the screen(s?). This only affects the laptop screen on my system.
-
-brightnessctl s "$@" > /dev/null
