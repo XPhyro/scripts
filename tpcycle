@@ -1,11 +1,5 @@
 #!/usr/bin/env sh
 # Cycle touchpad status.
 
-touchpadId="$( xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//' )"
-
-if [ "$( xinput --list-props "$touchpadId" | head -n 2 | tail -n 1 | awk '{print $4}' )" = "1" ] 
-then
-    xinput --disable "$touchpadId" 
-else
-    xinput --enable "$touchpadId"
-fi
+tpid="$( xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//' )"
+xinput "$( xinput --list-props "$tpid" | head -n 2 | tail -n 1 | awk '{print $4}' | maps 0=--disable 1=--enable )" "$tpid"
