@@ -7,10 +7,4 @@ setkm() {
 }
 
 km="$( xkb-switch )"
-
-case "$km"
-in
-    gb) setkm tr;;
-    tr) setkm gb;;
-    *) exit 1;;
-esac
+setkm "$( printf "%s\n" "$km" | maps gb=tr tr=gb )"

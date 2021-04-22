@@ -8,12 +8,6 @@ else
     km="$( xkb-switch )"
 fi
 
-case "$km"
-in
-    gb) xmargs="-e 'keycode 135 = Menu'";;
-    tr) xmargs="-e 'keycode 135 = ISO_Level3_Shift'";;
-esac
-
 # caps_lock -> escape
 setxkbmap -option "caps:escape"
 # alt_gr -> super_r
@@ -22,5 +16,5 @@ setxkbmap -option "caps:escape"
 # backspace -> tab
 # tab -> return
 # xmodmap -e "keycode 108 = Super_R" -e "keycode 9 = Caps_Lock" -e "keycode 36 = BackSpace" -e "keycode 22 = Tab" -e "keycode 23 = Return" # TODO: Chromium (and Brave) does not respect the changes to Tab/BackSpace/Return. See https://bugs.chromium.org/p/chromium/issues/detail?id=394552.
-eval "xmodmap -e 'keycode 108 = Super_R' -e 'keycode 9 = Caps_Lock' $xmargs"
+eval "xmodmap -e 'keycode 108 = Super_R' -e 'keycode 9 = Caps_Lock' $( printf "%s\n" "$km" | maps gb="-e 'keycode 135 = Menu'" tr="-e 'keycode 135 = ISO_Level3_Shift'" )"
 xset -r 9 -r 108 -r 135 r rate 250 40
