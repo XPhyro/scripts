@@ -7,22 +7,28 @@ unexpandpath() {
 
     case "$path"
     in
-        /root*    ) printf "%s\n" "$path" | sed 's|^/root|~root|';;
-        "$HOME"*  ) printf "%s\n" "$path" | sed "s|^$HOME|~|";;
-        /home/*/* ) printf "%s\n" "$path" | ( IFS=/ read -r _ _ user rest
+        /root*    ) printf "%s\n" "~root${path#"/root"}";;
+        "$HOME"*  ) printf "%s\n" "~${path#"$HOME"}";;
+        /home/*/* ) 
+            user="${path#"/home/"}"
+            user="${user%%"/"*}"
+            rest="${path#"/home/$user/"}"
             if id "$user" > /dev/null 2>&1
             then
                 printf "~%s/%s\n" "$user" "$rest"
             else
                 printf "%s\n" "$path"
-            fi ) ;;
-        /home/*   ) printf "%s\n" "$path" | ( IFS=/ read -r _ _ user
+            fi
+            ;;
+        /home/*   )
+            user="${path#"/home/"}"
             if id "$user" > /dev/null 2>&1
             then
                 printf "~%s\n" "$user"
             else
                 printf "%s\n" "$path"
-            fi ) ;;
+            fi
+            ;;
         *         ) printf "%s\n" "$path";;
     esac
 }
