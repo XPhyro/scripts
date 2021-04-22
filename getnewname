@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 path="$1"
-printf "$path\n" | (
+printf "%s\n" "$path" | (
     IFS=. read -r name rest
     while [ -e "${name}_.$rest" ]
     do

@@ -120,6 +120,7 @@ main() {
 
     shift "$argcmdcount"
 
+    # shellcheck disable=SC2086
     st $optdirectory $optgeometry -n "dwmpad$lck" -t "dwmpad #$lck" -e dwmpadinit "$lckdir" "$lck" "$@"
 }
 

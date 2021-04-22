@@ -5,7 +5,7 @@ logfl="$( getfl xdgopenlog )" || {
     exit 1
 }
 
-sel="$( dmenu -sel 200000000 -l 20 -p 'xdg-reopen:' < "$logfl" | ( IFS="; " read -r _ sel; printf "%s\n" "$i" ) )"
+sel="$( dmenu -sel 200000000 -l 20 -p 'xdg-reopen:' < "$logfl" | ( IFS="; " read -r _ sel; printf "%s\n" "$sel" ) )"
 [ -z "$sel" ] && exit 0
 lckget xdgopenlog
 xdg-open "$sel"
