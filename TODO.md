@@ -14,6 +14,7 @@
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
+- Make `genrc` also edit *lfrc*.
 
 ## New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$( mondef )" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
@@ -33,3 +34,4 @@
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit`'s PID updating with `inotifywait`.
 - Optimise `maps`.
+- Optimise `expandpath` by replacing subshell reads with parameter expansions.
