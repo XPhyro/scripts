@@ -32,3 +32,4 @@
 - Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit`'s PID updating with `inotifywait`.
+- Optimise `maps`.
