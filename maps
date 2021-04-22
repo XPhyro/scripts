@@ -1,14 +1,20 @@
 #!/usr/bin/env sh
 
 [ -z "$SEP" ] && SEP="="
+[ -z "$END" ] && [ "${END-"unset"}" = "unset" ] && END="
+"
 
 while IFS= read -r i
 do
+    match=0
     for j
     do
-        from="${j%%"$SEP"*}"
-        to="${j#*"$SEP"}"
-        [ "$i" = "$from" ] && i="$to"
-        printf "%s\n" "$i"
+        [ "$i" = "${j%%"$SEP"*}" ] && {
+            printf "%s%s" "${j#*"$SEP"}" "$END"
+            match=1
+            break
+        }
     done
+
+    [ "$match" != "1" ] && printf "%s%s" "$i" "$END"
 done <&0
