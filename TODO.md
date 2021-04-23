@@ -34,4 +34,3 @@
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit`'s PID updating with `inotifywait`.
 - Optimise `maps`.
-- Optimise `expandpath` by replacing subshell reads with parameter expansions.
