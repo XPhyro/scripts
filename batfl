@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+bat "$( getfl "$1" )" 2> /dev/null
+exit $?

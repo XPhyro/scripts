@@ -22,6 +22,7 @@
 - Write a watson wrapper.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
+- Write `getfls` and `getlocs` that support multiple arguments unlike `getfl` and `getloc`. This might also be integrated in `getfl` and `getloc` in a lightweight manner.
 
 ## Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
@@ -34,6 +35,8 @@
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit`'s PID updating with `inotifywait`.
 - Optimise `maps`.
+- Rewrite `brightmute` in a more robust fashion that would not oftenly break.
+- Rewrite `rangermpick` with `lf`.
 
 ## Other
 - Should [README.md](README.md) be rewritten to not include first person language?
