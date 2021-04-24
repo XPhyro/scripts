@@ -34,3 +34,6 @@
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit`'s PID updating with `inotifywait`.
 - Optimise `maps`.
+
+## Other
+- Should [README.md](README.md) be rewritten to not include first person language?
