@@ -1,7 +1,7 @@
 # To do
 
 ## Bugs
-
+- `sxhkd` does not release keys when cycling keymaps, fix.
 
 ## Features
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
