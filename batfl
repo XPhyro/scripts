@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-bat "$( getfl "$1" )" 2> /dev/null
+printf "%s\n" "$@" | xargs -rL 1 getfl | xargs -r bat 2> /dev/null
 exit $?
