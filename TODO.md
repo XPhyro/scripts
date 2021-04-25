@@ -1,5 +1,6 @@
 # Bugs
 - `sxhkd` does not release keys when cycling keymaps, fix.
+- `tglapp` does not toggle applications, but always opens another instance, fix.
 
 # Features
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
@@ -26,6 +27,7 @@
 - Write scripts that would: print the value for a mark, print the mark for a given value (if marks are always in expanded form, also expand the given value; else, ensure that the equivalent values are considered).
 - Write a helper script that would make it easy for a script to implement hashmaps. Currently `getloc`, `getfl` and other scripts use directory/file structures as a workaround. This script would need to perform at least as well as the workaround, if not better, and be convenient to use.
 - Make the `¬`, `@` and `g` functions into stand-alone scripts. Add wrapper functions in rc file that would cd to the stdout if there is any. In these functions, stderr should be directly printed and not captured.
+- Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
