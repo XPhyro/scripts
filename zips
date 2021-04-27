@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 
-format="$1"
-shift
+[ ! -e "$1" ] && {
+    format="$1"
+    shift
+}
 
 name="$( rawname "$1" )"
 case "$format"
