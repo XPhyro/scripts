@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Query X keymap.
 
-printf "%s\n" "$( xkb-switch ) ⌨" > "$( getloc statbar )/3_statbarkm"
+printf "%s\n" "$(xkb-switch ) ⌨" > "$( getloc statbar)/3_statbarkm"

@@ -3,6 +3,6 @@
 
 for i
 do
-    file="$( getfl "$i" )" || continue
+    file="$(getfl "$i")" || continue
     eval "'$EDITOR' '$file'"
 done

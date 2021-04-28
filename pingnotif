@@ -24,4 +24,4 @@ t="5s"
     }
 }
 
-notify-send -u critical -t 0 "🌐 pingnotif" "Connected to the specified addresses on $( date )."
+notify-send -u critical -t 0 "🌐 pingnotif" "Connected to the specified addresses on $(date)."

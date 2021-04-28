@@ -27,11 +27,11 @@ in
         done
         ;;
     int)
-        cprintf "%d" "$( random safebyte 4 )"
+        cprintf "%d" "$(random safebyte 4)"
         printf "\n"
         ;;
     long)
-        cprintf "%ld" "$( random safebyte 8 )"
+        cprintf "%ld" "$(random safebyte 8)"
         printf "\n"
         ;;
 esac

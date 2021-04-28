@@ -4,11 +4,11 @@
 mark="$1"
 [ -z "$mark" ] && exit 1
 val="$2"
-mrkfl="$( getfl mrk )"
+mrkfl="$(getfl mrk)"
 
 [ "$mark" = "¬" ] || {
-    printf "Overwrite mark [%s]? (y/N)\nCurrent value: %s\nNew value    : %s\n" "$mark" "$( grep "^$mark\s" "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g' )" "$val"
-    equals "$( readchar )" Y y || exit 0
+    printf "Overwrite mark [%s]? (y/N)\nCurrent value: %s\nNew value    : %s\n" "$mark" "$(grep "^$mark\s" "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g')" "$val"
+    equals "$(readchar)" Y y || exit 0
 }
 
 gawk -i inplace -v mrkfl="$mark" -v val="$val" '$1 == mrkfl {$2=val}1' "$mrkfl"

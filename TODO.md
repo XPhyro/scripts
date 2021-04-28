@@ -18,7 +18,7 @@
 - Add support for regular files in mark scripts. A possible way could be to also add support for passed arguments for files in the marking process and check the file type; if it is a regular file, then the file could be marked in a different mark set. While using marks, first check if a directory mark exists. If there exists a directory mark, `cd` into it; else, open up the regular file for the given mark in `$EDITOR` if there is such a mark.
 
 # New scripts
-- Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$( mondef )" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
+- Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
 - **Write a todo manager which would be a generalised form of the deadline reminder.**
 - Write a watson wrapper.
 - Write a variant of `volappch` that toggles mute status.
@@ -45,6 +45,5 @@
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
-- Use `"$(command)"` instead of `"$( command )"`.
 - Move the *mark* family of scripts into a dedicated directory. So far, these are: `m`, `cm`, `¬`, `@`, `g`, `mg`.
 - Instead of using `while ... done < "$file"`, use `< "$file" while ... done`.

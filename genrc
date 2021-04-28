@@ -5,7 +5,7 @@ locations="$HOME/documents/sys-admin/locations"
 files="$HOME/documents/sys-admin/files"
 ranger="$HOME/.dotfiles-sensitive/.config/ranger/rc.conf"
 
-rtmp="$( mktemp )"
+rtmp="$(mktemp)"
 # shellcheck disable=SC2064
 trap "rm -f '$rtmp'" INT EXIT TERM
 
@@ -15,13 +15,13 @@ printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
 
 while IFS= read -r i
 do
-    cmd="$( printf "%s" "$i" | awk '{print $1}' )"
-    loc="$( printf "%s" "$i" | awk '{print $2}' )"
+    cmd="$(printf "%s" "$i" | awk '{print $1}')"
+    loc="$(printf "%s" "$i" | awk '{print $2}')"
     if [ "${#cmd}" -lt 3 ]
     then
-        space="$( printf "\t\t" )"
+        space="$(printf "\t\t")"
     else
-        space="$( printf "\t" )"
+        space="$(printf "\t")"
     fi
 
     printf "map g%s%scd %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
@@ -31,13 +31,13 @@ printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
 
 while IFS= read -r i
 do
-    cmd="$( printf "%s" "$i" | awk '{print $1}' )"
-    loc="$( printf "%s" "$i" | awk '{print $2}' )"
+    cmd="$(printf "%s" "$i" | awk '{print $1}')"
+    loc="$(printf "%s" "$i" | awk '{print $2}')"
     if [ "${#cmd}" -lt 3 ]
     then
-        space="$( printf "\t\t" )"
+        space="$(printf "\t\t")"
     else
-        space="$( printf "\t" )"
+        space="$(printf "\t")"
     fi
 
     printf "map e%s%sshell vim %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
@@ -45,7 +45,7 @@ done < "$files"
 
 printf "\n#\n##\n" >> "$rtmp"
 
-rnum="$( grep -n "### BEGIN AUTO-GENERATED ###" "$ranger" | sed 's/:.*//' )"
+rnum="$(grep -n "### BEGIN AUTO-GENERATED ###" "$ranger" | sed 's/:.*//')"
 
 sed -i "$rnum r $rtmp" "$ranger"
 

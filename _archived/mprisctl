@@ -8,7 +8,7 @@ parseargs() {
 }
 
 detectapp() {
-    app="$( detectmpris )"
+    app="$(detectmpris)"
 }
 
 sendnotif() {
@@ -29,22 +29,22 @@ constrfcmd() {
             fcmd="qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
             case "$cmd"
             in
-                play) fcmd="$( printf "%sPlay" "$fcmd" )";;
-                pause) fcmd="$( printf "%sPause" "$fcmd" )";;
-                stop) fcmd="$( printf "%sStop" "$fcmd" )";;
-                playpause) fcmd="$( printf "%sPlayPause" "$fcmd" )";;
-                next) fcmd="$( printf "%sNext" "$fcmd" )";;
-                prev) fcmd="$( printf "%sPrevious" "$fcmd" )";;
+                play) fcmd="$(printf "%sPlay" "$fcmd")";;
+                pause) fcmd="$(printf "%sPause" "$fcmd")";;
+                stop) fcmd="$(printf "%sStop" "$fcmd")";;
+                playpause) fcmd="$(printf "%sPlayPause" "$fcmd")";;
+                next) fcmd="$(printf "%sNext" "$fcmd")";;
+                prev) fcmd="$(printf "%sPrevious" "$fcmd")";;
                 open) 
                     if [ -z "$cmdarg" ]
                     then
                         fcmd="echo No URI is given."
                     else
-                        if [ "$( printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist|artist):[a-zA-Z0-9]{22}//' )" ]
+                        if [ "$(printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist|artist):[a-zA-Z0-9]{22}//')" ]
                         then
                             fcmd="echo Given URI is invalid."
                         else
-                            fcmd="$( printf "%sOpenUri %s" "$fcmd" "$cmdarg" )"
+                            fcmd="$(printf "%sOpenUri %s" "$fcmd" "$cmdarg")"
                         fi
                     fi
                     ;;
@@ -65,7 +65,7 @@ constrfcmd() {
                     then
                         fcmd="echo No URI is given."
                     else
-                        if [ "$( printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist|artist):[a-zA-Z0-9]{22}//' )" ]
+                        if [ "$(printf "%s" "$cmdarg" | sed -E 's/spotify:(track|playlist|artist):[a-zA-Z0-9]{22}//')" ]
                         then
                             fcmd="echo Given URI is invalid."
                         else

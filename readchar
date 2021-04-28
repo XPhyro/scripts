@@ -3,7 +3,7 @@
 
 readchar() {
   stty -icanon -echo
-  eval "$1=\$( dd bs=1 count=1 2> /dev/null )"
+  eval "$1=\$(dd bs=1 count=1 2> /dev/null)"
   stty icanon echo
 }
 

@@ -3,7 +3,7 @@
 
 for i
 do
-    newpath="$( getnewpath "$i" )"
+    newpath="$(getnewpath "$i")"
     cp -r "$i" "$newpath"
     printf "%s\n" "$newpath"
 done

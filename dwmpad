@@ -31,7 +31,7 @@ preprocessargs() {
     argcmdcount=0
     for i
     do
-        : $(( argcmdcount += 1 ))
+        : $((argcmdcount += 1))
         [ "$i" = "--" ] && break
     done
 }
@@ -47,7 +47,7 @@ parseargs() {
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in
@@ -83,17 +83,17 @@ parseargs() {
 }
 
 processargs() {
-    [ -n "$optnumber" ] && { [ "${#optnumber}" -ne 1 ] || [ -z "$( printf "%s" "$optnumber" | tr -dc '0-9' )" ]; } && logerrq "Invalid NUMBER passed, exiting."
+    [ -n "$optnumber" ] && { [ "${#optnumber}" -ne 1 ] || [ -z "$(printf "%s" "$optnumber" | tr -dc '0-9')" ]; } && logerrq "Invalid NUMBER passed, exiting."
 }
 
 main() {
-    lckdir="$( getloc dwmpadlck )" || {
+    lckdir="$(getloc dwmpadlck)" || {
         printf "[ERROR]: getloc failed, aborting.\n"
         exit 1
     }
 
     lck="$( 
-        printf "%s\n" "${optnumber:-"$( seq 1 9 )"}" | while IFS= read -r i
+        printf "%s\n" "${optnumber:-"$(seq 1 9)"}" | while IFS= read -r i
         do
             mkdir "$lckdir/$i" 2> /dev/null && {
                 printf "%s" "$i"
@@ -108,7 +108,7 @@ main() {
         lck="$(
             while true 
             do
-                i="$( inotifywait "$lckdir" -q -e "delete" --format "%f" )"
+                i="$(inotifywait "$lckdir" -q -e "delete" --format "%f")"
                 [ -n "$optnumber" ] && [ "$i" != "$optnumber" ] && continue
                 mkdir "$lckdir/$i" 2> /dev/null && {
                     printf "%s" "$i"

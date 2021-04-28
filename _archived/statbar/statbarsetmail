@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Redraw status bar after neomutt exits.
 
-while [ "$( pgrep neomutt )" ]
+while [ "$(pgrep neomutt)" ]
 do
     sleep 0.25s
 done

@@ -7,7 +7,7 @@ stopiffl() {
     }
 }
 
-stopfl="$( getfl stopwowmacro )" || {
+stopfl="$(getfl stopwowmacro)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -51,7 +51,7 @@ in
         done
         ;;
     dmenu) 
-        text="$( dmenu -p "key sequence:" )"
+        text="$(dmenu -p "key sequence:")"
         echo aa
         while stopiffl
         do

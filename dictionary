@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
-loc="$( getloc dic )" || {
+loc="$(getloc dic)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }
 
-lang="$( find "$loc" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | dmenu -i )"; [ -n "$lang" ] || exit 1
-ft="$( printf "dictionary\nthesaurus\n" | dmenu -i )"; [ -n "$ft" ] || exit 1
+lang="$(find "$loc" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | dmenu -i)"; [ -n "$lang" ] || exit 1
+ft="$(printf "dictionary\nthesaurus\n" | dmenu -i)"; [ -n "$ft" ] || exit 1
 
 dmenu -F -i -snp -l 20 < "$loc/$lang/$ft" > /dev/null 2>&1 # TODO: Should the output be copied to the system clipboard?

@@ -2,7 +2,7 @@
 # xdg-open wrapper.
 
 open() {
-    if [ "$( grep -E "^Terminal=.*" "$2" | head -n 1 | sed 's/^Terminal=//' )" = "true" ]
+    if [ "$(grep -E "^Terminal=.*" "$2" | head -n 1 | sed 's/^Terminal=//')" = "true" ]
     then
         xdg-open "$1" 
     else
@@ -10,42 +10,42 @@ open() {
     fi
 }
 
-usa="$( getloc usa )" || {
+usa="$(getloc usa)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }
-lsa="$( getloc lsa )" || {
+lsa="$(getloc lsa)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }
-mim="$( getfl mim )" || {
+mim="$(getfl mim)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
 
 for i
 do
-    [ "$( mimetype --brief "$i" | cut -d/ -f-1 )" = "text" ] && {
+    [ "$(mimetype --brief "$i" | cut -d/ -f-1)" = "text" ] && {
         eval "'$EDITOR' '$i'"
         continue
     }
 
     # find desktop file
-    dtf="$( grep "$( mimetype "$i" | awk '{print $2}' )" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//' )"
+    dtf="$(grep "$(mimetype "$i" | awk '{print $2}')" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//')"
 
     [ -n "$dtf" ] || {
         xdg-open "$i"
         continue
     }
 
-    lf="$( find "$lsa" -name "$dtf" | sort | head -n 1 )"
+    lf="$(find "$lsa" -name "$dtf" | sort | head -n 1)"
 
     [ -n "$lf" ] && {
         open "$i" "$lf"
         continue
     }
 
-    uf="$( find "$usa" -name "$dtf" | sort | head -n 1 )"
+    uf="$(find "$usa" -name "$dtf" | sort | head -n 1)"
 
     [ -n "$uf" ] && {
         open "$i" "$uf"

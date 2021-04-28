@@ -3,9 +3,9 @@
 
 while IFS=\; read -r evaldir dir cmd
 do
-    [ "$( printf "%s" "$evaldir" | cut -c1 )" = "#" ] && continue
+    [ "$(printf "%s" "$evaldir" | cut -c1)" = "#" ] && continue
 
-    [ "$evaldir" = "1" ] && dir="$( eval "$dir" )"
+    [ "$evaldir" = "1" ] && dir="$(eval "$dir")"
 
     cd "$dir" || {
         printf "Could not cd to %s, continuing.\n" "$dir"
@@ -13,4 +13,4 @@ do
     }
 
     eval "$cmd"
-done < "$( getfl refdoc )"
+done < "$(getfl refdoc)"

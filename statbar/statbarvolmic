@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Query mute status of default pulseaudio source.
 
-stat="$( pacmd list-sources | grep -A 30 "name: <$( voldefsource )>" )"
+stat="$(pacmd list-sources | grep -A 30 "name: <$(voldefsource)>")"
 
 # TODO: If the line indices are not constant, use grep.
-{ [ "$( printf "%s" "$stat" | sed '11q;d' | awk '{print $2}' )" = "yes" ] || printf "%s\n" "🎤"; } > "$( getloc statbar )/8_statbarvolmic"
+{ [ "$(printf "%s" "$stat" | sed '11q;d' | awk '{print $2}')" = "yes" ] || printf "%s\n" "🎤"; } > "$(getloc statbar)/8_statbarvolmic"

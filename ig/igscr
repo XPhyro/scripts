@@ -22,14 +22,14 @@ scrape() {
 }
 
 lndup() {
-    rdfind -minsize 100 -removeidentinode false -makehardlinks false -makesymlinks true -deleteduplicates true -outputname "$( mktemp )" -dryrun false "$iggdir"
+    rdfind -minsize 100 -removeidentinode false -makehardlinks false -makesymlinks true -deleteduplicates true -outputname "$(mktemp)" -dryrun false "$iggdir"
 }
 
 genlst() {
-    olddir="$( pwd )"
+    olddir="$(pwd)"
     cdsafe "$iggdir"
 
-    igdirs="$( find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' )"
+    igdirs="$(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n')"
     printf "%s\n" "$igdirs" | while read -r i
     do
         find "$i" -printf "%f\n" | grep -E ".*(jpg|mp4|part)" | sort -n > "$i/ig.list"
@@ -40,13 +40,13 @@ genlst() {
 
 trap cleanexit INT
 
-iggdir="$( getloc igg )" || {
+iggdir="$(getloc igg)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }
 cdsafe "$iggdir"
 
-newfollow1="$( dupe follow )"
+newfollow1="$(dupe follow)"
 sed -r -e '/^#/d' -e '/^$/d' -e 's/\s+.*$//' -i "$newfollow1"
 
 # TODO: Make this option parsing into a more robust thing
@@ -67,7 +67,7 @@ do
     }
 done
 
-newfollow2="$( dupe "$newfollow1" )"
+newfollow2="$(dupe "$newfollow1")"
 
 LC_ALL=C sed -i '/^[v-zV-Z].*/d' "$newfollow1"
 LC_ALL=C sed -i '/^[a-uA-U].*/d' "$newfollow2"

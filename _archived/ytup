@@ -34,10 +34,10 @@ while read -r i
 do
     printf "%s\n" "[ytup]: Parsing file: $i"
 
-    name="$( basename "$i" )"
+    name="$(basename "$i")"
     printf "%s\n" "[ytup]: Detected name; $name"
 
-    root="$( echo "$i" | sed 's/\/.*//' )"
+    root="$(echo "$i" | sed 's/\/.*//')"
     printf "%s\n" "[ytup]: Detected root: $root"
 
     grep -Fxq "$name" "$LOG" && continue

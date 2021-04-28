@@ -9,10 +9,10 @@ mbsync -a > /dev/null
 
 find "$maildir" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r i
 do
-	acc="$( printf "%s" "$i" | sed "s/.*\///" )"
-	count=$( find "$maildir/$acc" -ipath "$maildir/$acc/inbox/new/*" -type f -newer "$timefile" 2> /dev/null | wc -l )
+	acc="$(printf "%s" "$i" | sed "s/.*\///")"
+	count=$(find "$maildir/$acc" -ipath "$maildir/$acc/inbox/new/*" -type f -newer "$timefile" 2> /dev/null | wc -l)
 
-    [ "$count" -gt 0 ] && notify-send -i mail-unread -u critical -t 0 "📬 syncmail [$count]" "[$count] new mail$( [ "$count" -gt 1 ] && printf "s" ) in $( grep "^set from" "$accdir/$acc.muttrc" | tail -n 1 | sed -E 's/set\s+from\s*=\s*"?(.*[^"])"?/\1/' )." &
+    [ "$count" -gt 0 ] && notify-send -i mail-unread -u critical -t 0 "📬 syncmail [$count]" "[$count] new mail$([ "$count" -gt 1 ] && printf "s" ) in $( grep "^set from" "$accdir/$acc.muttrc" | tail -n 1 | sed -E 's/set\s+from\s*=\s*"?(.*[^"])"?/\1/')." &
 done
 
 notmuch new > /dev/null

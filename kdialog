@@ -3,7 +3,7 @@
 # If using dwm or the like, you should export XDG_CURRENT_DESKTOP=kde in your shell profile and prepend XDG_CURRENT_DESKTOP="" in xdg-open.
 
 kdialog() {
-    exec "$( whereis kdialog | awk '{$1=""; print $0}' | sed "s/$( realpath "$0" | sed 's,/,\\/,g' )//" | awk '{print $1}' )" "$@"
+    exec "$(whereis kdialog | awk '{$1=""; print $0}' | sed "s/$(realpath "$0" | sed 's,/,\\/,g')//" | awk '{print $1}')" "$@"
 }
 
 peekargs() {
@@ -50,11 +50,11 @@ parseargs() {
 }
 
 processargs() {
-    optargs="$( printf "%s\n" "$optargs" | head -n 1 )"
+    optargs="$(printf "%s\n" "$optargs" | head -n 1)"
 }
 
 main() {
-    rfl="$( getfl rchoose )"
+    rfl="$(getfl rchoose)"
 
     if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]
     then

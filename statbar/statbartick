@@ -4,9 +4,9 @@
 statbarset
 statbaravlsyutick &
 
-prevDate="$( date +"%R" )"
+prevDate="$(date +"%R")"
 
-while [ "$prevDate" = "$( date +"%R" )" ]
+while [ "$prevDate" = "$(date +"%R")" ]
 do
     sleep 1s
 done

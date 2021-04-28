@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-fl="$( mktemp --suffix ".png" )"
+fl="$(mktemp --suffix ".png")"
 
 if import "$fl"
 then

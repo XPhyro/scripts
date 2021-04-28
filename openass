@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # xph-open assignments.
 
-loc="$( getloc ass )" || {
+loc="$(getloc ass)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }

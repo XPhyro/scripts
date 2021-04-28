@@ -10,7 +10,7 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckfl="$( getfl upabllck )" || {
+lckfl="$(getfl upabllck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -41,7 +41,7 @@ touch "$lckfl"
 log "Reading updateables.
 "
 
-lst="$( getfl upabl )" || {
+lst="$(getfl upabl)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -51,30 +51,30 @@ cmdcount=0
 
 while IFS= read -r i
 do
-    [ "$( printf "%s" "$i" | sed -E 's/^\s*//' | cut -c1 )" = "#" ] && continue
+    [ "$(printf "%s" "$i" | sed -E 's/^\s*//' | cut -c1)" = "#" ] && continue
 
-    loc="$( printf "%s" "$i" | awk -F "" '{print $1}' )"
-    cmd="$( printf "%s" "$i" | awk -F "" '{print $2}' )"
+    loc="$(printf "%s" "$i" | awk -F "" '{print $1}')"
+    cmd="$(printf "%s" "$i" | awk -F "" '{print $2}')"
 
     log "Parsing $loc."
 
-    cd "$( getloc "$loc" )" || {
+    cd "$(getloc "$loc")" || {
         log "Could not find location $loc."
         continue
     }
 
     log "Pulling updates."
-    if [ "$( git pull | tail -n 1 | grep --color=never -o " up to date.$" )" = " up to date." ] 
+    if [ "$(git pull | tail -n 1 | grep --color=never -o " up to date.$")" = " up to date." ] 
     then
         log "Already up to date."
     else
         eval "( $cmd )" || {
             log "Failed to update $loc."
-            : $(( err += 1 ))
+            : $((err += 1))
         }
     fi
 
-    : $(( cmdcount += 1 ))
+    : $((cmdcount += 1))
 
     echo
 done < "$lst"
@@ -84,6 +84,6 @@ rm "$lckfl"
 log "Done."
 
 exitcode=0
-[ "$errcount" -ne 0 ] && : $(( exitcode = cmdcount - errcount + 1 ))
+[ "$errcount" -ne 0 ] && : $((exitcode = cmdcount - errcount + 1))
 
 exit "$exitcode"

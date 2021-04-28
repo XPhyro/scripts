@@ -7,18 +7,18 @@ done
 
 if [ "$detect" = "1" ]
 then
-    app="$( detectmpris )"
+    app="$(detectmpris)"
 else
     app="$1"
 fi
 
 case "$app"
 in
-    spotify) lst="$( catfl spuri )";;
+    spotify) lst="$(catfl spuri)";;
     *) exit 1
 esac
 
 [ "$lst" ] || exit 0
 
-name="$( printf "%s" "$lst" | awk -F '' '{print $2}' | dmenu -i -l 20 -p "Select playlist:" )"
+name="$(printf "%s" "$lst" | awk -F '' '{print $2}' | dmenu -i -l 20 -p "Select playlist:")"
 printf "%s" "$lst" | grep "$name$" | head -n 1 | awk -F '' '{print $1}'

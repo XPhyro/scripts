@@ -7,7 +7,7 @@ expandpath() {
         return 0
     }
 
-    path="$( printf "%s\n" "$1" | sed 's|/\+|/|g' )"
+    path="$(printf "%s\n" "$1" | sed 's|/\+|/|g')"
     [ "${path#"${path%?}"}" = "/" ] && path="${path%?}"
 
     [ "$path" = "~" ] && {

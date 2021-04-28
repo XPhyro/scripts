@@ -53,7 +53,7 @@ parseargs() {
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in
@@ -104,10 +104,10 @@ setdefargs() {
 
 processargs() {
     [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
-    srcfl="$( printf "%s\n" "$fls" | head -n 1 )"
-    hardlinked "$srcfl" "$( basename "$srcfl" )" || logerrq "Source file must be in the current directory."
-    srchashfl="$cachedir$( realpath "$srcfl.tex" )"
-    mkdir -p "$( dirname "$srchashfl" )" || {
+    srcfl="$(printf "%s\n" "$fls" | head -n 1)"
+    hardlinked "$srcfl" "$(basename "$srcfl")" || logerrq "Source file must be in the current directory."
+    srchashfl="$cachedir$(realpath "$srcfl.tex")"
+    mkdir -p "$(dirname "$srchashfl")" || {
         i="$srchashfl"
         while true
         do
@@ -116,7 +116,7 @@ processargs() {
                 break
             }
             
-            i="$( dirname "$i" )"
+            i="$(dirname "$i")"
             [ "$i" = "$cachedir" ] && logerrq "Could not resolve cache, exiting."
         done
     }
@@ -132,13 +132,13 @@ printcleanaux() {
 }
 
 cleanaux() {
-    eval "$( printcleanaux )"
+    eval "$(printcleanaux)"
 }
 
 printcompile() {
     printf "%s\n" "
-    srchash=\"\$( sha512sum '$srcfl.tex' | awk '{print \$1}' )\"
-    [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$( cat '$srchashfl' 2> /dev/null )\" ] && return 0
+    srchash=\"\$(sha512sum '$srcfl.tex' | awk '{print \$1}')\"
+    [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat '$srchashfl' 2> /dev/null)\" ] && return 0
     
     # Adapted from https://tex.stackexchange.com/a/8792/199300
     xelatex $optshellesc -halt-on-error '$srcfl' || {
@@ -157,19 +157,19 @@ printcompile() {
 }
 
 compile() {
-    eval "$( printcompile )"
+    eval "$(printcompile)"
 }
 
 dispatchcompiler() {
     dwmpad -- sh -c "
     compile() {
-        $( printcompile | sed "/^    \[ '1' != '1' \] &&/d" )
+        $(printcompile | sed "/^    \[ '1' != '1' \] &&/d")
     }
     cleanaux() {
-        $( printcleanaux )
+        $(printcleanaux)
     }
 
-    printf '[latexstp]: %s\n' \"Initialised in \$( pwd ).\" 'Watching $srcfl.tex.'
+    printf '[latexstp]: %s\n' \"Initialised in \$(pwd).\" 'Watching $srcfl.tex.'
 
     while true
     do

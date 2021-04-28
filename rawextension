@@ -2,7 +2,7 @@
 
 for i
 do
-    ext="$( printf "%s" "$i" | sed 's/^.*\.//' )"
+    ext="$(printf "%s" "$i" | sed 's/^.*\.//')"
 
     [ "$ext" = "$i" ] && ext=""
 

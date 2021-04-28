@@ -38,7 +38,7 @@ printusage() {
 
 capturestdin() {
     [ -t 0 ] || {
-        stdinfl="$( mktemp )"
+        stdinfl="$(mktemp)"
         cp -f /dev/stdin "$stdinfl"
     }
 }
@@ -61,7 +61,7 @@ parseargs() {
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in
@@ -122,9 +122,9 @@ logerrq() {
 }
 
 logargcaseerrq() {
-    argname="$( printf "%s" "$1" | PERLIO=:utf8 perl -pe '$_=uc' )"
+    argname="$(printf "%s" "$1" | PERLIO=:utf8 perl -pe '$_=uc')"
     shift
-    logerrq "$argname must be one of {$( printf "%s, " "$@" | sed 's/, $//' )}."
+    logerrq "$argname must be one of {$(printf "%s, " "$@" | sed 's/, $//')}."
 }
 
 validargcase() {
@@ -154,7 +154,7 @@ validargs() {
 }
 
 processargs() {
-    [ -z "$keycode" ] && keycode="$( printf "%s" "$cmd" | sha512sum | awk '{print $1}' | tr -d '\n' )"
+    [ -z "$keycode" ] && keycode="$(printf "%s" "$cmd" | sha512sum | awk '{print $1}' | tr -d '\n')"
 
     if [ -z "$timeouts" ]
     then
@@ -189,12 +189,12 @@ stopcmd() {
 }
 
 main() {
-    flsdir="$( getloc tglapp )" || logerrq "No $scriptname location is set." # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
+    flsdir="$(getloc tglapp)" || logerrq "No $scriptname location is set." # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
 
     keyfl="$flsdir/$keycode"
 
     [ "$status" = "1" ] && {
-        [ -f "$keyfl" ] && pid="$( cat "$keyfl" )" && kill -s 0 "$pid" 2> /dev/null && exit 0
+        [ -f "$keyfl" ] && pid="$(cat "$keyfl")" && kill -s 0 "$pid" 2> /dev/null && exit 0
         exit 1
     }
 
@@ -202,7 +202,7 @@ main() {
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "$flsdir"/*
         do
-            pid="$( cat "$i" )"
+            pid="$(cat "$i")"
             kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
         done
         exit 0
@@ -210,7 +210,7 @@ main() {
 
     if [ -f "$keyfl" ]
     then
-        pid="$( cat "$keyfl" )"
+        pid="$(cat "$keyfl")"
         if kill -s 0 "$pid" 2> /dev/null
         then
             if [ -z "$state" ] || [ "$state" = "off" ]
@@ -244,7 +244,7 @@ main() {
         elif [ "$forcestate" = "1" ]
         then
             runcmd
-            pid="$( cat "$keyfl" )"
+            pid="$(cat "$keyfl")"
             stopcmd
         fi
     fi

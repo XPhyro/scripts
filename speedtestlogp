@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Print logged results of speedtestlog.
 
-fl="$( getfl stl )" || {
+fl="$(getfl stl)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -11,19 +11,19 @@ upav="0.0"
 
 while IFS= read -r i
 do
-    time="$( printf "%s" "$i" | awk -F \; '{print $1}' )"
-    isp="$( printf "%s" "$i" | awk -F \; '{print $2}' )"
-    server="$( printf "%s" "$i" | awk -F \; '{print $3}' )"
-    ping="$( printf "%s" "$i" | awk -F \; '{print $4}' )"
-    download="$( printf "%s" "$i" | awk -F \; '{print $5}' )"
-    upload="$( printf "%s" "$i" | awk -F \; '{print $6}' )"
+    time="$(printf "%s" "$i" | awk -F \; '{print $1}')"
+    isp="$(printf "%s" "$i" | awk -F \; '{print $2}')"
+    server="$(printf "%s" "$i" | awk -F \; '{print $3}')"
+    ping="$(printf "%s" "$i" | awk -F \; '{print $4}')"
+    download="$(printf "%s" "$i" | awk -F \; '{print $5}')"
+    upload="$(printf "%s" "$i" | awk -F \; '{print $6}')"
 
-    pingav="$( printf "%s\n" "scale = 10; $pingav + $( printf "%s" "$ping" | awk '{print $1}' )" | bc )"
-    dowav="$( printf "%s\n" "scale = 10; $dowav + $( printf "%s" "$download" | awk '{print $1}' )" | bc )"
-    upav="$( printf "%s\n" "scale = 10; $upav + $( printf "%s" "$upload" | awk '{print $1}' )" | bc )"
+    pingav="$(printf "%s\n" "scale = 10; $pingav + $(printf "%s" "$ping" | awk '{print $1}')" | bc)"
+    dowav="$(printf "%s\n" "scale = 10; $dowav + $(printf "%s" "$download" | awk '{print $1}')" | bc)"
+    upav="$(printf "%s\n" "scale = 10; $upav + $(printf "%s" "$upload" | awk '{print $1}')" | bc)"
 
     printf "%s\n%s\n%s\n%s\n%s\n%s\n\n" \
-        "Time    : $( date --date @"$time" )" \
+        "Time    : $(date --date @"$time")" \
         "ISP     : $isp" \
         "Server  : $server" \
         "Ping    : $ping" \
@@ -31,10 +31,10 @@ do
         "Upload  : $upload"
 done < "$fl"
 
-count="$( wc -l < "$fl" )"
+count="$(wc -l < "$fl")"
 
 # assuming the inout will be in ms and Mbit/s
 printf "%s\n%s\n%s\n" \
-    "Ping average    : $( printf "%s\n" "scale = 2; $pingav / $count" | bc ) ms" \
-    "Download average: $( printf "%s\n" "scale = 2; $dowav / $count" | bc ) Mbit/s" \
-    "Upload average  : $( printf "%s\n" "scale = 2; $upav / $count" | bc ) Mbit/s"
+    "Ping average    : $(printf "%s\n" "scale = 2; $pingav / $count" | bc) ms" \
+    "Download average: $(printf "%s\n" "scale = 2; $dowav / $count" | bc) Mbit/s" \
+    "Upload average  : $(printf "%s\n" "scale = 2; $upav / $count" | bc) Mbit/s"

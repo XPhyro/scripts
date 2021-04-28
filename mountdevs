@@ -1,18 +1,18 @@
 #!/usr/bin/env sh
 
-[ "$( id -u )" != 0 ] && {
+[ "$(id -u)" != 0 ] && {
     printf "This script needs to be executed as root.\n"
     exit 1
 }
 
-devs="$( lsblk -nrpo "name,label,mountpoint" )"
+devs="$(lsblk -nrpo "name,label,mountpoint")"
 
 while IFS='' read -r label mp _
 do
     printf "%s\n" "$devs" | while read -r devname devlabel devmp _
     do
-        [ "$( env printf "$devlabel" )" = "$label" ] && [ -z "$devmp" ] && mount "$devname" "$mp"
+        [ "$(env printf "$devlabel")" = "$label" ] && [ -z "$devmp" ] && mount "$devname" "$mp"
     done
-done < "$( getfl mounts )"
+done < "$(getfl mounts)"
 
 exit 0 # to not make systemd freak out

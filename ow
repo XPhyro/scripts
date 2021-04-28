@@ -6,7 +6,7 @@ cp "$@" || {
     exit 1
 }
 
-paths="$( printf "%s" "$@" | sed 's/\s.*$//' )"
+paths="$(printf "%s" "$@" | sed 's/\s.*$//')"
 
 rm "$paths" || {
     printf "%s\n" "Could not remove:" "$paths"

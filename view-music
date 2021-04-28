@@ -15,7 +15,7 @@ do
     shift
 done
 
-dir="$( getloc mu )" || {
+dir="$(getloc mu)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }
@@ -24,20 +24,20 @@ cd "$dir" || {
     exit 0
 }
 
-fls="$( find . -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||' )"
+fls="$(find . -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%p\n" | sort -nr | sed 's|^.*;\./||')"
 
-fl="$( printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:" )"
+fl="$(printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:")"
 [ -z "$fl" ] && exit 0
 
-n="$( seq 4 | dmenu -F -p "How many to open:" )"
+n="$(seq 4 | dmenu -F -p "How many to open:")"
 [ -z "$n" ] && exit 0
 while printf "%s" "$n" | grep -q "[^[:digit:]]"
 do
-    n="$( seq 4 | dmenu -F -p "You must enter a positive integer:" )"
+    n="$(seq 4 | dmenu -F -p "You must enter a positive integer:")"
     [ -z "$n" ] && exit 0
 done
 
-notify-send -t 2000 "view-music" "Opening $n of $( basename "$fl" ) with $cmd."
+notify-send -t 2000 "view-music" "Opening $n of $(basename "$fl") with $cmd."
 seq "$n" | while read -r _
 do
     eval "'$cmd' '$fl'" &

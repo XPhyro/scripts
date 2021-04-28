@@ -7,7 +7,7 @@ clean() {
 
 trap clean INT EXIT TERM
 
-tmpfl="$( mktemp )"
+tmpfl="$(mktemp)"
 
 if [ -t 0 ]
 then
@@ -15,7 +15,7 @@ then
     do
         if [ -L "$i" ]
         then
-            dest="$( readlink "$i" )"
+            dest="$(readlink "$i")"
         elif [ -d "$i" ]
         then
             dest="DIRECTORY"
@@ -33,7 +33,7 @@ else
     do
         if [ -L "$i" ]
         then
-            dest="$( readlink "$i" )"
+            dest="$(readlink "$i")"
         elif [ -d "$i" ]
         then
             dest="DIRECTORY"
@@ -48,7 +48,7 @@ else
     done <&0
 fi
 
-origtmpfl="$( mktemp )"
+origtmpfl="$(mktemp)"
 cp -f "$tmpfl" "$origtmpfl"
 
 eval "'$EDITOR' '$tmpfl'"

@@ -19,5 +19,5 @@ done
 
 for i
 do
-    dirname "$( expandpath "$( printf "%s\n" "$( grep -E "^$i\s+.*" "$fls" | awk '{print $2}' )" )" )"
+    dirname "$(expandpath "$(printf "%s\n" "$(grep -E "^$i\s+.*" "$fls" | awk '{print $2}')")")"
 done

@@ -3,13 +3,13 @@
 failed=""
 for i
 do
-    [ "$( mimetype -b "$i" )" != "application/pdf" ] && {
+    [ "$(mimetype -b "$i")" != "application/pdf" ] && {
         failed="$failed$i
 "
         continue
     }
 
-    tmp="$( mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf" )"
+    tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")"
 
     cp -f "$i" "$tmp" || {
         failed="$failed$i

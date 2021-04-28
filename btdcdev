@@ -3,7 +3,7 @@
 
 devs="$( bluetoothctl paired-devices | while read -r _ i devname
 do
-    [ "$( qdbus --system org.bluez "/org/bluez/hci0/dev_$( printf "%s" "$i" | tr ':' '_' )" org.bluez.Device1.Connected )" = "true" ] && printf "%s %s\n" "$i" "$devname"
+    [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" = "true" ] && printf "%s %s\n" "$i" "$devname"
 done | sort )"
 
 [ -z "$devs" ] && {
@@ -11,17 +11,17 @@ done | sort )"
     exit 0
 }
 
-if [ "$( printf "%s\n" "$devs" | wc -l )" = 1 ]
+if [ "$(printf "%s\n" "$devs" | wc -l)" = 1 ]
 then
     seldev="$devs"
 else
-    seldev="$( printf "%s" "$devs" | dmenu -i -p "Device to disconnect:" )"
+    seldev="$(printf "%s" "$devs" | dmenu -i -p "Device to disconnect:")"
 fi
 
 [ -z "$seldev" ] && exit 0
 
-seldevname="$( printf "%s" "$seldev" | awk '{$1=""; print substr($0,2)}' )"
-seldev="$( printf "%s" "$seldev" | awk '{print $1}' )"
+seldevname="$(printf "%s" "$seldev" | awk '{$1=""; print substr($0,2)}')"
+seldev="$(printf "%s" "$seldev" | awk '{print $1}')"
 
 if bluetoothctl disconnect "$seldev"
 then

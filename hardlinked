@@ -2,12 +2,12 @@
 
 [ "$#" -lt 2 ] && exit 0
 
-f="$( stat -c "%i %d" -- "$1" 2> /dev/null )"
+f="$(stat -c "%i %d" -- "$1" 2> /dev/null)"
 shift
 
 for i
 do
-    [ "$f" != "$( stat -c "%i %d" -- "$i" 2> /dev/null )" ] && exit 1
+    [ "$f" != "$(stat -c "%i %d" -- "$i" 2> /dev/null)" ] && exit 1
 done
 
 exit 0

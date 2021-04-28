@@ -3,6 +3,6 @@
 
 . ~/.zshrc
 
-cmd="$( printf "" | dmenu -l 0 )"
-eval "( $cmd ) &"
+cmd="$(printf "" | dmenu -l 0)"
+eval "($cmd) &"
 disown

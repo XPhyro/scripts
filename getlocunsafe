@@ -4,5 +4,5 @@
 set -e
 item="$HOME/documents/sys-admin/locations-container/$1"
 [ -s "$item" ]
-loc="$( cat "$item" )"
+loc="$(cat "$item")"
 printf "%s\n" "$loc"

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-loc="$( getloc popupnote )" || {
+loc="$(getloc popupnote)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }

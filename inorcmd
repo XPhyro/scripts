@@ -3,7 +3,7 @@
 
 if [ ! -t 0 ]
 then
-    stdinfl="$( mktemp )"
+    stdinfl="$(mktemp)"
     cp -f /dev/stdin "$stdinfl"
 fi
 

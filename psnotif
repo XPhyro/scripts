@@ -3,10 +3,10 @@
 
 for i
 do
-    while [ -n "$( ps -o pid= "$i" )" ]
+    while [ -n "$(ps -o pid= "$i")" ]
     do
         sleep 5
     done
 done
 
-notify-send -u critical -t 0 "psnotif" "Specified processes became absent on $( date )."
+notify-send -u critical -t 0 "psnotif" "Specified processes became absent on $(date)."

@@ -77,11 +77,11 @@ parseargs() {
         then
             if [ "${1%"${1#??}"}" != "--" ]
             then
-                sopt="$( printf "%s" "$1" | cut -c2- )"
+                sopt="$(printf "%s" "$1" | cut -c2-)"
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in
@@ -105,10 +105,10 @@ parseargs() {
                         *) printusage "-$opt"; exit 0;;
                     esac
 
-                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                    sopt="$(printf "%s" "$sopt" | cut -c2-)"
                 done
             else
-                opt="$( printf "%s" "$1" | cut -c3- )"
+                opt="$(printf "%s" "$1" | cut -c3-)"
                 
                 case "$opt"
                 in
@@ -150,7 +150,7 @@ parseargs() {
 
 grepfls() {
     [ -n "$regex" ] && {
-        fls="$( printf "%s" "$fls" | grep $regextype $ignorecase $invertmatch -e "$regex" )"
+        fls="$(printf "%s" "$fls" | grep $regextype $ignorecase $invertmatch -e "$regex")"
     }
 }
 
@@ -166,7 +166,7 @@ getprompt() {
 main() {
     if [ -z "$directory" ]
     then
-        [ -n "$git" ] && initgithash="$( git rev-parse HEAD )"
+        [ -n "$git" ] && initgithash="$(git rev-parse HEAD)"
 
         until [ -e "$sel" ] && [ ! -d "$sel" ]
         do
@@ -176,7 +176,7 @@ main() {
             then
                 if [ -n "$git" ]
                 then
-                    [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
+                    [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] || {
                         logerr "Not a git repository, exiting."
                         return
                     }
@@ -186,7 +186,7 @@ main() {
                         do 
                             cdsafe "$i"
 
-                            if [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD )" = "$initgithash" ]
+                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]
                             then
                                 printf "%s\n" "$i"
                             fi
@@ -197,12 +197,12 @@ main() {
                         git ls-files
                     )"
                 else
-                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort )"
+                    fls="$(find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort)"
                 fi
             else
                 if [ -n "$git" ]
                 then
-                    [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] || {
+                    [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] || {
                         logerr "Not a git repository, exiting."
                         return
                     }
@@ -212,7 +212,7 @@ main() {
                         do 
                             cdsafe "$i"
 
-                            if [ "$( git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD )" = "$initgithash" ]
+                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]
                             then
                                 printf "%s\n" "$i"
                             fi
@@ -223,7 +223,7 @@ main() {
                         git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d'
                     )"
                 else
-                    fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort )"
+                    fls="$(find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort; find . -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort)"
                 fi
             fi
 
@@ -231,21 +231,21 @@ main() {
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
+                sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
             elif [ -n "$git" ]
             then
-                if contains "$( realpath "$PWD/.." )" "$( git rev-parse --show-toplevel )"
+                if contains "$(realpath "$PWD/.." )" "$( git rev-parse --show-toplevel)"
                 then
-                    sel="$( printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
+                    sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
                 else
-                    sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
+                    sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
                 fi
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
+                sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || {
-                [ -n "$sel" ] && sel="$( expandpath "$sel" )"
+                [ -n "$sel" ] && sel="$(expandpath "$sel")"
             }
 
             [ -n "$sel" ] || return
@@ -257,7 +257,7 @@ main() {
         then
             printf "%s%s\n" "$printinitpwd" "$PWD/$sel"
         else
-            printf "%s%s\n" "$printinitpwd" "$( realpath --relative-to="$initpwd" "$PWD/$sel" )"
+            printf "%s%s\n" "$printinitpwd" "$(realpath --relative-to="$initpwd" "$PWD/$sel")"
         fi
     else
         while true
@@ -266,21 +266,21 @@ main() {
 
             if [ -n "$showhidden" ]
             then
-                fls="$( find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort )"
+                fls="$(find . -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort)"
             else
-                fls="$( find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort )"
+                fls="$(find . -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort)"
             fi
 
             grepfls
 
             if [ "$PWD" = "$root" ]
             then
-                sel="$( printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
+                sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
             else
-                sel="$( printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$( getprompt )" )"
+                sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
             fi
 
-            printf "%s" "$fls" | grep -Fxq "$sel" || sel="$( expandpath "$sel" )"
+            printf "%s" "$fls" | grep -Fxq "$sel" || sel="$(expandpath "$sel")"
 
             [ -n "$sel" ] || {
                 [ -n "$printinitpwd" ] && printinitpwd="$initpwd: "

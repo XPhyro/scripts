@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-fl="$( getfl zoom )" || {
+fl="$(getfl zoom)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -10,17 +10,17 @@ while IFS= read -r i
 do
     [ -z "${i%%"#"*}" ] && continue
 
-    lst="$lst$n - $( printf "%s" "$i" | awk -F '' '{print $1,"-",$2}' )
+    lst="$lst$n - $(printf "%s" "$i" | awk -F '' '{print $1,"-",$2}')
 "
     table="$table
-$n$( printf "%s" "$i" | awk -F '' '{print $3}' )"
+$n$(printf "%s" "$i" | awk -F '' '{print $3}')"
 
-    n=$(( n + 1 ))
+    n=$((n + 1))
 done < "$fl"
 
-sel="$( printf "%s" "$lst" | dmenu -i -l 20 )"
+sel="$(printf "%s" "$lst" | dmenu -i -l 20)"
 
 [ -n "$sel" ] || exit 0
 
-url="$( printf "%s" "$table" | grep "^$( printf "%s" "$sel" | awk '{print $1}' )" | awk -F '' '{print $2}' )"
-$( [ "$( printf "%s" "$url" | sed 's,://.*$,,' )" = "zoommtg" ] && printf "firejail" ) xdg-open "$url"
+url="$(printf "%s" "$table" | grep "^$(printf "%s" "$sel" | awk '{print $1}')" | awk -F '' '{print $2}')"
+$([ "$(printf "%s" "$url" | sed 's,://.*$,,')" = "zoommtg" ] && printf "firejail") xdg-open "$url"

@@ -2,7 +2,7 @@
 # Unexpand ~.
 
 unexpandpath() {
-    path="$( printf "%s\n" "$1" | sed 's|/\+|/|g' )"
+    path="$(printf "%s\n" "$1" | sed 's|/\+|/|g')"
     [ "${path#"${path%?}"}" = "/" ] && path="${path%?}"
 
     case "$path"

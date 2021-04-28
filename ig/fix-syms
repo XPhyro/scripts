@@ -4,9 +4,9 @@
 # Give arguments old-dir new-dir
 # Ex: [xphyro@archlinux ~/data]$ ./fix-syms ig-favourite ig-fav
 
-links="$( find "$1" -mindepth 1 -maxdepth 1 -type l -printf "%f\n" )"
-imgs="$( echo $links | grep -E "jpg|mp4" )"
-dirs="$( echo $links | grep -Ev "jpg|mp4" )"
+links="$(find "$1" -mindepth 1 -maxdepth 1 -type l -printf "%f\n")"
+imgs="$(echo $links | grep -E "jpg|mp4")"
+dirs="$(echo $links | grep -Ev "jpg|mp4")"
 
 echo "$imgs" | while read -r i
 do

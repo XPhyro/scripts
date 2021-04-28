@@ -2,7 +2,7 @@
 # Select a file using fzf and open it using xph-open.
 
 main() {
-    file="$( fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' )"
+    file="$(fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}')"
     # shellcheck disable=SC2181
     [ $? -ne 0 ] && exit $?
     [ -n "$file" ] && xph-open "$file"
@@ -19,7 +19,7 @@ else
     do
         for i
         do
-            loc="$( getloc "$i" )"
+            loc="$(getloc "$i")"
             [ -d "$loc" ] && cd "$loc" && main
         done
     done

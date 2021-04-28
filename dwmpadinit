@@ -6,7 +6,7 @@ shift 2
 
 [ "$lck" != "0" ] && {
     printf "%s\n" "$$" > "$lckdir/$lck/pid"
-    printf "%s - %s\n" "dwmpad #$lck" "$( date +"%a %F %R" )"
+    printf "%s - %s\n" "dwmpad #$lck" "$(date +"%a %F %R")"
 
     if [ "$#" -eq 0 ]
     then
@@ -20,7 +20,7 @@ shift 2
 
 while true
 do
-    pid="2147483647,$( find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',' )"
+    pid="2147483647,$(find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',')"
     top -n 1 -p "${pid%?}"
     tput civis
     sleep 1

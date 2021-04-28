@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-apps="$( ps -eocommand )"
+apps="$(ps -eocommand)"
 
 if printf "%s" "$apps" | grep -q "^/opt/spotify/spotify$"
 then

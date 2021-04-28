@@ -54,7 +54,7 @@ parseargs() {
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in

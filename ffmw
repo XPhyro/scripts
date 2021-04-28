@@ -51,7 +51,7 @@ printhelp() {
                 "        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed." \
 
             printf "\nValid subcommands: %s\n\n" "$subcommands"
-            lastsubcmd="$( printf "%s" "$subcommands" | sed 's/.*\s//' )"
+            lastsubcmd="$(printf "%s" "$subcommands" | sed 's/.*\s//')"
             for i in $subcommands
             do
                 printhelp "$i"
@@ -106,11 +106,11 @@ parseargs() {
         then
             if [ "${1%"${1#??}"}" != "--" ]
             then
-                sopt="$( printf "%s" "$1" | cut -c2- )"
+                sopt="$(printf "%s" "$1" | cut -c2-)"
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in
@@ -121,10 +121,10 @@ parseargs() {
                         *) printusage "-$opt";;
                     esac
 
-                    sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                    sopt="$(printf "%s" "$sopt" | cut -c2-)"
                 done
             else
-                opt="$( printf "%s" "$1" | cut -c3- )"
+                opt="$(printf "%s" "$1" | cut -c3-)"
                 
                 case "$opt"
                 in
@@ -156,11 +156,11 @@ parseargs() {
                 then
                     if ! [ "${1%"${1#??}"}" = "--" ]
                     then
-                        sopt="$( printf "%s" "$1" | cut -c2- )"
+                        sopt="$(printf "%s" "$1" | cut -c2-)"
 
                         while [ -n "$sopt" ]
                         do
-                            opt="$( printf "%s" "$sopt" | cut -c1 )"
+                            opt="$(printf "%s" "$sopt" | cut -c1)"
 
                             case "$opt"
                             in
@@ -176,10 +176,10 @@ parseargs() {
                                 *) printusage "-$opt" "concat";;
                             esac
 
-                            sopt="$( printf "%s" "$sopt" | cut -c2- )"
+                            sopt="$(printf "%s" "$sopt" | cut -c2-)"
                         done
                     else
-                        opt="$( printf "%s" "$1" | cut -c3- )"
+                        opt="$(printf "%s" "$1" | cut -c3-)"
                         
                         case "$opt"
                         in
@@ -210,12 +210,12 @@ $1"
 $1"
             done
 
-            argv="$( printf "%s" "$argv" | tail -n +2 )"
+            argv="$(printf "%s" "$argv" | tail -n +2)"
 
-            infls="$( printf "%s" "$argv" | head -n -1 )"
-            outfl="$( printf "%s" "$argv" | tail -n 1 )"
+            infls="$(printf "%s" "$argv" | head -n -1)"
+            outfl="$(printf "%s" "$argv" | tail -n 1)"
 
-            [ "$( printf "%s\n" "$infls" | wc -l )" -lt 2 ] && {
+            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] && {
                 printferr "At least 2 in files and exactly one out file are required, exiting.\n"
                 exit 1
             }
@@ -242,7 +242,7 @@ $1"
 }
 
 concat() {
-    lstfl="$( mktemp -p . )"
+    lstfl="$(mktemp -p .)"
     trap 'rm "$lstfl"' HUP INT QUIT TERM
 
     printf "%s\n" "$infls" | while IFS= read -r i
@@ -264,7 +264,7 @@ concat() {
         fi
     }
 
-    [ -n "$movefirst" ] && movefile="$( head -n 1 "$lstfl" )"
+    [ -n "$movefirst" ] && movefile="$(head -n 1 "$lstfl")"
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
@@ -304,7 +304,7 @@ main() {
 
 parseargs "$@"
 
-qldiff=$(( "${#quiet}" - "${#loud}" ))
+qldiff=$(("${#quiet}" - "${#loud}"))
 
 if [ "$qldiff" -eq 1 ]
 then

@@ -60,25 +60,25 @@ registercmd() {
 
     [ "$autoquote" = "1" ] && quote=\'
 
-    [ "$(( (cmdpos & CMD_MODIFIED) == CMD_MODIFIED ))" -eq 1 ] && modifcmd="$modifcmd $quote$cmd$quote"
-    [ "$(( (cmdpos & CMD_UNMODIFIED) == CMD_UNMODIFIED ))" -eq 1 ] && unmodifcmd="$unmodifcmd $quote$cmd$quote"
-    [ "$(( (cmdpos & CMD_WIPED) == CMD_WIPED ))" -eq 1 ] && wipecmd="$wipecmd $quote$cmd$quote"
-    [ "$(( (cmdpos & CMD_ALL) == CMD_ALL ))" -eq 1 ] && allcmd="$allcmd $quote$cmd$quote"
+    [ "$(((cmdpos & CMD_MODIFIED) == CMD_MODIFIED))" -eq 1 ] && modifcmd="$modifcmd $quote$cmd$quote"
+    [ "$(((cmdpos & CMD_UNMODIFIED) == CMD_UNMODIFIED))" -eq 1 ] && unmodifcmd="$unmodifcmd $quote$cmd$quote"
+    [ "$(((cmdpos & CMD_WIPED) == CMD_WIPED))" -eq 1 ] && wipecmd="$wipecmd $quote$cmd$quote"
+    [ "$(((cmdpos & CMD_ALL) == CMD_ALL))" -eq 1 ] && allcmd="$allcmd $quote$cmd$quote"
 }
 
 flipcmd() {
     CMD_METHOD="$1"
     methodcmd="$2"
-    if [ "$(( (cmdpos & CMD_METHOD) == CMD_METHOD ))" -ne 1 ]
+    if [ "$(((cmdpos & CMD_METHOD) == CMD_METHOD))" -ne 1 ]
     then
-        cmdpos="$(( cmdpos | CMD_METHOD ))"
-        if [ "$(( (cmdinit & CMD_METHOD) == CMD_METHOD ))" -ne 1 ]
+        cmdpos="$((cmdpos | CMD_METHOD))"
+        if [ "$(((cmdinit & CMD_METHOD) == CMD_METHOD))" -ne 1 ]
         then
             eval "$methodcmd="
-            cmdinit="$(( cmdinit | CMD_METHOD ))"
+            cmdinit="$((cmdinit | CMD_METHOD))"
         fi
     else
-        cmdpos="$(( cmdpos & ~CMD_METHOD ))"
+        cmdpos="$((cmdpos & ~CMD_METHOD))"
     fi
 }
 
@@ -90,7 +90,7 @@ flipasync() {
         while IFS= read -r i <&3 && IFS= read -r j <&4
         do
             [ "$c" = "$i" ] && {
-                if [ -n "$( eval "printf '%s' \"\$$j\"" )" ]
+                if [ -n "$(eval "printf '%s' \"\$$j\"")" ]
                 then
                     unset "$j"
                 else
@@ -124,7 +124,7 @@ parseargs() {
 
                 while [ -n "$sopt" ]
                 do
-                    opt="$( printf "%s" "$sopt" | cut -c1 )"
+                    opt="$(printf "%s" "$sopt" | cut -c1)"
 
                     case "$opt"
                     in
@@ -147,7 +147,7 @@ parseargs() {
                 
                 case "$opt"
                 in
-                    async         ) shift; [ -n "$( printf "%s" "$1" | tr -d 'amuw' )" ] && logargerrq "--async" "$1"; flipasync "$1";;
+                    async         ) shift; [ -n "$(printf "%s" "$1" | tr -d 'amuw')" ] && logargerrq "--async" "$1"; flipasync "$1";;
                     all           ) flipcmd "$CMD_ALL" "allcmd";;
                     editor        ) genscript="1";;
                     no-editor     ) genscript="0";;
@@ -155,10 +155,10 @@ parseargs() {
                     modified      ) flipcmd "$CMD_MODIFIED" "modifcmd";;
                     unmodified    ) flipcmd "$CMD_UNMODIFIED" "unmodifcmd";;
                     wiped         ) flipcmd "$CMD_WIPED" "wipecmd";;
-                    no-all        ) cmdpos="$(( cmdpos & ~CMD_ALL ))";;
-                    no-modified   ) cmdpos="$(( cmdpos & ~CMD_MODIFIED ))";;
-                    no-unmodified ) cmdpos="$(( cmdpos & ~CMD_UNMODIFIED ))";;
-                    no-wiped      ) cmdpos="$(( cmdpos & ~CMD_WIPED ))";;
+                    no-all        ) cmdpos="$((cmdpos & ~CMD_ALL))";;
+                    no-modified   ) cmdpos="$((cmdpos & ~CMD_MODIFIED))";;
+                    no-unmodified ) cmdpos="$((cmdpos & ~CMD_UNMODIFIED))";;
+                    no-wiped      ) cmdpos="$((cmdpos & ~CMD_WIPED))";;
                     quote         ) shift; autoquote="1";;
                     no-quote      ) shift; autoquote="0";;
                     help          ) printhelp; exit 0;;
@@ -223,8 +223,8 @@ edit() {
 }
 
 main() {
-    ogtmpfl="$( mktemp )"
-    tmpfl="$( mktemp )"
+    ogtmpfl="$(mktemp)"
+    tmpfl="$(mktemp)"
 
     if [ ! -t 0 ]
     then
@@ -240,12 +240,12 @@ main() {
 
     [ ! -s "$tmpfl" ] && logerrq "File is wiped"
 
-    lc="$( wc -l < "$ogtmpfl" )"
-    [ "$lc" -ne "$( wc -l < "$tmpfl" )" ] && logerrq "Line count changed"
+    lc="$(wc -l < "$ogtmpfl")"
+    [ "$lc" -ne "$(wc -l < "$tmpfl")" ] && logerrq "Line count changed"
 
     if [ "$genscript" = "1" ]
     then
-        scriptfl="$( mktemp --suffix ".$interpreter" )"
+        scriptfl="$(mktemp --suffix ".$interpreter")"
         printf "%s\n" \
 "#!/usr/bin/env $interpreter
 # Wipe the file to abort.

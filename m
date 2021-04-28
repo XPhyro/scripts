@@ -13,11 +13,11 @@ mark="$1"
 
 printf "%s\n" "$mark" | grep -qs "\s" && logerrq "Mark cannot contain whitespace, exiting."
 
-mrkfl="$( getfl mrk )"
+mrkfl="$(getfl mrk)"
 
 if [ -n "$2" ]
 then
-    val="$( realpath "$2" )"
+    val="$(realpath "$2")"
 else
     val="$PWD"
 fi

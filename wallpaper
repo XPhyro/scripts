@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
-waloc="$( getloc wa )" || {
+waloc="$(getloc wa)" || {
     printf "[ERROR]: getloc failed, aborting.\n"
     exit 1
 }
 
-fls="$( find "$waloc" -mindepth 1 -maxdepth 1 -type f -o -type l )"
+fls="$(find "$waloc" -mindepth 1 -maxdepth 1 -type f -o -type l)"
 
 while true
 do

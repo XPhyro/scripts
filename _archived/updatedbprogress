@@ -2,11 +2,11 @@
 # updatedb, but shows progress.
 # Taken from https://unix.stackexchange.com/a/43383/401367, written by https://unix.stackexchange.com/users/3352/musa.
 
-count=$( df -i | grep '/$' | awk '{print $3}' )
+count=$(df -i | grep '/$' | awk '{print $3}')
 
 sudo updatedb -v | while read -r
 do
     if (( ++i % (count/20) == 0 )); then
-        printf "%3d\r" $(( 100 * i / count ))
+        printf "%3d\r" $((100 * i / count))
     fi
 done

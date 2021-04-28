@@ -3,7 +3,7 @@
 
 # TODO: This resolves direct recursive symlinks, but does not resolve inner recursive symlinks, add an option to also fix them.
 # Example: a/, a/b, b->a, c->b/b => This script does not fix c to point to a/b as b is not a symlink itself (although it is reached from a symlink).
-# TODO: Fix problems with directories (test on "$( getloc off )" to see the problem (i.e. the input is "$( getloc off )"/*))
+# TODO: Fix problems with directories (test on "$(getloc off )" to see the problem (i.e. the input is "$( getloc off)"/*))
 # TODO: The resolved symlink may become broken if a symlink is relative at any point in the chain, fix.
 # TODO: If the first symlink was relative, leave the resolved symlink relative.
 
@@ -18,11 +18,11 @@ do
         continue
     }
 
-    idest="$( readlink "$i" )"
+    idest="$(readlink "$i")"
     dest="$idest"
     while [ -L "$dest" ]
     do
-        dest="$( readlink "$dest" )"
+        dest="$(readlink "$dest")"
     done
 
     ln -sf "$dest" "$i"
