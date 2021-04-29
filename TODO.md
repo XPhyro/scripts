@@ -39,6 +39,7 @@
 - Optimise `maps`.
 - Rewrite `brightmute` in a more robust fashion that would not oftenly break.
 - Rewrite `rangermpick` with `lf`.
+- Consider `scrot` in `cpscr`.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
