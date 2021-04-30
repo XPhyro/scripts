@@ -9,7 +9,7 @@ val="$(cat "$fl")"
 
 if [ "$val" = "0" ]
 then
-    val="$( brightnessctl g)"
+    val="$(brightnessctl g)"
     brightnessctl s 0
 else
     brightnessctl s "$val"
