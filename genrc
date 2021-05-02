@@ -20,15 +20,9 @@ while IFS= read -r i
 do
     cmd="$(printf "%s" "$i" | awk '{print $1}')"
     loc="$(printf "%s" "$i" | awk '{print $2}')"
-    if [ "${#cmd}" -lt 3 ]
-    then
-        space="$(printf "\t\t")"
-    else
-        space="$(printf "\t")"
-    fi
 
-    printf "map g%s%scd %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
-    printf "map g%s%s:cd %s\n" "$cmd" "$space" "$loc" >> "$ltmp"
+    printf "map g%s cd %s\n" "$cmd" "$loc" >> "$rtmp"
+    printf "map g%s :cd %s\n" "$cmd" "$loc" >> "$ltmp"
 done < "$locations"
 
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
@@ -38,15 +32,9 @@ while IFS= read -r i
 do
     cmd="$(printf "%s" "$i" | awk '{print $1}')"
     loc="$(printf "%s" "$i" | awk '{print $2}')"
-    if [ "${#cmd}" -lt 3 ]
-    then
-        space="$(printf "\t\t")"
-    else
-        space="$(printf "\t")"
-    fi
 
-    printf "map e%s%sshell vim %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
-    printf "map e%s%s:shell vim %s\n" "$cmd" "$space" "$loc" >> "$ltmp"
+    printf "map e%s shell vim %s\n" "$cmd" "$loc" >> "$rtmp"
+    printf "map e%s :shell vim %s\n" "$cmd" "$loc" >> "$ltmp"
 done < "$files"
 
 printf "\n#\n##\n" >> "$rtmp"
