@@ -4,14 +4,17 @@
 locations="$HOME/documents/sys-admin/locations"
 files="$HOME/documents/sys-admin/files"
 ranger="$HOME/.dotfiles-sensitive/.config/ranger/rc.conf"
+lf="$HOME/.dotfiles-sensitive/.config/lf/lfrc"
 
 rtmp="$(mktemp)"
+ltmp="$(mktemp)"
 # shellcheck disable=SC2064
-trap "rm -f '$rtmp'" INT EXIT TERM
+trap "rm -f '$rtmp' '$ltmp'" INT EXIT TERM
 
-sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "$ranger"
+sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "$ranger" "$lf"
 
 printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
+printf "##\n#\n\n## Go Instructions ##\n" >> "$ltmp"
 
 while IFS= read -r i
 do
@@ -25,9 +28,11 @@ do
     fi
 
     printf "map g%s%scd %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
+    printf "map g%s%s:cd %s\n" "$cmd" "$space" "$loc" >> "$ltmp"
 done < "$locations"
 
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
+printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$ltmp"
 
 while IFS= read -r i
 do
@@ -41,12 +46,16 @@ do
     fi
 
     printf "map e%s%sshell vim %s\n" "$cmd" "$space" "$loc" >> "$rtmp"
+    printf "map e%s%s:shell vim %s\n" "$cmd" "$space" "$loc" >> "$ltmp"
 done < "$files"
 
 printf "\n#\n##\n" >> "$rtmp"
+printf "\n#\n##\n" >> "$ltmp"
 
 rnum="$(grep -n "### BEGIN AUTO-GENERATED ###" "$ranger" | sed 's/:.*//')"
+lnum="$(grep -n "### BEGIN AUTO-GENERATED ###" "$lf" | sed 's/:.*//')"
 
 sed -i "$rnum r $rtmp" "$ranger"
+sed -i "$lnum r $ltmp" "$lf"
 
-rm -f "$rtmp"
+rm -f "$rtmp" "$ltmp"
