@@ -16,10 +16,11 @@
 - When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getloc` and `getfl` could be implemented.
 - Add support for regular files in mark scripts. A possible way could be to also add support for passed arguments for files in the marking process and check the file type; if it is a regular file, then the file could be marked in a different mark set. While using marks, first check if a directory mark exists. If there exists a directory mark, `cd` into it; else, open up the regular file for the given mark in `$EDITOR` if there is such a mark.
 - Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
+- Support non-terminal applications in `dwmpad` after scratchpad assignment is implemented in `dwm`.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
-- **Write a todo manager which would be a generalised form of the deadline reminder.**
+- Write a todo manager which would be a generalised form of the deadline reminder.
 - Write a watson wrapper.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
