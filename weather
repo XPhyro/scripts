@@ -2,6 +2,9 @@
 # Show weather forecast.
 # Designed to work as a scratchpad for dwm with st.
 
-curl wttr.in/Çankaya
-env printf "\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K"
+v1="$(mktemp)"
+v2="$(mktemp)"
+curl v1.wttr.in/Çankaya 2> /dev/null | head -n -2 > "$v1"
+curl v2.wttr.in/Çankaya 2> /dev/null | head -n -2 > "$v2"
+paste "$v1" "$v2"
 readchar > /dev/null
