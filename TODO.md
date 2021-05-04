@@ -52,3 +52,4 @@
 - Should [README.md](README.md) be rewritten to not include first person language?
 - Move the *mark* family of scripts into a dedicated directory. So far, these are: `m`, `cm`, `¬`, `@`, `g`, `mg`.
 - Instead of using `while ... done < "$file"`, use `< "$file" while ... done`.
+- Get rid of the `printf "%s" "$sopt" | cut -c1` calls in `parseargs()`.
