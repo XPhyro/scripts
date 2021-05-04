@@ -29,6 +29,7 @@
 - Write a helper script that would make it easy for a script to implement hashmaps. Currently `getloc`, `getfl` and other scripts use directory/file structures as a workaround. This script would need to perform at least as well as the workaround, if not better, and be convenient to use.
 - Make the `¬`, `@` and `g` functions into stand-alone scripts. Add wrapper functions in rc file that would cd to the stdout if there is any. In these functions, stderr should be directly printed and not captured.
 - Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
+- Write a library-ish thing to make it easy for scripts, especially those in terminal file managers, to implement short-term smart thrash functionality that is considerate of the disk usage of the thrash.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
