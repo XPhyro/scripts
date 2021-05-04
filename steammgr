@@ -1,0 +1,128 @@
+#!/usr/bin/env sh
+
+cmds="AddNonSteamGame ## Opens the Steam checklist menu to add non-Steam games.
+advertise/<appid> ## Opens the store to an application's page.
+appnews/<appid> ## Opens up the news page for an app.
+backup/<appid> ## Opens up the Backup Wizard and checks the specified application. If an application is not specified then nothing will be checked.
+browsemedia
+checksysreqs/<appid> ## Checks if users computer meets system requirements of app.
+defrag/<appid> ## Defragments files of the application.
+ExitSteam ## Exits the Steam application.
+friends ## Opens Friends.
+friends/status/away ## Sets status as away
+friends/status/busy ## Sets status as busy
+friends/status/invisible ## Sets status as invisible
+friends/status/trade ## Sets status as looking to trade
+friends/status/play ## Sets status as looking to play
+friends/status/offline ## Sets status as offline
+friends/status/online ## Sets status as online
+install/<appid> ## Installs an application.
+nav/downloads
+nav/games
+nav/games/details
+nav/games/details/<appid>
+nav/games/grid
+nav/games/list
+nav/library/collection/hidden
+nav/media
+nav/music
+nav/tools
+open/activateproduct
+open/bigpicture
+open/console ## The steam developer console
+open/downloads
+open/friends
+open/games
+open/games/details
+open/games/grid
+open/games/list
+open/largegameslist
+open/minigameslist
+open/main
+open/music
+open/musicplayer
+open/mymedia
+open/news
+open/registerproduct
+open/tools
+open/screenshots
+open/servers
+open/settings
+preload/<appid> ## Preloads an application.
+publisher/<name> ## Loads the specified publisher catalogue in the Store. Type the publisher's name in lowercase, e.g. activision or valve.
+purchase/<appid> ## Opens a dialog box to buy an application from Steam.
+purchase/subscription/<appid> ## Opens up a dialog box to buy a subscription to a Steam product/service. None are available yet.
+removeaddon/<addon> ## Uninstalls the specified add-on.
+run/<appid> ## Runs an application. It will be installed if necessary.
+runsafe/<appid> ## Resets CVARs of a Source game.
+rungameid/<appid> ## Same as run, but with support for mods and non-Steam shortcuts.
+settings
+settings/account
+settings/friends
+settings/interface
+settings/ingame
+settings/downloads
+settings/voice
+stopstreaming ## Stops a currently running in-home streaming session
+store/<appid> ## Opens up the store for an app, if no app is specified then the default one is opened.
+support ## Launches the Steam Support utility, and runs all of its tests. Enter a valid support string to filter results.
+uninstall/<appid> ## Deletes the specified apps' cache files.
+UpdateFirmware ## Opens the Steam Controller firmware update screen.
+updatenews/<appid> ## Opens the news about the latest updates for an app.
+url/CommunityHome/
+url/CommunityInventory
+url/CommunitySearch/
+url/GameHub/<appid>
+url/SteamIDAchievementsPage/<appid>
+url/SteamIDControlPage
+url/SteamIDEditPage
+url/SteamIDFriendsPage
+url/SteamIDLoginPage/<pass>
+url/SteamIDMyProfile
+url/SteamIDPage/<usrid>
+url/SteamWorkshop
+url/SteamWorkshopPage/<appid>
+url/SteamGreenlight
+url/Store
+url/StoreAccount
+url/StoreAppPage/<appid>
+url/Storefront
+url/StoreFrontPage
+url/Opens store homepage in Steam store tab.
+url/SupportFrontPage
+validate/<appid> ## Validates the local files of an app."
+
+sel="$(printf "%s\n" "$cmds" | dmenu -l 20 -i -p "Command:")"
+
+[ -z "$sel" ] && exit 0
+
+sel="${sel%% ## *}"
+
+if [ -z "${sel##*<*>*}" ]
+then
+    strtype="${sel##*<}"
+    strtype="${strtype%%>*}"
+
+    case "$strtype"
+    in
+        appid)
+            str="$(
+                grep -E '\s*"[0-9]+"\s*".*"$' "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i
+                do
+                    cd "$i/steamapps" || {
+                        printf "%s\n" "Could not cd into '$i/steamapps', passing."
+                        continue
+                    }
+
+                    find . -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j
+                    do
+                        printf '%s\n' "$(grep '"appid"' "$j" | awk -F '"' '{print $4}') $(grep '"name"' "$j" | awk -F '"' '{print $4}')"
+                    done
+                done | dmenu -i -l 25 -p "Select game or enter game ID:" | awk '{print $1}'
+            )"
+            ;;
+        *) str="$(printf "" | dmenu -l 0 -p "<$strtype>:")";;
+    esac
+fi
+
+xdg-open "steam://$sel/$str"
