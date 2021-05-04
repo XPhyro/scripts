@@ -1,20 +1,22 @@
 # vim: ft=sh
 
+execname="${0##*/}"
+
 printhelp() {
     printf "%s\n" \
-        "scriptname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]" \
-        "   -a ARGUMENT, --argument ARGUMENT" \
-        "       Do something with argument." \
-        "   -c ARGUMENT, --can-be-empty-argument ARGUMENT" \
-        "       Do something with argument that can be empty." \
-        "   -o, --option" \
-        "       Enable some option. Can be overridden with -i." \
-        "   -i, --inverse-option" \
-        "       Disable some option. Can be overridden with -o." \
-        "   -t, --option-type" \
-        "       Set some option. Can be overridden with other types." \
-        "   -h, --help" \
-        "       Print help message and exit."
+"$execname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]
+   -a ARGUMENT, --argument ARGUMENT
+       Do something with argument.
+   -c ARGUMENT, --can-be-empty-argument ARGUMENT
+       Do something with argument that can be empty.
+   -o, --option
+       Enable some option. Can be overridden with -i.
+   -i, --inverse-option
+       Disable some option. Can be overridden with -o.
+   -t, --option-type
+       Set some option. Can be overridden with other types.
+   -h, --help
+       Print help message and exit."
 }
 
 printusage() {

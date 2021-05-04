@@ -3,43 +3,45 @@
 # TODO: Make -d respect -g.
 # TODO: Add support for multiple -e.
 
+execname="${0##*/}"
+
 printhelp() {
     printf "%s\n" \
-        "selfl [OPTION...] [DIRECTORY...] -- [DIRECTORY...]" \
-        "   -a, --absolute" \
-        "       Print absolute path instead of relative." \
-        "   -d, --directory" \
-        "       Only show directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory." \
-        "   -E, --extended-regex" \
-        "       Interpret PATTERNs as extended regular expressions. Overwrites -FGP." \
-        "   -e PATTERN, --regex PATTERN" \
-        "       Only show entries that are matched by the given regular expression. Only the last given pattern will be used." \
-        "   -F, --fixed-strings" \
-        "       Interpret PATTERNs as fixed strings. Overwrites -EGP." \
-        "   -G, --basic-regex" \
-        "       Interpret PATTERNs as basic regular expressions. This is the default interpretation. Overwrites -EFP." \
-        "   -g, --git" \
-        "       Use git ls-files to show files. Does nothing if -d is given." \
-        "   -H, --with-directory" \
-        "       Print initial directory with the selections." \
-        "   -h, --help" \
-        "       Print help message." \
-        "   -i, --ignore-case" \
-        "       Ignore case distinctions in PATTERNs and entries." \
-        "   -l COUNT, --line-count COUNT" \
-        "       Count of lines that dmenu will show." \
-        "   -P, --perl-regex" \
-        "       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG." \
-        "   -p TEXT, --prompt TEXT" \
-        "       Show custom dmenu prompt." \
-        "   -R, --root-as-init" \
-        "       Define the root as the initial directory." \
-        "   -r ROOT, --root ROOT" \
-        "       Define a custom root instead of /." \
-        "   -s, --show-hidden" \
-        "       Show hidden directories/files." \
-        "   -v, --invert-match" \
-        "       Only show entries that are not matched by PATTERNs."
+"$execname [OPTION...] [DIRECTORY...] -- [DIRECTORY...]
+   -a, --absolute
+       Print absolute path instead of relative.
+   -d, --directory
+       Only show directories. If selecting a directory, you must exit without selecting after navigating to the wanted directory.
+   -E, --extended-regex
+       Interpret PATTERNs as extended regular expressions. Overwrites -FGP.
+   -e PATTERN, --regex PATTERN
+       Only show entries that are matched by the given regular expression. Only the last given pattern will be used.
+   -F, --fixed-strings
+       Interpret PATTERNs as fixed strings. Overwrites -EGP.
+   -G, --basic-regex
+       Interpret PATTERNs as basic regular expressions. This is the default interpretation. Overwrites -EFP.
+   -g, --git
+       Use git ls-files to show files. Does nothing if -d is given.
+   -H, --with-directory
+       Print initial directory with the selections.
+   -h, --help
+       Print help message.
+   -i, --ignore-case
+       Ignore case distinctions in PATTERNs and entries.
+   -l COUNT, --line-count COUNT
+       Count of lines that dmenu will show.
+   -P, --perl-regex
+       Interpret PATTERNs as Perl-compatible regular expressions. Overwrites -EFG.
+   -p TEXT, --prompt TEXT
+       Show custom dmenu prompt.
+   -R, --root-as-init
+       Define the root as the initial directory.
+   -r ROOT, --root ROOT
+       Define a custom root instead of /.
+   -s, --show-hidden
+       Show hidden directories/files.
+   -v, --invert-match
+       Only show entries that are not matched by PATTERNs."
 }
 
 printusage() {

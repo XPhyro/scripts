@@ -1,15 +1,17 @@
 #!/usr/bin/env sh
 # Execute a file every time it is modified.
 
+execname="${0##*/}"
+
 printhelp() {
     printf "%s\n" \
-        "contexec [OPTION...] [FILES...] -- [FILES...]" \
-        "   -o, --once" \
-        "       Exit after the first execution." \
-        "   --no-once" \
-        "       Revert -o." \
-        "   -h, --help" \
-        "       Print help message."
+"$execname [OPTION...] [FILES...] -- [FILES...]
+   -o, --once
+       Exit after the first execution.
+   --no-once
+       Revert -o.
+   -h, --help
+       Print help message."
 }
 
 printusage() {

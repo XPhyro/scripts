@@ -1,27 +1,29 @@
 #!/usr/bin/env sh
 # Like xargs but for standard input.
 
+execname=${0##*/}
+
 printhelp() {
     printf "%s\n" \
-        "xins [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]" \
-        "   -a, --async" \
-        "       Run commands asynchronously. Has no effect if -s is passed." \
-        "   --no-async" \
-        "       Revert -a." \
-        "   -h, --help" \
-        "       Print help message." \
-        "   -R, --no-run-if-whitespace" \
-        "       Do not run the command if standard input only contains whitespace." \
-        "   --run-if-whitespace" \
-        "       Revert -R." \
-        "   -r, --no-run-if-empty" \
-        "       Do not run the command if standard input is empty." \
-        "   --run-if-empty" \
-        "       Revert -r." \
-        "   -s, --sponge" \
-        "       Pass standard input as a whole instead of splitting by lines." \
-        "   --no-sponge" \
-        "       Revert -s."
+"$execname [OPTION...] [DIRECTORIES...] [FILES...] -- [DIRECTORIES...] [FILES...]
+   -a, --async
+       Run commands asynchronously. Has no effect if -s is passed.
+   --no-async
+       Revert -a.
+   -h, --help
+       Print help message.
+   -R, --no-run-if-whitespace
+       Do not run the command if standard input only contains whitespace.
+   --run-if-whitespace
+       Revert -R.
+   -r, --no-run-if-empty
+       Do not run the command if standard input is empty.
+   --run-if-empty
+       Revert -r.
+   -s, --sponge
+       Pass standard input as a whole instead of splitting by lines.
+   --no-sponge
+       Revert -s."
 }
 
 printusage() {

@@ -3,39 +3,41 @@
 # TODO: Try not to abort when line count changed and find where elements were deleted with diff/git diff or something else. Present a confirmation to the user in case the guess is wrong.
 # TODO: Add an option to first start async processes and then execute the sync processes that would work both when -e is passed and otherwise. Alternatively, make this the default behaviour.
 
+execname="${0##*/}"
+
 printhelp() {
     printf "%s\n" \
-        "mapexec [OPTION...] [COMMAND...] -- [COMMAND...]" \
-        "   -A CHARS, --async CHARS" \
-        "       Toggle asynchronous command execution for given cases. CHARS can include [amuw]. Toggling will be done for every occurence of [amuw]." \
-        "   -a, --all" \
-        "       Toggle recording positional arguments as commands to run against all elements. Has no effect if -e is passed." \
-        "   --no-all" \
-        "       Stop recording positional arguments as commands to run against all elements. Has no effect if -e is passed." \
-        "   -e, --editor" \
-        "       Instead of executing the command recorded through arguments, open up a pre-prepared shell script in '\$EDITOR' and execute it after editing has finished. The script will be directly executed, so changing the shebang will change what it is interpreted with. When passed, command argument options have no effect. Commands are still recorded through arguments, thus they can still be used by passing --no-editor." \
-        "   --no-editor" \
-        "       Revert -e." \
-        "   -i INTERPRETER, --interpreter INTERPRETER" \
-        "       Change the default interpreter from sh to INTERPRETER. The full shebang will be '#!/usr/bin/env INTERPRETER'. Has no effect unless -e is passed." \
-        "   -m, --modified" \
-        "       Toggle recording positional arguments as commands to run against modified elements. Has no effect if -e is passed." \
-        "   --no-modified" \
-        "       Stop recording positional arguments as commands to run against modified elements. Has no effect if -e is passed." \
-        "   -u, --unmodified" \
-        "       Toggle reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
-        "   --no-unmodified" \
-        "       Stop reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
-        "   -w, --wiped" \
-        "       Toggle recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
-        "   --no-wiped" \
-        "       Stop recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed." \
-        "   -q, --quote" \
-        "      Automatically add quotes in the command. Has no effect if -e is passed." \
-        "   --no-quote" \
-        "      Revert -q. Has no effect if -e is passed." \
-        "   -h, --help" \
-        "       Print help message."
+"$execname [OPTION...] [COMMAND...] -- [COMMAND...]
+   -A CHARS, --async CHARS
+       Toggle asynchronous command execution for given cases. CHARS can include [amuw]. Toggling will be done for every occurence of [amuw].
+   -a, --all
+       Toggle recording positional arguments as commands to run against all elements. Has no effect if -e is passed.
+   --no-all
+       Stop recording positional arguments as commands to run against all elements. Has no effect if -e is passed.
+   -e, --editor
+       Instead of executing the command recorded through arguments, open up a pre-prepared shell script in '\$EDITOR' and execute it after editing has finished. The script will be directly executed, so changing the shebang will change what it is interpreted with. When passed, command argument options have no effect. Commands are still recorded through arguments, thus they can still be used by passing --no-editor.
+   --no-editor
+       Revert -e.
+   -i INTERPRETER, --interpreter INTERPRETER
+       Change the default interpreter from sh to INTERPRETER. The full shebang will be '#!/usr/bin/env INTERPRETER'. Has no effect unless -e is passed.
+   -m, --modified
+       Toggle recording positional arguments as commands to run against modified elements. Has no effect if -e is passed.
+   --no-modified
+       Stop recording positional arguments as commands to run against modified elements. Has no effect if -e is passed.
+   -u, --unmodified
+       Toggle reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
+   --no-unmodified
+       Stop reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
+   -w, --wiped
+       Toggle recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
+   --no-wiped
+       Stop recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
+   -q, --quote
+      Automatically add quotes in the command. Has no effect if -e is passed.
+   --no-quote
+      Revert -q. Has no effect if -e is passed.
+   -h, --help
+       Print help message."
 }
 
 printusage() {

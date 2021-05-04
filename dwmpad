@@ -1,16 +1,18 @@
 #!/usr/bin/env sh
 
+execname="${0##*/}"
+
 printhelp() {
     printf "%s\n" \
-        "dwmpad [OPTION...] -- [COMMAND...]" \
-        "   -d PATH, --directory PATH" \
-        "       Execute the command after changing the working directory to PATH." \
-        "   -g GEOMETRY, --geometry GEOMETRY" \
-        "       Define the geometry that st should use. See st(1) for details." \
-        "   -n NUMBER, --number NUMBER" \
-        "       Use pad number NUMBER. Number can be an integer between 0 and 9. If 0 is passed, the given command is ignored and statistics about the other pads are shown." \
-        "   -h, --help" \
-        "       Print help message and exit."
+"$execname [OPTION...] -- [COMMAND...]
+   -d PATH, --directory PATH
+       Execute the command after changing the working directory to PATH.
+   -g GEOMETRY, --geometry GEOMETRY
+       Define the geometry that st should use. See st(1) for details.
+   -n NUMBER, --number NUMBER
+       Use pad number NUMBER. Number can be an integer between 0 and 9. If 0 is passed, the given command is ignored and statistics about the other pads are shown.
+   -h, --help
+       Print help message and exit."
 }
 
 printusage() {
