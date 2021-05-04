@@ -15,6 +15,11 @@ lckfl="$(getfl upabllck)" || {
     exit 1
 }
 
+lst="$(getfl upabl)" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
+
 for i
 do
     if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]
@@ -40,11 +45,6 @@ touch "$lckfl"
 
 log "Reading updateables.
 "
-
-lst="$(getfl upabl)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
-    exit 1
-}
 
 errcount=0
 cmdcount=0
