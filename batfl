@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-printf "%s\n" "$@" | xargs -rL 1 getfl | xargs -r bat 2> /dev/null
+printf "%s\n" "$@" | xargs -rn 1 getfl | xargs -r bat 2> /dev/null
 exit $?
