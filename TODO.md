@@ -1,6 +1,8 @@
 # Bugs
 - `sxhkd` does not release keys when cycling keymaps, fix.
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
+- `tglapp -k restart-wallpaper -T off` does not work, fix.
+- `lckget clplog` does not work, fix. The problem might be in `lckget` or `clplog`.
 
 # Features
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
@@ -53,3 +55,4 @@
 - Move the *mark* family of scripts into a dedicated directory. So far, these are: `m`, `cm`, `¬`, `@`, `g`, `mg`.
 - Instead of using `while ... done < "$file"`, use `< "$file" while ... done`.
 - Get rid of the `printf "%s" "$sopt" | cut -c1` calls in `parseargs()`.
+- Add `--` before passing files to applicable commands.
