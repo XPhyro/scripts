@@ -143,16 +143,16 @@ printcompile() {
     [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat '$srchashfl' 2> /dev/null)\" ] && return 0
     
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    xelatex $optshellesc -halt-on-error '$srcfl' || {
+    yes '' | xelatex $optshellesc -halt-on-error '$srcfl' || {
         cleanaux
-        xelatex $optshellesc -halt-on-error '$srcfl' || return 1
+        yes '' | xelatex $optshellesc -halt-on-error '$srcfl' || return 1
     }
     bibtex '$srcfl'
     biber '$srcfl'
     makeindex '$srcfl'.idx 2> /dev/null
     # makeindex -s style.gls ...
-    xelatex $optshellesc -halt-on-error '$srcfl'
-    xelatex $optshellesc -halt-on-error '$srcfl'
+    yes '' | xelatex $optshellesc -halt-on-error '$srcfl'
+    yes '' | xelatex $optshellesc -halt-on-error '$srcfl'
     
     printf '%s\n' \"\$srchash\" > '$srchashfl'
     "
