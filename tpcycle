@@ -2,4 +2,4 @@
 # Cycle touchpad status.
 
 tpid="$(xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//')"
-xinput "$(xinput --list-props "$tpid" | head -n 2 | tail -n 1 | awk '{print $4}' | maps 1=--disable 0=--enable)" "$tpid"
+xinput "$(xinput --list-props "$tpid" | head -n 2 | tail -n 1 | awk '{print $4}' | END= maps 1=--disable 0=--enable)" "$tpid"
