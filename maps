@@ -9,8 +9,10 @@ do
     match=0
     for j
     do
-        [ "$i" = "${j%%"$SEP"*}" ] && {
-            printf "%s%s" "${j#*"$SEP"}" "$END"
+        from="${j%%"$SEP"*}"
+        to="${j#*"$SEP"}"
+        [ "$from" = "*" ] || [ "$i" = "$from" ] && {
+            printf "%s%s" "$to" "$END"
             match=1
             break
         }
