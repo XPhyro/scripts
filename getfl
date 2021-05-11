@@ -2,7 +2,7 @@
 # Get a file with the given code.
 
 set -e
-item="$HOME/documents/sys-admin/files-container/$1"
+item="$HOME/documents/sys-admin/files-container/${1:?}"
 [ -s "$item" ]
 fl="$(cat "$item")"
 fldir="$(dirname "$fl")"
