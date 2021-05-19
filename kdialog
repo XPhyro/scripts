@@ -64,6 +64,22 @@ main() {
         printf "%s\n" "${optargs:-"$HOME/downloads"}" > "$rfl"
         # shellcheck disable=SC2086
         dwmpad -- $EDITOR "$rfl" > /dev/null
+
+        [ "$(wc -l "$rfl")" -ne 1 ] && {
+            rm -f "$rfl" > /dev/null 2>&1
+            main
+            return $?
+        }
+
+        cfl="$(cat "$rfl")"
+        [ -e "$cfl" ] && {
+            printf "File [%s] exists, overwrite?\n" "$cfl"
+            equals "$(readchar)" Y y || {
+                rm -f "$rfl" > /dev/null 2>&1
+                main
+                return $?
+            }
+        }
     fi
 }
 
