@@ -295,7 +295,7 @@ main() {
 
 parseargs "$@"
 
-qldiff=$(("${#quiet}" - "${#loud}"))
+qldiff=$((${#quiet} - ${#loud}))
 
 if [ "$qldiff" -eq 1 ]
 then
