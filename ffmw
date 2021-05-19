@@ -280,17 +280,7 @@ concat() {
         rm "$i"
     done
 
-    [ -n "$movefile" ] && {
-        if [ "$overwrite" = "-y" ]
-        then
-            mv -f "$outfl" "$movefile"
-        elif [ "$overwrite" = "-n" ]
-        then
-            mv -n "$outfl" "$movefile"
-        else
-            mv -i "$outfl" "$movefile"
-        fi
-    }
+    [ -n "$movefile" ] && mv ${overwrite:-"-i"} "$outfl" "$movefile"
 
     [ -f "$lstfl" ] && rm "$lstfl"
 }
