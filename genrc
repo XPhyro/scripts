@@ -34,7 +34,7 @@ do
     loc="$(printf "%s" "$i" | awk '{print $2}')"
 
     printf "map e%s shell vim %s\n" "$cmd" "$loc" >> "$rtmp"
-    printf "map e%s :shell vim %s\n" "$cmd" "$loc" >> "$ltmp"
+    printf "map E%s :shell vim %s\n" "$cmd" "$loc" >> "$ltmp"
 done < "$files"
 
 printf "\n#\n##\n" >> "$rtmp"
