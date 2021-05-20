@@ -3,7 +3,7 @@
 # TODO: Add cut and compress subcommands.
 # TODO: ffmw might fail to work with symlink infiles for the concat and split subcommands, test and if so fix.
 
-subcommands="concat help split"
+subcommands="concat help split trim"
 execname="${0##*/}"
 
 printhelp() {
@@ -27,7 +27,7 @@ printhelp() {
     -n, --no-clobber
         Do nothing if the output file exists.
     -r, --remove
-        Remove INFILEs if concatenation succeeded.
+        Remove INFILE if concatenation succeeded.
     -s, --stdin
         Instead of passing filenames in a file, pass them from stdin to the filter command. This has no effect if -F is not passed."
             ;;
@@ -49,6 +49,24 @@ printhelp() {
         Do nothing if the output file exists.
     -r, --remove
         Remove INFILEs if concatenation succeeded."
+            ;;
+        trim)
+            printf "%s\n" \
+"  trim [INFILE] [OUTFILE]
+    -f, --force
+        Overwrite the output file if it exists.
+    -h, --help
+        Print help message.
+    -i, --interactive
+        Prompt before overwriting the output file if it exists.
+    -M, --move-to-original
+        Move OUTFILE to INFILE after concatenation is finished. This overrides -m if present.
+    -m MOVEFILE, --move-to MOVEFILE
+        Move OUTFILE to MOVEFILE after concatenation is finished. This is overridden by -M if present.
+    -n, --no-clobber
+        Do nothing if the output file exists.
+    -r, --remove
+        Remove INFILE if concatenation succeeded."
             ;;
         *)
             printf "%s\n" \
@@ -261,11 +279,11 @@ $1"
                             case "$opt"
                             in
                                 f) overwrite="-y";;
-                                h) printhelp "concat"; exit 0;;
+                                h) printhelp "split"; exit 0;;
                                 i) overwrite="";;
                                 n) overwrite="-n";;
                                 r) remove="1";;
-                                *) printusage "-$opt" "concat";;
+                                *) printusage "-$opt" "split";;
                             esac
 
                             sopt="$(printf "%s" "$sopt" | cut -c2-)"
@@ -276,12 +294,12 @@ $1"
                         case "$opt"
                         in
                             force         ) overwrite="-y";;
-                            help          ) printhelp "concat"; exit 0;;
+                            help          ) printhelp "split"; exit 0;;
                             interactive   ) overwrite="";;
                             no-clobber    ) overwrite="-n";;
                             remove        ) remove="1";;
                             ""            ) shift; break;;
-                            *             ) printusage "--$opt" "concat";;
+                            *             ) printusage "--$opt" "split";;
                         esac
                     fi
                 else
@@ -306,6 +324,73 @@ $1"
             outpat="$(printf "%s\n" "$argv" | sed '2q;d')"
             period="$(printf "%s\n" "$argv" | sed '3q;d')"
             ;;
+        trim)
+            while [ -n "$1" ]
+            do
+                if [ "${1%"${1#?}"}" = "-" ]
+                then
+                    if ! [ "${1%"${1#??}"}" = "--" ]
+                    then
+                        sopt="$(printf "%s" "$1" | cut -c2-)"
+
+                        while [ -n "$sopt" ]
+                        do
+                            opt="$(printf "%s" "$sopt" | cut -c1)"
+
+                            case "$opt"
+                            in
+                                f) overwrite="-y";;
+                                h) printhelp "trim"; exit 0;;
+                                i) overwrite="";;
+                                M) movefirst="1";;
+                                m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
+                                n) overwrite="-n";;
+                                r) remove="1";;
+                                *) printusage "-$opt" "trim";;
+                            esac
+
+                            sopt="$(printf "%s" "$sopt" | cut -c2-)"
+                        done
+                    else
+                        opt="$(printf "%s" "$1" | cut -c3-)"
+                        
+                        case "$opt"
+                        in
+                            force            ) overwrite="-y";;
+                            help             ) printhelp "concat"; exit 0;;
+                            interactive      ) overwrite="";;
+                            move-to-original ) moveorig="1";;
+                            move-to          ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                            no-clobber       ) overwrite="-n";;
+                            remove           ) remove="1";;
+                            ""               ) shift; break;;
+                            *                ) printusage "--$opt" "concat";;
+                        esac
+                    fi
+                else
+                    argv="$argv
+$1"
+                fi
+
+                shift
+            done
+
+            for i
+            do
+                argv="$argv
+$1"
+            done
+
+            argv="$(printf "%s" "$argv" | tail -n +2)"
+
+            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
+
+            infl="$(printf "%s\n" "$argv" | head -n 1)"
+            outfl="$(printf "%s\n" "$argv" | tail -n 1)"
+
+
+            [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
+            ;;
     esac
 }
 
@@ -329,7 +414,7 @@ concat() {
         fi
     }
 
-    [ -n "$movefirst" ] && movefile="$(head -n 1 "$lstfl")"
+    [ "$movefirst" = "1" ] && movefile="$(head -n 1 "$lstfl")"
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
@@ -357,6 +442,18 @@ split() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
     $pperf ffmpeg -hide_banner $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" || printferrq "ffmpeg failed, exiting.\n"
     [ "$remove" = "1" ] && rm -- "$infl"
+}
+
+trim() {
+    [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
+
+    [ "$moveorig" = "1" ] && movefile="$infl"
+
+    $pperf ffmpeg -hide_banner $overwrite -i "$infl" -vf "$(ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" | awk '{print $NF}' | LC_ALL=C sort | LC_ALL=C uniq -c | LC_ALL=C sort -nr | head -n 1 | sed 's/^\s*[0-9]\+\s\+\(.*\)$/\1/')" -safe 0 -c:a copy "$outfl"
+
+    [ "$remove" = "1" ] && rm -- "$infl"
+
+    [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
 }
 
 main() {
