@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 # ffmpeg wrapper for actions I commonly use.
 # TODO: Add cut and compress subcommands.
+# TODO: ffmw might fail to work with symlink infiles for the concat and split subcommands, test and if so fix.
 
-subcommands="concat help"
+subcommands="concat help split"
 execname="${0##*/}"
 
 printhelp() {
@@ -10,7 +11,7 @@ printhelp() {
     in
         concat)
             printf "%s\n" \
-"  concat [INFILEs...] [OUTFILE]
+"  concat [INFILE]... [OUTFILE]
     -F COMMAND, --filter COMMAND
         Pass filenames through COMMAND before processing. If -s is not passed, the filenames will be passed in a file.
     -f, --force
@@ -35,9 +36,23 @@ printhelp() {
 "  help
     All options are ignored."
             ;;
+        split)
+            printf "%s\n" \
+"  split [INFILE] [OUTPATTERN] [PERIOD]
+    -f, --force
+        Overwrite the output file if it exists.
+    -h, --help
+        Print help message.
+    -i, --interactive
+        Prompt before overwriting the output file if it exists.
+    -n, --no-clobber
+        Do nothing if the output file exists.
+    -r, --remove
+        Remove INFILEs if concatenation succeeded."
+            ;;
         *)
             printf "%s\n" \
-"$execname SUBCOMMAND [OPTIONs...] [FILEs...] -- [FILEs...]
+"$execname [OPTION]... SUBCOMMAND [OPTION]... [FILE]... -- [FILE]...
 
 Global options:
     -h, --help
@@ -73,11 +88,13 @@ printferr() {
     >&2 printf "$@"
 }
 
+printferrq() {
+    printferr "$@"
+    exit 1
+}
+
 assertarg() {
-    [ -z "$3" ] && {
-        printferr "Expected %s argument to %s, exiting.\n" "$2" "$1"
-        exit 1
-    }
+    [ -z "$3" ] && printferrq "Expected %s argument to %s, exiting.\n" "$2" "$1"
 }
 
 assertcmd() {
@@ -88,13 +105,9 @@ assertcmd() {
         do
             [ "$i" = "$1" ] && iscmdvalid="1"
         done
-        [ "$iscmdvalid" = "1" ] || {
-            printferr "Subcommand [%s] is not valid, exiting.\n" "$1"
-            exit 1
-        }
+        [ "$iscmdvalid" = "1" ] || printferrq "Subcommand [%s] is not valid, exiting.\n" "$1"
     else
-        printferr "Expected subcommand, exiting.\n"
-        exit 1
+        printferrq "Expected subcommand, exiting.\n"
     fi
 }
 
@@ -188,9 +201,9 @@ parseargs() {
                             force         ) overwrite="-y";;
                             help          ) printhelp "concat"; exit 0;;
                             interactive   ) overwrite="";;
+                            move-to-first ) movefirst="1";;
                             move-to       ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
                             no-clobber    ) overwrite="-n";;
-                            move-to-first ) movefirst="1";;
                             remove        ) remove="1";;
                             stdin         ) stdin="1";;
                             ""            ) shift; break;;
@@ -216,16 +229,9 @@ $1"
             infls="$(printf "%s" "$argv" | head -n -1)"
             outfl="$(printf "%s" "$argv" | tail -n 1)"
 
-            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] && {
-                printferr "At least 2 in files and exactly one out file are required, exiting.\n"
-                exit 1
-            }
+            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
 
-            printf "%s" "$infls" | grep -Fxq "$outfl" && {
-                printferr "OUTFILE cannot be included in INFILES, exiting.\n"
-                exit 1
-            }
-
+            printf "%s" "$infls" | grep -Fxq "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
             ;;
         help)
             for i
@@ -239,19 +245,77 @@ $1"
                 fi
             done
             ;;
+        split)
+            while [ -n "$1" ]
+            do
+                if [ "${1%"${1#?}"}" = "-" ]
+                then
+                    if ! [ "${1%"${1#??}"}" = "--" ]
+                    then
+                        sopt="$(printf "%s" "$1" | cut -c2-)"
+
+                        while [ -n "$sopt" ]
+                        do
+                            opt="$(printf "%s" "$sopt" | cut -c1)"
+
+                            case "$opt"
+                            in
+                                f) overwrite="-y";;
+                                h) printhelp "concat"; exit 0;;
+                                i) overwrite="";;
+                                n) overwrite="-n";;
+                                r) remove="1";;
+                                *) printusage "-$opt" "concat";;
+                            esac
+
+                            sopt="$(printf "%s" "$sopt" | cut -c2-)"
+                        done
+                    else
+                        opt="$(printf "%s" "$1" | cut -c3-)"
+                        
+                        case "$opt"
+                        in
+                            force         ) overwrite="-y";;
+                            help          ) printhelp "concat"; exit 0;;
+                            interactive   ) overwrite="";;
+                            no-clobber    ) overwrite="-n";;
+                            remove        ) remove="1";;
+                            ""            ) shift; break;;
+                            *             ) printusage "--$opt" "concat";;
+                        esac
+                    fi
+                else
+                    argv="$argv
+$1"
+                fi
+
+                shift
+            done
+
+            for i
+            do
+                argv="$argv
+$1"
+            done
+
+            argv="$(printf "%s" "$argv" | tail -n +2)"
+
+            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
+
+            infl="$(printf "%s\n" "$argv" | sed '1q;d')"
+            outpat="$(printf "%s\n" "$argv" | sed '2q;d')"
+            period="$(printf "%s\n" "$argv" | sed '3q;d')"
+            ;;
     esac
 }
 
 concat() {
     lstfl="$(mktemp -p .)"
-    trap 'rm "$lstfl"' HUP INT QUIT TERM
+    trap 'rm -- "$lstfl"' HUP INT QUIT TERM
 
     printf "%s\n" "$infls" | while IFS= read -r i
     do
-        [ -f "$i" ] || {
-            printferr "No such file [$i], exiting.\n"
-            exit 1
-        }
+        [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
 
         printf "%s\n" "$i" >> "$lstfl"
     done
@@ -271,26 +335,32 @@ concat() {
 
     $pperf ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
         printferr "ffmpeg failed, exiting.\n"
-        [ -f "$lstfl" ] && rm "$lstfl"
+        [ -f "$lstfl" ] && rm -- "$lstfl"
         exit 1
     }
 
-    [ -n "$remove" ] && printf "%s\n" "$infls" | while IFS= read -r i
+    [ "$remove" = "1" ] && printf "%s\n" "$infls" | while IFS= read -r i
     do
-        rm "$i"
+        rm -- "$i"
     done
 
-    [ -n "$movefile" ] && mv ${overwrite:-"-i"} "$outfl" "$movefile"
+    [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
 
-    [ -f "$lstfl" ] && rm "$lstfl"
+    [ -f "$lstfl" ] && rm -- "$lstfl"
+}
+
+help() {
+    printhelp
+}
+
+split() {
+    [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
+    $pperf ffmpeg -hide_banner $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" || printferrq "ffmpeg failed, exiting.\n"
+    [ "$remove" = "1" ] && rm -- "$infl"
 }
 
 main() {
-    case "$cmd"
-    in
-        concat ) concat;;
-        help   ) printhelp;;
-    esac
+    "$cmd"
 }
 
 parseargs "$@"
