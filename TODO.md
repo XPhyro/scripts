@@ -55,4 +55,5 @@
 - Move the *mark* family of scripts into a dedicated directory. So far, these are: `m`, `cm`, `¬`, `@`, `g`, `mg`.
 - Instead of using `while ... done < "$file"`, use `< "$file" while ... done`.
 - Get rid of the `printf "%s" "$sopt" | cut -c1` calls in `parseargs()`.
-- Add `--` before passing files to applicable commands.
+- Add `--` before passing files to applicable commands. Find a way to do this with `find`, `g?awk` and others.
+- If `sed`, `grep` and others can parse the expressions as a file, say if the file exists, add `-e` or other respective arguments before the expressions.
