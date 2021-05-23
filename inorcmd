@@ -4,12 +4,12 @@
 if [ ! -t 0 ]
 then
     stdinfl="$(mktemp)"
-    cp -f /dev/stdin "$stdinfl"
+    cp -f -- /dev/stdin "$stdinfl"
 fi
 
 if [ -s "$stdinfl" ]
 then
-    cat "$stdinfl"
+    cat -- "$stdinfl"
 else
     eval "$@"
 fi

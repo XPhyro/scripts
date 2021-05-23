@@ -107,7 +107,7 @@ then
     in
         appid)
             str="$(
-                grep -E '\s*"[0-9]+"\s*".*"$' "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i
+                grep -E '\s*"[0-9]+"\s*".*"$' -- "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i
                 do
                     cd "$i/steamapps" || {
                         printf "%s\n" "Could not cd into '$i/steamapps', passing."
@@ -116,7 +116,7 @@ then
 
                     find . -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j
                     do
-                        printf '%s\n' "$(grep '"appid"' "$j" | awk -F '"' '{print $4}') $(grep '"name"' "$j" | awk -F '"' '{print $4}')"
+                        printf '%s\n' "$(grep '"appid"' -- "$j" | awk -F '"' '{print $4}') $(grep '"name"' -- "$j" | awk -F '"' '{print $4}')"
                     done
                 done | dmenu -i -l 25 -p "Select game or enter game ID:" | awk '{print $1}'
             )"

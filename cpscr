@@ -9,4 +9,4 @@ else
     notify-send "❌ cpscr" "Failed to capture screenshot."
 fi
 
-rm "$fl"
+rm -- "$fl"

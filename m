@@ -20,12 +20,12 @@ printf "%s\n" "$mark" | grep -qs "\s" && logerrq "Mark cannot contain whitespace
 
 if [ -n "$2" ]
 then
-    val="$(realpath "$2")"
+    val="$(realpath -- "$2")"
 else
     val="$PWD"
 fi
 
-grep -Eq "^$mark\s" "$markfl" && { 
+grep -Eq "^$mark\s" -- "$markfl" && { 
     cm "$mark" "$val"
     exit 0
 }

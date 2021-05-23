@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 # Print the content of file with the given code.
 
-cat "$(getfl "$1")" 2> /dev/null
+cat -- "$(getfl "$1")" 2> /dev/null
 exit $?

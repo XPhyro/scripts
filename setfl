@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 
 flsfl="$HOME/documents/sys-admin/files"
-sort -o "$flsfl" "$flsfl"
+sort -o "$flsfl" -- "$flsfl"
 container="$flsfl-container"
-rm -rf "$container"
-mkdir -p "$container"
+rm -rf -- "$container"
+mkdir -p -- "$container"
 
 while IFS=" " read -r i j
 do

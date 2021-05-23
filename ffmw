@@ -249,7 +249,7 @@ $1"
 
             [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
 
-            printf "%s" "$infls" | grep -Fxq "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+            printf "%s" "$infls" | grep -Fxq -- "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
             ;;
         help)
             for i
@@ -396,7 +396,7 @@ $1"
 
 concat() {
     lstfl="$(mktemp -p .)"
-    trap 'rm -- "$lstfl"' HUP INT QUIT TERM
+    trap 'rm -f -- "$lstfl"' HUP INT QUIT TERM
 
     printf "%s\n" "$infls" | while IFS= read -r i
     do
@@ -431,7 +431,7 @@ concat() {
 
     [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
 
-    [ -f "$lstfl" ] && rm -- "$lstfl"
+    [ -f "$lstfl" ] && rm -f -- "$lstfl"
 }
 
 help() {

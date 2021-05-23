@@ -9,5 +9,5 @@ in
     *) printf "%s\n" "No drive code given, exiting."; exit 0;;
 esac
 
-[ -d /mnt/"$name" ] || sudo mkdir /mnt/"$name"
+[ -d /mnt/"$name" ] || sudo mkdir -- /mnt/"$name"
 sudo rclone mount --daemon --allow-other --vfs-cache-mode full --cache-dir ~/data/rclone --vfs-cache-max-age 0h5m0s "$1": /mnt/"$name"

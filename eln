@@ -2,7 +2,7 @@
 # Edit given links.
 
 clean() {
-    rm -f "$tmpfl" "$origtmpfl" 2> /dev/null
+    rm -f -- "$tmpfl" "$origtmpfl" 2> /dev/null
 }
 
 trap clean INT EXIT TERM
@@ -15,7 +15,7 @@ then
     do
         if [ -L "$i" ]
         then
-            dest="$(readlink "$i")"
+            dest="$(readlink -- "$i")"
         elif [ -d "$i" ]
         then
             dest="DIRECTORY"
@@ -33,7 +33,7 @@ else
     do
         if [ -L "$i" ]
         then
-            dest="$(readlink "$i")"
+            dest="$(readlink -- "$i")"
         elif [ -d "$i" ]
         then
             dest="DIRECTORY"
@@ -49,11 +49,11 @@ else
 fi
 
 origtmpfl="$(mktemp)"
-cp -f "$tmpfl" "$origtmpfl"
+cp -f -- "$tmpfl" "$origtmpfl"
 
-eval "'$EDITOR' '$tmpfl'"
+eval "'$EDITOR' -- '$tmpfl'"
 
-cmp -s "$origtmpfl" "$tmpfl" && exit 0
+cmp -s -- "$origtmpfl" "$tmpfl" && exit 0
 
 while IFS=' -> ' read -r fl symlink <&3 && IFS=' -> ' read -r ogfl ogsymlink <&4
 do
@@ -74,7 +74,7 @@ do
         }
 
         printf "Overwriting directory [%s] with a symlink to [%s].\n" "$fl" "$symlink"
-        rm -rf "$fl"
+        rm -rf -- "$fl"
     elif [ -e "$fl" ]
     then
         [ -e "$symlink" ] || {
@@ -83,8 +83,8 @@ do
         }
 
         printf "Overwriting file [%s] with a symlink to [%s].\n" "$fl" "$symlink"
-        rm -f "$fl"
+        rm -f -- "$fl"
     fi
 
-    ln -sf "$symlink" "$fl"
+    ln -sf -- "$symlink" "$fl"
 done 3< "$tmpfl" 4< "$origtmpfl"

@@ -99,12 +99,12 @@ parseargs() {
 capturestdin() {
     [ -t 0 ] && exit 0
     stdinfl="$(mktemp)"
-    cp -f /dev/stdin "$stdinfl"
+    cp -f -- /dev/stdin "$stdinfl"
 }
 
 validstdin() {
     [ "$optnoempty" = "1" ] && [ ! -s "$stdinfl" ] && exit 0
-    [ "$optnowhite" = "1" ] && [ "$(sed '/^\s*$/d' "$stdinfl" | wc -c)" = "0" ] && exit 0
+    [ "$optnowhite" = "1" ] && [ "$(sed '/^\s*$/d' -- "$stdinfl" | wc -c)" = "0" ] && exit 0
 }
 
 main() {

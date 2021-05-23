@@ -66,16 +66,16 @@ main() {
         dwmpad -- $EDITOR "$rfl" > /dev/null
 
         [ "$(wc -l "$rfl")" -ne 1 ] && {
-            rm -f "$rfl" > /dev/null 2>&1
+            rm -f -- "$rfl" > /dev/null 2>&1
             main
             return $?
         }
 
-        cfl="$(cat "$rfl")"
+        cfl="$(cat -- "$rfl")"
         [ -e "$cfl" ] && {
             printf "File [%s] exists, overwrite?\n" "$cfl"
             equals "$(readchar)" Y y || {
-                rm -f "$rfl" > /dev/null 2>&1
+                rm -f -- "$rfl" > /dev/null 2>&1
                 main
                 return $?
             }
@@ -87,5 +87,5 @@ peekargs "$@"
 parseargs "$@" > /dev/null 2>&1
 processargs > /dev/null 2>&1
 main > /dev/null 2>&1
-cat "$rfl" 2> /dev/null
-rm -f "$rfl" > /dev/null 2>&1
+cat -- "$rfl" 2> /dev/null
+rm -f -- "$rfl" > /dev/null 2>&1

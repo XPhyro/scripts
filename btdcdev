@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 # Disconnect from a bluetooth device. Prompts a selection if more than one device is connected.
 
-devs="$( bluetoothctl paired-devices | while read -r _ i devname
+devs="$(bluetoothctl paired-devices | while read -r _ i devname
 do
     [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" = "true" ] && printf "%s %s\n" "$i" "$devname"
-done | sort )"
+done | sort)"
 
 [ -z "$devs" ] && {
     printf "No connected device, exiting.\n"

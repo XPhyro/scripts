@@ -39,7 +39,7 @@ printusage() {
 capturestdin() {
     [ -t 0 ] || {
         stdinfl="$(mktemp)"
-        cp -f /dev/stdin "$stdinfl"
+        cp -f -- /dev/stdin "$stdinfl"
     }
 }
 
@@ -185,7 +185,7 @@ runcmd() {
 stopcmd() {
     # shellcheck disable=SC2086
     { ps --ppid "$pid" | tail -n +2 | awk '{print $1}'; printf "%s\n" "$pid"; } | sort -n | uniq | xargs -rn 1 kill $killargs "$pid" 2> /dev/null
-    kill -0 "$pid" 2> /dev/null || rm -f "$keyfl" 2> /dev/null
+    kill -0 "$pid" 2> /dev/null || rm -f -- "$keyfl" 2> /dev/null
 }
 
 main() {
@@ -194,7 +194,7 @@ main() {
     keyfl="$flsdir/$keycode"
 
     [ "$status" = "1" ] && {
-        [ -f "$keyfl" ] && pid="$(cat "$keyfl")" && kill -s 0 "$pid" 2> /dev/null && exit 0
+        [ -f "$keyfl" ] && pid="$(cat -- "$keyfl")" && kill -s 0 "$pid" 2> /dev/null && exit 0
         exit 1
     }
 
@@ -202,7 +202,7 @@ main() {
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "$flsdir"/*
         do
-            pid="$(cat "$i")"
+            pid="$(cat -- "$i")"
             kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
         done
         exit 0
@@ -210,7 +210,7 @@ main() {
 
     if [ -f "$keyfl" ]
     then
-        pid="$(cat "$keyfl")"
+        pid="$(cat -- "$keyfl")"
         if kill -s 0 "$pid" 2> /dev/null
         then
             if [ -z "$state" ] || [ "$state" = "off" ]
@@ -225,7 +225,7 @@ main() {
         else
             if [ -z "$state" ] || [ "$state" = "off" ]
             then
-                rm -f "$keyfl"
+                rm -f -- "$keyfl"
                 [ "$actual" = "1" ] && {
                     runcmd
                     wait
@@ -244,15 +244,15 @@ main() {
         elif [ "$forcestate" = "1" ]
         then
             runcmd
-            pid="$(cat "$keyfl")"
+            pid="$(cat -- "$keyfl")"
             stopcmd
         fi
     fi
 }
 
 clean() {
-    [ -f "$stdinfl" ] && rm -f "$stdinfl"
-    [ -f "$keyfl" ] && rm -f "$keyfl"
+    [ -f "$stdinfl" ] && rm -f -- "$stdinfl"
+    [ -f "$keyfl" ] && rm -f -- "$keyfl"
 }
 
 capturestdin

@@ -236,7 +236,7 @@ main() {
                 sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
             elif [ -n "$git" ]
             then
-                if contains "$(realpath "$PWD/.." )" "$( git rev-parse --show-toplevel)"
+                if contains "$(realpath -- "$PWD/.." )" "$( git rev-parse --show-toplevel)"
                 then
                     sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
                 else
@@ -259,7 +259,7 @@ main() {
         then
             printf "%s%s\n" "$printinitpwd" "$PWD/$sel"
         else
-            printf "%s%s\n" "$printinitpwd" "$(realpath --relative-to="$initpwd" "$PWD/$sel")"
+            printf "%s%s\n" "$printinitpwd" "$(realpath --relative-to="$initpwd" -- "$PWD/$sel")"
         fi
     else
         while true
@@ -291,7 +291,7 @@ main() {
                 then
                     printf "%s%s\n" "$printinitpwd" "$PWD"
                 else
-                    realpath --relative-to="$initpwd" "$PWD"
+                    realpath --relative-to="$initpwd" -- "$PWD"
                 fi
 
                 return

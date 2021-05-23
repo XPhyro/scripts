@@ -107,9 +107,9 @@ setdefargs() {
 processargs() {
     [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
     srcfl="$(printf "%s\n" "$fls" | head -n 1)"
-    hardlinked "$srcfl" "$(basename "$srcfl")" || logerrq "Source file must be in the current directory."
-    srchashfl="$cachedir$(realpath "$srcfl.tex")"
-    mkdir -p "$(dirname "$srchashfl")" || {
+    hardlinked "$srcfl" "$(basename -- "$srcfl")" || logerrq "Source file must be in the current directory."
+    srchashfl="$cachedir$(realpath -- "$srcfl.tex")"
+    mkdir -p -- "$(dirname -- "$srchashfl")" || {
         i="$srchashfl"
         while true
         do
@@ -118,7 +118,7 @@ processargs() {
                 break
             }
             
-            i="$(dirname "$i")"
+            i="$(dirname -- "$i")"
             [ "$i" = "$cachedir" ] && logerrq "Could not resolve cache, exiting."
         done
     }
@@ -126,11 +126,11 @@ processargs() {
 
 clean() {
     cleanaux
-    rm "$srcfl.pdf" > /dev/null 2>&1
+    rm -- "$srcfl.pdf" > /dev/null 2>&1
 }
 
 printcleanaux() {
-    printf "%s\n" "rm '$srcfl.aux' '$srcfl.bbl' '$srcfl.blg' '$srcfl.lof' '$srcfl.log' '$srcfl.lot' '$srcfl.out' '$srcfl.toc' '$srcfl.bcf' '$srcfl.run.xml' '$srcfl.py' '$srcfl.py.err' '$srcfl.py.out' 'latex.py' 'texput.log' > /dev/null 2>&1"
+    printf "%s\n" "rm -- '$srcfl.aux' '$srcfl.bbl' '$srcfl.blg' '$srcfl.lof' '$srcfl.log' '$srcfl.lot' '$srcfl.out' '$srcfl.toc' '$srcfl.bcf' '$srcfl.run.xml' '$srcfl.py' '$srcfl.py.err' '$srcfl.py.out' 'latex.py' 'texput.log' '$srcfl.nav' '$srcfl.snm' > /dev/null 2>&1"
 }
 
 cleanaux() {
@@ -139,20 +139,20 @@ cleanaux() {
 
 printcompile() {
     printf "%s\n" "
-    srchash=\"\$(sha512sum '$srcfl.tex' | awk '{print \$1}')\"
-    [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat '$srchashfl' 2> /dev/null)\" ] && return 0
+    srchash=\"\$(sha512sum -- '$srcfl.tex' | awk '{print \$1}')\"
+    [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat -- '$srchashfl' 2> /dev/null)\" ] && return 0
     
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    yes '' | xelatex $optshellesc -halt-on-error '$srcfl' || {
+    yes '' | xelatex $optshellesc -halt-on-error -- '$srcfl' || {
         cleanaux
-        yes '' | xelatex $optshellesc -halt-on-error '$srcfl' || return 1
+        yes '' | xelatex $optshellesc -halt-on-error -- '$srcfl' || return 1
     }
-    bibtex '$srcfl'
-    biber '$srcfl'
+    bibtex -- '$srcfl'
+    biber -- '$srcfl'
     makeindex '$srcfl'.idx 2> /dev/null
     # makeindex -s style.gls ...
-    yes '' | xelatex $optshellesc -halt-on-error '$srcfl'
-    yes '' | xelatex $optshellesc -halt-on-error '$srcfl'
+    yes '' | xelatex $optshellesc -halt-on-error -- '$srcfl'
+    yes '' | xelatex $optshellesc -halt-on-error -- '$srcfl'
     
     printf '%s\n' \"\$srchash\" > '$srchashfl'
     "
@@ -175,7 +175,7 @@ dispatchcompiler() {
 
     while true
     do
-        inotifywait -qq -e move_self '$srcfl.tex'
+        inotifywait -qq -e move_self -- '$srcfl.tex'
         waitfl '$srcfl.tex'
         compile
     done

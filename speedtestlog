@@ -13,10 +13,9 @@ result="$( speedtest || {
     exit 1
 } )"
 
-log="$(date +%s );$(printf "%s" "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' );$(echo "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//');$( echo "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}');$( echo "$result" | grep "Download:" | awk '{print $2" "$3}');$( echo "$result" | grep "Upload:" | awk '{print $2" "$3}')"
+log="$(date +%s );$(printf "%s\n" "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' );$(printf "%s\n" "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//');$( printf "%s\n" "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}');$( printf "%s\n" "$result" | grep "Download:" | awk '{print $2" "$3}');$( printf "%s\n" "$result" | grep "Upload:" | awk '{print $2" "$3}')"
 
-echo
-printf "%s" "$log" | sed 's/;/\n/g'
+printf "\n%s\n" "$log" | sed 's/;/\n/g'
 printf "\n\nLogging results...\n"
 
 fl="$(getfl stl)" || {

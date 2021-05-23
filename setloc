@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 
 locfl="$HOME/documents/sys-admin/locations"
-sort -o "$locfl" "$locfl"
+sort -o "$locfl" -- "$locfl"
 container="$locfl-container"
-rm -rf "$container"
-mkdir -p "$container"
+rm -rf -- "$container"
+mkdir -p -- "$container"
 
 while IFS=" " read -r i j
 do

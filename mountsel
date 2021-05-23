@@ -13,13 +13,13 @@ getmount() {
         printf "%s\n" "Special device detected: $label"
         mp="/mnt/mybook"
     else
-        mp="/mnt/$(basename "$chosen")"
+        mp="/mnt/$(basename -- "$chosen")"
     fi
 
 	[ "$mp" = "" ] && exit 1
 
 	[ -d "$mp" ] || {
-        mkdir -p "$mp" || sudo -A mkdir -p "$mp"
+        mkdir -p -- "$mp" || sudo -A mkdir -p -- "$mp"
     }
 }
 
@@ -40,7 +40,7 @@ mountusb() {
 	case "$partitiontype"
     in
 		"vfat" ) sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
-		*      ) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";;
+		*      ) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" -- "$mp";;
 	esac
 
 	notify-send "💻 Drive mounted" "$chosen mounted to $mp."

@@ -86,12 +86,12 @@ $fls"
 processargs() {
     [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
     execfl="$(printf "%s\n" "$fls" | head -n 1)"
-    execpath="$(realpath "$execfl")"
+    execpath="$(realpath -- "$execfl")"
 }
 
 execute() {
-    inotifywait -e move_self "$execfl" > /dev/null 2>&1
-    pid="$(cat "$pidfl")"
+    inotifywait -e move_self -- "$execfl" > /dev/null 2>&1
+    pid="$(cat -- "$pidfl")"
     kill -s 0 "$pid" 2> /dev/null && {
         env kill -s INT --timeout 1000 TERM --timeout 1000 KILL "$pid" 2> /dev/null || logerrq "Could not kill PID $pid, exiting."
     }
@@ -106,7 +106,7 @@ execute() {
 
 main() {
     [ "$optonce" = "1" ] && {
-        inotifywait -e move_self "$execfl" > /dev/null 2>&1
+        inotifywait -e move_self -- "$execfl" > /dev/null 2>&1
         eval "$execpath"
         exit 0
     }

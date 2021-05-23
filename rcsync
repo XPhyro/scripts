@@ -9,5 +9,5 @@ in
 
 esac
 
-sudo mkdir "$name"sync
+sudo mkdir -- "$name"sync
 sudo rclone sync -L ~/"$name"sync "$1":linux/arch

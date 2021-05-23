@@ -2,7 +2,7 @@
 # xdg-open wrapper.
 
 open() {
-    if [ "$(grep -E "^Terminal=.*" "$2" | head -n 1 | sed 's/^Terminal=//')" = "true" ]
+    if [ "$(grep -E "^Terminal=.*" -- "$2" | head -n 1 | sed 's/^Terminal=//')" = "true" ]
     then
         xdg-open "$1" 
     else
@@ -25,13 +25,13 @@ mim="$(getfl mim)" || {
 
 for i
 do
-    [ "$(mimetype --brief "$i" | cut -d/ -f-1)" = "text" ] && {
-        eval "'$EDITOR' '$i'"
+    [ "$(mimetype --brief -- "$i" | cut -d/ -f-1)" = "text" ] && {
+        eval "'$EDITOR' -- '$i'"
         continue
     }
 
     # find desktop file
-    dtf="$(grep "$(mimetype "$i" | awk '{print $2}')" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//')"
+    dtf="$(grep "$(mimetype -- "$i" | awk '{print $2}')" "$mim" | head -n 1 | sed -e 's/^.*=//' -e 's/;$//')"
 
     [ -n "$dtf" ] || {
         xdg-open "$i"

@@ -18,13 +18,13 @@ do
         continue
     }
 
-    idest="$(readlink "$i")"
+    idest="$(readlink -- "$i")"
     dest="$idest"
     while [ -L "$dest" ]
     do
-        dest="$(readlink "$dest")"
+        dest="$(readlink -- "$dest")"
     done
 
-    ln -sf "$dest" "$i"
+    ln -sf -- "$dest" "$i"
     log "Resolved $i from $idest to $dest."
 done

@@ -97,7 +97,7 @@ main() {
     lck="$( 
         printf "%s\n" "${optnumber:-"$(seq 1 9)"}" | while IFS= read -r i
         do
-            mkdir "$lckdir/$i" 2> /dev/null && {
+            mkdir -- "$lckdir/$i" 2> /dev/null && {
                 printf "%s" "$i"
                 break
             }
@@ -110,9 +110,9 @@ main() {
         lck="$(
             while true 
             do
-                i="$(inotifywait "$lckdir" -q -e "delete" --format "%f")"
+                i="$(inotifywait -q -e "delete" --format "%f" -- "$lckdir")"
                 [ -n "$optnumber" ] && [ "$i" != "$optnumber" ] && continue
-                mkdir "$lckdir/$i" 2> /dev/null && {
+                mkdir -- "$lckdir/$i" 2> /dev/null && {
                     printf "%s" "$i"
                     break
                 }
@@ -127,7 +127,7 @@ main() {
 }
 
 clean() {
-    rm -rf "${lckdir:?}/${lck:?}"
+    rm -rf -- "${lckdir:?}/${lck:?}"
 }
 
 preprocessargs "$@"

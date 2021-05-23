@@ -4,8 +4,8 @@
 set -e
 item="$HOME/documents/sys-admin/files-container/${1:?}"
 [ -s "$item" ]
-fl="$(cat "$item")"
+fl="$(cat -- "$item")"
 fldir="$(dirname "$fl")"
 [ -d "$fldir" ] || mkdir -p "$fldir"
-# [ -f "$fl" ] || touch "$fl"
+# [ -f "$fl" ] || touch -- "$fl"
 printf "%s\n" "$fl"

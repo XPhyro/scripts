@@ -12,7 +12,7 @@ lckfl="$(getfl notifloglck)" || {
 beg="##beg##"
 end="##end##"
 
-rm -f "$lckfl" 2> /dev/null
+rm -f -- "$lckfl" 2> /dev/null
 
 event=""
 willreg=0

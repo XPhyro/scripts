@@ -1,10 +1,9 @@
 #!/usr/bin/env sh
 # Swap two files.
 
-alias mv="mv -n"
 fl="$1"
 other="$2"
 tmp="$(getnewpath "$fl")"
-mv "$fl" "$tmp"
-mv "$other" "$fl"
-mv "$tmp" "$other"
+mv -n -- "$fl" "$tmp"
+mv -n -- "$other" "$fl"
+mv -n -- "$tmp" "$other"

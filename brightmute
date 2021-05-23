@@ -5,7 +5,7 @@ fl="$(getfl brtcch)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
-val="$(cat "$fl")"
+val="$(cat -- "$fl")"
 
 if [ "$val" = "0" ]
 then

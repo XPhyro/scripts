@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-IFS= read -r str
+IFS= read -r str || exit 1
 printf "%s" "$str"

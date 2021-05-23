@@ -32,9 +32,9 @@ fi
 
 path="$dir/$file"
 
-vim "$path" -c "$vimcmd"
+vim -c "$vimcmd" -- "$path"
 
 [ "$isnew" = "1" ] && {
     [ -f "$path" ] && title="$(printf "%s\n" "" | dmenu -p "Title for \"$path\":")"
-    [ -n "$title" ] && mv "$path" "${path}_$title"
+    [ -n "$title" ] && mv -- "$path" "${path}_$title"
 }
