@@ -22,4 +22,4 @@ unset XDG_CURRENT_DESKTOP
     esac
 }
 
-xdgopen "$@"
+execaux "$0" "$@"

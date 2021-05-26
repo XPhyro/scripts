@@ -3,7 +3,7 @@
 # If using dwm or the like, you should export XDG_CURRENT_DESKTOP=kde in your shell profile and prepend XDG_CURRENT_DESKTOP="" in xdg-open.
 
 kdialog() {
-    exec "$(whereis kdialog | awk '{$1=""; print $0}' | sed "s/$(realpath "$0" | sed 's,/,\\/,g')//" | awk '{print $1}')" "$@"
+    execaux "$0" "$@"
 }
 
 peekargs() {
