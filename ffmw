@@ -47,6 +47,10 @@ printhelp() {
         Prompt before overwriting the output file if it exists.
     -n, --no-clobber
         Do nothing if the output file exists.
+    -p, --part-name
+        Set OUTPATTERN to '%s Part %d.mkv'. When this option is given, no OUTPATTERN is accepted.
+    --no-part-name
+        Revert --part-name.
     -r, --remove
         Remove INFILEs if concatenation succeeded."
             ;;
@@ -282,6 +286,7 @@ $1"
                                 h) printhelp "split"; exit 0;;
                                 i) overwrite="";;
                                 n) overwrite="-n";;
+                                p) partname="1";;
                                 r) remove="1";;
                                 *) printusage "-$opt" "split";;
                             esac
@@ -297,6 +302,8 @@ $1"
                             help          ) printhelp "split"; exit 0;;
                             interactive   ) overwrite="";;
                             no-clobber    ) overwrite="-n";;
+                            part-name     ) partname="1";;
+                            no-part-name  ) partname="0";;
                             remove        ) remove="1";;
                             ""            ) shift; break;;
                             *             ) printusage "--$opt" "split";;
@@ -317,12 +324,18 @@ $1"
             done
 
             argv="$(printf "%s" "$argv" | tail -n +2)"
+            infl="$(printf "%s\n" "$argv" | head -n 1)"
 
-            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
+            if [ "$partname" = "1" ]
+            then
+                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
+                outpat="$infl Part %d.mkv"
+            else
+                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
+                outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
+            fi
 
-            infl="$(printf "%s\n" "$argv" | sed '1q;d')"
-            outpat="$(printf "%s\n" "$argv" | sed '2q;d')"
-            period="$(printf "%s\n" "$argv" | sed '3q;d')"
+            period="$(printf "%s\n" "$argv" | tail -n 1)"
             ;;
         trim)
             while [ -n "$1" ]
