@@ -34,6 +34,7 @@
 - Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
 - Write a library-ish thing to make it easy for scripts, especially those in terminal file managers, to implement short-term smart thrash functionality that is considerate of the disk usage of the thrash.
 - Write a `dvtm` session manager using `dwmpad`, `abduco` and/or `screen`.
+- Timer, chronometer, alarm.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
