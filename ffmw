@@ -36,7 +36,7 @@ printhelp() {
         decat)
             printf "%s\n" \
 "  decat [INFILE] [OUTPATTERN] [MARK]...
-   Decatenate INFILE at MARKs, naming the output files according to OUTPATTERN. OUTPATTERN only accepts %s and %d. MARKs should not contain the beginning or the ending of the INFILE. MARKs must be valid ffmpeg timestamps. Marks in floating point form are not accepted. Marks in timetamp form must have the minute and second field. Hour and millisecond fields are optional.
+   Decatenate INFILE at MARKs, naming the output files according to OUTPATTERN. OUTPATTERN only accepts %s and %d. MARKs should not contain the beginning or the ending of the INFILE and must be valid ffmpeg timestamps.
 
     -f, --force
         Overwrite the output file if it exists.
@@ -61,7 +61,7 @@ printhelp() {
         split)
             printf "%s\n" \
 "  split [INFILE] [OUTPATTERN] [PERIOD]
-   Split INFILE into PERIOD long chunks, naming the output files according to OUTPATTERN.
+   Split INFILE into PERIOD long chunks, naming the output files according to OUTPATTERN. Period must be a valid ffmpeg timestamp.
 
     -f, --force
         Overwrite the output file if it exists.
@@ -354,6 +354,8 @@ $1"
                 outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
                 marks="$(printf "%s\n" "$argv" | tail -n +3)"
             fi
+
+            outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"$(rawname "$infl")"'/g')"
             ;;
         help)
             for i
@@ -507,16 +509,6 @@ $1"
     esac
 }
 
-processargs() {
-    case "$cmd"
-    in
-        decat)
-            [ -n "$(printf "%s\n" "$marks" | sed -E '/^([0-9]+:)?[0-9]{2}:[0-9]{2}(.[0-9]{3})?$/d')" ] && printferrq "Some MARKs are invalid. See $execname --help.\n"
-            outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"$(rawname "$infl")"'/g')"
-            ;;
-    esac
-}
-
 concat() {
     lstfl="$(mktemp -p .)"
     trap 'rm -f -- "$lstfl"' HUP INT QUIT TERM
@@ -603,7 +595,6 @@ main() {
 }
 
 parseargs "$@"
-processargs
 
 qldiff=$((${#quiet} - ${#loud}))
 
