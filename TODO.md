@@ -35,6 +35,7 @@
 - Write a library-ish thing to make it easy for scripts, especially those in terminal file managers, to implement short-term smart thrash functionality that is considerate of the disk usage of the thrash.
 - Write a `dvtm` session manager using `dwmpad`, `abduco` and/or `screen`.
 - Timer, chronometer, alarm.
+- Colour printer to be used in other scripts.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
