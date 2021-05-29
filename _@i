@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+mrkfl="$(getfl mrk)" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
+
+fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs ls --color=always" < "$mrkfl" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath
