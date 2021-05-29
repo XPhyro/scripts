@@ -112,7 +112,9 @@ Global options:
     --no-print-performance
         Revert -p.
     -q, --quiet
-        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed."
+        Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed.
+    -t COUNT, --threads COUNT
+        Pass -threads COUNT to ffmpeg."
 
             printf "\nValid subcommands: %s\n\n" "$subcommands"
             lastsubcmd="$(printf "%s" "$subcommands" | sed 's/.*\s//')"
@@ -180,6 +182,7 @@ parseargs() {
                         l) loud="${loud}1";;
                         p) pperf="perf stat";;
                         q) quiet="${quiet}1";;
+                        t) shift; assertarg "-t" "COUNT" "$1"; threads="$1";;
                         *) printusage "-$opt";;
                     esac
 
@@ -195,6 +198,7 @@ parseargs() {
                     print-performance    ) pperf="perf stat";;
                     no-print-performance ) pperf="";;
                     quiet                ) quiet="${quiet}1";;
+                    threads              ) shift; assertarg "--threads" "COUNT" "$1"; threads="$1";;
                     *                    ) printusage "--$opt";;
                 esac
             fi
@@ -537,7 +541,7 @@ concat() {
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
-    $pperf ffmpeg -hide_banner $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
+    $pperf ffmpeg -hide_banner $threads $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
         printferr "ffmpeg failed, exiting.\n"
         [ -f "$lstfl" ] && rm -- "$lstfl"
         exit 1
@@ -554,12 +558,12 @@ concat() {
 }
 
 decat() {
-    $pperf ffmpeg -hide_banner $overwrite -i "$infl" -to "$(printf "%s\n" "$marks" | head -n 1)" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\11/g')" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -to "$(printf "%s\n" "$marks" | head -n 1)" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\11/g')" || printferrq "ffmpeg failed, exiting.\n"
 
     n=2
     [ "$(printf "%s\n" "$marks" | wc -l)" -ne 1 ] && while IFS= read -r ss <&3 && IFS= read -r to <&4
     do
-        $pperf ffmpeg -hide_banner $overwrite -i "$infl" -ss "$ss" -to "$to" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g')" || printferrq "ffmpeg failed, exiting.\n"
+        $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -ss "$ss" -to "$to" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g')" || printferrq "ffmpeg failed, exiting.\n"
         : $((n += 1))
     done 3<<EOF1 4<<EOF2
 $(printf "%s\n" "$marks" | head -n -1)
@@ -567,7 +571,7 @@ EOF1
 $(printf "%s\n" "$marks" | tail -n +2)
 EOF2
 
-    $pperf ffmpeg -hide_banner $overwrite -i "$infl" -ss "$(printf "%s\n" "$marks" | tail -n 1)" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g')" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -ss "$(printf "%s\n" "$marks" | tail -n 1)" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g')" || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
 }
@@ -578,7 +582,7 @@ help() {
 
 split() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
-    $pperf ffmpeg -hide_banner $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" || printferrq "ffmpeg failed, exiting.\n"
     [ "$remove" = "1" ] && rm -- "$infl"
 }
 
@@ -587,7 +591,7 @@ trim() {
 
     [ "$moveorig" = "1" ] && movefile="$infl"
 
-    $pperf ffmpeg -hide_banner $overwrite -i "$infl" -vf "$(ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" | awk '{print $NF}' | LC_ALL=C sort | LC_ALL=C uniq -c | LC_ALL=C sort -nr | head -n 1 | sed 's/^\s*[0-9]\+\s\+\(.*\)$/\1/')" -safe 0 -c:a copy "$outfl"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -vf "$(ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" | awk '{print $NF}' | LC_ALL=C sort | LC_ALL=C uniq -c | LC_ALL=C sort -nr | head -n 1 | sed 's/^\s*[0-9]\+\s\+\(.*\)$/\1/')" -safe 0 -c:a copy "$outfl"
 
     [ "$remove" = "1" ] && rm -- "$infl"
 
