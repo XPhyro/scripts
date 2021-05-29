@@ -329,7 +329,7 @@ $1"
                                 f ) overwrite="-y";;
                                 h ) printhelp "crop"; exit 0;;
                                 i ) overwrite="";;
-                                M ) movefirst="1";;
+                                M ) moveorig="1";;
                                 m ) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
                                 n ) overwrite="-n";;
                                 r ) remove="1";;
