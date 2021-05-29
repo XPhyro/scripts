@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+[ -n "$2" ] && { 
+    printf "Only one argument is accepted.\n"
+    return 1
+}
+
+[ -z "$1" ] && {
+    printf "%s\n" "$HOME"
+    exit 0
+}
+
+dir="$(getlocall "$1")"
+
+if [ -d "$dir" ]
+then
+    printf "%s\n" "$dir"
+else
+    printf "No such directory.\n" >&2
+    exit 1
+fi
