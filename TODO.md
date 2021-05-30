@@ -21,6 +21,7 @@
 - Support non-terminal applications in `dwmpad` after scratchpad assignment is implemented in `dwm`.
 - In `steammgr`, keep a database of application IDs scraped from [steamdb](https://steamdb.info/apps) and present the user with relevant options. This could be done in two ways: either show the relevant options by being command-aware, or first show a meta prompt for all, installed and in-library games, and then show the IDs (or show the meta options in the installed prompt, and show another prompt with the selected if all or in-library is selected).
 - In `genrc`, also set mappings for marks, similar to locations.
+- Allow marking files. @ should edit instead of navigate if the mark is of a file.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
@@ -53,6 +54,8 @@
 - Make `dupe`, `getnewpath` and alike use GNU `--backup` syntax instead of continuous trailing underscores.
 - Convert `open-steam` into a full Steam manager using the `steam://` protocol.
 - Make `-fin` options in `ffmw` global as they are used by every non-help subcommand.
+- Make `xins` use IFS= or IFS=\n.
+- Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getloc $$#)\""` could be used to do so.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
