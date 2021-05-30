@@ -38,6 +38,7 @@
 - Write a `dvtm` session manager using `dwmpad`, `abduco` and/or `screen`.
 - Timer, chronometer, alarm.
 - Colour printer to be used in other scripts.
+- Implement a crop subcommand in `ffmw`.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
@@ -62,3 +63,5 @@
 - Move the *mark* family of scripts into a dedicated directory. So far, these are: `m`, `cm`, `¬`, `@`, `g`, `mg`.
 - Instead of using `while ... done < "$file"`, use `< "$file" while ... done`.
 - Get rid of the `printf "%s" "$sopt" | cut -c1` calls in `parseargs()`.
+- Add `texpac` to notable scripts in [README.md](README.md) after it is written.
+- Rename `ffmw` subcommands to more sensible ones. For instance, the current name of the crop subcommand is very counter-intuitive.
