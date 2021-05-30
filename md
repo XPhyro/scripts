@@ -1,11 +1,12 @@
 #!/usr/bin/env sh
 
+md() {
+    printf "%s\0" "$@" | IFS= xargs -0r -I {} sh -c 'pandoc {} | minify --mime=text/html' | xins -R -- lynx -dump -stdin | less
+}
+
 if [ "$#" -ne 0 ]
 then
-    mdv "$@"
+    md "$@"
 else
-    for i in *.md
-    do
-        mdv "$i"
-    done
+    md *.md
 fi
