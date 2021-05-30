@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# Print the content of file with the given code.
 
-cat -- "$(getfl "$1")" 2> /dev/null
+printf "%s\n" "$@" | xargs -rn 1 getfl | xargs -r cat 2> /dev/null
 exit $?
