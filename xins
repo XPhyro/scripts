@@ -105,6 +105,7 @@ capturestdin() {
 validstdin() {
     [ "$optnoempty" = "1" ] && [ ! -s "$stdinfl" ] && exit 0
     [ "$optnowhite" = "1" ] && [ "$(sed '/^\s*$/d' -- "$stdinfl" | wc -c)" = "0" ] && exit 0
+    sed -i '$a\' "$stdinfl"
 }
 
 main() {
