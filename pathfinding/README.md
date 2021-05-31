@@ -12,7 +12,7 @@ The suite delivers the following features:
 The suite will deliver the following features:
 - Marking files.
 
-Explanation of each command:
+Explanation of each command (to be written):
 - *[_@](_@)*:
 - *[_@i](_@i)*:
 - *[_fd](_fd)*:
