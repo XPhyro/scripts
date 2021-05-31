@@ -15,17 +15,19 @@ The suite will deliver the following features:
 Explanation of each command:
 - *[_@](_@)*:
 - *[_@i](_@i)*:
+- *[_fd](_fd)*:
+- *[_ff](_ff)*:
 - *[_g](_g)*:
 - *[_gi](_gi)*:
 - *[_¬](_¬)*:
 - *[batfl](batfl)*:
 - *[catfl](catfl)*:
+- *[cm](cm)*:
 - *[getfl](getfl)*:
 - *[getflloc](getflloc)*:
 - *[getloc](getloc)*:
 - *[getlocall](getlocall)*:
 - *[getlocunsafe](getlocunsafe)*:
-- *[cm](cm)*:
 - *[m](m)*:
 - *[mvloc](mvloc)*:
 - *[setfl](setfl)*:
