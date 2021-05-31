@@ -24,3 +24,6 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 ## Related
 - You can find my gpup management scripts [here](https://github.com/XPhyro/gpupmanager).
 - You can find the scripts that I use to install an Arch Linux system (to my liking) [here](https://github.com/XPhyro/archinstall).
+
+# License
+Unless otherwise stated, all software found in this repository is licensed under the MIT License.
