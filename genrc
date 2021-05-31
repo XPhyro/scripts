@@ -16,10 +16,9 @@ sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "
 printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
 printf "##\n#\n\n## Go Instructions ##\n" >> "$ltmp"
 
-while IFS= read -r i
+while read -r cmd loc
 do
-    cmd="$(printf "%s" "$i" | awk '{print $1}')"
-    loc="$(printf "%s" "$i" | awk '{print $2}')"
+    loc="$(expandpath "$loc")"
 
     printf "map g%s cd %s\n" "$cmd" "$loc" >> "$rtmp"
     printf "map g%s :cd %s\n" "$cmd" "$loc" >> "$ltmp"
@@ -28,10 +27,9 @@ done < "$locations"
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$ltmp"
 
-while IFS= read -r i
+while read -r cmd fl
 do
-    cmd="$(printf "%s" "$i" | awk '{print $1}')"
-    loc="$(printf "%s" "$i" | awk '{print $2}')"
+    fl="$(expandpath "$loc")"
 
     printf "map e%s shell vim %s\n" "$cmd" "$loc" >> "$rtmp"
     printf "map E%s :shell vim %s\n" "$cmd" "$loc" >> "$ltmp"
