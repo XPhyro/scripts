@@ -3,36 +3,26 @@
 failed=""
 for i
 do
-    [ "$(mimetype -b -- "$i")" != "application/pdf" ] && {
-        failed="$failed$i
-"
-        continue
-    }
+    [ "$(mimetype -b -- "$i")" != "application/pdf" ] && continue
 
-    tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")"
+    tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")" || continue
 
-    cp -f -- "$i" "$tmp" || {
-        failed="$failed$i
-"
-        continue
-    }
+    cp -f -- "$i" "$tmp" || continue
 
     rm -f -- "$i"
+
+    pdf-crop-margins -o "$i" -- "$tmp" || continue
     # pdf-crop-margins cannot cut perfectly on the first try
+    tmp1="$(mktemp --suffix .pdf)" || continue
+    tmp2="$(mktemp --suffix .pdf)" || continue
+    cp -f -- "$i" "$tmp1" || continue
     seq 2 | while IFS= read -r _
     do
-        pdf-crop-margins -o "$i" -- "$tmp" || {
-            failed="$failed$i
-"
-            continue
-        }
-        pdf-crop-margins -o "$tmp" -- "$i" || {
-            failed="$failed$i
-"
-            continue
-        }
+        pdf-crop-margins -o "$tmp2" -- "$tmp1"
+        pdf-crop-margins -o "$tmp1" -- "$tmp2"
     done
-    cp -f -- "$tmp" "$i"
+
+    cp -f -- "$tmp1" "$i"
 
     # not removing the temp file is intentional
 done
