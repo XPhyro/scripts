@@ -1,28 +1,33 @@
 #!/usr/bin/env sh
 
-failed=""
-for i
-do
-    [ "$(mimetype -b -- "$i")" != "application/pdf" ] && continue
-
-    tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")" || continue
-
-    cp -f -- "$i" "$tmp" || continue
-
-    rm -f -- "$i"
-
-    pdf-crop-margins -o "$i" -- "$tmp" || continue
-    # pdf-crop-margins cannot cut perfectly on the first try
-    tmp1="$(mktemp --suffix .pdf)" || continue
-    tmp2="$(mktemp --suffix .pdf)" || continue
-    cp -f -- "$i" "$tmp1" || continue
-    seq 2 | while IFS= read -r _
+if [ "$#" -eq 0 ]
+then
+    yesno "No file given, trim all PDFs in the current directory? [y/N]\n" || exit 0
+    find -mindepth 1 -maxdepth 1 -iname "*.pdf" | xargs -r trimpdf
+else
+    for i
     do
-        pdf-crop-margins -o "$tmp2" -- "$tmp1"
-        pdf-crop-margins -o "$tmp1" -- "$tmp2"
+        [ "$(mimetype -b -- "$i")" != "application/pdf" ] && continue
+
+        tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")" || continue
+
+        cp -f -- "$i" "$tmp" || continue
+
+        rm -f -- "$i"
+
+        pdf-crop-margins -o "$i" -- "$tmp" || continue
+        # pdf-crop-margins cannot cut perfectly on the first try
+        tmp1="$(mktemp --suffix .pdf)" || continue
+        tmp2="$(mktemp --suffix .pdf)" || continue
+        cp -f -- "$i" "$tmp1" || continue
+        seq 2 | while IFS= read -r _
+        do
+            pdf-crop-margins -o "$tmp2" -- "$tmp1"
+            pdf-crop-margins -o "$tmp1" -- "$tmp2"
+        done
+
+        cp -f -- "$tmp1" "$i"
+
+        # not removing the temp file is intentional
     done
-
-    cp -f -- "$tmp1" "$i"
-
-    # not removing the temp file is intentional
-done
+fi
