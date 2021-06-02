@@ -23,12 +23,14 @@ printhelp() {
        Print help message and exit.
    -k KEYCODE, --keycode KEYCODE
        Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /.
+   -S, --sudo
+       Execute kill with sudo.
    -s, --status
        Only query the status of the command; exit with code 0 if state is on, else exit with code 1.
    -T STATE, --toggle STATE
        The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}.
    -t TIMEOUT SIGNAL, --timeout TIMEOUT SIGNAL
-       Wait TIMEOUT milliseconds and send SIGNAL to the process if not terminated yet. TIMEOUT must be a non-negative integer in milliseconds and SIGNAL must be valid as in kill -L. Note that RT signals are not supported. If multiple -t options are passed, they will be executed in order. If no -t option is passed, a single TIMEOUT=0 and SIGNAL=TERM (or SIGNAL=15) will be used."
+       Wait TIMEOUT milliseconds and send SIGNAL to the process if not terminated yet. TIMEOUT must be a non-negative integer in milliseconds and SIGNAL must be valid as in kill -L. Note that RT signals are not supported. If multiple -t options are passed, they will be executed in order. If no -t option is passed, a single TERM (i.e. 15) signal will be used without a timeout."
 }
 
 printusage() {
@@ -70,6 +72,7 @@ parseargs() {
                         f) parseargs --force-state;;
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
+                        S) parseargs --sudo;;
                         s) parseargs --status;;
                         T) shift; parseargs --toggle "$1";;
                         t) shift; parseargs --timeout "$1" "$2"; shift;;
@@ -90,6 +93,7 @@ parseargs() {
                     no-force-state ) forcestate="0";;
                     help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
+                    sudo           ) sudo="sudo";;
                     status         ) status="1";;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
                     timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts$1
@@ -148,8 +152,8 @@ validargs() {
         fi
     }
     validargcase "$state" "state" "on" "off"
-    [ -n "$timeouts" ] && printf "%s\n" "$timeouts" | grep -q '[^0-9]' && logerrq "TIMEOUT is invalid. See $execname -h for details."
-    [ -n "$signals" ] && printf "%s\n" "$signals" | grep -Evxq 'HUP|INT|QUIT|ILL|TRAP|ABRT|IOT|BUS|FPE|KILL|USR1|SEGV|USR2|PIPE|ALRM|TERM|STKFLT|CHLD|CLD|CONT|STOP|TSTP|TTIN|TTOU|URG|XCPU|XFSZ|VTALRM|PROF|WINCH|IO|POLL|PWR|SYS|(3[01]|[12][0-9]|[1-9])' && logerrq "SIGNAL is invalid. See kill -L for valid signals. Note that RT signals are not supported."
+    [ -n "$timeouts" ] && printf "%s" "$timeouts" | grep -q '[^0-9]' && logerrq "TIMEOUT is invalid. See $execname -h for details."
+    [ -n "$signals" ] && printf "%s" "$signals" | grep -Evxq 'HUP|INT|QUIT|ILL|TRAP|ABRT|IOT|BUS|FPE|KILL|USR1|SEGV|USR2|PIPE|ALRM|TERM|STKFLT|CHLD|CLD|CONT|STOP|TSTP|TTIN|TTOU|URG|XCPU|XFSZ|VTALRM|PROF|WINCH|IO|POLL|PWR|SYS|(3[01]|[12][0-9]|[1-9])' && logerrq "SIGNAL is invalid. See kill -L for valid signals. Note that RT signals are not supported."
     contains "$keycode" "/" && logerrq "KEYCODE cannot contain /."
 }
 
@@ -158,18 +162,17 @@ processargs() {
 
     if [ -z "$timeouts" ]
     then
-        timeouts="0"
-        signals="TERM"
-    fi
-
-    while IFS= read -r timeout <&3 && IFS= read -r signal <&4
-    do
-        killargs="$killargs --timeout $timeout $signal"
-    done 3<<EOF1 4<<EOF2
-$timeouts
+        killargs=""
+    else
+        while IFS= read -r timeout <&3 && IFS= read -r signal <&4
+        do
+            killargs="$killargs --timeout $timeout $signal"
+        done 3<<EOF1 4<<EOF2
+$(printf "%s" "$timeouts" | head -c -1)
 EOF1
-$signals
+$(printf "%s" "$signals" | head -c -1)
 EOF2
+    fi
 }
 
 runcmd() {
@@ -184,7 +187,7 @@ runcmd() {
 
 stopcmd() {
     # shellcheck disable=SC2086
-    { ps --ppid "$pid" | tail -n +2 | awk '{print $1}'; printf "%s\n" "$pid"; } | sort -n | uniq | xargs -rn 1 kill $killargs "$pid" 2> /dev/null
+    { printf "%s\n" "$pid"; pgrep -P "$pid"; } | xargs -rn 1 $sudo kill $killargs 2> /dev/null
     kill -0 "$pid" 2> /dev/null || rm -f -- "$keyfl" 2> /dev/null
 }
 
