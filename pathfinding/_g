@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
-[ -n "$2" ] && { 
-    printf "Only one argument is accepted.\n"
-    return 1
+[ "$#" -gt 1 ] && { 
+    printf "Less than 2 arguments are accepted.\n" >&2
+    exit 1
 }
 
-[ -z "$1" ] && {
+[ "$#" -eq 0 ] && {
     printf "%s\n" "$HOME"
     exit 0
 }
