@@ -7,7 +7,7 @@ then
 else
     for i
     do
-        [ "$(mimetype -b -- "$i")" != "application/pdf" ] && continue
+        [ "$(file --mime-type -b -- "$i")" != "application/pdf" ] && continue
 
         tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")" || continue
 
