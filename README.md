@@ -5,7 +5,7 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 - Some of these scripts assume that some of the other scripts are in your PATH.
 - Some of these scripts (extremely rarely) assume that some of the programs/scripts from [c](https://github.com/XPhyro/c) or [py](https://github.com/XPhyro/py) are in your PATH. Scripts with such assumptions are specialised, such as [popcal](popcal) using [calctdiff](https://github.com/XPhyro/py/tree/master/calctdiff) from [py](https://github.com/XPhyro/py).
 - None of the scripts pre-check for the availability of their dependencies.
-- In some scripts, GNU specific options are used (for instance, sed -i).
+- In some scripts, GNU-specific options are used (for instance, sed -i).
 - All scripts were written with only Linux in mind. Although they will often be compatible with all Unix-like and Unix-derived systems, they might not always be portable to non-Linux systems. Very rarely, Arch Linux is assumed. Scripts assuming Arch Linux can be easily identified by name or explanation.
 - For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
@@ -26,4 +26,4 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 - You can find the scripts that I use to install an Arch Linux system (to my liking) [here](https://github.com/XPhyro/archinstall).
 
 # License
-Unless otherwise stated, all software found in this repository is licensed under the MIT License.
+Unless otherwise stated, all software found in this repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
