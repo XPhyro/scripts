@@ -1,14 +1,12 @@
 # Bugs
 - `sxhkd` does not release keys when cycling keymaps, fix.
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
-- `tglapp -k restart-wallpaper -T off` does not work, fix.
-- `lckget clplog` does not work, fix. The problem might be in `lckget` or `clplog`.
 
 # Features
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
 - In `contexec`, show the output in a `dwmpad` and open the editor in the initialised terminal.
 - After scratchpad setting is implemented in dwm, add support in `dwmpad`.
-- Allow m to take input files. If an input file is given, mark the file; if not, mark the current working directory.
+- Allow `m` to take input files. If an input file is given, mark the file; if not, mark the current working directory.
 - In `contexec`, wrap each execution between printed headers. Also show the execution count.
 - In `dwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - Add options in `latexstp` to not open the source/output files.
@@ -20,11 +18,10 @@
 - Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
 - Support non-terminal applications in `dwmpad` after scratchpad assignment is implemented in `dwm`.
 - In `steammgr`, keep a database of application IDs scraped from [steamdb](https://steamdb.info/apps) and present the user with relevant options. This could be done in two ways: either show the relevant options by being command-aware, or first show a meta prompt for all, installed and in-library games, and then show the IDs (or show the meta options in the installed prompt, and show another prompt with the selected if all or in-library is selected).
-- In `genrc`, also set mappings for marks, similar to locations.
 - Allow marking files. @ should edit instead of navigate if the mark is of a file.
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
 - In `gacma`, instead of using the given paths directly, take their relative path with respect to the repository root.
-- Integrate *synctex* in `latexstp`. See [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html).
+- Integrate *synctex* in `latexstp`. See [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html) and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
@@ -63,8 +60,6 @@
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
-- Move the *mark* family of scripts into a dedicated directory. So far, these are: `m`, `cm`, `¬`, `@`, `g`, `mg`.
-- Instead of using `while ... done < "$file"`, use `< "$file" while ... done`.
 - Get rid of the `printf "%s" "$sopt" | cut -c1` calls in `parseargs()`.
 - Add `texpac` to notable scripts in [README.md](README.md) after it is written.
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current name of the crop subcommand is very counter-intuitive.
