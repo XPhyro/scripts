@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # Restart sxhkd.
 
 cd "$HOME"
-# shellcheck disable=SC1035,SC1072
-tglapp -afT on sxhkd &!
+setsid --fork tglapp -afT on sxhkd
