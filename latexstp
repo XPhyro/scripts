@@ -36,14 +36,6 @@ logerrq() {
     exit 1
 }
 
-assertarg() {
-    [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
-}
-
-assertfl() {
-    [ -f "$1" ] || logerrq "No such file as $1, exiting."
-}
-
 parseargs() {
     while [ -n "$1" ]
     do
@@ -165,7 +157,7 @@ compile() {
 dispatchcompiler() {
     dwmpad -- sh -c "
     compile() {
-        $(printcompile | sed "/^    \[ '1' != '1' \] &&/d")
+        $(printcompile | sed "/^\s*\[ '1' != '1' \] &&/d")
     }
     cleanaux() {
         $(printcleanaux)
