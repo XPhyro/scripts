@@ -2,5 +2,5 @@
 
 for i
 do
-    printf "%s\n" "$i" | sed 's/\.[^.]*$//'
+    printf "%s\n" "${i%.*}"
 done

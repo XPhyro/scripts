@@ -2,9 +2,5 @@
 
 for i
 do
-    ext="$(printf "%s" "$i" | sed 's/^.*\.//')"
-
-    [ "$ext" = "$i" ] && ext=""
-
-    printf "%s\n" "$ext"
+    printf "%s\n" "${i##*.}"
 done
