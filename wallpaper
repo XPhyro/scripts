@@ -10,5 +10,6 @@ do
     cmp -s -- "$i" "$last" 2> /dev/null && continue
     hsetroot -cover "$i" > /dev/null || continue
     last="$i"
+    printf "%s\n" "$i" > "$waloc/.current-wallpaper"
     sleep "$@"
 done
