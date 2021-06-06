@@ -29,10 +29,10 @@ printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$ltmp"
 
 while read -r cmd fl
 do
-    fl="$(expandpath "$loc")"
+    fl="$(expandpath "$fl")"
 
-    printf "map e%s shell vim %s\n" "$cmd" "$loc" >> "$rtmp"
-    printf "map E%s :shell vim %s\n" "$cmd" "$loc" >> "$ltmp"
+    printf "map e%s shell vim %s\n" "$cmd" "$fl" >> "$rtmp"
+    printf "map E%s :shell vim %s\n" "$cmd" "$fl" >> "$ltmp"
 done < "$files"
 
 printf "\n#\n##\n" >> "$rtmp"
