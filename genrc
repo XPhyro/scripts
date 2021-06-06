@@ -32,7 +32,7 @@ do
     fl="$(expandpath "$fl")"
 
     printf "map e%s shell vim %s\n" "$cmd" "$fl" >> "$rtmp"
-    printf "map E%s :shell vim %s\n" "$cmd" "$fl" >> "$ltmp"
+    printf "map E%s \$vim %s\n" "$cmd" "$fl" >> "$ltmp"
 done < "$files"
 
 printf "\n#\n##\n" >> "$rtmp"
