@@ -1,7 +1,8 @@
 install:
-	find -mindepth 1 -type f -executable -not -path "./.git/*" -and -not -path "./_archived/*" | xargs cp -fu -t /usr/local/bin
+	find -mindepth 1 -type f -executable -not -path "./.git/*" -and -not -path "./_archived/*" | tee -a .installed | xargs cp -fu -t /usr/local/bin
 
 uninstall:
-	find -mindepth 1 -type f -executable -not -path "./.git/*" -and -not -path "./_archived/*" | xargs -I {} rm -f /usr/local/bin/{}
+	cat .installed | xargs -I {} rm -f /usr/local/bin/{}
+	rm -f .installed
 
 .PHONY: install uninstall
