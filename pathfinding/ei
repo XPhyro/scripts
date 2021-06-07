@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+flsfl="$(getfl fls)" || {
+    printf "[ERROR]: getfl failed, aborting.\n"
+    exit 1
+}
+
+fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs bat -p --color=always --" < "$flsfl" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | xargs -rd '\n' "$TERMINAL"
