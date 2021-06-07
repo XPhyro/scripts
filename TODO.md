@@ -67,3 +67,4 @@
 - In scripts that acquire locks, release them with a trap in case the script is interrupted, killed, etc.
 - Unintegrate `dwmpad` from scripts that do not require it such as `sptkeys`.
 - Instead of using `basename`, `dirname`, `rawname` and `rawextension`, use POSIX parameter expansions.
+- Pass `-d '\n'` to `xargs` where applicable.
