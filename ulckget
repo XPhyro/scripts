@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
 
-for i
-do
-    lckfl="$(getfl "${i}lck")" && rm -f -- "$lckfl" || printf "Failed to release the lock [%s].\n" "$i" >&2
-done
+lckfl="$(getfl "$1lck")" && exec rm -f -- "$lckfl"

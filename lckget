@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
 
-for i
-do
-    lckfl="$(getfl "${i}lck")" && lck "$lckfl" || printf "Failed to acquire the lock [%s].\n" "$i" >&2
-done
+lckfl="$(getfl "${1}lck")" && exec lck "$lckfl"
