@@ -6,6 +6,13 @@ logfl="$(getfl xdgopenlog)" || {
 }
 
 sel="$(dmenu -sel 200000000 -l 20 -p 'xdg-reopen:' < "$logfl" | ( IFS="; " read -r _ sel; printf "%s\n" "$sel" ))"
+
 [ -z "$sel" ] && exit 0
-lckget xdgopenlog
+
+lckfl="$(getfl xdgopenloglck)"
+lck "$lckfl"
+trap "rm -f -- '$lckfl'" INT TERM
+
 xdg-open "$sel"
+
+rm -f -- "$lckfl"
