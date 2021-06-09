@@ -10,4 +10,4 @@ sel="$(awk -F ';' '{$1=strftime("%a %Y-%m-%d %H:%M:%S;", $1); print $0}' "$logfl
 [ -z "$sel" ] && exit 0
 
 lckget xdgopenlog
-xdg-open "${sel#*;  }"
+exec xdg-open "${sel#*;  }"
