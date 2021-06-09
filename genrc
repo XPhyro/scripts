@@ -4,7 +4,7 @@
 locations="$HOME/documents/sys-admin/locations"
 files="$HOME/documents/sys-admin/files"
 ranger="$HOME/.dotfiles-sensitive/.config/ranger/rc.conf"
-lf="$HOME/.dotfiles-sensitive/.config/lf/lfrc"
+lf="$HOME/.dotfiles-sensitive/.config/lf/lfrc-sensitive"
 
 rtmp="$(mktemp)"
 ltmp="$(mktemp)"
