@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+tmp="$(mktemp)"
+cp -f -- /dev/stdin "$tmp"
+stdl="$(wc -l < "$tmp")"
+
+tput smcup
+tput civis
+clear
+terml="$(tput lines)"
+[ "$terml" -gt "$stdl" ] && seq -- "$(((terml - stdl) / 2))" | while IFS= read -r _
+do
+    printf "\n"
+done
+cat -- "$tmp"
