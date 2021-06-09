@@ -76,7 +76,7 @@ do
 
     : $((cmdcount += 1))
 
-    echo
+    printf "\n"
 done < "$lst"
 
 rm -f -- "$lckfl"
