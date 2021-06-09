@@ -2,10 +2,9 @@
 # Show a calendar and execute calctdiff (a python script to parse a date in many forms and compute the difference between that date and today (i.e. date minus today)).
 # Designed to work as a scratchpad for dwm with st, hence the shortened name pop-up calendar.
 
-date +"%a %F %R"
-echo
+printf "\n"
 cal -3
-echo
+printf "\n"
 while calctdiff --exit-on-error
 do
     :
