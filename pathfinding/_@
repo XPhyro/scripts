@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+
+mark="$1"
+
+while read -r i
+do
+    mrk="$(printf "%s\n" "$i" | awk '{print $1}')"
+    [ "$mrk" = "$mark" ] && {
+        val="$(printf "%s\n" "$i" | sed 's/^[^ ]\+\s\+//' | expandpath)"
+
+        if [ ! -e "$val" ] 
+        then
+            printf "Mark has invalid value: [%s]\n" "$val" >&2
+            exit 1
+        fi
+
+        if [ ! -d "$val" ]
+        then
+            "$EDITOR" "$val" >&2
+        else
+            printf "%s\n" "$(printf "%s\n" "$i" | sed 's/^[^ ]\+\s\+//' | expandpath)"
+        fi
+
+        exit 0
+    }
+done < "$(getfl mrk)"
+
+printf "Mark $mark does not exist.\n" >&2
+exit 1
