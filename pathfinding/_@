@@ -2,7 +2,7 @@
 
 mark="$1"
 
-while read -r i
+while IFS= read -r i
 do
     mrk="$(printf "%s\n" "$i" | awk '{print $1}')"
     [ "$mrk" = "$mark" ] && {

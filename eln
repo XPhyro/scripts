@@ -29,7 +29,7 @@ then
         printf "%s -> %s\n" "$i" "$dest" >> "$tmpfl"
     done
 else
-    while read -r i
+    while IFS= read -r i
     do
         if [ -L "$i" ]
         then

@@ -41,7 +41,7 @@ then
     done
 else
     [ -t 0 ] || {
-        while read -r i 
+        while IFS= read -r i 
         do
             unexpandpath "$i"
         done < "${@:-/dev/stdin}"

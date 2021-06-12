@@ -38,7 +38,7 @@ do
 done
 
 notify-send -t 2000 "view-music" "Opening $n of $(basename "$fl") with $cmd."
-seq "$n" | while read -r _
+seq "$n" | while IFS= read -r _
 do
     eval "'$cmd' '$fl'" &
 done
