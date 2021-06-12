@@ -121,7 +121,7 @@ then
                 done | dmenu -i -l 25 -p "Select game or enter game ID:" | awk '{print $1}'
             )"
             ;;
-        *) str="$(printf "" | dmenu -l 0 -p "<$strtype>:")";;
+        *) str="$(dmenu -l 0 -p "<$strtype>:" < /dev/null)";;
     esac
 fi
 

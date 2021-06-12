@@ -16,7 +16,7 @@ getmount() {
         mp="/mnt/$(basename -- "$chosen")"
     fi
 
-	[ "$mp" = "" ] && exit 1
+	[ -z "$mp" ] && exit 1
 
 	[ -d "$mp" ] || {
         mkdir -p -- "$mp" || sudo -A mkdir -p -- "$mp"
@@ -51,7 +51,7 @@ mountandroid() {
 	getmount "$HOME -maxdepth 3 -type d"
     simple-mtpfs --device "$chosen" "$mp"
 
-	printf "" | dmenu -i -p "Tap Allow on your phone if it asks for permission. Press enter to continue."
+	dmenu -i -p "Tap Allow on your phone if it asks for permission. Press enter to continue." < /dev/null
 
 	simple-mtpfs --device "$chosen" "$mp"
 
