@@ -12,26 +12,83 @@ The suite delivers the following features:
 The suite will deliver the following features:
 - Marking files.
 
-Explanation of each command (to be written):
-- *[_@](_@)*:
-- *[_@i](_@i)*:
-- *[_fd](_fd)*:
-- *[_ff](_ff)*:
-- *[_g](_g)*:
-- *[_gi](_gi)*:
-- *[_¬](_¬)*:
-- *[batfl](batfl)*:
-- *[catfl](catfl)*:
-- *[cm](cm)*:
-- *[getfl](getfl)*:
-- *[getflloc](getflloc)*:
-- *[getloc](getloc)*:
-- *[getlocall](getlocall)*:
-- *[getlocunsafe](getlocunsafe)*:
-- *[m](m)*:
-- *[mvloc](mvloc)*:
-- *[setfl](setfl)*:
-- *[setloc](setloc)*:
+## Explanation of commands (to be completed)
+
+### [_@](_@)
+- Usage: `@ key`
+- Description: 
+
+### [_@i](_@i)
+- Usage: `@i`
+- Description: 
+
+### [_fd](_fd)
+- Usage: `fd`
+- Description: 
+
+### [_ff](_ff)
+- Usage: `ff`
+- Description: 
+
+### [_g](_g)
+- Usage: `g key`
+- Description: 
+
+### [_gi](_gi)
+- Usage: `gi`
+- Description: 
+
+### [_¬](_¬)
+- Usage: `¬`
+- Description: 
+
+### [batfl](batfl)
+- Usage: `batfl key`
+- Description: 
+
+### [catfl](catfl)
+- Usage: `catfl key`
+- Description: 
+
+### [cm](cm)
+- Usage: NA
+- Description: This is a utility script used by the other scripts. It is not meant to be used interactively.
+
+### [getfl](getfl)
+- Usage: `getfl key`
+- Description: 
+
+### [getflloc](getflloc)
+- Usage: `getflloc key`
+- Description: 
+
+### [getloc](getloc)
+- Usage: `getloc key`
+- Description: 
+
+### [getlocall](getlocall)
+- Usage: `getlocall key`
+- Description: 
+
+### [getlocunsafe](getlocunsafe)
+- Usage: `getunlocsafe key`
+- Description: 
+
+### [m](m) 
+- Usage: `m key`
+- Description: Marks the current directory with the key `key`.
+
+### [mvloc](mvloc)
+- Usage: `mvloc location file1 ... fileN`
+- Description: Is equivalent to `mv file1 ... fileN "$(getloc location)"`.
+
+### [setfl](setfl)
+- Usage: `setfl`
+- Description: Should be run every time after `"$HOME/documents/sys-admin/locations"` is edited.
+
+### [setloc](setloc)
+- Usage: `setloc`
+- Description: Should be run every time after `"$HOME/documents/sys-admin/files"` is edited.
 
 ## Usage
 
