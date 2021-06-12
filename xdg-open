@@ -18,7 +18,7 @@ unset XDG_CURRENT_DESKTOP
             else
                 arg="$1"
             fi
-            ulckget xdgopenlog || printf "%s; %s\n" "$(date +"%s")" "$arg" >> "$logfl"
+            ulckget xdgopenlog || printf "%s; %s\n" "$(date +"%s")" "$arg" >> "$(getfl xdgopenlog)"
             ;;
     esac
 }
