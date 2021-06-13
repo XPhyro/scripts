@@ -6,5 +6,5 @@ sel="$(perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g
 
 [ -n "$sel" ] && {
     lckget clplog
-    printf "%s" "$sel" | tr '' '\n' | xclip -se c
+    printf "%s\n" "$sel" | tr '' '\n' | xclip -se c
 }
