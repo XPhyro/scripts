@@ -60,6 +60,7 @@
 - Make `-fin` options in `ffmw` global as they are used by every non-help subcommand.
 - Make `xins` use IFS= or IFS=\n.
 - Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getloc $$#)\""` could be used to do so.
+- Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
