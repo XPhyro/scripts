@@ -7,10 +7,8 @@ kdialog() {
 }
 
 peekargs() {
-    for i
-    do
-        case "$i"
-        in
+    for i; do
+        case "$i" in
             --getopenfilename|--getsavefilename                 ) hasrelevantopt="1";;
             -h|--help|--helpall|-v|--version|--author|--license ) kdialog "$@";;
         esac
@@ -20,14 +18,11 @@ peekargs() {
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#??}"}" = "--" ]
-        then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#??}"}" = "--" ]; then
             opt="${1#??}"
             
-            case "$opt"
-            in
+            case "$opt" in
                 getopenfilename ) optopenfile="1"; moptreg="1";;
                 getsavefilename ) optsavefile="1"; moptreg="1";;
                 getopenurl      ) optopenurl="1"; moptreg="1";;
@@ -35,8 +30,7 @@ parseargs() {
                 *               ) moptreg="0";;
             esac
         else
-            if [ "$moptreg" = "1" ]
-            then
+            if [ "$moptreg" = "1" ]; then
                 optargs="$optargs$1
 "
             else
@@ -56,11 +50,9 @@ processargs() {
 main() {
     rfl="$(getfl rchoose)"
 
-    if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]
-    then
+    if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]; then
         dwmpad -g 160x50 -- ranger "${optargs:-"$HOME"}" > /dev/null
-    elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]
-    then
+    elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]; then
         printf "%s\n" "${optargs:-"$HOME/downloads"}" > "$rfl"
         # shellcheck disable=SC2086
         dwmpad -- $EDITOR "$rfl" > /dev/null

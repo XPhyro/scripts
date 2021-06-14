@@ -11,8 +11,7 @@ log() {
     printf "[resln]: %s\n" "$1"
 }
 
-for i
-do
+for i; do
     [ -L "$i" ] || {
         log "\"$i\" does not exist or is not a symlink, ignoring."
         continue
@@ -20,8 +19,7 @@ do
 
     idest="$(readlink -- "$i")"
     dest="$idest"
-    while [ -L "$dest" ]
-    do
+    while [ -L "$dest" ]; do
         dest="$(readlink -- "$dest")"
     done
 

@@ -4,11 +4,9 @@
 [ -z "$END" ] && [ "${END-"unset"}" = "unset" ] && END="
 "
 
-while IFS= read -r i
-do
+while IFS= read -r i; do
     match=0
-    for j
-    do
+    for j; do
         from="${j%%"$SEP"*}"
         to="${j#*"$SEP"}"
         [ "$from" = "*" ] || [ "$i" = "$from" ] && {

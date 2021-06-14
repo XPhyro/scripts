@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
 
-for i
-do
-    case "$i"
-    in
+for i; do
+    case "$i" in
         *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf -- "$i";;
         *.tar.gz|*.tgz                 ) tar xzvf -- "$i";;
         *.tar.xz|*.txz                 ) tar xJvf -- "$i";;

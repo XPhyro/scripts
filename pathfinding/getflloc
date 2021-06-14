@@ -4,20 +4,17 @@
 
 fls="$HOME/documents/sys-admin/files"
 
-if [ "$#" -eq 0 ]
-then
+if [ "$#" -eq 0 ]; then
     exit 0
 fi
 
-for i
-do
+for i; do
     [ "$i" = "*" ] && {
         awk '{print $2}' "$fls"
         exit 0
     }
 done
 
-for i
-do
+for i; do
     dirname "$(expandpath "$(printf "%s\n" "$(grep -E "^$i\s+.*" -- "$fls" | awk '{print $2}')")")"
 done

@@ -24,8 +24,7 @@ trap 'stopiffl' INT TERM
 
 stopiffl
 
-until rm "$stopfl"
-do
+until rm "$stopfl"; do
     touch "$stopfl"
     sleep 0.25
 done 2> /dev/null
@@ -33,29 +32,23 @@ done 2> /dev/null
 cmd="$1"
 shift
 
-case "$cmd"
-in
+case "$cmd" in
     lmb) 
         sleep 2
-        while stopiffl
-        do
+        while stopiffl; do
             xdotool click 1
             sleep 0.1
         done
         ;;
     var) 
-        while stopiffl
-        do
+        while stopiffl; do
             xdotool type "$*"
             sleep 0.1
         done
         ;;
     dmenu) 
         text="$(dmenu -p "key sequence:")"
-        echo aa
-        while stopiffl
-        do
-            echo bbb
+        while stopiffl; do
             xdotool type "$text"
             sleep 0.1
         done

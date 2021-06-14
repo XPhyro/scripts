@@ -3,11 +3,9 @@
 
 t="5s"
 
-for i
-do
+for i; do
     sleep "$t"
-    until ping -c 1 "$i"
-    do
+    until ping -c 1 "$i"; do
         sleep "$t"
     done
 done

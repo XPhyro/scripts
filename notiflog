@@ -17,16 +17,13 @@ rm -f -- "$lckfl" 2> /dev/null
 event=""
 willreg=0
 
-dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'" | while IFS= read -r i
-do
+dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'" | while IFS= read -r i; do
     [ "$willreg" = 1 ] && event="$event$i
 "
-    if contains "$i" "   uint32 "
-    then
+    if contains "$i" "   uint32 "; then
         willreg=1
         continue
-    elif ! contains "$i" "   int32 "
-    then
+    elif ! contains "$i" "   int32 "; then
         continue
     fi
 

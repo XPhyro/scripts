@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-for i
-do
+for i; do
     printf "%s\n" "${i##*.}"
 done

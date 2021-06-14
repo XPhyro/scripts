@@ -12,8 +12,7 @@
 
 dir="$(getlocall "$1")"
 
-if [ -d "$dir" ]
-then
+if [ -d "$dir" ]; then
     printf "%s\n" "$dir"
 else
     printf "No such directory.\n" >&2

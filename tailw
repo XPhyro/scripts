@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Like tail, but for words.
 
-if [ "$#" = 0 ]
-then
+if [ "$#" = 0 ]; then
     end=3
 else
     end="$(printf "%s" "$1" | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g')"

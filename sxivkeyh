@@ -2,7 +2,6 @@
 
 outfl="$(getfl sxivout)"
 
-case "$1"
-in
+case "$1" in
     p) cat <&0 >> "$outfl";;
 esac

@@ -8,8 +8,7 @@ tput smcup
 tput civis
 clear
 terml="$(tput lines)"
-[ "$terml" -gt "$stdl" ] && seq -- "$(((terml - stdl) / 2))" | while IFS= read -r _
-do
+[ "$terml" -gt "$stdl" ] && seq -- "$(((terml - stdl) / 2))" | while IFS= read -r _; do
     printf "\n"
 done
 cat -- "$tmp"

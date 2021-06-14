@@ -2,8 +2,7 @@
 
 fl="$(mktemp --suffix ".png")"
 
-if import "$fl"
-then
+if import "$fl"; then
     copyfile "$fl"
 else
     notify-send "❌ cpscr" "Failed to capture screenshot."

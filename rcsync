@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Sync a remote drive with rclone based on the given drive code.
 
-case "$1"
-in
+case "$1" in
     one) name="onedrive";;
     open) name="opendrive";;
     *) printf "%s\n" "No drive code given, exiting."; exit 0;;

@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Duplicate given files and print the duplicate's paths in the format the originals were input.
 
-for i
-do
+for i; do
     newpath="$(getnewpath "$i")"
     cp -r -- "$i" "$newpath"
     printf "%s\n" "$newpath"

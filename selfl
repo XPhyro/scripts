@@ -73,20 +73,15 @@ setdefargs(){
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         a) absolute="1";;
                         d) directory="1";;
                         E) regextype="-E";;
@@ -112,8 +107,7 @@ parseargs() {
             else
                 opt="$(printf "%s" "$1" | cut -c3-)"
                 
-                case "$opt"
-                in
+                case "$opt" in
                     absolute       ) absolute="1";;
                     directory      ) directory="1";;
                     extended-regex ) regextype="-E";;
@@ -143,8 +137,7 @@ parseargs() {
         shift
     done
 
-    for i
-    do
+    for i; do
         initdirs="$initdirs$1
 "
     done
@@ -157,8 +150,7 @@ grepfls() {
 }
 
 getprompt() {
-    if [ "$customprompt" = "1" ]
-    then
+    if [ "$customprompt" = "1" ]; then
         printf "%s" "$prompt"
     else
         printf "%s" "$PWD"
@@ -166,30 +158,24 @@ getprompt() {
 }
 
 main() {
-    if [ -z "$directory" ]
-    then
+    if [ -z "$directory" ]; then
         [ -n "$git" ] && initgithash="$(git rev-parse HEAD)"
 
-        until [ -e "$sel" ] && [ ! -d "$sel" ]
-        do
+        until [ -e "$sel" ] && [ ! -d "$sel" ]; do
             [ -d "$sel" ] && cdsafe "$sel"
 
-            if [ -n "$showhidden" ]
-            then
-                if [ -n "$git" ]
-                then
+            if [ -n "$showhidden" ]; then
+                if [ -n "$git" ]; then
                     [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] || {
                         logerr "Not a git repository, exiting."
                         return
                     }
 
                     fls="$( 
-                        find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i
-                        do 
+                        find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do 
                             cdsafe "$i"
 
-                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]
-                            then
+                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]; then
                                 printf "%s\n" "$i"
                             fi
 
@@ -202,20 +188,17 @@ main() {
                     fls="$(find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort; find -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort)"
                 fi
             else
-                if [ -n "$git" ]
-                then
+                if [ -n "$git" ]; then
                     [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] || {
                         logerr "Not a git repository, exiting."
                         return
                     }
 
                     fls="$( 
-                        find -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i
-                        do 
+                        find -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do 
                             cdsafe "$i"
 
-                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]
-                            then
+                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]; then
                                 printf "%s\n" "$i"
                             fi
 
@@ -231,13 +214,10 @@ main() {
 
             grepfls
 
-            if [ "$PWD" = "$root" ]
-            then
+            if [ "$PWD" = "$root" ]; then
                 sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
-            elif [ -n "$git" ]
-            then
-                if contains "$(realpath -- "$PWD/.." )" "$( git rev-parse --show-toplevel)"
-                then
+            elif [ -n "$git" ]; then
+                if contains "$(realpath -- "$PWD/.." )" "$( git rev-parse --show-toplevel)"; then
                     sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
                 else
                     sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
@@ -255,19 +235,16 @@ main() {
 
         [ -n "$printinitpwd" ] && printinitpwd="$initpwd: "
 
-        if [ -n "$absolute" ]
-        then
+        if [ -n "$absolute" ]; then
             printf "%s%s\n" "$printinitpwd" "$PWD/$sel"
         else
             printf "%s%s\n" "$printinitpwd" "$(realpath --relative-to="$initpwd" -- "$PWD/$sel")"
         fi
     else
-        while true
-        do
+        while true; do
             [ -d "$sel" ] && cdsafe "$sel"
 
-            if [ -n "$showhidden" ]
-            then
+            if [ -n "$showhidden" ]; then
                 fls="$(find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort)"
             else
                 fls="$(find -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort)"
@@ -275,8 +252,7 @@ main() {
 
             grepfls
 
-            if [ "$PWD" = "$root" ]
-            then
+            if [ "$PWD" = "$root" ]; then
                 sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
             else
                 sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
@@ -287,8 +263,7 @@ main() {
             [ -n "$sel" ] || {
                 [ -n "$printinitpwd" ] && printinitpwd="$initpwd: "
 
-                if [ -n "$absolute" ]
-                then
+                if [ -n "$absolute" ]; then
                     printf "%s%s\n" "$printinitpwd" "$PWD"
                 else
                     realpath --relative-to="$initpwd" -- "$PWD"
@@ -303,11 +278,9 @@ main() {
 setdefargs
 parseargs "$@"
 
-if [ -n "$initdirs" ]
-then
+if [ -n "$initdirs" ]; then
     masterinitpwd="$PWD"
-    printf "%s\n" "$initdirs" | while IFS= read -r i
-    do
+    printf "%s\n" "$initdirs" | while IFS= read -r i; do
         cdsafe "$masterinitpwd"
         cdsafe "$i"
 

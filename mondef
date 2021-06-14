@@ -3,10 +3,8 @@
 
 eval "$(xdotool getwindowfocus getwindowgeometry --shell)"
 
-while read -r mn mw mh mx my
-do
-    if [ "$X" -ge "$mx" ] && [ "$Y" -ge "$my" ] && [ "$X" -lt "$((mx + mw ))" ] && [ "$Y" -lt "$(( my + mh))" ]
-    then
+while read -r mn mw mh mx my; do
+    if [ "$X" -ge "$mx" ] && [ "$Y" -ge "$my" ] && [ "$X" -lt "$((mx + mw ))" ] && [ "$Y" -lt "$(( my + mh))" ]; then
         hasmn="1"
         break
     fi

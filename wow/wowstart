@@ -26,8 +26,7 @@ wait
 
 [ -z "$input" ] && exit 0
 
-case "$input"
-in
+case "$input" in
     "All"      ) startall;;
     "TSM"      ) starttsm;;
     "RaiderIO" ) startrio;;

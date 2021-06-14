@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-if [ "$#" -eq 0 ]
-then
+if [ "$#" -eq 0 ]; then
     man bash | less +/^SHELL\ BUILTIN\ COMMANDS$
-elif [ "$#" -eq 1 ]
-then
+elif [ "$#" -eq 1 ]; then
     man bash | less +/^SHELL\ BUILTIN\ COMMANDS$''/"^       $1"''/"$1"
 else
     printf "%s\n" "At max one argument is accepted."

@@ -15,25 +15,20 @@ expandpath() {
         return 0
     }
 
-    case "$path"
-    in
+    case "$path" in
         "~/"* ) printf "%s\n" "$HOME${path#?}";;
         *     ) 
             home="${path%%/*}"
             rest="${path#*/}"
             user="${home#?}"
-            if [ "$user" = "root" ]
-            then
-                if [ -z "$rest" ] || [ "$home" = "$rest" ]
-                then
+            if [ "$user" = "root" ]; then
+                if [ -z "$rest" ] || [ "$home" = "$rest" ]; then
                     printf "/root\n"
                 else
                     printf "/root/%s\n" "$rest"
                 fi
-            elif id "$user" > /dev/null 2>&1
-            then
-                if [ -z "$rest" ] || [ "$home" = "$rest" ]
-                then
+            elif id "$user" > /dev/null 2>&1; then
+                if [ -z "$rest" ] || [ "$home" = "$rest" ]; then
                     printf "/home/%s\n" "$user"
                 else
                     printf "/home/%s/%s\n" "$user" "$rest"
@@ -45,16 +40,13 @@ expandpath() {
     esac
 }
 
-if [ -n "$1" ]
-then
-    for i
-    do
+if [ -n "$1" ]; then
+    for i; do
         expandpath "$i"
     done
 else
     [ -t 0 ] || {
-        while IFS= read -r i 
-        do
+        while IFS= read -r i; do
             expandpath "$i"
         done < "${@:-/dev/stdin}"
     }

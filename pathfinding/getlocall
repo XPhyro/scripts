@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Get directories or the directories of files with given codes.
 
-for i
-do
+for i; do
     loc="$(getloc "$i")" || {
         loc="$(getfl "$i")" || continue
         loc="$(dirname "$loc")"

@@ -6,8 +6,7 @@ shift
 
 fls="$(printf "%s\n" "$@" | xargs -rn 1 realpath "--relative-to=$(git rev-parse --show-toplevel)")"
 
-if [ "$#" -eq 1 ]
-then
+if [ "$#" -eq 1 ]; then
     git add -- "$1" && git commit -m "$message $fls"
 else
     git add -- "$@" && git commit -m "$message $(printf "%s\n" "$fls" | sed 's/$/, /' | sort | tr -d '\n' | sed 's/, \([^ ]*\), $/ and \1/')"

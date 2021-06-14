@@ -15,16 +15,14 @@ file="$(printf "%s\n%s" "$newfile" "$files" | dmenu -i)"
 
 [ -z "$file" ] && exit 0
 
-if ! [ "$file" = "$newfile" ] && ! printf "%s" "$files" | grep -Fxq "$file"
-then
+if ! [ "$file" = "$newfile" ] && ! printf "%s" "$files" | grep -Fxq "$file"; then
     printf "%s" "$file" > "$dir/${newfile}_$(printf "%s\n" "" | dmenu -p "Title for \"$dir/$newfile\":")"
     exit 0
 fi
 
 [ "$file" = "$newfile" ] && isnew=1
 
-if [ "$isnew" = "1" ]
-then
+if [ "$isnew" = "1" ]; then
     vimcmd='startinsert'
 else
     vimcmd='norm G$'

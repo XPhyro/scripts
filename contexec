@@ -33,20 +33,15 @@ assertfl() {
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="${1#?}"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         o) parseargs --once;;
                         h) parseargs --help;;
                         *) printusage "-$opt"; exit 0;;
@@ -57,8 +52,7 @@ parseargs() {
             else
                 opt="${1#??}"
 
-                case "$opt"
-                in
+                case "$opt" in
                     once     ) optonce="1";;
                     no-once  ) optonce="0";;
                     help     ) printhelp; exit 0;;
@@ -75,8 +69,7 @@ $fls"
         shift
     done
 
-    for i
-    do
+    for i; do
         assertfl "$i"
         fls="$fls$i
 "
@@ -96,8 +89,7 @@ execute() {
         env kill -s INT --timeout 1000 TERM --timeout 1000 KILL "$pid" 2> /dev/null || logerrq "Could not kill PID $pid, exiting."
     }
     waitfl "$execpath" && sleep 0.5
-    while kill -s 0 "$pid" 2> /dev/null
-    do
+    while kill -s 0 "$pid" 2> /dev/null; do
         sleep 0.1
     done
     "$execpath" &
@@ -112,8 +104,7 @@ main() {
     }
 
     pidfl="$(mktemp)"
-    while true
-    do
+    while true; do
         execute
     done
 }

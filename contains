@@ -4,10 +4,8 @@
 arg="$1"
 shift
 
-for i
-do
-    case "$arg"
-    in
+for i; do
+    case "$arg" in
         *"$i"*) exit 0;;
     esac
 done

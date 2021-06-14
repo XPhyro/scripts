@@ -4,8 +4,7 @@
 stat="$(pacmd list-sinks | grep -A 30 "name: <$(voldefsink)>")"
 
 # TODO: If the line indices are not constant, use grep.
-if [ "$(printf "%s" "$stat" | sed '11q;d' | awk '{print $2}')" = "yes" ]
-then
+if [ "$(printf "%s" "$stat" | sed '11q;d' | awk '{print $2}')" = "yes" ]; then
     glyph="🔇"
 else
     glyph="🔈"

@@ -14,10 +14,8 @@ oldclp="$lastclp"
 
 [ -f "$lckfl" ] && rm "$lckfl"
 
-while true
-do
-    while clipnotify
-    do
+while true; do
+    while clipnotify; do
         [ -f "$lckfl" ] && {
             rm "$lckfl" && {
                 oldclp="$lastclp"
@@ -28,8 +26,7 @@ do
 
         clp="$(xclip -o -se c)"
         [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue
-        if [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ]
-        then
+        if [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ]; then
             printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$(date +%s)" "$(printf "%s\n" "$clp" | tr '\n' '')" >> "$logfl"
             lastclp="$clp"
             oldclp=""

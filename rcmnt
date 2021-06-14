@@ -2,8 +2,7 @@
 # Mount a remote drive with rclone based on the given drive code.
 # TODO: Add support for non-cached mounting via argument parsing.
 
-case "$1"
-in
+case "$1" in
     one) name="onedrive";;
     open) name="opendrive";;
     *) printf "%s\n" "No drive code given, exiting."; exit 0;;

@@ -5,10 +5,8 @@
 
 cmd="xdg-open"
 
-while [ -n "$1" ]
-do
-    if [ "$1" = "-c" ] || [ "$1" = "--command" ]
-    then
+while [ -n "$1" ]; do
+    if [ "$1" = "-c" ] || [ "$1" = "--command" ]; then
         shift
         cmd="$1"
     fi
@@ -31,15 +29,13 @@ fl="$(printf "%s" "$fls" | dmenu -i -l 20 -p "Select sheet music:")"
 
 n="$(seq 4 | dmenu -F -p "How many to open:")"
 [ -z "$n" ] && exit 0
-while printf "%s" "$n" | grep -q "[^[:digit:]]"
-do
+while printf "%s" "$n" | grep -q "[^[:digit:]]"; do
     n="$(seq 4 | dmenu -F -p "You must enter a positive integer:")"
     [ -z "$n" ] && exit 0
 done
 
 notify-send -t 2000 "view-music" "Opening $n of $(basename "$fl") with $cmd."
-seq "$n" | while IFS= read -r _
-do
+seq "$n" | while IFS= read -r _; do
     eval "'$cmd' '$fl'" &
 done
 wait

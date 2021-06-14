@@ -31,28 +31,22 @@ assertarg() {
 
 preprocessargs() {
     argcmdcount=0
-    for i
-    do
+    for i; do
         : $((argcmdcount += 1))
         [ "$i" = "--" ] && break
     done
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if  [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if  [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="${1#?}"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         d) shift; parseargs --directory "$1";;
                         g) shift; parseargs --geometry "$1";;
                         n) shift; parseargs --number "$1";;
@@ -65,8 +59,7 @@ parseargs() {
             else
                 opt="${1#??}"
                 
-                case "$opt"
-                in
+                case "$opt" in
                     directory ) shift; assertarg "-d, --directory" "PATH" "$1"; optdirectory="-d $1";;
                     geometry  ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
                     number    ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
@@ -95,8 +88,7 @@ main() {
     }
 
     lck="$( 
-        printf "%s\n" "${optnumber:-"$(seq 1 9)"}" | while IFS= read -r i
-        do
+        printf "%s\n" "${optnumber:-"$(seq 1 9)"}" | while IFS= read -r i; do
             mkdir -- "$lckdir/$i" 2> /dev/null && {
                 printf "%s" "$i"
                 break
@@ -108,8 +100,7 @@ main() {
         notify-send -t 2000 "dwmpad" "Waiting for lock acquisition..." &
 
         lck="$(
-            while true 
-            do
+            while true; do
                 i="$(inotifywait -q -e "delete" --format "%f" -- "$lckdir")"
                 [ -n "$optnumber" ] && [ "$i" != "$optnumber" ] && continue
                 mkdir -- "$lckdir/$i" 2> /dev/null && {

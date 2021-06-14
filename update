@@ -20,10 +20,8 @@ lst="$(getfl upabl)" || {
     exit 1
 }
 
-for i
-do
-    if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]
-    then
+for i; do
+    if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]; then
         [ -f "$lckfl" ] && rm -f "$lckfl" && exit 0
     fi
 done
@@ -31,8 +29,7 @@ done
 [ -f "$lckfl" ] && {
     log "Lock file is present, waiting..."
 
-    while [ -f "$lckfl" ]
-    do
+    while [ -f "$lckfl" ]; do
         sleep 1s
     done
 }
@@ -49,8 +46,7 @@ log "Reading updateables.
 errcount=0
 cmdcount=0
 
-while IFS= read -r i
-do
+while IFS= read -r i; do
     [ "$(printf "%s" "$i" | sed -E 's/^\s*//' | cut -c1)" = "#" ] && continue
 
     loc="$(printf "%s" "$i" | awk -F "" '{print $1}')"
@@ -64,8 +60,7 @@ do
     }
 
     log "Pulling updates."
-    if [ "$(git pull | tail -n 1 | grep --color=never -o " up to date.$")" = " up to date." ] 
-    then
+    if [ "$(git pull | tail -n 1 | grep --color=never -o " up to date.$")" = " up to date." ]; then
         log "Already up to date."
     else
         eval "( $cmd )" || {

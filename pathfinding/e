@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Get a file and edit it.
 
-for i
-do
+for i; do
     file="$(getfl "$i")" || continue
-    eval "'$EDITOR' '$file'"
+    "$EDITOR" -- "$file"
 done

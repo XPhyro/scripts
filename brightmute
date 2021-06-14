@@ -7,8 +7,7 @@ fl="$(getfl brtcch)" || {
 }
 val="$(cat -- "$fl")"
 
-if [ "$val" = "0" ]
-then
+if [ "$val" = "0" ]; then
     val="$(brightnessctl g)"
     brightnessctl s 0
 else

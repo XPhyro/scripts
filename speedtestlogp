@@ -9,8 +9,7 @@ pingav="0.0"
 dowav="0.0"
 upav="0.0"
 
-while IFS= read -r i
-do
+while IFS= read -r i; do
     time="$(printf "%s" "$i" | awk -F \; '{print $1}')"
     isp="$(printf "%s" "$i" | awk -F \; '{print $2}')"
     server="$(printf "%s" "$i" | awk -F \; '{print $3}')"
@@ -34,7 +33,7 @@ done < "$fl"
 count="$(wc -l < "$fl")"
 
 # assuming the inout will be in ms and Mbit/s
-printf "%s\n%s\n%s\n" \
+printf "%s\n" \
     "Ping average    : $(printf "%s\n" "scale = 2; $pingav / $count" | bc) ms" \
     "Download average: $(printf "%s\n" "scale = 2; $dowav / $count" | bc) Mbit/s" \
     "Upload average  : $(printf "%s\n" "scale = 2; $upav / $count" | bc) Mbit/s"

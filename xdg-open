@@ -3,12 +3,10 @@
 unset XDG_CURRENT_DESKTOP
 
 [ "$#" -eq 1 ] && {
-    case "$1"
-    in
+    case "$1" in
         --help|--manual|--version) :;;
         *)
-            if [ -e "$1" ]
-            then
+            if [ -e "$1" ]; then
                 arg="$(realpath -P -- "$1")"
                 [ ! -s "$1" ] || [ "$(file --mime-type --brief "$arg" | cut -d/ -f-1)" = "text" ] && exec "$EDITOR" -- "$1"
             else

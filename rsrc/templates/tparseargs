@@ -46,20 +46,15 @@ assertdir() {
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if  [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if  [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="${1#?}"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         a) shift; parseargs --argument "$1";;
                         c) shift; parseargs --can-be-empty-argument "$1";;
                         o) parseargs --option;;
@@ -74,8 +69,7 @@ parseargs() {
             else
                 opt="${1#??}"
                 
-                case "$opt"
-                in
+                case "$opt" in
                     argument              ) shift; assertarg "-a, --argument" "ARGUMENT" "$1"; optargument="$1";;
                     can-be-empty-argument ) shift; optcanbeemptyargument="$1";;
                     option                ) optoption="1";;
@@ -94,8 +88,7 @@ parseargs() {
         shift
     done
 
-    for i
-    do
+    for i; do
         assertfl "$i" # change according to needs
         : # guaranteed positional argument
     done

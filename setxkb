@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # Set X keyboard properties.
 
-if [ -n "$1" ]
-then
+if [ -n "$1" ]; then
     km="$1"
 else
     km="$(xkb-switch)"

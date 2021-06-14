@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
 
-while true
-do
+while true; do
     allexist="1"
-    for i
-    do
+    for i; do
         [ -e "$i" ] || {
             allexist="0"
             break

@@ -98,24 +98,20 @@ sel="$(printf "%s\n" "$cmds" | dmenu -l 20 -i -p "Command:")"
 
 sel="${sel%% ## *}"
 
-if [ -z "${sel##*<*>*}" ]
-then
+if [ -z "${sel##*<*>*}" ]; then
     strtype="${sel##*<}"
     strtype="${strtype%%>*}"
 
-    case "$strtype"
-    in
+    case "$strtype" in
         appid)
             str="$(
-                grep -E '\s*"[0-9]+"\s*".*"$' -- "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i
-                do
+                grep -E '\s*"[0-9]+"\s*".*"$' -- "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i; do
                     cd "$i/steamapps" || {
                         printf "%s\n" "Could not cd into '$i/steamapps', passing."
                         continue
                     }
 
-                    find -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j
-                    do
+                    find -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j; do
                         printf '%s\n' "$(grep '"appid"' -- "$j" | awk -F '"' '{print $4}') $(grep '"name"' -- "$j" | awk -F '"' '{print $4}')"
                     done
                 done | dmenu -i -l 25 -p "Select game or enter game ID:" | awk '{print $1}'

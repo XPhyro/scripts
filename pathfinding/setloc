@@ -6,8 +6,7 @@ container="$locfl-container"
 rm -rf -- "$container"
 mkdir -p -- "$container"
 
-while IFS=" " read -r i j
-do
+while IFS=" " read -r i j; do
     contains "$i" / && {
         printf "Keycode cannot contain /, aborting.\n"
         exit 1

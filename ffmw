@@ -7,8 +7,7 @@ subcommands="concat crop decat help split trim"
 execname="${0##*/}"
 
 printhelp() {
-    case "$1"
-    in
+    case "$1" in
         concat)
             printf "%s\n" \
 "  concat [INFILE]... [OUTFILE]
@@ -138,8 +137,7 @@ Global options:
 
             printf "\nValid subcommands: %s\n\n" "$subcommands"
             lastsubcmd="$(printf "%s" "$subcommands" | sed 's/.*\s//')"
-            for i in $subcommands
-            do
+            for i in $subcommands; do
                 printhelp "$i"
                 [ "$i" = "$lastsubcmd" ] || printf "\n"
             done
@@ -168,11 +166,9 @@ assertarg() {
 }
 
 assertcmd() {
-    if [ -n "$1" ]
-    then
+    if [ -n "$1" ]; then
         iscmdvalid="0"
-        for i in $subcommands
-        do
+        for i in $subcommands; do
             [ "$i" = "$1" ] && iscmdvalid="1"
         done
         [ "$iscmdvalid" = "1" ] || printferrq "Subcommand [%s] is not valid, exiting.\n" "$1"
@@ -184,20 +180,15 @@ assertcmd() {
 parseargs() {
     [ -n "$1" ] || assertcmd
 
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         h) printhelp; exit 0;;
                         l) loud="${loud}1";;
                         p) pperf="perf stat";;
@@ -211,8 +202,7 @@ parseargs() {
             else
                 opt="$(printf "%s" "$1" | cut -c3-)"
                 
-                case "$opt"
-                in
+                case "$opt" in
                     help                 ) printhelp; exit 0;;
                     loud                 ) loud="${loud}1";;
                     print-performance    ) pperf="perf stat";;
@@ -233,23 +223,17 @@ parseargs() {
     assertcmd "$cmd"
     shift
 
-    case "$cmd"
-    in
+    case "$cmd" in
         concat)
-            while [ -n "$1" ]
-            do
-                if [ "${1%"${1#?}"}" = "-" ]
-                then
-                    if ! [ "${1%"${1#??}"}" = "--" ]
-                    then
+            while [ -n "$1" ]; do
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
                         sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                        while [ -n "$sopt" ]
-                        do
+                        while [ -n "$sopt" ]; do
                             opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                            case "$opt"
-                            in
+                            case "$opt" in
                                 F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
                                 f) overwrite="-y";;
                                 h) printhelp "concat"; exit 0;;
@@ -267,8 +251,7 @@ parseargs() {
                     else
                         opt="$(printf "%s" "$1" | cut -c3-)"
                         
-                        case "$opt"
-                        in
+                        case "$opt" in
                             filter        ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
                             force         ) overwrite="-y";;
                             help          ) printhelp "concat"; exit 0;;
@@ -290,8 +273,7 @@ $1"
                 shift
             done
 
-            for i
-            do
+            for i; do
                 argv="$argv
 $1"
             done
@@ -306,26 +288,21 @@ $1"
             printf "%s" "$infls" | grep -Fxq -- "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
             ;;
         crop)
-            while [ -n "$1" ]
-            do
+            while [ -n "$1" ]; do
                 [ "$1" = "-" ] && {
                     argv="$argv
 $1"
                     shift
                     continue
                 }
-                if [ "${1%"${1#?}"}" = "-" ]
-                then
-                    if ! [ "${1%"${1#??}"}" = "--" ]
-                    then
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
                         sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                        while [ -n "$sopt" ]
-                        do
+                        while [ -n "$sopt" ]; do
                             opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                            case "$opt"
-                            in
+                            case "$opt" in
                                 f ) overwrite="-y";;
                                 h ) printhelp "crop"; exit 0;;
                                 i ) overwrite="";;
@@ -341,8 +318,7 @@ $1"
                     else
                         opt="$(printf "%s" "$1" | cut -c3-)"
                         
-                        case "$opt"
-                        in
+                        case "$opt" in
                             force            ) overwrite="-y";;
                             help             ) printhelp "crop"; exit 0;;
                             interactive      ) overwrite="";;
@@ -362,8 +338,7 @@ $1"
                 shift
             done
 
-            for i
-            do
+            for i; do
                 argv="$argv
 $1"
             done
@@ -380,15 +355,13 @@ $1"
             [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
             [ "$beginmark" = "-" ] && beginmark="0"
 
-            if [ "$endmark" = "-" ]
-            then
+            if [ "$endmark" = "-" ]; then
                 endmark=""
             else
                 endmarkts="$(printf "%s\n" "$marks" | sed -E '/^([0-9]+:)?[0-9]{2}:[0-9]{2}(.[0-9]{3})?$/d')"
                 endmarkdur="$(printf "%s\n" "$marks" | sed -E '/^[0-9]+(\.[0-9]+)?$/d')"
 
-                if [ -n "$endmarkts" ]
-                then
+                if [ -n "$endmarkts" ]; then
                     [ -n "$endmarkdur" ] && printferrq "ENDMARK must either be a timestamp or a duration.\n"
                     endmark="-t $endmark"
                 else
@@ -399,20 +372,15 @@ $1"
             [ "$moveorig" = "1" ] && movefile="$infl"
             ;;
         decat)
-            while [ -n "$1" ]
-            do
-                if [ "${1%"${1#?}"}" = "-" ]
-                then
-                    if ! [ "${1%"${1#??}"}" = "--" ]
-                    then
+            while [ -n "$1" ]; do
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
                         sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                        while [ -n "$sopt" ]
-                        do
+                        while [ -n "$sopt" ]; do
                             opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                            case "$opt"
-                            in
+                            case "$opt" in
                                 f) overwrite="-y";;
                                 h) printhelp "decat"; exit 0;;
                                 i) overwrite="";;
@@ -427,8 +395,7 @@ $1"
                     else
                         opt="$(printf "%s" "$1" | cut -c3-)"
                         
-                        case "$opt"
-                        in
+                        case "$opt" in
                             force         ) overwrite="-y";;
                             help          ) printhelp "decat"; exit 0;;
                             interactive   ) overwrite="";;
@@ -448,8 +415,7 @@ $1"
                 shift
             done
 
-            for i
-            do
+            for i; do
                 argv="$argv
 $1"
             done
@@ -457,8 +423,7 @@ $1"
             argv="$(printf "%s" "$argv" | tail -n +2)"
             infl="$(printf "%s\n" "$argv" | head -n 1)"
 
-            if [ "$partname" = "1" ]
-            then
+            if [ "$partname" = "1" ]; then
                 [ "$(printf "%s\n" "$argv" | wc -l)" -lt 2 ] && printferrq "--part-name is given. At least 2 positional arguments are expected, exiting.\n"
                 outpat="%s Part %d.mkv"
                 marks="$(printf "%s\n" "$argv" | tail -n +2)"
@@ -471,10 +436,8 @@ $1"
             outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"$(rawname "$infl")"'/g')"
             ;;
         help)
-            for i
-            do
-                if [ "$i" = "-h" ] || [ "$i" = "--help" ]
-                then
+            for i; do
+                if [ "$i" = "-h" ] || [ "$i" = "--help" ]; then
                     printhelp "help"
                     exit 0
                 else
@@ -483,20 +446,15 @@ $1"
             done
             ;;
         split)
-            while [ -n "$1" ]
-            do
-                if [ "${1%"${1#?}"}" = "-" ]
-                then
-                    if ! [ "${1%"${1#??}"}" = "--" ]
-                    then
+            while [ -n "$1" ]; do
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
                         sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                        while [ -n "$sopt" ]
-                        do
+                        while [ -n "$sopt" ]; do
                             opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                            case "$opt"
-                            in
+                            case "$opt" in
                                 f) overwrite="-y";;
                                 h) printhelp "split"; exit 0;;
                                 i) overwrite="";;
@@ -511,8 +469,7 @@ $1"
                     else
                         opt="$(printf "%s" "$1" | cut -c3-)"
                         
-                        case "$opt"
-                        in
+                        case "$opt" in
                             force         ) overwrite="-y";;
                             help          ) printhelp "split"; exit 0;;
                             interactive   ) overwrite="";;
@@ -532,8 +489,7 @@ $1"
                 shift
             done
 
-            for i
-            do
+            for i; do
                 argv="$argv
 $1"
             done
@@ -541,8 +497,7 @@ $1"
             argv="$(printf "%s" "$argv" | tail -n +2)"
             infl="$(printf "%s\n" "$argv" | head -n 1)"
 
-            if [ "$partname" = "1" ]
-            then
+            if [ "$partname" = "1" ]; then
                 [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
                 outpat="$(rawname "$infl") Part %d.mkv"
             else
@@ -553,20 +508,15 @@ $1"
             period="$(printf "%s\n" "$argv" | tail -n 1)"
             ;;
         trim)
-            while [ -n "$1" ]
-            do
-                if [ "${1%"${1#?}"}" = "-" ]
-                then
-                    if ! [ "${1%"${1#??}"}" = "--" ]
-                    then
+            while [ -n "$1" ]; do
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
                         sopt="$(printf "%s" "$1" | cut -c2-)"
 
-                        while [ -n "$sopt" ]
-                        do
+                        while [ -n "$sopt" ]; do
                             opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                            case "$opt"
-                            in
+                            case "$opt" in
                                 f) overwrite="-y";;
                                 h) printhelp "trim"; exit 0;;
                                 i) overwrite="";;
@@ -582,8 +532,7 @@ $1"
                     else
                         opt="$(printf "%s" "$1" | cut -c3-)"
                         
-                        case "$opt"
-                        in
+                        case "$opt" in
                             force            ) overwrite="-y";;
                             help             ) printhelp "trim"; exit 0;;
                             interactive      ) overwrite="";;
@@ -603,8 +552,7 @@ $1"
                 shift
             done
 
-            for i
-            do
+            for i; do
                 argv="$argv
 $1"
             done
@@ -628,16 +576,14 @@ concat() {
     lstfl="$(mktemp -p .)"
     trap 'rm -f -- "$lstfl"' HUP INT QUIT TERM
 
-    printf "%s\n" "$infls" | while IFS= read -r i
-    do
+    printf "%s\n" "$infls" | while IFS= read -r i; do
         [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
 
         printf "%s\n" "$i" >> "$lstfl"
     done
 
     [ -n "$filter" ] && {
-        if [ -n "$stdin" ] 
-        then
+        if [ -n "$stdin" ] ; then
             $filter < "$lstfl" | sponge "$lstfl"
         else
             $filter "$lstfl" | sponge "$lstfl"
@@ -715,11 +661,9 @@ parseargs "$@"
 
 qldiff=$((${#quiet} - ${#loud}))
 
-if [ "$qldiff" -eq 1 ]
-then
+if [ "$qldiff" -eq 1 ]; then
     main > /dev/null
-elif [ "$qldiff" -gt 1 ]
-then
+elif [ "$qldiff" -gt 1 ]; then
     main > /dev/null 2>&1
 else
     main

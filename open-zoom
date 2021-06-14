@@ -6,8 +6,7 @@ fl="$(getfl zoom)" || {
 }
 
 n=1
-while IFS= read -r i
-do
+while IFS= read -r i; do
     [ -z "${i%%"#"*}" ] && continue
 
     lst="$lst$n - $(printf "%s" "$i" | awk -F '' '{print $1,"-",$2}')

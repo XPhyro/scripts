@@ -16,8 +16,7 @@ sed -i '/^### BEGIN AUTO-GENERATED ###/,/^### END AUTO-GENERATED ###/{//!d;};' "
 printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
 printf "##\n#\n\n## Go Instructions ##\n" >> "$ltmp"
 
-while read -r cmd loc
-do
+while read -r cmd loc; do
     loc="$(expandpath "$loc")"
 
     printf "map g%s cd %s\n" "$cmd" "$loc" >> "$rtmp"
@@ -27,8 +26,7 @@ done < "$locations"
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$ltmp"
 
-while read -r cmd fl
-do
+while read -r cmd fl; do
     fl="$(expandpath "$fl")"
 
     printf "map e%s shell vim %s\n" "$cmd" "$fl" >> "$rtmp"

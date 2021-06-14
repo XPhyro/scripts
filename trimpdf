@@ -1,12 +1,10 @@
 #!/usr/bin/env sh
 
-if [ "$#" -eq 0 ]
-then
+if [ "$#" -eq 0 ]; then
     yesno "No file given, trim all PDFs in the current directory? [y/N]\n" || exit 0
     find -mindepth 1 -maxdepth 1 -iname "*.pdf" | xargs -r trimpdf
 else
-    for i
-    do
+    for i; do
         [ "$(file --mime-type -b -- "$i")" != "application/pdf" ] && continue
 
         tmp="$(mktemp -p /tmp "trimpdf-${i##*"/"}-XXXXXX.pdf")" || continue
@@ -20,8 +18,7 @@ else
         tmp1="$(mktemp --suffix .pdf)" || continue
         tmp2="$(mktemp --suffix .pdf)" || continue
         cp -f -- "$i" "$tmp1" || continue
-        seq 2 | while IFS= read -r _
-        do
+        seq 2 | while IFS= read -r _; do
             pdf-crop-margins -o "$tmp2" -- "$tmp1"
             pdf-crop-margins -o "$tmp1" -- "$tmp2"
         done

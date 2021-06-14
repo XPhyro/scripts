@@ -5,7 +5,6 @@
 printf "\n"
 cal -3
 printf "\n"
-while calctdiff --exit-on-error
-do
+while calctdiff --exit-on-error; do
     :
 done

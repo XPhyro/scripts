@@ -9,8 +9,7 @@ ynq() {
     equals "$(printf "y\nn" | dmenu -i -p "$1")" y yes
 }
 
-if ynq "Use a simulation template?"
-then
+if ynq "Use a simulation template?"; then
     tfl="$(selfl -aRl 20 "$(getloc wowsimt)" | head -n 1)"
 
     armory="$(grep "^\s*armory=.*" "$tfl" | tail -n 1 | sed 's/^\s*armory=//')"
@@ -69,8 +68,7 @@ ynq "See simulation progress?" && kill -0 "$pid" && "$TERMINAL" -e screen -r "$s
 
 pids="$(sudo strace -e trace=none -e signal=none -q -p "$pid" 2>&1 | awk '{print $4}')"
 
-if [ "$pids" != "0" ] || [ "$(wc -c "$outfl")" = 0 ]
-then
+if [ "$pids" != "0" ] || [ "$(wc -c "$outfl")" = 0 ]; then
     ynq "Simulation failed (exit code $pids), would you like to see the report anyways?" || {
         rm -f "$outfl"
         exit "$pids"

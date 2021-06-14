@@ -71,11 +71,9 @@ registercmd() {
 flipcmd() {
     CMD_METHOD="$1"
     methodcmd="$2"
-    if [ "$(((cmdpos & CMD_METHOD) == CMD_METHOD))" -ne 1 ]
-    then
+    if [ "$(((cmdpos & CMD_METHOD) == CMD_METHOD))" -ne 1 ]; then
         cmdpos="$((cmdpos | CMD_METHOD))"
-        if [ "$(((cmdinit & CMD_METHOD) == CMD_METHOD))" -ne 1 ]
-        then
+        if [ "$(((cmdinit & CMD_METHOD) == CMD_METHOD))" -ne 1 ]; then
             eval "$methodcmd="
             cmdinit="$((cmdinit | CMD_METHOD))"
         fi
@@ -86,14 +84,11 @@ flipcmd() {
 
 flipasync() {
     chars="$1"
-    while [ -n "$chars" ]
-    do
+    while [ -n "$chars" ]; do
         c="${chars%"${chars#?}"}"
-        while IFS= read -r i <&3 && IFS= read -r j <&4
-        do
+        while IFS= read -r i <&3 && IFS= read -r j <&4; do
             [ "$c" = "$i" ] && {
-                if [ -n "$(eval "printf '%s' \"\$$j\"")" ]
-                then
+                if [ -n "$(eval "printf '%s' \"\$$j\"")" ]; then
                     unset "$j"
                 else
                     eval "$j=' &'"
@@ -116,20 +111,15 @@ EOF4
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="${1#?}"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         A) shift; parseargs --async "$1";;
                         a) parseargs --all;;
                         e) parseargs --editor;;
@@ -147,8 +137,7 @@ parseargs() {
             else
                 opt="${1#??}"
                 
-                case "$opt"
-                in
+                case "$opt" in
                     async         ) shift; [ -n "$(printf "%s" "$1" | tr -d 'amuw')" ] && logargerrq "--async" "$1"; flipasync "$1";;
                     all           ) flipcmd "$CMD_ALL" "allcmd";;
                     editor        ) genscript="1";;
@@ -175,8 +164,7 @@ parseargs() {
         shift
     done
 
-    for i
-    do
+    for i; do
         registercmd "$i"
     done
 }
@@ -228,8 +216,7 @@ main() {
     ogtmpfl="$(mktemp)"
     tmpfl="$(mktemp)"
 
-    if [ ! -t 0 ]
-    then
+    if [ ! -t 0 ]; then
         cp -f -- /dev/stdin "$ogtmpfl" # TODO: Late capturing of stdin might be a problem later on, beware.
         [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
     else
@@ -245,8 +232,7 @@ main() {
     lc="$(wc -l < "$ogtmpfl")"
     [ "$lc" -ne "$(wc -l < "$tmpfl")" ] && logerrq "Line count changed"
 
-    if [ "$genscript" = "1" ]
-    then
+    if [ "$genscript" = "1" ]; then
         scriptfl="$(mktemp --suffix ".$interpreter")"
         printf "%s\n" \
 "#!/usr/bin/env $interpreter
@@ -280,14 +266,11 @@ wipe() {
     :
 }
 " > "$scriptfl"
-        while IFS= read -r i <&3 && IFS= read -r f <&4
-        do
-            if [ "$i" = "$f" ]
-            then
+        while IFS= read -r i <&3 && IFS= read -r f <&4; do
+            if [ "$i" = "$f" ]; then
                 # shellcheck disable=SC2154
                 printf "unmodif '%s'%s\n" "$i" "$unmodifasync"
-            elif [ -z "$f" ]
-            then
+            elif [ -z "$f" ]; then
                 # shellcheck disable=SC2154
                 printf "wipe '%s' '%s'%s\n" "$i" "$f" "$wipeasync"
             else
@@ -306,14 +289,11 @@ wipe() {
             eval "'$scriptfl'"
         }
     else
-        while IFS= read -r i <&3 && IFS= read -r f <&4
-        do
-            if [ "$i" = "$f" ]
-            then
+        while IFS= read -r i <&3 && IFS= read -r f <&4; do
+            if [ "$i" = "$f" ]; then
                 # shellcheck disable=SC2154
                 eval "( $unmodifcmd ) $unmodifasync"
-            elif [ -z "$f" ]
-            then
+            elif [ -z "$f" ]; then
                 # shellcheck disable=SC2154
                 eval "( $wipecmd ) $wipeasync"
             else

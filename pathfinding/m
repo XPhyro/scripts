@@ -18,8 +18,7 @@ mark="$1"
 
 printf "%s\n" "$mark" | grep -qs "\s" && logerrq "Mark cannot contain whitespace, exiting."
 
-if [ -n "$2" ]
-then
+if [ -n "$2" ]; then
     val="$(realpath -- "$2")"
 else
     val="$PWD"

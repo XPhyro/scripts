@@ -41,20 +41,15 @@ assertarg() {
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if  [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if  [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="${1#?}"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         a) parseargs --async;;
                         R) parseargs --no-run-if-whitespace;;
                         r) parseargs --no-run-if-empty;;
@@ -68,8 +63,7 @@ parseargs() {
             else
                 opt="${1#??}"
                 
-                case "$opt"
-                in
+                case "$opt" in
                     async                ) optasync="&";;
                     no-async             ) optasync="";;
                     no-run-if-whitespace ) optnowhite="1";;
@@ -90,8 +84,7 @@ parseargs() {
         shift
     done
 
-    for i
-    do
+    for i; do
         cmd="$cmd '$i'"
     done
 }
@@ -109,12 +102,10 @@ validstdin() {
 }
 
 main() {
-    if [ "$optsponge" = "1" ]
-    then
+    if [ "$optsponge" = "1" ]; then
         eval "( $cmd ) < '$stdinfl'"
     else
-        while IFS= read -r i
-        do
+        while IFS= read -r i; do
             eval "printf '%s\n' '$i' | ( $cmd ) $optasync"
         done < "$stdinfl"
 

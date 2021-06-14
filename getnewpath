@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
 path="$1"
-while [ -e "$path"_ ]
-do
+while [ -e "$path"_ ]; do
     path="$path"_
 done
 printf "%s\n" "$path"_

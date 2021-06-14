@@ -5,16 +5,14 @@ unexpandpath() {
     path="$(printf "%s\n" "$1" | sed 's|/\+|/|g')"
     [ "${path#"${path%?}"}" = "/" ] && path="${path%?}"
 
-    case "$path"
-    in
+    case "$path" in
         /root*    ) printf "%s\n" "~root${path#"/root"}";;
         "$HOME"*  ) printf "%s\n" "~${path#"$HOME"}";;
         /home/*/* ) 
             user="${path#"/home/"}"
             user="${user%%/*}"
             rest="${path#"/home/$user/"}"
-            if id "$user" > /dev/null 2>&1
-            then
+            if id "$user" > /dev/null 2>&1; then
                 printf "~%s/%s\n" "$user" "$rest"
             else
                 printf "%s\n" "$path"
@@ -22,8 +20,7 @@ unexpandpath() {
             ;;
         /home/*   )
             user="${path#"/home/"}"
-            if id "$user" > /dev/null 2>&1
-            then
+            if id "$user" > /dev/null 2>&1; then
                 printf "~%s\n" "$user"
             else
                 printf "%s\n" "$path"
@@ -33,16 +30,13 @@ unexpandpath() {
     esac
 }
 
-if [ -n "$1" ]
-then
-    for i
-    do
+if [ -n "$1" ]; then
+    for i; do
         unexpandpath "$i"
     done
 else
     [ -t 0 ] || {
-        while IFS= read -r i 
-        do
+        while IFS= read -r i; do
             unexpandpath "$i"
         done < "${@:-/dev/stdin}"
     }

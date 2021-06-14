@@ -5,8 +5,7 @@
 f="$(stat -c "%i %d" -- "$1" 2> /dev/null)"
 shift
 
-for i
-do
+for i; do
     [ "$f" != "$(stat -c "%i %d" -- "$i" 2> /dev/null)" ] && exit 1
 done
 

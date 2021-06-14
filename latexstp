@@ -37,20 +37,15 @@ logerrq() {
 }
 
 parseargs() {
-    while [ -n "$1" ]
-    do
-        if [ "${1%"${1#?}"}" = "-" ]
-        then
-            if [ "${1%"${1#??}"}" != "--" ]
-            then
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if [ "${1%"${1#??}"}" != "--" ]; then
                 sopt="${1#?}"
 
-                while [ -n "$sopt" ]
-                do
+                while [ -n "$sopt" ]; do
                     opt="$(printf "%s" "$sopt" | cut -c1)"
 
-                    case "$opt"
-                    in
+                    case "$opt" in
                         f) parseargs --force;;
                         o) parseargs --once;;
                         h) parseargs --help;;
@@ -62,8 +57,7 @@ parseargs() {
             else
                 opt="${1#??}"
 
-                case "$opt"
-                in
+                case "$opt" in
                     force            ) optforce="1";;
                     no-force         ) optforce="0";;
                     once             ) optonce="1";;
@@ -84,8 +78,7 @@ $fls"
         shift
     done
 
-    for i
-    do
+    for i; do
         assertfl "$i.tex"
         fls="$fls$i
 "
@@ -103,8 +96,7 @@ processargs() {
     srchashfl="$cachedir$(realpath -- "$srcfl.tex")"
     mkdir -p -- "$(dirname -- "$srchashfl")" || {
         i="$srchashfl"
-        while true
-        do
+        while true; do
             [ -e "$i" ] && {
                 rm -rf "$i"
                 break
@@ -165,8 +157,7 @@ dispatchcompiler() {
 
     printf '[latexstp]: %s\n' \"Initialised in \$(pwd).\" 'Watching $srcfl.tex.'
 
-    while true
-    do
+    while true; do
         inotifywait -qq -e move_self -- '$srcfl.tex'
         waitfl '$srcfl.tex'
         compile

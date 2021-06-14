@@ -2,8 +2,7 @@
 # xdg-open wrapper.
 
 open() {
-    if [ "$(grep -E "^Terminal=.*" -- "$2" | head -n 1 | sed 's/^Terminal=//')" = "true" ]
-    then
+    if [ "$(grep -E "^Terminal=.*" -- "$2" | head -n 1 | sed 's/^Terminal=//')" = "true" ]; then
         xdg-open "$1" 
     else
         xdg-open "$1" &
@@ -23,8 +22,7 @@ mim="$(getfl mim)" || {
     exit 1
 }
 
-for i
-do
+for i; do
     [ "$(mimetype --brief -- "$i" | cut -d/ -f-1)" = "text" ] && {
         eval "'$EDITOR' -- '$i'"
         continue

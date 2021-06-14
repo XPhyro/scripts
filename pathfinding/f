@@ -2,23 +2,17 @@
 # Select a file using fzf and open it using xph-open.
 
 main() {
-    file="$(fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 'right,60%,wrap')"
-    # shellcheck disable=SC2181
-    [ $? -ne 0 ] && exit $?
+    file="$(fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 'right,60%,wrap')" || exit $?
     [ -n "$file" ] && xph-open "$file"
 }
 
-if [ "$#" -eq 0 ]
-then
-    while true
-    do
+if [ "$#" -eq 0 ]; then
+    while true; do
         main
     done
 else
-    while true
-    do
-        for i
-        do
+    while true; do
+        for i; do
             loc="$(getloc "$i")"
             [ -d "$loc" ] && cd "$loc" && main
         done

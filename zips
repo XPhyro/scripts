@@ -6,8 +6,7 @@
 }
 
 name="$(rawname "$1")"
-case "$format"
-in
+case "$format" in
     zip ) zip -r -- "$name.zip" "$@";;
     *   ) tar czf -- "$name.tar.gz" "$@";;
 esac
