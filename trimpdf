@@ -2,7 +2,7 @@
 
 if [ "$#" -eq 0 ]; then
     yesno "No file given, trim all PDFs in the current directory? [y/N]\n" || exit 0
-    find -mindepth 1 -maxdepth 1 -iname "*.pdf" | xargs -r trimpdf
+    find -mindepth 1 -maxdepth 1 -iname "*.pdf" -print0 | xargs -0r trimpdf
 else
     for i; do
         [ "$(file --mime-type -b -- "$i")" != "application/pdf" ] && continue
