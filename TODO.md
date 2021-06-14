@@ -61,6 +61,7 @@
 - Make `xins` use IFS= or IFS=\n.
 - Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getloc $$#)\""` could be used to do so.
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
+- In `clplog` and other applicable scripts, use `\0` instead of `^M` for logging.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
@@ -71,3 +72,4 @@
 - Unintegrate `dwmpad` from scripts that do not require it such as `sptkeys`.
 - Instead of using `basename`, `dirname`, `rawname` and `rawextension`, use POSIX parameter expansions.
 - Pass `-d '\n'` to `xargs` where applicable.
+- SC2185: Some finds don't have a default path. Specify '.' explicitly.
