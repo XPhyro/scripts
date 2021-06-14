@@ -6,4 +6,4 @@ paths="$(type "$@")" || {
     exit 1
 }
 
-"$EDITOR" $(printf "%s\n" "$paths" | awk '{print $NF}')
+"$EDITOR" -- $(printf "%s\n" "$paths" | awk '{print $NF}')
