@@ -44,7 +44,7 @@ parseargs() {
                 sopt="${1#?}"
 
                 while [ -n "$sopt" ]; do
-                    opt="$(printf "%s" "$sopt" | cut -c1)"
+                    opt="${sopt%"${sopt#?}"}"
 
                     case "$opt" in
                         d) shift; parseargs --directory "$1";;
