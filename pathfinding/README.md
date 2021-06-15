@@ -74,6 +74,26 @@ The suite will deliver the following features:
 - Usage: `getunlocsafe key`
 - Description: 
 
+### [getrealfl](getrealfl)
+- Usage: `getrealfl key`
+- Description: 
+
+### [getrealflloc](getrealflloc)
+- Usage: `getrealflloc key`
+- Description: 
+
+### [getrealloc](getrealloc)
+- Usage: `getrealloc key`
+- Description: 
+
+### [getreallocall](getreallocall)
+- Usage: `getreallocall key`
+- Description: 
+
+### [getreallocunsafe](getreallocunsafe)
+- Usage: `getreallocunsafe key`
+- Description: 
+
 ### [m](m) 
 - Usage: `m key`
 - Description: Marks the current directory with the key `key`.
