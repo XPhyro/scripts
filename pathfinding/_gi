@@ -6,4 +6,4 @@ locfl="$(getfl loc)" || {
     exit 1
 }
 
-fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs ls --color=always" < "$locfl" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath
+fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs -d '\n' ls --color=always" < "$locfl" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath

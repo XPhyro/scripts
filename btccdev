@@ -10,7 +10,7 @@ done | sort -r | xins -rs -- dmenu -i -p "Which device to connect to?")"
 seldevname="$(printf "%s" "$seldev" | awk '{$1=""; print substr($0,2)}')"
 seldev="$(printf "%s" "$seldev" | awk '{print $1}')"
 
-if printf "%s" "$seldev" | awk '{print $1}' | xargs -rn 1 bluetoothctl connect; then
+if printf "%s" "$seldev" | awk '{print $1}' | xargs -d '\n' -rn 1 bluetoothctl connect; then
     notify-send -t 1000 "✔ $seldevname" "Connected to device."
 else
     notify-send -t 1000 "❌ $seldevname" "Could not connect to device."

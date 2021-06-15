@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Kill all processes named the selected string.
 
-ps -A --sort=-pcpu | awk '{print $4}' | uniqs | dmenu -i -p 'Which process to kill?' | xargs -r killall
+ps -A --sort=-pcpu | awk '{print $4}' | uniqs | dmenu -i -p 'Which process to kill?' | xargs -d '\n' -r killall

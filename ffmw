@@ -600,7 +600,7 @@ concat() {
         exit 1
     }
 
-    [ "$remove" = "1" ] && printf "%s\n" "$infls" | xargs rm --
+    [ "$remove" = "1" ] && printf "%s\n" "$infls" | xargs -d '\n' -r rm --
 
     [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
 
