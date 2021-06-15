@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+loc="$(getflloc "$1")" || exit $?
+exec realpath -P -- "${loc:?}"
