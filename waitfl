@@ -1,13 +1,11 @@
 #!/usr/bin/env sh
 
 while true; do
-    allexist="1"
     for i; do
         [ -e "$i" ] || {
-            allexist="0"
-            break
+            sleep 0.05
+            continue 2
         }
     done
-    [ "$allexist" = "1" ] && exit 0
-    sleep 0.05
+    exit 0
 done
