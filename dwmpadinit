@@ -6,7 +6,7 @@ shift 2
 
 [ "$lck" != "0" ] && {
     printf "%s\n" "$$" > "$lckdir/$lck/pid"
-    printf "%s - %s\n" "dwmpad #$lck" "$(date +"%a %F %R")"
+    printf "%s - %s\n" "dwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
 
     if [ "$#" -eq 0 ]; then
         exec "$SHELL"
