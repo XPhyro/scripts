@@ -12,6 +12,11 @@ The suite delivers the following features:
 The suite will deliver the following features:
 - Marking files.
 
+## Installation
+
+1. Follow the installation instructions in [../README.md](../README.md).
+2. Source [.shrc](.shrc) in your shell rc file or append it in-place.
+
 ## Explanation of commands (to be completed)
 
 ### [_@](_@)
