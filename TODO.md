@@ -63,6 +63,7 @@
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
 - In `clplog` and other applicable scripts, use `\0` instead of `^M` for logging.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
+- Pass `-0` option to `file` in `wallpaper`.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
