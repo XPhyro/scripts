@@ -5,10 +5,10 @@ waloc="$(getloc wa)" || {
     exit 1
 }
 
-find "$waloc" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 | xargs -r0 file --mime-type | grep ":\s\+image/[a-z]\+$" | sed 's|:\s\+image/[a-z]\+$||' | shuf -r | while IFS= read -r i; do
+find "$waloc" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 | xargs -r0 -n 20 -P 64 file -L --mime-type -- | grep ":\s\+image/[a-z]\+$" | sed 's|:\s\+image/[a-z]\+$||' | shuf -r | while IFS= read -r i; do
     cmp -s -- "$i" "$last" 2> /dev/null && continue
     hsetroot -cover "$i" > /dev/null || continue
     last="$i"
     printf "%s\n" "$i" > "$waloc/.current-wallpaper"
-    sleep "$@"
+    sleep "${@:-15m}"
 done
