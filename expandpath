@@ -40,14 +40,12 @@ expandpath() {
     esac
 }
 
-if [ -n "$1" ]; then
+if [ "$#" -ne 0 ]; then
     for i; do
         expandpath "$i"
     done
-else
-    [ -t 0 ] || {
-        while IFS= read -r i; do
-            expandpath "$i"
-        done < "${@:-/dev/stdin}"
-    }
+elif [ ! -t 0 ]; then
+    while IFS= read -r i; do
+        expandpath "$i"
+    done < "${@:-/dev/stdin}"
 fi
