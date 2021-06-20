@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+
+logerr() {
+    tput setaf 1
+    printf "[%s]: %s\n" "$execname" "$1" >&2
+    tput op
+}
+
+logerrq() {
+    logerr "$1"
+    exit 1
+}
+
+execname="${0##*/}"
+
+case "$#" in
+    0) logerrq "At least 1 argument is needed.";;
+    1) fl="$1";;
+    *) for i; do "$execname" "$i"; done; exit 0;;
+esac
+
+[ ! -s "$fl" ] && {
+    tput setaf 3
+    printf "[%s]: File is empty.\n" "$execname"
+    tput op
+    exit 0
+}
+
+case "$(file --mime-type --brief "$fl")" in
+    text/*|*/xml)
+        tmp="$(mktemp)"
+        { [ "${fl%.*}" = "$fl" ] || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq "${fl##*.}"; } && bat --color=always --style=plain --pager=never --decorations=never "$@" -- "$fl" > "$tmp" && sed -i -E 's/\[38;5;231m(.*)\[0m$/\1/' "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
+            highlight --replace-tabs=4 --out-format=truecolor --force --style=candy -- "$fl" > "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
+                vimcat -o "$tmp" -- "$fl" || cp -- "$fl" "$tmp"
+            }
+        }
+        cat -- "$tmp"
+        rm -f -- "$tmp"
+        ;;
+    *)
+        exiftool "$fl"
+        ;;
+    # *) logerrq "Cannot print file.";;
+esac
