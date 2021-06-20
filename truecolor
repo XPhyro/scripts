@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+[ "$#" -lt 3 ] && {
+    printf "[%s]: At least 3 arguments needed." "${0##*/}" >&2
+    exit 1
+}
+
+printf "[38;2;%s;%s;%sm" "$1" "$2" "$3"
+
+if [ "$#" -gt 3 ]; then
+    shift 3
+    for i; do
+        printf "%s\n" "$@"
+    done
+elif [ ! -t 0 ]; then
+    cat <&0
+fi
+
+printf "[0m"
