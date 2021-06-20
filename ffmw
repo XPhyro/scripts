@@ -570,6 +570,9 @@ $1"
             [ "$moveorig" = "1" ] && movefile="$infl"
             ;;
     esac
+
+    mvoverwrite="${overwrite:-"-i"}"
+    [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
 }
 
 concat() {
@@ -602,7 +605,7 @@ concat() {
 
     [ "$remove" = "1" ] && printf "%s\n" "$infls" | xargs -d '\n' -r rm --
 
-    [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
+    [ -n "$movefile" ] && mv $mvoverwrite -- "$outfl" "$movefile"
 
     [ -f "$lstfl" ] && rm -f -- "$lstfl"
 }
@@ -611,7 +614,7 @@ crop() {
     $pperf ffmpeg -hide_banner $threads $overwrite -ss "$beginmark" -i "$infl" $endmark -safe 0 -c copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
-    [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
+    [ -n "$movefile" ] && mv $mvoverwrite -- "$outfl" "$movefile"
 }
 
 decat() {
@@ -650,7 +653,7 @@ trim() {
 
     [ "$remove" = "1" ] && rm -- "$infl"
 
-    [ -n "$movefile" ] && mv ${overwrite:-"-i"} -- "$outfl" "$movefile"
+    [ -n "$movefile" ] && mv $mvoverwrite -- "$outfl" "$movefile"
 }
 
 main() {
