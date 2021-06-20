@@ -73,3 +73,4 @@
 - Unintegrate `dwmpad` from scripts that do not require it such as `sptkeys`.
 - Instead of using `basename`, `dirname`, `rawname` and `rawextension`, use POSIX parameter expansions.
 - SC2185: Some finds don't have a default path. Specify '.' explicitly.
+- Add `exit 0` at the end of all scripts.
