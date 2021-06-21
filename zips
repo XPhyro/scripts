@@ -7,6 +7,6 @@
 
 name="${1%.*}"
 case "$format" in
-    zip ) zip -r -- "$name.zip" "$@";;
-    *   ) tar czf -- "$name.tar.gz" "$@";;
+    zip ) zip -r "$name.zip" "$@";;
+    *   ) tar czf "$name.tar.gz" "$@";;
 esac

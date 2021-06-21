@@ -2,12 +2,15 @@
 
 for i; do
     case "$i" in
-        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf "$i";;
-        *.tar.gz|*.tgz                 ) tar xzvf "$i";;
-        *.tar.xz|*.txz                 ) tar xJvf "$i";;
-        *.zip                          ) unzip -- "$i";;
-        *.rar                          ) unrar x -- "$i";;
-        # *.7z                           ) 7z x -- "$i";;
-        *                              ) 7z x -- "$i";;
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2 ) tar        xjvf "$i";;
+        *.tar.gz|*.tgz                  ) tar        xzvf "$i";;
+        *.tar.xz|*.txz                  ) tar        xJvf "$i";;
+        *.bz2                           ) bunzip2         "$i";;
+        *.gz                            ) gunzip          "$i";;
+        *.zip                           ) unzip           "$i";;
+        *.rar                           ) unrar      x    "$i";;
+        *.z                             ) uncompress      "$i";;
+        *.7z                            ) 7z         x    "$i";;
+        *                               ) unar            "$i";;
     esac
 done
