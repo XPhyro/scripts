@@ -19,6 +19,8 @@ case "$#" in
     *) for i; do "$execname" "$i"; done; exit 0;;
 esac
 
+[ ! -e "$fl" ] && logerrq "File does not exist."
+
 [ ! -s "$fl" ] && {
     tput setaf 3
     printf "[%s]: File is empty.\n" "$execname"
@@ -29,7 +31,7 @@ esac
 case "$(file --mime-type --brief "$fl")" in
     text/*|*/xml)
         tmp="$(mktemp)"
-        { [ "${fl%.*}" = "$fl" ] || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq "${fl##*.}"; } && bat --color=always --style=plain --pager=never --decorations=never "$@" -- "$fl" > "$tmp" && sed -i -E 's/\[38;5;231m(.*)\[0m$/\1/' "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
+        { [ "${fl%.*}" = "$fl" ] || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq "${fl##*.}"; } && bat --color=always --style=plain --pager=never --decorations=never -- "$fl" > "$tmp" && sed -i -E 's/\[38;5;231m(.*)\[0m$/\1/' "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
             highlight --replace-tabs=4 --out-format=truecolor --force --style=candy -- "$fl" > "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
                 vimcat -o "$tmp" -- "$fl" || cp -- "$fl" "$tmp"
             }
