@@ -71,6 +71,5 @@
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is interrupted, killed, etc.
 - Unintegrate `dwmpad` from scripts that do not require it such as `sptkeys`.
-- Instead of using `basename`, `dirname`, `rawname` and `rawextension`, use POSIX parameter expansions.
 - SC2185: Some finds don't have a default path. Specify '.' explicitly.
 - Add `exit 0` at the end of all scripts.

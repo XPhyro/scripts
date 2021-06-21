@@ -433,7 +433,7 @@ $1"
                 marks="$(printf "%s\n" "$argv" | tail -n +3)"
             fi
 
-            outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"$(rawname "$infl")"'/g')"
+            outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"${infl%.*}"'/g')"
             ;;
         help)
             for i; do
@@ -499,7 +499,7 @@ $1"
 
             if [ "$partname" = "1" ]; then
                 [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
-                outpat="$(rawname "$infl") Part %d.mkv"
+                outpat="${infl%.*} Part %d.mkv"
             else
                 [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
                 outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"

@@ -15,7 +15,7 @@ while true; do
     printf "%s" "$n" | grep -xq "[[:digit:]]\+" && break
 done
 
-notify-send -t 2000 "view-music" "Opening $n of $(basename "$fl") with $OPENER."
+notify-send -t 2000 "view-music" "Opening $n of ${fl##*/} with $OPENER."
 seq "$n" | while IFS= read -r _; do
     eval "'$OPENER' '$dir/$fl'" &
 done

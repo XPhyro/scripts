@@ -92,9 +92,9 @@ setdefargs() {
 processargs() {
     [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
     srcfl="$(printf "%s\n" "$fls" | head -n 1)"
-    hardlinked "$srcfl" "$(basename -- "$srcfl")" || logerrq "Source file must be in the current directory."
+    hardlinked "$srcfl" "${srcfl##*/}" || logerrq "Source file must be in the current directory."
     srchashfl="$cachedir$(realpath -- "$srcfl.tex")"
-    mkdir -p -- "$(dirname -- "$srchashfl")" || {
+    mkdir -p -- "${srchashfl%/*}" || {
         i="$srchashfl"
         while true; do
             [ -e "$i" ] && {
@@ -102,7 +102,7 @@ processargs() {
                 break
             }
             
-            i="$(dirname -- "$i")"
+            i="${i%/*}"
             [ "$i" = "$cachedir" ] && logerrq "Could not resolve cache, exiting."
         done
     }

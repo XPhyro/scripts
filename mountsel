@@ -12,7 +12,7 @@ getmount() {
         printf "%s\n" "Special device detected: $label"
         mp="/mnt/mybook"
     else
-        mp="/mnt/$(basename -- "$chosen")"
+        mp="/mnt/${chosen##*/}"
     fi
 
 	[ -z "$mp" ] && exit 1
