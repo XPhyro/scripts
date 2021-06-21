@@ -5,16 +5,12 @@ eval "$(xdotool getwindowfocus getwindowgeometry --shell)"
 
 while read -r mn mw mh mx my; do
     if [ "$X" -ge "$mx" ] && [ "$Y" -ge "$my" ] && [ "$X" -lt "$((mx + mw ))" ] && [ "$Y" -lt "$(( my + mh))" ]; then
-        hasmn="1"
-        break
+        printf "%s\n" "$mn"
+        exit 0
     fi
 done <<EOF
-$(xrandr | grep -w connected | sed -r "s/^([^ ]*).*\b([-0-9]+)x([-0-9]+)\+([-0-9]+)\+([-0-9]+).*$/\1 \2 \3 \4 \5/" | sort -nk4,5)
+$(xrandr | grep -Fw 'connected' | sed -r 's/^([^ ]*).*\b([-0-9]+)x([-0-9]+)\+([-0-9]+)\+([-0-9]+).*$/\1 \2 \3 \4 \5/' | sort -nk4,5)
 EOF
 
-[ "$hasmn" != 1 ] && {
-    printf "Couldn't find any monitor for the current window.\n" >&2
-    exit 1
-}
-
-printf "%s\n" "$mn"
+printf "Couldn't find any monitor for the current window.\n" >&2
+exit 1
