@@ -18,7 +18,8 @@ else
         tmp1="$(mktemp --suffix .pdf)" || continue
         tmp2="$(mktemp --suffix .pdf)" || continue
         cp -f -- "$i" "$tmp1" || continue
-        seq 2 | while IFS= read -r _; do
+        i=-1
+        while [ $((i += 1)) -lt 2 ]; do
             pdf-crop-margins -o "$tmp2" -- "$tmp1"
             pdf-crop-margins -o "$tmp1" -- "$tmp2"
         done

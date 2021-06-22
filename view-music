@@ -16,7 +16,8 @@ while true; do
 done
 
 notify-send -t 2000 "view-music" "Opening $n of ${fl##*/} with $OPENER."
-seq "$n" | while IFS= read -r _; do
+i=-1
+while [ $((i += 1)) -lt $n ]; do
     eval "'$OPENER' '$dir/$fl'" &
 done
 wait
