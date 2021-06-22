@@ -191,7 +191,7 @@ main() {
 
     [ "$willclean" = "1" ] && {
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
-        for i in "$flsdir"/*; do
+        for i in "${flsdir:?}"/*; do
             pid="$(cat -- "$i")"
             kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
         done
