@@ -4,7 +4,7 @@
 # TODO: Implement iOS mounting.
 
 getmount() {
-	[ -n "$chosen" ] || exit 1
+    [ -n "$chosen" ] || exit 1
 
     label="$(lsblk -rpo "name,label" | grep "$chosen" | awk '{print $2}' | sed 's/\\x20/ /')"
 
@@ -15,53 +15,53 @@ getmount() {
         mp="/mnt/${chosen##*/}"
     fi
 
-	[ -z "$mp" ] && exit 1
+    [ -z "$mp" ] && exit 1
 
-	[ -d "$mp" ] || {
+    [ -d "$mp" ] || {
         mkdir -p -- "$mp" || sudo -A mkdir -p -- "$mp"
     }
 }
 
 mountusb() {
-	chosen="$(printf "%s" "$usbdrives" | dmenu -i -p "Mount which drive?" | awk '{print $1}')"
+    chosen="$(printf "%s" "$usbdrives" | dmenu -i -p "Mount which drive?" | awk '{print $1}')"
 
-	sudo -A mount "$chosen" 2>/dev/null && {
+    sudo -A mount "$chosen" 2>/dev/null && {
         notify-send "💻 Drive mounted" "$chosen mounted."
         exit 0
     }
 
-	alreadymounted="$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')"
+    alreadymounted="$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')"
 
-	getmount "/mnt /media /mount /home -maxdepth 5 -type d $alreadymounted"
+    getmount "/mnt /media /mount /home -maxdepth 5 -type d $alreadymounted"
 
-	partitiontype="$(lsblk -no "fstype" "$chosen")"
+    partitiontype="$(lsblk -no "fstype" "$chosen")"
 
-	case "$partitiontype" in
-		"vfat" ) sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
-		*      ) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" -- "$mp";;
-	esac
+    case "$partitiontype" in
+        "vfat" ) sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
+        *      ) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" -- "$mp";;
+    esac
 
-	notify-send "💻 Drive mounted" "$chosen mounted to $mp."
+    notify-send "💻 Drive mounted" "$chosen mounted to $mp."
 }
 
 mountandroid() {
-	chosen="$(printf "%s" "$anddrives" | dmenu -i -p "Which Android device?" | cut -d : -f 1)"
-	getmount "$HOME -maxdepth 3 -type d"
+    chosen="$(printf "%s" "$anddrives" | dmenu -i -p "Which Android device?" | cut -d : -f 1)"
+    getmount "$HOME -maxdepth 3 -type d"
     simple-mtpfs --device "$chosen" "$mp"
 
-	dmenu -i -p "Tap Allow on your phone if it asks for permission. Press enter to continue." < /dev/null
+    dmenu -i -p "Tap Allow on your phone if it asks for permission. Press enter to continue." < /dev/null
 
-	simple-mtpfs --device "$chosen" "$mp"
+    simple-mtpfs --device "$chosen" "$mp"
 
-	notify-send "🤖 Android mounted" "Android device mounted to $mp."
+    notify-send "🤖 Android mounted" "Android device mounted to $mp."
 }
 
 asktype() {
-	case "$(printf "Drive\nAndroid" | dmenu -i -p "Mount a drive or Android device?")" in
-		Drive   ) mountusb ;;
-		Android ) mountandroid ;;
+    case "$(printf "Drive\nAndroid" | dmenu -i -p "Mount a drive or Android device?")" in
+        Drive   ) mountusb ;;
+        Android ) mountandroid ;;
         *       ) exit 0;;
-	esac
+    esac
 }
 
 anddrives="$(simple-mtpfs -l 2>/dev/null)"
