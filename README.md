@@ -7,6 +7,12 @@ This repository is a collection of my shell scripts. Some are used everyday, whi
 sudo make install
 ```
 
+## Uninstallation
+
+```sh
+sudo make uninstall
+```
+
 ## Notable scripts
 - [mapexec](mapexec): Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch) but adhering to the Unix philosophy, more versatile and (in my opinion) better.
 - [contexec](contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language.
