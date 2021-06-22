@@ -74,3 +74,5 @@
 - Unintegrate `dwmpad` from scripts that do not require it such as `sptkeys`.
 - SC2185: Some finds don't have a default path. Specify '.' explicitly.
 - Add `exit 0` at the end of all scripts.
+- Add explanations under shebangs.
+- Add a file that explains every script. Mention this file in [README.md](README.md).
