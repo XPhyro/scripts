@@ -21,7 +21,7 @@ if [ -t 0 ]; then
             dest="NO FILE"
         fi
 
-        printf "%s -> %s\n" "$i" "$dest" >> "$tmpfl"
+        printf "%s%s\n" "$i" "$dest" >> "$tmpfl"
     done
 else
     while IFS= read -r i; do
@@ -35,7 +35,7 @@ else
             dest="NO FILE"
         fi
 
-        printf "%s -> %s\n" "$i" "$dest" >> "$tmpfl"
+        printf "%s%s\n" "$i" "$dest" >> "$tmpfl"
     done <&0
 fi
 
@@ -46,9 +46,9 @@ eval "'$EDITOR' -- '$tmpfl'"
 
 cmp -s -- "$origtmpfl" "$tmpfl" && exit 0
 
-while IFS=' -> ' read -r fl symlink <&3 && IFS=' -> ' read -r ogfl ogsymlink <&4; do
+while IFS='' read -r fl symlink <&3 && IFS='' read -r ogfl ogsymlink <&4; do
     if [ "$fl" != "$ogfl" ] || [ -z "$symlink" ] || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] || [ "$symlink" = "NO FILE" ] || [ "$symlink" = "$ogsymlink" ]; then
-        printf "Ignoring line [%s -> %s].\n" "$fl" "$symlink"
+        printf "Ignoring line [%s%s].\n" "$fl" "$symlink"
         continue
     fi
 
