@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+dirname "$(fd --type f | fzf --preview "stpv {}")"
