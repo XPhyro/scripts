@@ -4,7 +4,7 @@
 message="$1"
 shift
 
-fls="$(printf "%s\n" "$@" | xargs -d '\n' -rn 1 realpath "--relative-to=$(git rev-parse --show-toplevel)" --)"
+fls="$(printf "%s\n" "$@" | xargs -d '\n' -rn 1 realpath "--relative-to=$(git rev-parse --show-toplevel)" -- | sed 's|^src/||')"
 
 if [ "$#" -eq 1 ]; then
     git add -- "$1" && git commit -m "$message $fls"
