@@ -76,3 +76,4 @@
 - Add `exit 0` at the end of all scripts.
 - Add explanations under shebangs.
 - Add a file that explains every script. Mention this file in [README.md](README.md).
+- Use `basename` and `dirname` instead of parameter expansions as they correctly deal with edge cases. If these edge cases are known not to be present, do use parameter expansions.
