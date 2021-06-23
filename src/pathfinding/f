@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
-# Select a file using fzf and open it using xph-open.
+#!/usr/bin/env sh
+# Select a file using fzf and open them in "$EDITOR".
 
 main() {
-    file="$(fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 'right,60%,wrap')" || exit $?
-    [ -n "$file" ] && xph-open "$file"
+    fl="$(fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 'right,60%,wrap')" || exit $?
+    [ -n "$fl" ] && "$EDITOR" -- "$fl"
 }
 
 if [ "$#" -eq 0 ]; then
