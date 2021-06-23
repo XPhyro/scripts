@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# A sane TeX (CTAN) package manager.
+
+# TODO: First, check and see if there actually is a sane package manager for TeX.
