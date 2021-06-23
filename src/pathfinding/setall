@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+code=
+setloc || code=1
+setfl || code=1
+exit ${code:-0}
