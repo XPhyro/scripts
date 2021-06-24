@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+[ $# -eq 0 ] && exit 0
+printf -- "%s\0" "$@" | awk -F '\0' '
+@load "filefuncs"
+{
+    for (i = 1; i < NF; i++) {
+        if ((stat($i, _) < 0) && (stat("src/"$i, _) == 0))
+            printf("src/%s\0", $i);
+        else
+            printf("%s\0", $i);
+    }
+}
+' | xargs -ro0 "$EDITOR"
