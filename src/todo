@@ -1,61 +1,0 @@
-#!/usr/bin/env sh
-# TODO: Add support for recurring todos.
-# TODO: Add support for notifications at set delta times until due.
-
-fl="$(getfl todo)" || {
-    printf "[ERROR]: getfl failed, aborting."
-    exit 1
-}
-
-mode="$(printf "new\nmark\nremove\nlist" | dmenu -i -p "todo:")"
-
-[ -z "$mode" ] && exit 0
-
-case "$mode" in
-    new)
-        title="$(dmenu -p "title:")"
-        [ -z "$title" ] && exit 0
-        desc="$(dmenu -p "description:")"
-        due="$(dmenu -p "due date:")"
-        [ -z "$due" ] || {
-            # check whether due is given relative or absolute
-            :
-            # i.e. in form '2m ?17d ?4h ?2m ?1s ?230ms' or '((20)?20-?)?05-17 ?13-?05'
-            # convert the given due date into unix timestamp
-        }
-        printf "%s\n" "$title$desc$dueN" >> "$fl"
-        ;;
-    flag)
-        # DUNF: done, undone, new, important. DUN cannot coexist, while F can exist with DUN. N cannot be manually set.
-        flag="$(printf "D\nU\nF" | dmenu -i -p "flag:")"
-        case "$flag" in
-            D)
-                sel="$(tail -n +3 | dmenu -i -p "todo:")" # TODO: show only that are UN
-                # if has UN, remove
-                # add D
-                ;;
-            U)
-                sel="$(tail -n +3 | dmenu -i -p "todo:")" # TODO: show only that are D
-                # if has DN, remove
-                # add U
-                ;;
-            F)
-                sel="$(tail -n +3 | dmenu -i -p "todo:")" # TODO: show only that are UN
-                # toggle F: if has F, remove; else, add
-                ;;
-            *) exit 1;;
-        esac
-        ;;
-    remove)
-        sel="$(tail -n +3 "$fl" | dmenu -i -p "todo:")"
-        # ask whether sure to remove "$sel"
-        # if yes, remove "$sel"
-        ;;
-    list) tail -n +3 "$fl" | awk -F '' '{print $1""$2" -> Due date: "$3}' | sed 's//: /g' | dmenu -i -p "todo:" -l 20; exit 0;;
-    *) exit 1;;
-esac
-
-header="$(head -n 2 "$fl")"
-entries="$(tail -n +3 "$fl")"
-printf "%s" "$header" > "$fl"
-printf "%s" "$entries" | sed '/^$/d' | uniqs >> "$fl"
