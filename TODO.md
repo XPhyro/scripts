@@ -77,3 +77,5 @@
 - Add explanations under shebangs.
 - Add a file that explains every script. Mention this file in [README.md](README.md).
 - Use `basename` and `dirname` instead of parameter expansions as they correctly deal with edge cases. If these edge cases are known not to be present, do use parameter expansions.
+- Into the pathfinding suite, add a system for custom aliases/functions/variables depending on the current directory of the user. This could be done by modifying the currently provided `cd` function.
+- Replace `printf` with `printf --`.
