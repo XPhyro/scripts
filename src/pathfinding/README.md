@@ -59,6 +59,14 @@ The suite will deliver the following features:
 - Usage: NA
 - Description: This is a utility script used by the other scripts. It is not meant to be used interactively.
 
+### [e](e)
+- Usage: `e key`
+- Description: 
+
+### [ei](ei)
+- Usage: `ei`
+- Description: 
+
 ### [getfl](getfl)
 - Usage: `getfl key`
 - Description: 
@@ -107,6 +115,10 @@ The suite will deliver the following features:
 - Usage: `mvloc location file1 ... fileN`
 - Description: Is equivalent to `mv file1 ... fileN "$(getloc location)"`.
 
+### [setall](setall)
+- Usage: `setall`
+- Description: Alias for running `setfl` and `setloc`.
+
 ### [setfl](setfl)
 - Usage: `setfl`
 - Description: Should be run every time after `"$HOME/documents/sys-admin/locations"` is edited.
@@ -114,6 +126,10 @@ The suite will deliver the following features:
 ### [setloc](setloc)
 - Usage: `setloc`
 - Description: Should be run every time after `"$HOME/documents/sys-admin/files"` is edited.
+
+### [v](v)
+- Usage: `v ARGS...`
+- Description: Alias for running `"$EDITOR" "$@"` where positional arguments that are files inside the directory `src` are replaced with `src/ARG`.
 
 ## Usage
 
