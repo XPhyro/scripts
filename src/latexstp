@@ -36,6 +36,10 @@ logerrq() {
     exit 1
 }
 
+assertfl() {
+    [ -f "$1" ] || logerrq "No such file as $1, exiting."
+}
+
 parseargs() {
     while [ -n "$1" ]; do
         if [ "${1%"${1#?}"}" = "-" ]; then

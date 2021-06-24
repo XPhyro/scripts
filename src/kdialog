@@ -1,83 +1,125 @@
 #!/usr/bin/env sh
 # kdialog wrapper to not use awful file dialogs.
-# If using dwm or the like, you should export XDG_CURRENT_DESKTOP=kde in your shell profile and prepend XDG_CURRENT_DESKTOP="" in xdg-open.
+# If you're using dwm, bspwm or other generic graphical environments, you should 'export XDG_CURRENT_DESKTOP=kde' in your shell profile and prepend 'unset XDG_CURRENT_DESKTOP' in xdg-open (unless you're using the included xdg-open wrapper).
+# If you're using KDE, you do not need to change anything.
+# If you're not using KDE or a generic environment, you need to either change your default file picker, or transform this script to fit your file picker.
 
-kdialog() {
+realkdialog() {
+    execaux "$0" "$@"
+}
+
+execrealkdialog() {
     exec execaux "$0" "$@"
 }
 
 peekargs() {
     for i; do
         case "$i" in
-            --getopenfilename|--getsavefilename                 ) hasrelevantopt="1";;
-            -h|--help|--helpall|-v|--version|--author|--license ) kdialog "$@";;
+            --getopenfilename|--getsavefilename|--getopenurl|--getsaveurl)
+                return 0;;
+            -h|--help|--help-all|-v|--version|--author|--license)
+                break;;
         esac
     done
 
-    [ "$hasrelevantopt" != "1" ] && kdialog "$@"
+    execrealkdialog "$@"
 }
 
 parseargs() {
+    unset argopen argopenfilter argsave argsavefilter optmultiple argtitle
+
     while [ -n "$1" ]; do
         if [ "${1%"${1#??}"}" = "--" ]; then
             opt="${1#??}"
             
             case "$opt" in
-                getopenfilename ) optopenfile="1"; moptreg="1";;
-                getsavefilename ) optsavefile="1"; moptreg="1";;
-                getopenurl      ) optopenurl="1"; moptreg="1";;
-                getsaveurl      ) optsaveurl="1"; moptreg="1";;
-                *               ) moptreg="0";;
+                getopenfilename|getopenurl)
+                    [ "$#" -gt 1 ] && shift && argopen="$1"
+                    [ "$#" -gt 1 ] && [ "${2%"${2#??}"}" != "--" ] && shift && argopenfilter="$1"
+                    ;;
+                getsavefilename|getsaveurl)
+                    [ "$#" -gt 1 ] && shift && argsave="$1"
+                    [ "$#" -gt 1 ] && [ "${2%"${2#??}"}" != "--" ] && shift && argsavefilter="$1"
+                    ;;
+                multiple)
+                    optmultiple="Multiple Allowed"
+                    ;;
+                title)
+                    shift; argtitle="$1 | "
+                    ;;
             esac
-        else
-            if [ "$moptreg" = "1" ]; then
-                optargs="$optargs$1
-"
-            else
-                pargs="$pargs$1
-"
-            fi
         fi
 
         shift
     done
 }
 
-processargs() {
-    optargs="$(printf "%s\n" "$optargs" | head -n 1)"
-}
-
 main() {
     rfl="$(getfl rchoose)"
+    lfshare="${XDG_DATA_HOME:="$HOME/.local/share"}/lf"
+    lffiles="$lfshare/files"
 
-    if [ "$optopenfile" = "1" ] || [ "$optopenurl" = "1" ]; then
-        dwmpad -g 160x50 -- ranger "${optargs:-"$HOME"}" > /dev/null
-    elif [ "$optsavefile" = "1" ] || [ "$optsaveurl" = "1" ]; then
-        printf "%s\n" "${optargs:-"$HOME/downloads"}" > "$rfl"
-        # shellcheck disable=SC2086
-        dwmpad -- $EDITOR "$rfl" > /dev/null
+    if [ -n "$argsave" ]; then
+        if [ -d "$argsave" ]; then
+            dir="$argsave"
+            fl="NULL"
+        else
+            dir="$(dirname -- "$argsave")"
+            fl="$(basename -- "$argsave")"
+        fi
 
-        [ "$(wc -l "$rfl")" -ne 1 ] && {
-            rm -f -- "$rfl" > /dev/null 2>&1
-            main
-            return $?
-        }
+        dir="$(realpath -s -- "$dir")"
 
-        cfl="$(cat -- "$rfl")"
-        [ -e "$cfl" ] && {
-            printf "File [%s] exists, overwrite?\n" "$cfl"
-            equals "$(readchar)" Y y || {
-                rm -f -- "$rfl" > /dev/null 2>&1
-                main
-                return $?
-            }
-        }
+        tmplffiles="$(mktemp)"
+        cp -f -- "$lffiles" "$tmplffiles"
+        truncate -c -s 5 -- "$lffiles"
+        printf "%s\n" "$dir/$fl" >> "$lffiles"
+        lf -remote 'send sync'
+
+        touch -- "$dir/$fl"
+
+        dwmpad -g 160x50 -t "${argtitle}Save File [$argsavefilter] [Single Only]" -- lfrun -- "$dir" &
+
+        sleep 0.2
+        lfid="$(pgrep lf | sort -n | tail -n 1)"
+        
+        lf -remote "send select '$dir/$fl'"
+
+        wait
+
+        tail -n +2 -- "$lffiles" | head -n 1
+
+        mv -f -- "$tmplffiles" "$lffiles"
+        lf -remote 'send sync'
+    elif [ -n "$argopen" ]; then
+        if [ -d "$argopen" ]; then
+            dir="$argopen"
+        else
+            dir="$(dirname -- "$argopen")"
+        fi
+
+        tmplffiles="$(mktemp)"
+        cp -f -- "$lffiles" "$tmplffiles"
+        truncate -c -s 5 -- "$lffiles"
+        lf -remote 'send sync'
+
+        dwmpad -g 160x50 -t "${argtitle}Open File [$argopenfilter] [${optmultiple:-"Single Only"}]" -- lfrun -- "$dir"
+
+        if [ -n "$optmultiple" ]; then
+            tail -n +2 -- "$lffiles"
+        else
+            tail -n +2 -- "$lffiles" | head -n 1
+        fi
+
+        mv -f -- "$tmplffiles" "$lffiles"
+        lf -remote 'send sync'
+    else
+        execrealkdialog "$@"
     fi
 }
 
 peekargs "$@"
+realkdialog --help --version "$@" > /dev/null || exit $?
 parseargs "$@" > /dev/null 2>&1
 processargs > /dev/null 2>&1
-main > /dev/null 2>&1
-cat -- "$rfl" 2> /dev/null
-rm -f -- "$rfl" > /dev/null 2>&1
+main "$@"
