@@ -25,6 +25,7 @@
 - Implement a no-quoting option in `tglapp` like the inverse of the one that exists in `mapexec`.
 - Allow setting the description in gacma, or create a new script for.
 - In `bright*`, fade the brightness.
+- In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
