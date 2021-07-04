@@ -26,7 +26,7 @@ while true; do
 
         clp="$(xclip -o -se c)"
         [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue
-        if [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ]; then
+        [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ] && {
             printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$(date +%s)" "$(printf "%s\n" "$clp" | tr '\n' '')" >> "$logfl"
             lastclp="$clp"
             oldclp=""
@@ -37,6 +37,6 @@ while true; do
                 mv -- "$logfl" "$bakdir/$((lastnum + 1))"
                 touch "$logfl"
             }
-        fi
+        }
     done
 done
