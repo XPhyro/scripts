@@ -81,3 +81,4 @@
 - Into the pathfinding suite, add a system for custom aliases/functions/variables depending on the current directory of the user. This could be done by modifying the currently provided `cd` function.
 - Replace `printf` with `printf --`.
 - Perhaps merge `pathfinding/e`, `pathfinding/v` and `open`?
+- In all scripts that parse arguments, ensure that help printing and other actions are done after validating the arguments. If the arguments could not be validated, exit with a non-zero code (after printing help if it is given). This way, the scripts can be integrated more easily with or within other scripts by allowing the arguments to be immediately validated without executing the script (like kdialog, which wraps the real kdialog, validating the arguments without doing the action).
