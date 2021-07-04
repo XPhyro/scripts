@@ -8,23 +8,23 @@ logerrq() {
 [ "$#" -eq 0 ] && logerrq "At least 1 argument needed."
 
 case "$1" in
-    black  ) color="[0;30m";;
-    red    ) color="[0;31m";;
-    green  ) color="[0;32m";;
-    orange ) color="[0;33m";;
-    blue   ) color="[0;34m";;
-    purple ) color="[0;35m";;
-    cyan   ) color="[0;36m";;
-    lgray  ) color="[0;37m";;
-    dgray  ) color="[1;30m";;
-    lred   ) color="[1;31m";;
-    lgreen ) color="[1;32m";;
-    yellow ) color="[1;33m";;
-    lblue  ) color="[1;34m";;
-    lpurple) color="[1;35m";;
-    lcyan  ) color="[1;36m";;
-    white  ) color="[1;37m";;
-    *      ) logerrq "Invalid color [$1].";;
+    black         ) color="[0;30m";;
+    red           ) color="[0;31m";;
+    green         ) color="[0;32m";;
+    orange        ) color="[0;33m";;
+    blue          ) color="[0;34m";;
+    purple        ) color="[0;35m";;
+    cyan          ) color="[0;36m";;
+    lgray | lgrey ) color="[0;37m";;
+    dgray | dgrey ) color="[1;30m";;
+    lred          ) color="[1;31m";;
+    lgreen        ) color="[1;32m";;
+    yellow        ) color="[1;33m";;
+    lblue         ) color="[1;34m";;
+    lpurple       ) color="[1;35m";;
+    lcyan         ) color="[1;36m";;
+    white         ) color="[1;37m";;
+    *             ) logerrq "Invalid color [$1].";;
 esac
 
 printf "%s" "$color"
