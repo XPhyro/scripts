@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-[ $# -eq 0 ] && exit 0
+[ $# -eq 0 ] && exec "$EDITOR"
+
 printf -- "%s\0" "$@" | awk -F '\0' '
 @load "filefuncs"
 {
