@@ -6,8 +6,11 @@ if [ ! -t 0 ]; then
     cp -f -- /dev/stdin "$stdinfl"
 fi
 
-if [ -s "$stdinfl" ]; then
+[ -s "$stdinfl" ] && {
     cat -- "$stdinfl"
-else
-    eval "$@"
-fi
+    rm -f -- "$stdinfl"
+    exit 0
+}
+
+rm -f -- "$stdinfl"
+exec "$@"
