@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# See https://github.com/neomutt/neomutt/issues/2738.
+
+kdialog --getopenfilename "$PWD" --multiple | awk '{gsub("\"", "\\\"", $0); printf("<attach-file>\"%s\"<enter>", $0)}' | sed 's/^/push /'

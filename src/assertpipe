@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+if [ ! -t 0 ]; then
+    stdinfl="$(mktemp)"
+    cp -f -- /dev/stdin "$stdinfl"
+fi
+
+[ -s "$stdinfl" ] || {
+    exec >&-
+    exit 1
+}
+
+cat -- "$stdinfl"
+rm -f -- "$stdinfl"
+exit 0

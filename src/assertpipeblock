@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+ifne false || exit 1
+exec cat <&0
