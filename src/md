@@ -7,5 +7,5 @@ md() {
 if [ "$#" -ne 0 ]; then
     md "$@"
 else
-    md *.md
+    md ./*.md
 fi

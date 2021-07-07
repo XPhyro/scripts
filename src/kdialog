@@ -56,7 +56,6 @@ parseargs() {
 }
 
 main() {
-    rfl="$(getfl rchoose)"
     lfshare="${XDG_DATA_HOME:="$HOME/.local/share"}/lf"
     lffiles="$lfshare/files"
 

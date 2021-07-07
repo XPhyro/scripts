@@ -172,7 +172,7 @@ main() {
                     }
 
                     fls="$( 
-                        find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do 
+                        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do 
                             cdsafe "$i"
 
                             if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]; then
@@ -185,7 +185,7 @@ main() {
                         git ls-files
                     )"
                 else
-                    fls="$(find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort; find -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort)"
+                    fls="$(find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort; find '.' -mindepth 1 -maxdepth 1 -type f -printf "%P\n" | sort)"
                 fi
             else
                 if [ -n "$git" ]; then
@@ -195,7 +195,7 @@ main() {
                     }
 
                     fls="$( 
-                        find -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do 
+                        find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do 
                             cdsafe "$i"
 
                             if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]; then
@@ -208,7 +208,7 @@ main() {
                         git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d'
                     )"
                 else
-                    fls="$(find -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort; find -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort)"
+                    fls="$(find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort; find '.' -mindepth 1 -maxdepth 1 -type f -not -name ".*" -printf "%P\n" | sort)"
                 fi
             fi
 
@@ -245,9 +245,9 @@ main() {
             [ -d "$sel" ] && cdsafe "$sel"
 
             if [ -n "$showhidden" ]; then
-                fls="$(find -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort)"
+                fls="$(find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort)"
             else
-                fls="$(find -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort)"
+                fls="$(find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | sort)"
             fi
 
             grepfls

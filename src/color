@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 logerrq() {
-    printf "[%s]: %s\n" "${0##*/}" >&2
+    printf "[%s]: %s\n" "${0##*/}" "$1" >&2
     exit 1
 }
 
@@ -31,9 +31,7 @@ printf "%s" "$color"
 
 if [ "$#" -gt 1 ]; then
     shift 1
-    for i; do
-        printf "%s\n" "$@"
-    done
+    printf "%s\n" "$@"
 elif [ ! -t 0 ]; then
     cat <&0
 fi

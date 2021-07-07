@@ -2,6 +2,6 @@
 # Adapted from https://stackoverflow.com/a/30022297/8403070.
 
 stty -icanon -echo
-eval 'char=$(dd bs=1 count=1 2> /dev/null)' || exit 1
+char="$(dd bs=1 count=1 2> /dev/null)" || exit 1
 stty icanon echo
 printf "%s" "$char"

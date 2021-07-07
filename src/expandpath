@@ -15,6 +15,7 @@ expandpath() {
         return 0
     }
 
+    # shellcheck disable=SC2088
     case "$path" in
         "~/"* ) printf "%s\n" "$HOME${path#?}";;
         *     ) 
