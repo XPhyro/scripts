@@ -13,16 +13,17 @@ execrealkdialog() {
 }
 
 peekargs() {
+    hasrelevantopt=0
     for i; do
         case "$i" in
             --getopenfilename|--getsavefilename|--getopenurl|--getsaveurl)
-                return 0;;
+                hasrelevantopt=1;;
             -h|--help|--help-all|-v|--version|--author|--license)
-                break;;
+                execrealkdialog "$@";;
         esac
     done
 
-    execrealkdialog "$@"
+    [ $hasrelevantopt -eq 0 ] && execrealkdialog "$@"
 }
 
 parseargs() {
