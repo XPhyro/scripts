@@ -44,6 +44,7 @@
 - Colour printer to be used in other scripts.
 - Implement a crop subcommand in `ffmw`.
 - Write a version of `v` (from .zshrc) that has keys as in the pathfinding suite depending on the directory. Say, one executes `vm t dotfilesbak-tick` in `"$HOME/.dotfiles"`. When they execute `"$scriptname" t`, `dotfilesbak-tick` is opened with `"$EDITOR"`. Alternatively, this behaviour could be integrated in the currently existing mark functionality either by prioritising directory-specific marks or by making the user prepend the key by a character, say \_.
+- Write an `stest` wrapper that supports the negation of partial operators. As an example `stest -x ! -d` should return all files that are executable but are not directories. Alternatively, have a syntax like `stest -x !-d` or the similar.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
