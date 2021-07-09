@@ -1,5 +1,5 @@
 #!/bin/sh
-# A dmenu prompt to unmount drives. Provides you with mounted partitions, select one to unmount. Drives mounted at /, /boot and /home will not be options to unmount.
+# A dmenu prompt to unmount drives. Drives included in /etc/fstab are excluded.
 # Adapted from Luke Smith's voidrice.
 
 unmountusb() {
@@ -26,11 +26,26 @@ asktype() {
     esac
 }
 
-drives="$(lsblk -nrpo "name,type,size,mountpoint" | awk '$2=="part"&&$4!~/\/boot|\/home$|SWAP/&&length($4)>1{printf "%s (%s)\n",$4,$3}')"
+drives="$(
+    mntdrives="$(lsblk -nrpo "mountpoint,size" | grep "^[^[:space:]]" | LC_ALL=C sort -k 1n)"
+    fstab="$(sed -e '/^\s*$/d' -e '/^\s*[#\/]/d' /etc/fstab | awk '{print $2}' | LC_ALL=C sort)"
+    printf "%s\n" "$mntdrives" | while read -r i j; do
+        [ "$i" = "${fstab%%"
+"*}" ] && {
+            fstab="${fstab#*"
+"}"
+            continue
+        }
+
+        printf "%s %s\n" "$i" "$j"
+    done
+)"
 
 if ! grep simple-mtpfs /etc/mtab; then
-    [ -n "$drives" ] || exit 0
-
+    [ -z "$drives" ] && {
+        printf "%s\n" "No drives to unmount."
+        exit 0
+    }
     unmountusb
 elif [ -n "$drives" ]; then
     asktype
