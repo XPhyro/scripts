@@ -83,3 +83,4 @@
 - Replace `printf` with `printf --`.
 - Perhaps merge `pathfinding/e`, `pathfinding/v` and `open`?
 - In all scripts that parse arguments, ensure that help printing and other actions are done after validating the arguments. If the arguments could not be validated, exit with a non-zero code (after printing help if it is given). This way, the scripts can be integrated more easily with or within other scripts by allowing the arguments to be immediately validated without executing the script (like kdialog, which wraps the real kdialog, validating the arguments without doing the action).
+- Use `sudo -A` instead of `sudo` where applicable.
