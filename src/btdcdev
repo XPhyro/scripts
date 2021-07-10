@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Disconnect from a bluetooth device. Prompts a selection if more than one device is connected.
+# Disconnect from a bluetooth device. Prompts a selection if more than one device is connected or if the only device connected is a keyboard.
 
 devs="$(bluetoothctl paired-devices | while read -r _ i devname; do
     [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" = "true" ] && printf "%s %s\n" "$i" "$devname"
@@ -10,7 +10,7 @@ done | sort)"
     exit 0
 }
 
-if [ "$(printf "%s\n" "$devs" | wc -l)" = 1 ]; then
+if [ "$(printf "%s\n" "$devs" | wc -l)" = 1 ] && ! bluetoothctl info "${devs%%" "*}" | grep -iFq "keyboard"; then
     seldev="$devs"
 else
     seldev="$(printf "%s" "$devs" | dmenu -i -p "Device to disconnect:")"
@@ -18,10 +18,10 @@ fi
 
 [ -z "$seldev" ] && exit 0
 
-seldevname="$(printf "%s" "$seldev" | awk '{$1=""; print substr($0,2)}')"
-seldev="$(printf "%s" "$seldev" | awk '{print $1}')"
+seldevname="${seldev#*" "}"
+seldevid="${seldev%%" "*}"
 
-if bluetoothctl disconnect "$seldev"; then
+if bluetoothctl disconnect "$seldevid"; then
     notify-send -t 1000 "✔  $seldevname" "Device disconnected."
 else
     notify-send -t 1000 "❌ $seldevname" "Could not disconnect device."
