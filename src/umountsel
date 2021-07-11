@@ -8,14 +8,14 @@ unmountusb() {
     chosen="$(printf "%s" "$drives" | dmenu -i -p "Unmount which drive?" | awk '{print $1}')"
     [ -n "$chosen" ] || exit 1
 
-    sudo -A umount "$chosen" && notify-send "💻 Drive unmounting" "$chosen unmounted."
+    umount "$chosen" && notify-send "💻 Drive unmounting" "$chosen unmounted."
 }
 
 unmountandroid() {
     chosen="$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?")"
     [ -n "$chosen" ] || exit 1
 
-    sudo -A umount -l "$chosen" && notify-send "🤖 Android unmounting" "$chosen unmounted."
+    umount -l "$chosen" && notify-send "🤖 Android unmounting" "$chosen unmounted."
 }
 
 asktype() {
@@ -25,6 +25,8 @@ asktype() {
         *       ) exit 0;;
     esac
 }
+
+assertroot || exit 1
 
 drives="$(
     mntdrives="$(lsblk -nrpo "mountpoint,size" | grep "^[^[:space:]]" | LC_ALL=C sort -k 1n)"

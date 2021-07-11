@@ -18,14 +18,14 @@ getmount() {
     [ -z "$mp" ] && exit 1
 
     [ -d "$mp" ] || {
-        mkdir -p -- "$mp" || sudo -A mkdir -p -- "$mp"
+        mkdir -p -- "$mp" || mkdir -p -- "$mp"
     }
 }
 
 mountusb() {
     chosen="$(printf "%s" "$usbdrives" | dmenu -i -p "Mount which drive?" | awk '{print $1}')"
 
-    sudo -A mount "$chosen" 2>/dev/null && {
+    mount "$chosen" 2>/dev/null && {
         notify-send "💻 Drive mounted" "$chosen mounted."
         exit 0
     }
@@ -37,8 +37,8 @@ mountusb() {
     partitiontype="$(lsblk -no "fstype" "$chosen")"
 
     case "$partitiontype" in
-        "vfat" ) sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
-        *      ) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" -- "$mp";;
+        "vfat" ) mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
+        *      ) mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; chown "$user":"$ug" -- "$mp";;
     esac
 
     notify-send "💻 Drive mounted" "$chosen mounted to $mp."
@@ -63,6 +63,8 @@ asktype() {
         *       ) exit 0;;
     esac
 }
+
+assertroot || exit 1
 
 anddrives="$(simple-mtpfs -l 2>/dev/null)"
 usbdrives="$(lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n",$1,$3}')"
