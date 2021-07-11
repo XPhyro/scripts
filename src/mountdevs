@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 
-[ "$(id -u)" != 0 ] && {
-    printf "This script needs to be executed as root.\n"
-    exit 1
-}
+assertroot || exit 1
 
 devs="$(lsblk -nrpo "name,label,mountpoint")"
 
@@ -13,4 +10,4 @@ while IFS='' read -r label mp _; do
     done
 done < "$(getfl mounts)"
 
-exit 0 # to not make systemd freak out
+exit 0
