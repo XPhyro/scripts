@@ -84,3 +84,4 @@
 - Perhaps merge `pathfinding/e`, `pathfinding/v` and `open`?
 - In all scripts that parse arguments, ensure that help printing and other actions are done after validating the arguments. If the arguments could not be validated, exit with a non-zero code (after printing help if it is given). This way, the scripts can be integrated more easily with or within other scripts by allowing the arguments to be immediately validated without executing the script (like kdialog, which wraps the real kdialog, validating the arguments without doing the action).
 - Scripts that require untrivial root access should not use `sudo`, but force the user to run the script as root. Scripts that require trivial root access should use `sudo` or `sudo -A` depending on whether they are graphical (for instance, if they use `dmenu`) or not.
+- Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
