@@ -26,6 +26,7 @@
 - Allow setting the description in gacma, or create a new script for.
 - In `bright*`, fade the brightness.
 - In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
+- `ffmpeg` fails to parse the filename (why does it even parse it?) if it contains one of the following characters `:,`. Make `ffmw` create a symlink pointing to the input file(s) to mitigate the issue.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
