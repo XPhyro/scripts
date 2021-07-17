@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+state="$(bspc config pointer_follows_focus | END= maps false=true true=false)"
+bspc config pointer_follows_focus "$state"
+bspc config pointer_follows_monitor "$state"
