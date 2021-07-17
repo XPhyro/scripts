@@ -98,14 +98,14 @@ parseargs() {
                 esac
             fi
         else
-            cmd="$cmd '$1'"
+            cmd="$cmd $1"
         fi
 
         shift
     done
 
     for i; do
-        cmd="$cmd '$i'"
+        cmd="$cmd $i"
     done
 }
 
