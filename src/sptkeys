@@ -18,4 +18,4 @@ do
     printf "%-${long1}s$sep%-${long2}s$sep%-${long3}s\n" "$i" "$j" "$k"
 done | sed '2i\ ' > "$tmpfl"
 
-dwmpad -- "$PAGER" "$tmpfl"
+"$PAGER" "$tmpfl"
