@@ -78,7 +78,7 @@ main() {
 
         touch -- "$dir/$fl"
 
-        dwmpad -g 160x50 -t "${argtitle}Save File [$argsavefilter] [Single Only]" -- lfrun -- "$dir" &
+        "${PAD:-bspwmpad}" -g 160x50 -t "${argtitle}Save File [$argsavefilter] [Single Only]" -- lfrun -- "$dir" &
 
         sleep 0.1
         lfid="$(pgrep lf | sort -n | tail -n 1)"
@@ -103,7 +103,7 @@ main() {
         truncate -c -s 5 -- "$lffiles"
         lf -remote 'send sync'
 
-        dwmpad -g 160x50 -t "${argtitle}Open File [$argopenfilter] [${optmultiple:-"Single Only"}]" -- lfrun -- "$dir"
+        "${PAD:-bspwmpad}" -g 160x50 -t "${argtitle}Open File [$argopenfilter] [${optmultiple:-"Single Only"}]" -- lfrun -- "$dir"
 
         if [ -n "$optmultiple" ]; then
             tail -n +2 -- "$lffiles"
