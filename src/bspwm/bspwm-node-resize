@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Adapted from https://github.com/Chrysostomus/bspwm-scripts
+# Adapted from https://github.com/Chrysostomus/bspwm-scripts/blob/c5041d83742d04c1afe73abc90a32c527c8a9eec/bin/bspwm_resize.sh
 
 direction="$1"
 size="${2:-30}"
