@@ -3,14 +3,14 @@
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 
 # Features
-- Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags.
-- In `contexec`, show the output in a `dwmpad` and open the editor in the initialised terminal.
+- Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags. This is and should not be the case in `bspwmpad`.
+- In `contexec`, show the output in a `dwmpad` or `bspwmpad` and open the editor in the initialised terminal.
 - After scratchpad setting is implemented in dwm, add support in `dwmpad`.
 - Allow `m` to take input files. If an input file is given, mark the file; if not, mark the current working directory.
 - In `contexec`, wrap each execution between printed headers. Also show the execution count.
-- In `dwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
+- In `dwmpad` and `bspwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - Add options in `latexstp` to not open the source/output files.
-- Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a dwmpad.
+- Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a `dwmpad` or `bspwmpad`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
 - When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getloc` and `getfl` could be implemented.
@@ -46,6 +46,7 @@
 - Implement a crop subcommand in `ffmw`.
 - Write a version of `v` (from .zshrc) that has keys as in the pathfinding suite depending on the directory. Say, one executes `vm t dotfilesbak-tick` in `"$HOME/.dotfiles"`. When they execute `"$scriptname" t`, `dotfilesbak-tick` is opened with `"$EDITOR"`. Alternatively, this behaviour could be integrated in the currently existing mark functionality either by prioritising directory-specific marks or by making the user prepend the key by a character, say \_.
 - Write an `stest` wrapper that supports the negation of partial operators. As an example `stest -x ! -d` should return all files that are executable but are not directories. Alternatively, have a syntax like `stest -x !-d` or the similar.
+- Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
@@ -54,7 +55,7 @@
 - Rewrite `lck`. See [this](https://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) and [this](http://mywiki.wooledge.org/BashFAQ/045).
 - Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
-- Optimise `dwmpadinit`'s PID updating with `inotifywait`.
+- Optimise `dwmpadinit` and `bspwmpadinit`'s PID updating with `inotifywait`.
 - Optimise `maps`.
 - Rewrite `brightmute` in a more robust fashion that would not oftenly break.
 - Rewrite `rangermpick` with `lf`.
@@ -74,7 +75,7 @@
 - Add `texpac` to notable scripts in [README.md](README.md) after it is written.
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is interrupted, killed, etc.
-- Unintegrate `dwmpad` from scripts that do not require it such as `sptkeys`.
+- Unintegrate `dwmpad` or `bspwmpad` from scripts that do not require it.
 - SC2185: Some finds don't have a default path. Specify '.' explicitly.
 - Add `exit 0` at the end of all scripts.
 - Add explanations under shebangs.
