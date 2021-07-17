@@ -125,7 +125,14 @@ main() {
     shift "$argcmdcount"
 
     # shellcheck disable=SC2086
-    st $optdirectory $optgeometry -n "bspwmpad$lck" -t "${opttitle:-"bspwmpad #$lck"}" -e bspwmpadinit "$lckdir" "$lck" "$@"
+    st $optdirectory $optgeometry -n "bspwmpad$lck" -t "${opttitle:-"bspwmpad #$lck"}" -e bspwmpadinit "$lckdir" "$lck" "$@" &
+    until ids="$(xdotool search --classname "bspwmpad$lck")"; do
+        sleep 0.1
+    done
+    printf "%s\n" "$ids" | while IFS= read -r i; do
+        bspc node "$i" --flag hidden -f
+    done
+    wait
 }
 
 clean() {
