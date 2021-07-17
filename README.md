@@ -16,15 +16,16 @@ sudo make uninstall
 ## Notable scripts
 - [mapexec](src/mapexec): Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch) but adhering to the Unix philosophy, more versatile and (in my opinion) better.
 - [contexec](src/contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language.
-- [selfl](src/selfl): Select a file or directory with dmenu.
-- [ffmw](src/ffmw): ffmpeg wrapper for common actions.
+- [selfl](src/selfl): Select a file or directory with `dmenu`.
+- [ffmw](src/ffmw): `ffmpeg` wrapper for common actions.
 - [tglapp](src/tglapp): Toggle an application on/off based on hashcodes.
 - [eln](src/eln): Batch edit or create symlinks.
-- [latexstp](src/latexstp): Basically latexmk but sucks less and is more minimal.
-- [xins](src/xins): Like xargs but for standard input.
-- [kdialog](src/kdialog): kdialog wrapper to not use awful file dialogues.
-- [dwmpad](src/dwmpad): Dynamic scratchpads for [dwm](https://dwm.suckless.org). See my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro). dwm is not required for operation, but the script was designed with (my) dwm in mind.
-- [scratchpad](src/scratchpad): Take and manage notes with vim and dmenu. Can be used with dwmpad.
+- [latexstp](src/latexstp): Basically `latexmk` but sucks less and is more minimal.
+- [xins](src/xins): Like `xargs` but for standard input.
+- [kdialog](src/kdialog): `kdialog` wrapper to not use awful file dialogues.
+- [dwmpad](src/dwmpad): Dynamic scratchpads for [dwm](https://dwm.suckless.org). Requires patching the source: see my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro). dwm is not required for operation, but the script was designed with it in mind.
+- [bspwmpad](src/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, appending `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" sticky=on state=floating hidden=on; done` to your `bspwmrc` is recommended. bspwm is not required for operation, but the script was designed with it in mind.
+- [scratchpad](src/scratchpad): Take and manage notes with `vim` and `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 
 ## Notice that
 - Some of these scripts assume that some of the other scripts are in your PATH.
