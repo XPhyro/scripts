@@ -91,7 +91,7 @@ main() {
         exit 1
     }
 
-    [ -n "$optnumber" ] && ids="$(xdotool search --classname "bspwmpad$optnumber")" && {
+    [ -n "$optnumber" ] && ids="$(xdotool search --limit 0 --classname "bspwmpad$optnumber")" && {
         printf "%s\n" "$ids" | while IFS= read -r i; do
             bspc node "$i" --flag hidden -f
         done
