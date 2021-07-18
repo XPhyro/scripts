@@ -2,4 +2,4 @@
 # Restart sxhkd.
 
 cd "$HOME"
-setsid --fork -- screen -dmS sxhkd -- tglapp -afT on -- sxhkd "$@"
+setsid --fork -- screen -dmS sxhkd -- tglapp -afT on -k sxhkd -- sxhkd "$@"
