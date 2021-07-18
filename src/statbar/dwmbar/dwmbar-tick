@@ -13,6 +13,6 @@ done
 sleep 1s
 
 while true; do
-    statbarset &
+    dwmbar-set &
     sleep 1m
 done

@@ -2,6 +2,6 @@
 # Download package updates, dump update list and redraw status bar.
 
 yay -Syuw --noconfirm
-statbarsetavlsyu
-statbaravlsyu
-statbarset
+dwmbar-avlsyuset
+dwmbar-avlsyu
+dwmbar-set
