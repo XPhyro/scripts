@@ -27,6 +27,7 @@
 - In `bright*`, fade the brightness.
 - In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
 - `ffmpeg` fails to parse the filename (why does it even parse it?) if it contains one of the following characters `:,`. Make `ffmw` create a symlink pointing to the input file(s) to mitigate the issue.
+- In `bspwmpad`, move the node to the current desktop if it is in a different desktop. Regardless of its previous state, if it was moved, it should be shown.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
