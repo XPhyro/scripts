@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+case "$#" in
+    0) exit 0;;
+    1) git commit -m "$1";;
+    2) git commit -m "$1" -m "$2";;
+    *) 
+        m1="$1"
+        m2="$2"
+        shift 2
+        git add -- "$@"
+        git commit -m "$m1" -m "$m2"
+        ;;
+esac
