@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+sf="$(bspc config pointer_follows_focus)"
+sm="$(bspc config pointer_follows_monitor)"
+bspc config pointer_follows_focus true
+bspc config pointer_follows_monitor true
+(eval "$*")
+bspc config pointer_follows_focus "$sf"
+bspc config pointer_follows_monitor "$sm"
