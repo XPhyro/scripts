@@ -92,8 +92,13 @@ main() {
     }
 
     [ -n "$optnumber" ] && ids="$(xdotool search --limit 0 --classname "bspwmpad$optnumber")" && {
+        fd="$(bspc query -D -d focused)"
         printf "%s\n" "$ids" | while IFS= read -r i; do
-            bspc node "$i" --flag hidden -f
+            if [ "$(bspc query -D -n "$i")" = "$fd" ]; then
+                bspc node "$i" --flag hidden -f
+            else
+                bspc node "$i" -d "$fd" --flag hidden=false -f
+            fi
         done
         exit 0
     }
