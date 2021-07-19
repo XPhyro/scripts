@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+# This might be the dumbest code I have ever written in my life, but it works!
+# Use zscroll instead of this. I have written this as zscroll's output was not correct on my system.
+
+scrolloutput() {
+    IFS= read -r str < "$fifo"
+
+    i=1
+    wl="$(printf "%s\n" "$str" | tr -d '\n' | wc -c)"
+
+    while [ -p "$fifo" ]; do
+        printf "%s%s%s\n" "$str" "$sep" "$(printf "%s\n" "$str" | head -c "$((i - 1))")" | tail -c "+$i" | head -c "$l"
+        printf "\n"
+
+        i="$((i + 1))"
+        [ "$i" -gt "$wl" ] && i=1
+
+        sleep 0.1
+    done
+
+    i=0
+
+    until [ -p "$fifo" ]; do
+        sleep 0.1
+        i="$((i + 1))"
+        [ "$i" -eq "$to" ] && exit 0
+    done
+}
+
+trap "exit 0" INT
+
+fifo="$1"
+sep="${2:-"  --  "}"
+l="${3:-20}"
+dt="${4:-0.2}"
+to="${5:-600}"
+
+[ -p "$fifo" ] || exit 1
+
+while true; do
+    scrolloutput
+done
