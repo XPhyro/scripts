@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+fifo="$(mktemp)" > /dev/null 2>&1
+rm -f -- "$fifo" > /dev/null 2>&1
+mkfifo -- "$fifo" > /dev/null 2>&1
+scroll "$fifo" &
+sleep 0.1
+eval "$1" > "$fifo"
+while true; do
+    sleep "$2"
+    snew="$(eval "$1")" && [ "$snew" != "$s" ] || continue
+    rm -f -- "$fifo"
+    sleep 0.1
+    mkfifo "$fifo" || exit 1
+    printf "%s\n" "$snew" > "$fifo"
+done
