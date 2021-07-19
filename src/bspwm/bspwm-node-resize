@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 # Adapted from https://github.com/Chrysostomus/bspwm-scripts/blob/c5041d83742d04c1afe73abc90a32c527c8a9eec/bin/bspwm_resize.sh
 
+[ $# -ne 2 ] && exit 1
+
 direction="$1"
 size="${2:-30}"
 
 case "$direction" in
-    west ) bspc node @west -r -"$size"  || bspc node @east -r -"$size" ;;
-    east ) bspc node @west -r +"$size"  || bspc node @east -r +"$size" ;;
+    west ) bspc node @west  -r -"$size" || bspc node @east  -r -"$size";;
+    east ) bspc node @west  -r +"$size" || bspc node @east  -r +"$size";;
     north) bspc node @south -r -"$size" || bspc node @north -r -"$size";;
     south) bspc node @south -r +"$size" || bspc node @north -r +"$size";;
 esac
