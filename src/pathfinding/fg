@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+[ "$#" -eq 0 ] && exit 0
+
+while true; do
+    for i; do
+        loc="$(getloc "$i")"
+        [ -d "$loc" ] && cd "$loc" && f
+    done
+done
