@@ -6,15 +6,13 @@ main() {
     [ -n "$fl" ] && "$EDITOR" -- "$fl"
 }
 
-if [ "$#" -eq 0 ]; then
-    while true; do
-        main
+[ "$#" -eq 0 ] && while true; do
+    main
+done
+
+while true; do
+    for i; do
+        [ ! -d "$i" ] && printf "Directory [%s] does not exist, exiting.\n" "$i"
+        cd "$i" && main
     done
-else
-    while true; do
-        for i; do
-            loc="$(getloc "$i")"
-            [ -d "$loc" ] && cd "$loc" && main
-        done
-    done
-fi
+done
