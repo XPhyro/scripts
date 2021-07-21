@@ -1,30 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # A dmenu prompt to unmount drives. Drives included in /etc/fstab are excluded.
-# Adapted from Luke Smith's voidrice.
-
-unmountusb() {
-    [ -n "$drives" ] || exit 1
-
-    chosen="$(printf "%s" "$drives" | dmenu -i -p "Unmount which drive?" | awk '{print $1}')"
-    [ -n "$chosen" ] || exit 1
-
-    umount "$chosen" && notify-send "💻 Drive unmounting" "$chosen unmounted."
-}
-
-unmountandroid() {
-    chosen="$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?")"
-    [ -n "$chosen" ] || exit 1
-
-    umount -l "$chosen" && notify-send "🤖 Android unmounting" "$chosen unmounted."
-}
-
-asktype() {
-    case "$(printf "Drive\\nAndroid" | dmenu -i -p "Unmount a drive or Android device?")" in
-        USB     ) unmountusb ;;
-        Android ) unmountandroid ;;
-        *       ) exit 0;;
-    esac
-}
 
 assertroot || exit 1
 
@@ -43,14 +18,10 @@ drives="$(
     done
 )"
 
-if ! grep simple-mtpfs /etc/mtab; then
-    [ -z "$drives" ] && {
-        printf "%s\n" "No drives to unmount."
-        exit 0
-    }
-    unmountusb
-elif [ -n "$drives" ]; then
-    asktype
-else
-    unmountandroid
-fi
+[ -z "$drives" ] && exit 1
+
+chosen="$(printf "%s\n" "$drives" | dmenu -i -p "Unmount which drive?" | cut -d' ' -f1)"
+
+[ -z "$chosen" ] && exit 1
+
+umount "$chosen"

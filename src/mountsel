@@ -1,80 +1,19 @@
 #!/usr/bin/env sh
-# Gives a dmenu prompt to mount unmounted drives and Android phones. If they're in /etc/fstab, they'll be mounted automatically. Otherwise, you'll be prompted to give a mountpoint from already existsing directories. If you input a novel directory, it will prompt you to create that directory.
-# Adapted from Luke Smith's voidrice.
-# TODO: Implement iOS mounting.
-
-getmount() {
-    [ -n "$chosen" ] || exit 1
-
-    label="$(lsblk -rpo "name,label" | grep "$chosen" | awk '{print $2}' | sed 's/\\x20/ /')"
-
-    if [ "$label" = "My Book" ]; then
-        printf "%s\n" "Special device detected: $label"
-        mp="/mnt/mybook"
-    else
-        mp="/mnt/${chosen##*/}"
-    fi
-
-    [ -z "$mp" ] && exit 1
-
-    [ -d "$mp" ] || {
-        mkdir -p -- "$mp" || mkdir -p -- "$mp"
-    }
-}
-
-mountusb() {
-    chosen="$(printf "%s" "$usbdrives" | dmenu -i -p "Mount which drive?" | awk '{print $1}')"
-
-    mount "$chosen" 2>/dev/null && {
-        notify-send "💻 Drive mounted" "$chosen mounted."
-        exit 0
-    }
-
-    alreadymounted="$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')"
-
-    getmount "/mnt /media /mount /home -maxdepth 5 -type d $alreadymounted"
-
-    partitiontype="$(lsblk -no "fstype" "$chosen")"
-
-    case "$partitiontype" in
-        "vfat" ) mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
-        *      ) mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; chown "$user":"$ug" -- "$mp";;
-    esac
-
-    notify-send "💻 Drive mounted" "$chosen mounted to $mp."
-}
-
-mountandroid() {
-    chosen="$(printf "%s" "$anddrives" | dmenu -i -p "Which Android device?" | cut -d : -f 1)"
-    getmount "$HOME -maxdepth 3 -type d"
-    simple-mtpfs --device "$chosen" "$mp"
-
-    dmenu -i -p "Tap Allow on your phone if it asks for permission. Press enter to continue." < /dev/null
-
-    simple-mtpfs --device "$chosen" "$mp"
-
-    notify-send "🤖 Android mounted" "Android device mounted to $mp."
-}
-
-asktype() {
-    case "$(printf "Drive\nAndroid" | dmenu -i -p "Mount a drive or Android device?")" in
-        Drive   ) mountusb ;;
-        Android ) mountandroid ;;
-        *       ) exit 0;;
-    esac
-}
+# Gives a dmenu prompt to automatically mount drives.
 
 assertroot || exit 1
 
-anddrives="$(simple-mtpfs -l 2>/dev/null)"
-usbdrives="$(lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n",$1,$3}')"
+chosen="$(printf "%s\n" "$(lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n",$1,$3}')" | dmenu -i -p "Drive to mount:" | cut -d' ' -f1)"
 
-if [ -n "$usbdrives" ]; then
-    if [ -n "$anddrives" ]; then
-        asktype
-    else
-        mountusb
-    fi
-else
-    [ -n "$anddrives" ] && mountandroid
-fi
+[ -z "$chosen" ] && exit 1
+
+mount "$chosen" 2>/dev/null && exit 0
+
+label="$(lsblk -rpo "name,label" | grep -F "$chosen " | cut -d' ' -f2- | xargs -r -n 1 -d '\n' printf -- | awk '{print(tolower($0))}' | tr -d '[:blank:]/')"
+
+mp="/mnt/${label:-"${chosen##*/}"}"
+
+[ -z "$mp" ] && exit 1
+[ -d "$mp" ] || mkdir -p -- "$mp"
+
+mount -- "$chosen" "$mp"
