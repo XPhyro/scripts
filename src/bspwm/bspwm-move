@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+[ $# -ne 2 ] && exit 1
+
+action="$1"
+[ "$action" != "f" ] && [ "$action" != "s" ] && exit 1
+direction="$2"
+
+case "$direction" in
+    west ) bspc node "-$action" west  || bspc node "-$action" east ;;
+    east ) bspc node "-$action" east  || bspc node "-$action" west ;;
+    south) bspc node "-$action" south || bspc node "-$action" north;;
+    north) bspc node "-$action" north || bspc node "-$action" south;;
+    *    ) exit 1;;
+esac
