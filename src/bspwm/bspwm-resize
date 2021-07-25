@@ -6,9 +6,12 @@
 direction="$1"
 size="${2:-30}"
 
+[ "$size" -gt 0 ] || exit 1
+
 case "$direction" in
     west ) bspc node @west  -r -"$size" || bspc node @east  -r -"$size";;
     east ) bspc node @west  -r +"$size" || bspc node @east  -r +"$size";;
     north) bspc node @south -r -"$size" || bspc node @north -r -"$size";;
     south) bspc node @south -r +"$size" || bspc node @north -r +"$size";;
+    *    ) exit 1;;
 esac
