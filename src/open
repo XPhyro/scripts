@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 # Open executable files.
 
-paths="$(type "$@")" || {
-    printf "[ERROR]: Could not find %s.\n" "$(printf "%s\n" "$paths" | grep ".*: not found$" | sed -e 's/: not found$//' -e 's/$/, /' | tr -d '\n' | sed -e 's/, $//')"
-    exit 1
-}
+paths="$(whereis -b "$@" | cut -d' ' -f2 | grep '^/')"
 
-"$EDITOR" -- $(printf "%s\n" "$paths" | awk '{print $NF}')
+if [ -n "$paths" ]; then
+    [ "$(printf "%s\n" "$paths" | wc -l)" -eq "$#" ] > /dev/null 2>&1 || printf "Some files were not found.\n" >&2
+    "$EDITOR" -- $paths
+else
+    printf "No files were found.\n" >&2
+fi
