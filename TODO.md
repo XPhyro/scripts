@@ -70,6 +70,8 @@
 - In `clplog` and other applicable scripts, use `\0` instead of `^M` for logging.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
 - Pass `-0` option to `file` in `wallpaper`.
+- Rewrite `notiflog` in Python using `dbus`. This will get rid of the ambiguities of `dbus-monitor` parsing.
+- Rewrite `kasel` using `pgrep` and `kill --timeout`.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
