@@ -1,11 +1,7 @@
 #!/usr/bin/env sh
 # Set X keyboard properties.
 
-if [ -n "$1" ]; then
-    km="$1"
-else
-    km="$(xkb-switch)"
-fi
+km="${1:-"$(xkb-switch)"}"
 
 # caps_lock -> escape
 setxkbmap -option "caps:escape"
