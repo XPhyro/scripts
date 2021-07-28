@@ -15,13 +15,13 @@ from time import time
 logfilepath = (
     run(["getfl", "notiflog"], capture_output=True).stdout.decode("utf-8").rstrip("\n")
 )
-print("Found log file path: %s" % logfilepath, end="")
+print("Found log file path: %s" % logfilepath)
 lockfilepath = (
     run(["getfl", "notifloglck"], capture_output=True)
     .stdout.decode("utf-8")
     .rstrip("\n")
 )
-print("Found lock file path: %s" % lockfilepath, end="")
+print("Found lock file path: %s" % lockfilepath)
 
 if not logfilepath or not lockfilepath:
     print("getfl failed, exiting.", file=stderr)
@@ -30,15 +30,30 @@ if not logfilepath or not lockfilepath:
 logfile = open(logfilepath, "a")
 
 
+def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretimeout):
+    # TODO: Parse a configuration file
+    if appname == "Brave" and body[0:3] == " \n\n":
+        return True
+    return False
+
+
 def notifications(bus, message):
     try:
-        appName, id, appIcon, summary, body, actions, hints, expireTimeout = [
+        appname, id, appicon, summary, body, actions, hints, expiretimeout = [
             str(arg) for arg in message.get_args_list()
         ]
 
-        print("Received notification:\nSummary:\n%s\nBody:\n%s" % (summary, body))
+        print(
+            "Received notification:\nSummary:\n%s\nBody:\n%s\nApp Name: %s\nID: %s\nApp Icon: %s\nExpire Timeout: %s\n"
+            % (summary, body, appname, id, appicon, expiretimeout)
+        )
 
-        if not isfile(lockfilepath):
+        if isblacklisted(
+            appname, id, appicon, summary, body, actions, hints, expiretimeout
+        ):
+            print("Notification blacklisted, not logging and closing dunst view")
+            run(["dunstctl", "close"])
+        elif not isfile(lockfilepath):
             print("Logging notification")
             logfile.write(
                 "%s\b%s\b%s\n"
@@ -50,10 +65,10 @@ def notifications(bus, message):
             )
             logfile.flush()
         else:
-            print("lock file present, not logging")
+            print("Lock file present, not logging")
             remove(lockfile)
-    except:
-        pass
+    except Exception as e:
+        print("Caught exception: " + repr(e))
 
 
 DBusGMainLoop(set_as_default=True)
