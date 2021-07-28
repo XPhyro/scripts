@@ -1,52 +1,70 @@
-#!/usr/bin/env sh
-# Log notifications.
+#!/usr/bin/env python3
 
-fl="$(getfl notiflog)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
-    exit 1
-}
-lckfl="$(getfl notifloglck)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
-    exit 1
-}
-beg="##beg##"
-end="##end##"
 
-rm -f -- "$lckfl" 2> /dev/null
+from dbus import SessionBus
+from dbus.mainloop.glib import DBusGMainLoop
+from gi.repository.GLib import MainLoop
+from math import floor
+from os import remove, fsync
+from os.path import isfile
+from subprocess import run
+from sys import stderr
+from time import time
 
-event=""
-willreg=0
 
-dbus-monitor "interface='org.freedesktop.Notifications', member='Notify'" | while IFS= read -r i; do
-    [ "$willreg" = 1 ] && event="$event$i
-"
-    if contains "$i" "   uint32 "; then
-        willreg=1
-        continue
-    elif ! contains "$i" "   int32 "; then
-        continue
-    fi
+logfilepath = (
+    run(["getfl", "notiflog"], capture_output=True).stdout.decode("utf-8").rstrip("\n")
+)
+print("Found log file path: %s" % logfilepath, end="")
+lockfilepath = (
+    run(["getfl", "notifloglck"], capture_output=True)
+    .stdout.decode("utf-8")
+    .rstrip("\n")
+)
+print("Found lock file path: %s" % lockfilepath, end="")
 
-    [ -f "$lckfl" ] && {
-        rm -f "$lckfl"
-        event=""
-        willreg=0
-        continue
-    }
+if not logfilepath or not lockfilepath:
+    print("getfl failed, exiting.", file=stderr)
+    exit(1)
 
-    event="$(printf "%s" "$event" | sed '/^   array \[$/q' | head -n -1 | tail -n +2)"
-    title="$(printf "%s\n" "$event" | head -n 1 | sed -E 's/   string "(.*)"$/\1/')"
-    body="$(printf "%s\n" "$event" | tail -n +2 | sed -E -e '1s/   string "(.*)"?/\1/' -e '$s/"$//')"
+logfile = open(logfilepath, "a")
 
-    [ -z "$title" ] && [ -z "$body" ] && continue
 
-    printf "%s\n%s\n%s\n%s\n%s\n" \
-        "$beg" \
-        "$(date +%s)" \
-        "$title" \
-        "$body" \
-        "$end" >> "$fl"
+def notifications(bus, message):
+    try:
+        appName, id, appIcon, summary, body, actions, hints, expireTimeout = [
+            str(arg) for arg in message.get_args_list()
+        ]
 
-    event=""
-    willreg=0
-done
+        print("Received notification:\nSummary:\n%s\nBody:\n%s" % (summary, body))
+
+        if not isfile(lockfilepath):
+            print("Logging notification")
+            logfile.write(
+                "%s\b%s\b%s\n"
+                % (
+                    floor(time()),
+                    summary.replace("\n", "\r"),
+                    body.replace("\n", "\r"),
+                )
+            )
+            logfile.flush()
+        else:
+            print("lock file present, not logging")
+            remove(lockfile)
+    except:
+        pass
+
+
+DBusGMainLoop(set_as_default=True)
+
+bus = SessionBus()
+bus.add_match_string_non_blocking(
+    "eavesdrop=true, interface='org.freedesktop.Notifications', member='Notify'"
+)
+bus.add_message_filter(notifications)
+
+mainloop = MainLoop()
+mainloop.run()
+
+logfile.close()
