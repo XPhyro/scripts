@@ -1,5 +1,5 @@
 # sh
-This repository is a collection of my shell scripts. Some are used everyday, while others were written for very specific occasions.
+This repository is a collection of my scripts. Most of them are written in POSIX Shell, i.e. `sh`. Some are used everyday, while others were written for very specific occasions.
 
 ## Installation
 
@@ -23,9 +23,10 @@ sudo make uninstall
 - [latexstp](src/latexstp): Basically `latexmk` but sucks less and is more minimal.
 - [xins](src/xins): Like `xargs` but for standard input.
 - [kdialog](src/kdialog): `kdialog` wrapper to not use awful file dialogues.
-- [dwmpad](src/dwmpad): Dynamic scratchpads for [dwm](https://dwm.suckless.org). Requires patching the source: see my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro). dwm is not required for operation, but the script was designed with it in mind.
+- [dwmpad](src/dwmpad): Dynamic scratchpads for [dwm](https://dwm.suckless.org). For optimum operation, patch the source: see my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro). dwm is not required for operation, but the script was designed with it in mind.
 - [bspwmpad](src/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, appending `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" sticky=on state=floating hidden=on; done` to your `bspwmrc` is recommended. bspwm is not required for operation, but the script was designed with it in mind.
 - [scratchpad](src/scratchpad): Take and manage notes with `vim` and `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
+- [notiflog](src/notiflog): Log notifications on the dbus interface `org.freedesktop.Notifications`. Supports locking logging: after initiating the lock, the next notification is not logged. Then it unlocks itself automatically.
 
 ## Notice that
 - Some of these scripts assume that some of the other scripts are in your PATH.
