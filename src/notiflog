@@ -16,6 +16,14 @@ logfilepath = (
     run(["getfl", "notiflog"], capture_output=True).stdout.decode("utf-8").rstrip("\n")
 )
 print("Found log file path: %s" % logfilepath)
+
+blacklogfilepath = (
+    run(["getfl", "notiflogblack"], capture_output=True)
+    .stdout.decode("utf-8")
+    .rstrip("\n")
+)
+print("Found blacklisted log file path: %s" % blacklogfilepath)
+
 lockfilepath = (
     run(["getfl", "notifloglck"], capture_output=True)
     .stdout.decode("utf-8")
@@ -23,11 +31,12 @@ lockfilepath = (
 )
 print("Found lock file path: %s" % lockfilepath)
 
-if not logfilepath or not lockfilepath:
+if not logfilepath or not blacklogfilepath or not lockfilepath:
     print("getfl failed, exiting.", file=stderr)
     exit(1)
 
 logfile = open(logfilepath, "a")
+blacklogfile = open(blacklogfilepath, "a")
 
 
 def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretimeout):
@@ -35,6 +44,14 @@ def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretim
     if appname == "Brave" and body[0:3] == " \n\n":
         return True
     return False
+
+
+def makeloggable(file, summary, body):
+    file.write(
+        "%s\b%s\b%s\n"
+        % (floor(time()), summary.replace("\n", "\r"), body.replace("\n", "\r"))
+    )
+    file.flush()
 
 
 def notifications(bus, message):
@@ -51,19 +68,14 @@ def notifications(bus, message):
         if isblacklisted(
             appname, id, appicon, summary, body, actions, hints, expiretimeout
         ):
-            print("Notification blacklisted, not logging and closing dunst view")
+            print(
+                "Notification blacklisted, logging to blacklist file and closing dunst view"
+            )
             run(["dunstctl", "close"])
+            log(blacklogfile, summary, body)
         elif not isfile(lockfilepath):
             print("Logging notification")
-            logfile.write(
-                "%s\b%s\b%s\n"
-                % (
-                    floor(time()),
-                    summary.replace("\n", "\r"),
-                    body.replace("\n", "\r"),
-                )
-            )
-            logfile.flush()
+            log(logfile, summary, body)
         else:
             print("Lock file present, not logging")
             remove(lockfile)
