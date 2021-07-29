@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-[ -z "$SEP" ] && SEP="="
-[ -z "$END" ] && [ "${END-"unset"}" = "unset" ] && END="
-"
+SEP="${SEP:-"="}"
+END="${END-"
+"}"
 
 while IFS= read -r i; do
     for j; do
