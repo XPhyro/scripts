@@ -95,3 +95,4 @@ mainloop = MainLoop()
 mainloop.run()
 
 logfile.close()
+blacklogfile.close()
