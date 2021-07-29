@@ -46,7 +46,7 @@ def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretim
     return False
 
 
-def makeloggable(file, summary, body):
+def log(file, summary, body):
     file.write(
         "%s\b%s\b%s\n"
         % (floor(time()), summary.replace("\n", "\r"), body.replace("\n", "\r"))
@@ -54,7 +54,7 @@ def makeloggable(file, summary, body):
     file.flush()
 
 
-def notifications(bus, message):
+def filternotif(bus, message):
     try:
         appname, id, appicon, summary, body, actions, hints, expiretimeout = [
             str(arg) for arg in message.get_args_list()
@@ -89,10 +89,9 @@ bus = SessionBus()
 bus.add_match_string_non_blocking(
     "eavesdrop=true, interface='org.freedesktop.Notifications', member='Notify'"
 )
-bus.add_message_filter(notifications)
+bus.add_message_filter(filternotif)
 
-mainloop = MainLoop()
-mainloop.run()
+MainLoop().run()
 
 logfile.close()
 blacklogfile.close()
