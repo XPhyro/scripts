@@ -15,13 +15,13 @@ scrolloutput() {
         i="$((i + 1))"
         [ "$i" -gt "$wl" ] && i=1
 
-        sleep 0.1
+        sleep "$dt"
     done
 
     i=0
 
     until [ -p "$fifo" ]; do
-        sleep 0.1
+        sleep "$dt"
         i="$((i + 1))"
         [ "$i" -eq "$to" ] && exit 0
     done
@@ -32,7 +32,7 @@ trap "exit 0" INT
 fifo="$1"
 sep="${2:-"  --  "}"
 l="${3:-20}"
-dt="${4:-0.2}"
+dt="${4:-0.1}"
 to="${5:-600}"
 
 [ -p "$fifo" ] || exit 1

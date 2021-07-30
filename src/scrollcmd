@@ -8,6 +8,7 @@ sleep 0.1
 eval "$1" > "$fifo"
 while true; do
     sleep "$2"
+    # shellcheck disable=SC2154
     snew="$(eval "$1")" && [ "$snew" != "$s" ] || continue
     rm -f -- "$fifo"
     sleep 0.1
