@@ -4,14 +4,18 @@ SEP="${SEP:-"="}"
 END="${END-"
 "}"
 
-while IFS= read -r i; do
+IFS=
+
+while read -r i; do
     for j; do
         from="${j%%"$SEP"*}"
         to="${j#*"$SEP"}"
-        [ "$from" = "*" ] || [ "$i" = "$from" ] && {
-            printf "%s%s" "$to" "$END"
-            continue 2
-        }
+        case "$i" in
+            $from) 
+                printf "%s%s" "$to" "$END"
+                continue 2
+                ;;
+        esac
     done
 
     printf "%s%s" "$i" "$END"
