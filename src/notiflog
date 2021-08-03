@@ -78,7 +78,7 @@ def filternotif(bus, message):
             log(logfile, summary, body)
         else:
             print("Lock file present, not logging")
-            remove(lockfile)
+            remove(lockfilepath)
     except Exception as e:
         print("Caught exception: " + repr(e))
 

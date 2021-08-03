@@ -1,7 +1,6 @@
 # Bugs
 - `sxhkd` does not release keys when cycling keymaps, fix.
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
-- `notiflog` does not release locks, fix.
 
 # Features
 - Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags. This is and should not be the case in `bspwmpad`.
