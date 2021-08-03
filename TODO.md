@@ -58,7 +58,6 @@
 - Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit` and `bspwmpadinit`'s PID updating with `inotifywait`.
-- Optimise `maps`.
 - Rewrite `brightmute` in a more robust fashion that would not oftenly break.
 - Rewrite `rangermpick` with `lf`.
 - Consider `scrot` in `cpscr`.
