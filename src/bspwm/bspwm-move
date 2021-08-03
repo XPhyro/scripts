@@ -6,10 +6,15 @@ action="$1"
 [ "$action" != "f" ] && [ "$action" != "s" ] && exit 1
 direction="$2"
 
-case "$direction" in
-    west ) bspc node "-$action" west  || bspc node "-$action" east ;;
-    east ) bspc node "-$action" east  || bspc node "-$action" west ;;
-    south) bspc node "-$action" south || bspc node "-$action" north;;
-    north) bspc node "-$action" north || bspc node "-$action" south;;
-    *    ) exit 1;;
-esac
+m="$(bspc query -m focused -M)"
+
+setn() {
+    n="$(bspc query -n "$direction" -N)" && [ "$(bspc query -n "$n" -M)" = "$m" ]
+}
+
+setn || {
+    direction="$(printf "%s\n" "$direction" | END= maps west=east east=west south=north north=south)"
+    setn || exit 1
+}
+
+bspc node "-$action" "$direction"
