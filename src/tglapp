@@ -242,5 +242,6 @@ parseargs "$@"
 validargs
 processargs
 trap 'clean' INT
+printf "%s\n" "$cmd" > "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/$keyfl"
 main
 clean
