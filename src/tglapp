@@ -242,6 +242,9 @@ parseargs "$@"
 validargs
 processargs
 trap 'clean' INT
-[ -n "$keyfl" ] && printf "%s\n" "$cmd" > "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/$keyfl"
+[ -n "$keyfl" ] && {
+    mkdir -p -- "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/"
+    printf "%s\n" "$cmd" > "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/$keyfl"
+}
 main
 clean
