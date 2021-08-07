@@ -33,6 +33,7 @@
 - Increase font size in `yankunicode`.
 - Start applications in a `screen` named `"$keycode"` in `tglapp`.
 - Support `--long-option=VALUE` in `parseargs()`. Since a switch is already used, `long-option|long-option=*)` could be used along with `value="${1#*=}"`.
+- Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
