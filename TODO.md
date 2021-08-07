@@ -31,6 +31,7 @@
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
 - Implement `-l, --list` in `tglapp`.
 - Increase font size in `yankunicode`.
+- Start applications in a `screen` named `"$keycode"` in `tglapp`.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
