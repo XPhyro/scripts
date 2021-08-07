@@ -3,11 +3,31 @@
 # TODO: Add rm (inverse of crop) and compress subcommands.
 # TODO: ffmw might fail to work with symlink infiles for the concat and split subcommands, test and if so fix.
 
-subcommands="concat crop decat help split trim"
+subcommands="compress concat crop decat help split trim"
 execname="${0##*/}"
 
 printhelp() {
     case "$1" in
+        compress)
+            printf "%s\n" \
+"  compress [INFILE]... [TEMPOUTFILE]
+   Compress INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
+
+    -c FACTOR, --constant-rate-factor FACTOR
+        Set the constant rate factor to FACTOR. If not given, 23 is used.
+    -f, --force
+        Overwrite the output file if it exists.
+    -h, --help
+        Print help message.
+    -i, --interactive
+        Prompt before overwriting the output file if it exists.
+    -n, --no-clobber
+        Do nothing if the output file exists.
+    -p PRESET, --preset PRESET
+        Set the preset to PRESET. If not given, medium is used.
+    -r, --remove
+        Remove INFILE if operation succeeded."
+            ;;
         concat)
             printf "%s\n" \
 "  concat [INFILE]... [OUTFILE]
@@ -223,6 +243,72 @@ parseargs() {
     shift
 
     case "$cmd" in
+        compress)
+            while [ -n "$1" ]; do
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
+                        sopt="${1#?}"
+
+                        while [ -n "$sopt" ]; do
+                            opt="${sopt%"${sopt#?}"}"
+
+                            case "$opt" in
+                                c) shift; assertarg "-c" "FACTOR" "$1"; factor="$1";;
+                                f) overwrite="-y";;
+                                h) printhelp "compress"; exit 0;;
+                                i) overwrite="";;
+                                n) overwrite="-n";;
+                                p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
+                                r) remove="1";;
+                                *) printusage "-$opt" "compress";;
+                            esac
+
+                            sopt="${sopt#?}"
+                        done
+                    else
+                        opt="${1#??}"
+                        
+                        case "$opt" in
+                            constant-rate-factor ) shift; assertarg "--constant-rate-factor" "FACTOR" "$1"; factor="$1";;
+                            force                ) overwrite="-y";;
+                            help                 ) printhelp "compress"; exit 0;;
+                            interactive          ) overwrite="";;
+                            no-clobber           ) overwrite="-n";;
+                            preset               ) shift; assertarg "--preset" "PRESET" "$1"; preset="$1";;
+                            remove               ) remove="1";;
+                            ""                   ) shift; break;;
+                            *                    ) printusage "--$opt" "compress";;
+                        esac
+                    fi
+                else
+                    argv="$argv
+$1"
+                fi
+
+                shift
+            done
+
+            for i; do
+                argv="$argv
+$1"
+            done
+
+            argv="$(printf "%s" "$argv" | tail -n +2)"
+
+            infls="$(printf "%s" "$argv" | head -n -1)"
+            outfl="$(printf "%s" "$argv" | tail -n 1)"
+
+            [ -z "$factor" ] && factor=23
+            [ "$(printf "%s\n" "$factor" | tr -c -d '[:digit:]')" = "$factor" ] || printferrq "FACTOR must be an integer.\n"
+
+            [ -z "$preset" ] && preset=medium
+            [ "$factor" -gt -1 ] && [ "$factor" -lt 52 ] || printferrq "FACTOR must be in the range 0-51."
+            equals "$preset" ultrafast superfast veryfast faster fast medium slow slower veryslow placebo || printferrq "PRESET must be one of these: ultrafast superfast veryfast faster fast medium slow slower veryslow placebo\n"
+
+            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+
+            printf "%s" "$infls" | grep -Fxq -- "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+            ;;
         concat)
             while [ -n "$1" ]; do
                 if [ "${1%"${1#?}"}" = "-" ]; then
@@ -572,6 +658,14 @@ $1"
 
     mvoverwrite="${overwrite:-"-i"}"
     [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
+}
+
+compress() {
+    printf "%s\n" "$infls" | while IFS= read -r i; do
+        [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
+        $pperf ffmpeg -hide_banner $threads $overwrite -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
+        mv -f -- "$outfl" "${i%.*}.${outfl##*.}"
+    done
 }
 
 concat() {
