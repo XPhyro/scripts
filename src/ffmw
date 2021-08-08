@@ -1,17 +1,17 @@
 #!/usr/bin/env sh
 # ffmpeg wrapper for actions I commonly use.
-# TODO: Add rm (inverse of crop) and compress subcommands.
+# TODO: Add rm (inverse of crop).
 # TODO: ffmw might fail to work with symlink infiles for the concat and split subcommands, test and if so fix.
 
-subcommands="compress concat crop decat help split trim"
+subcommands="concat crop decat help optimise optimize split trim"
 execname="${0##*/}"
 
 printhelp() {
     case "$1" in
-        compress)
+        optimise|optimize)
             printf "%s\n" \
-"  compress [INFILE]... [TEMPOUTFILE]
-   Compress INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
+"  optimize [INFILE]... [TEMPOUTFILE]
+   Optimize INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
 
     -c FACTOR, --constant-rate-factor FACTOR
         Set the constant rate factor to FACTOR. If not given, 23 is used.
@@ -243,7 +243,7 @@ parseargs() {
     shift
 
     case "$cmd" in
-        compress)
+        optimise|optimize)
             while [ -n "$1" ]; do
                 if [ "${1%"${1#?}"}" = "-" ]; then
                     if ! [ "${1%"${1#??}"}" = "--" ]; then
@@ -255,12 +255,12 @@ parseargs() {
                             case "$opt" in
                                 c) shift; assertarg "-c" "FACTOR" "$1"; factor="$1";;
                                 f) overwrite="-y";;
-                                h) printhelp "compress"; exit 0;;
+                                h) printhelp "optimize"; exit 0;;
                                 i) overwrite="";;
                                 n) overwrite="-n";;
                                 p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
                                 r) remove="1";;
-                                *) printusage "-$opt" "compress";;
+                                *) printusage "-$opt" "optimize";;
                             esac
 
                             sopt="${sopt#?}"
@@ -271,13 +271,13 @@ parseargs() {
                         case "$opt" in
                             constant-rate-factor ) shift; assertarg "--constant-rate-factor" "FACTOR" "$1"; factor="$1";;
                             force                ) overwrite="-y";;
-                            help                 ) printhelp "compress"; exit 0;;
+                            help                 ) printhelp "optimize"; exit 0;;
                             interactive          ) overwrite="";;
                             no-clobber           ) overwrite="-n";;
                             preset               ) shift; assertarg "--preset" "PRESET" "$1"; preset="$1";;
                             remove               ) remove="1";;
                             ""                   ) shift; break;;
-                            *                    ) printusage "--$opt" "compress";;
+                            *                    ) printusage "--$opt" "optimize";;
                         esac
                     fi
                 else
@@ -660,7 +660,11 @@ $1"
     [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
 }
 
-compress() {
+optimise() {
+    optimize "$@"
+}
+
+optimize() {
     printf "%s\n" "$infls"
     # printf "%s\n" "$infls" | while IFS= read -r i; do
     #     [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
