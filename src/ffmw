@@ -661,11 +661,25 @@ $1"
 }
 
 compress() {
-    printf "%s\n" "$infls" | while IFS= read -r i; do
-        [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
-        $pperf ffmpeg -hide_banner $threads $overwrite -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
-        mv -f -- "$outfl" "${i%.*}.${outfl##*.}"
-    done
+    printf "%s\n" "$infls"
+    # printf "%s\n" "$infls" | while IFS= read -r i; do
+    #     [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
+    #     $pperf ffmpeg -hide_banner $threads $overwrite -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
+    #     mv -f -- "$outfl" "${i%.*}.${outfl##*.}"
+    # done
+    # TODO: For some reason the upper while loop does not continue after the first iteration, fix.
+    printf "%s\n" "$infls" | xargs -d '\n' -n 1 sh -c "
+        i=\"\$1\"
+        [ -f \"\$i\" ] || {
+            printf 'No such file [%s], exiting.\n' \"\$i\"
+            exit 1
+        }
+        $pperf ffmpeg -hide_banner $threads $overwrite -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 -c:a copy '$outfl' || {
+            printf 'ffmpeg failed, exiting.\n'
+            exit 1
+        }
+        mv -f -- '$outfl' \"\${i%.*}.${outfl##*.}\"
+    " --
 }
 
 concat() {
