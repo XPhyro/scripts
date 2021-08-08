@@ -17,10 +17,10 @@ oldclp="$lastclp"
 while true; do
     while clipnotify; do
         [ -f "$lckfl" ] && {
-            rm "$lckfl" && {
-                oldclp="$lastclp"
-                lastclp="$(xclip -o -se c)"
-            }
+            rm "$lckfl" # && {
+            #     oldclp="$lastclp"
+            #     lastclp="$(xclip -o -se c)"
+            # }
             continue
         }
 
