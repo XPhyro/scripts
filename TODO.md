@@ -56,6 +56,7 @@
 - Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
 - Make `parseargs()` into a sourceable script.
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
+- [This](https://askubuntu.com/a/363846/1069990).
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
