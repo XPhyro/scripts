@@ -55,6 +55,7 @@
 - Write an `stest` wrapper that supports the negation of partial operators. As an example `stest -x ! -d` should return all files that are executable but are not directories. Alternatively, have a syntax like `stest -x !-d` or the similar.
 - Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
 - Make `parseargs()` into a sourceable script.
+- Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
