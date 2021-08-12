@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-fl="/tmp/ranger-neomutt-pick"
-> "$fl"
-ranger --choosefiles "$fl" && [ -f "$fl" ] && sed -i 's/^\(.*\)$/push <attach-file>\1<enter>/' "$fl"

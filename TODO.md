@@ -66,7 +66,6 @@
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit` and `bspwmpadinit`'s PID updating with `inotifywait`.
 - Rewrite `brightmute` in a more robust fashion that would not oftenly break.
-- Rewrite `rangermpick` with `lf`.
 - Consider `scrot` in `cpscr`.
 - Make `dupe`, `getnewpath` and alike use GNU `--backup` syntax instead of continuous trailing underscores.
 - Convert `open-steam` into a full Steam manager using the `steam://` protocol.

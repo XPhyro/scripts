@@ -27,6 +27,7 @@ sudo make uninstall
 - [bspwmpad](src/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, append `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" sticky=on state=floating hidden=on; done` to your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind.
 - [scratchpad](src/scratchpad): Take and manage notes with `vim` and `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [notiflog](src/notiflog): Log notifications on the dbus interface `org.freedesktop.Notifications`. Supports locking logging: after initiating the lock, the next notification is not logged. Then it unlocks itself automatically.
+- [neomuttpick](src/neomuttpick): Use [kdialog](src/kdialog) to pick attachments in `neomutt`. Add `macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to use.
 
 ## Notice that
 - Some of these scripts assume that some of the other scripts are in your PATH.

@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
-# See https://github.com/neomutt/neomutt/issues/2738.
+# Add the following to your neomuttrc:
+# macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"
 
-kdialog --getopenfilename "$PWD" --multiple | awk '{gsub("\"", "\\\"", $0); printf("<attach-file>\"%s\"<enter>", $0)}' | sed 's/^/push /'
+kdialog --getopenfilename "$HOME" --multiple | awk '{print "push <attach-file>"$0"<enter>"}' > "/tmp/neomuttpick"
