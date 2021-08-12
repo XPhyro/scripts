@@ -1,8 +1,7 @@
 install: uninstall
-	cd src && find '.' -mindepth 1 -type f -executable -not -path "./.git/*" -and -not -path "./.archived/*" | tee -a ../.installed | xargs -d '\n' -r install -t /usr/local/bin --
+	sh -c 'cd src && ./.make install'
 
 uninstall:
-	cat .installed | sort -u | xargs -d '\n' -rI {} rm -f /usr/local/bin/{}
-	rm -f .installed
+	sh -c 'cd src && ./.make uninstall'
 
 .PHONY: install uninstall
