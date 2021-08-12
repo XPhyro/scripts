@@ -8,6 +8,5 @@ tput smcup
 tput civis
 clear
 terml="$(tput lines)"
-[ "$terml" -gt "$stdl" ] && printn "
-" "$(((terml - stdl) / 2))"
+[ "$terml" -gt "$stdl" ] && putsn "$(((terml - stdl) / 2))"
 cat -- "$tmp"

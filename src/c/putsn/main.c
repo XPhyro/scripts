@@ -6,8 +6,11 @@ int main(int argc, char *argv[])
     unsigned long long n, i;
     char *endptr;
 
-    if (argc != 3) {
-        fputs("Exactly 2 arguments are accepted, exiting.\n", stderr);
+    if (argc == 2) {
+        argv--;
+        argv[1] = "";
+    } else if (argc != 3) {
+        fputs("Exactly 2 or 3 arguments are accepted, exiting.\n", stderr);
         return 1;
     }
 
