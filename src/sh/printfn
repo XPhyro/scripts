@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+n="$1"
+shift
+
+i=0
+while [ "$i" -lt "$n" ]; do
+    printf "$@"
+    : $((i += 1))
+done
