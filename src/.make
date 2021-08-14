@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+logerrq() {
+    printf "$@"
+    exit 1
+}
+
 install() {
     printf "%s\n" sh py | while IFS= read -r i; do
         cd "$i"
@@ -23,13 +28,10 @@ uninstall() {
 
 set -e
 
-[ "$(id -u)" != 0 ] && {
-    printf "This script needs to be executed as root.\n"
-    exit 1
-}
+[ "$(id -u)" != 0 ] && logerrq "This script needs to be executed as root.\n"
 
 case "$*" in
     install) install;;
     uninstall) uninstall;;
-    *) exit 1;;
+    *) logerrq "Arguments must be 'install' or 'uninstall', not [%s]." "$*";;
 esac
