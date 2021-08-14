@@ -60,6 +60,7 @@
   - `fmaps`: Do not support wildcards, i.e. the previous state of `maps`.
   - `gmaps`: Use `sed`.
   - `emaps`: Use `sed -E`.
+- Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
