@@ -55,11 +55,6 @@
 - Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
 - Make `parseargs()` into a sourceable script.
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
-- [This](https://askubuntu.com/a/363846/1069990).
-- Write alternatives to `maps` named `fmaps`, `gmaps` and `emaps`.
-  - `fmaps`: Do not support wildcards, i.e. the previous state of `maps`.
-  - `gmaps`: Use `sed`.
-  - `emaps`: Use `sed -E`.
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 
 # Refactoring / Rewriting
