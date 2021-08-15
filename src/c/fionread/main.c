@@ -19,8 +19,5 @@ int main(int argc, char *argv[])
     if(ioctl(0, FIONREAD, &r))
         err(1, "ioctl(FIONREAD)");
 
-    if(!r)
-        return 1;
-
-    return 0;
+    return r == 0;
 }
