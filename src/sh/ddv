@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+timeout="$1"
+shift
+
+date
+
+dd "$@" &
+pid="$!"
+
+while kill -s USR1 "$pid"; do
+    sleep "$1"
+done
