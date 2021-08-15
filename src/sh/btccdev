@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 # Connect to a previously paired bluetooth device.
 
-seldev="$(bluetoothctl paired-devices | while read -r _ i devname; do
-    [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" != "true" ] && printf "%s %s\n" "$i" "$devname"
-done | sort -r | xins -rs -- dmenu -i -p "Which device to connect to?")"
+seldev="$(
+    bluetoothctl paired-devices | while read -r _ i devname; do
+        [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" != "true" ] && printf "%s %s\n" "$i" "$devname"
+    done | sort -r | xins -rs -- dmenu -i -p "Which device to connect to?"
+)"
 
 [ -z "$seldev" ] && exit 0
 
