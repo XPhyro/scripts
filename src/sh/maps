@@ -6,7 +6,7 @@ END="${END-"
 
 IFS=
 
-while read -r i; do
+while IFS= read -r i; do
     for j; do
         from="${j%%"$SEP"*}"
         to="${j#*"$SEP"}"
