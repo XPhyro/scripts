@@ -58,7 +58,6 @@
 - Integrate -pc option of dmenu into usable scripts.
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
-- Rewrite `lck`. See [this](https://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) and [this](http://mywiki.wooledge.org/BashFAQ/045).
 - Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit` and `bspwmpadinit`'s PID updating with `inotifywait`.
