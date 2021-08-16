@@ -9,7 +9,7 @@
 - Add options in `latexstp` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a `dwmpad` or `bspwmpad`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
-- Add an option in dwm that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
+- Add an option in `dwmpad` and `bspwmpad` that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
 - When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getloc` and `getfl` could be implemented.
 - Add support for regular files in mark scripts. A possible way could be to also add support for passed arguments for files in the marking process and check the file type; if it is a regular file, then the file could be marked in a different mark set. While using marks, first check if a directory mark exists. If there exists a directory mark, `cd` into it; else, open up the regular file for the given mark in `$EDITOR` if there is such a mark.
 - Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
@@ -27,7 +27,7 @@
 - In `bspwmpad`, move the node to the current desktop if it is in a different desktop. Regardless of its previous state, if it was moved, it should be shown.
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
 - Implement `-l, --list` in `tglapp`.
-- Start applications in a `screen` named `"$keycode"` in `tglapp`.
+- Add an option to start applications in a `screen` named `"$keycode"` in `tglapp`. Also add an option to overwrite the `screen` name.
 - Support `--long-option=VALUE` in `parseargs()`. Since a switch is already used, `long-option|long-option=*)` could be used along with `value="${1#*=}"`.
 - Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
 
