@@ -7,7 +7,7 @@
 execname="${0##*/}"
 
 printhelp() {
-    printf "%s\n" \
+    printf "%s" \
 "$execname [OPTION...] COMMAND -- COMMAND
    -a, --actual
        Use the actual status of applications to do work instead of the registered status. As an example, if an application is registered with a PID but is actually dead, the application will be cleaned and started if -P is passed. Inhibited by a following -p. See -p for more details.
@@ -26,11 +26,14 @@ printhelp() {
    -S, --sudo
        Execute kill with sudo.
    -s, --status
-       Only query the status of the command; exit with code 0 if state is on, else exit with code 1.
+       Only query the status of the command; exit with code 0 if state is on, else exit with code 127.
    -T STATE, --toggle STATE
        The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}.
    -t TIMEOUT SIGNAL, --timeout TIMEOUT SIGNAL
-       Wait TIMEOUT milliseconds and send SIGNAL to the process if not terminated yet. TIMEOUT must be a non-negative integer in milliseconds and SIGNAL must be valid as in kill -L. Note that RT signals are not supported. If multiple -t options are passed, they will be executed in order. If no -t option is passed, a single TERM (i.e. 15) signal will be used without a timeout."
+       Wait TIMEOUT milliseconds and send SIGNAL to the process if not terminated yet. TIMEOUT must be a non-negative integer in milliseconds and SIGNAL must be valid as in kill -L. Note that RT signals are not supported. If multiple -t options are passed, they will be executed in order. If no -t option is passed, a single TERM (i.e. 15) signal will be used without a timeout.
+    -v, --verbose
+        Print execution information to stderr.
+"
 }
 
 printusage() {
@@ -53,6 +56,8 @@ assertarg() {
 }
 
 parseargs() {
+    unset actual willclean forcestate keycode sudo status verbose
+
     while [ -n "$1" ]; do
         if [ "${1%"${1#?}"}" = "-" ]; then
             if [ "${1%"${1#??}"}" != "--" ]; then
@@ -71,6 +76,7 @@ parseargs() {
                         s) parseargs --status;;
                         T) shift; parseargs --toggle "$1";;
                         t) shift; parseargs --timeout "$1" "$2"; shift;;
+                        v) parseargs --verbose;;
                         *) printusage "-$opt"; exit 0;;
                     esac
 
@@ -80,19 +86,20 @@ parseargs() {
                 opt="${1#??}"
                 
                 case "$opt" in
-                    actual         ) actual="1";;
-                    no-actual      ) actual="0";;
-                    clean          ) willclean="1";;
-                    force-state    ) forcestate="1";;
-                    no-force-state ) forcestate="0";;
+                    actual         ) actual=1;;
+                    no-actual      ) actual=0;;
+                    clean          ) willclean=1;;
+                    force-state    ) forcestate=1;;
+                    no-force-state ) forcestate=0;;
                     help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
                     sudo           ) sudo="sudo";;
-                    status         ) status="1";;
+                    status         ) status=1;;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
                     timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts$1
 "; signals="$signals$2
 "; shift;;
+                    verbose        ) verbose=1;;
                     ""             ) shift; break;;
                     *              ) printusage "--$opt"; exit 0;;
                 esac
@@ -110,7 +117,7 @@ parseargs() {
 }
 
 logerr() {
-    printf "[ERROR]: %s\n" "$@"
+    printf "[ERROR]: %s\n" "$@" >&2
 }
 
 logerrq() {
@@ -162,6 +169,16 @@ EOF1
 $(printf "%s" "$signals" | head -c -1)
 EOF2
     fi
+
+    if [ "$verbose" = 1 ]; then
+        log() {
+            printf "[INFO]: %s\n" "$@" >&2
+        }
+    else
+        log() {
+            :
+        }
+    fi
 }
 
 runcmd() {
@@ -184,50 +201,80 @@ main() {
 
     keyfl="$flsdir/$keycode"
 
+    log "Found $execname location: $flsdir" \
+        "Assigned keycode: $keycode" \
+        "Assigned key file: $keyfl"
+
     [ "$status" = "1" ] && {
-        [ -f "$keyfl" ] && pid="$(cat -- "$keyfl")" && kill -s 0 "$pid" 2> /dev/null && exit 0
-        exit 1
+        [ -f "$keyfl" ] && pid="$(cat -- "$keyfl")" && kill -s 0 "$pid" 2> /dev/null && {
+            log "Queried status on, exiting with code 0."
+            exit 0
+        }
+        log "Queried status off, exiting with code 127."
+        exit 127
     }
 
     [ "$willclean" = "1" ] && {
+        log "Cleaning dead processes."
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "${flsdir:?}"/*; do
             pid="$(cat -- "$i")"
             kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
         done
+        log "Cleaning succeeded, exiting with code 0."
         exit 0
     }
 
     if [ -f "$keyfl" ]; then
+        log "Key file already exists, processing."
         pid="$(cat -- "$keyfl")"
+        log "Found PID: $pid"
         if kill -s 0 "$pid" 2> /dev/null; then
+            log "Process is alive."
             if [ -z "$state" ] || [ "$state" = "off" ]; then
+                log "Killing process."
                 stopcmd
+                log "Process killed."
             elif [ "$forcestate" = "1" ]; then
+                log "Killing process."
                 stopcmd
+                log "Process killed, force restarting."
                 runcmd
+                log "Process started."
                 wait
             fi
         else
+            log "Process is dead."
             if [ -z "$state" ] || [ "$state" = "off" ]; then
                 rm -f -- "$keyfl"
+                log "Removed key file."
                 [ "$actual" = "1" ] && {
+                    log "--actual is given, starting process."
                     runcmd
+                    log "Process started."
                     wait
                 }
             elif [ "$state" = "on" ]; then
+                log "Starting process."
                 runcmd
+                log "Process started."
                 wait
             fi
         fi
     else
+        log "Key file does not exist."
         if [ -z "$state" ] || [ "$state" = "on" ]; then
+            log "Starting process."
             runcmd
+            log "Started process."
             wait
         elif [ "$forcestate" = "1" ]; then
+            log "Starting process."
             runcmd
+            log "Started process, force restopping."
             pid="$(cat -- "$keyfl")"
             stopcmd
+            log "Process killed."
         fi
     fi
 }
