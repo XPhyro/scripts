@@ -21,7 +21,7 @@ Some scripts use optional or mandatory environmental variables for programs. Ass
 - [contexec](src/sh/contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language.
 - [selfl](src/sh/selfl): Select a file or directory with `dmenu`.
 - [ffmw](src/sh/ffmw): `ffmpeg` wrapper for common actions.
-- [tglapp](src/sh/tglapp): Toggle an application on/off based on hashcodes.
+- [tglapp](src/sh/tglapp): Toggle an application on/off based on hashcodes. Originally written for toggling applications with the same hotkey via `sxhkd`.
 - [eln](src/sh/eln): Batch edit or create symlinks.
 - [latexstp](src/sh/latexstp): Basically `latexmk` but sucks less and is more minimal.
 - [xins](src/sh/xins): Like `xargs` but for standard input.
