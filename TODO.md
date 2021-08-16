@@ -2,9 +2,7 @@
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 
 # Features
-- Scratchpads in dwm are tagged by monitor. Make `dwmpad` recognise the monitor tags and initialise distinct (by monitor) locks according to the monitor tags. This is and should not be the case in `bspwmpad`.
-- In `contexec`, show the output in a `dwmpad` or `bspwmpad` and open the editor in the initialised terminal.
-- After scratchpad setting is implemented in dwm, add support in `dwmpad`.
+- In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
 - Allow `m` to take input files. If an input file is given, mark the file; if not, mark the current working directory.
 - In `contexec`, wrap each execution between printed headers. Also show the execution count.
 - In `dwmpad` and `bspwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
@@ -29,7 +27,6 @@
 - In `bspwmpad`, move the node to the current desktop if it is in a different desktop. Regardless of its previous state, if it was moved, it should be shown.
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
 - Implement `-l, --list` in `tglapp`.
-- Increase font size in `yankunicode`.
 - Start applications in a `screen` named `"$keycode"` in `tglapp`.
 - Support `--long-option=VALUE` in `parseargs()`. Since a switch is already used, `long-option|long-option=*)` could be used along with `value="${1#*=}"`.
 - Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
