@@ -116,6 +116,10 @@ parseargs() {
     done
 }
 
+logwarn() {
+    printf "[WARNING]: %s\n" "$@" >&2
+}
+
 logerr() {
     printf "[ERROR]: %s\n" "$@" >&2
 }
@@ -156,6 +160,8 @@ validargs() {
 }
 
 processargs() {
+    cmd="${cmd#?}"
+
     [ -z "$keycode" ] && keycode="$(printf "%s" "$cmd" | sha512sum | awk '{print $1}' | tr -d '\n')"
 
     if [ -z "$timeouts" ]; then
@@ -171,128 +177,140 @@ EOF2
     fi
 
     if [ "$verbose" = 1 ]; then
-        log() {
+        loginfo() {
             printf "[INFO]: %s\n" "$@" >&2
         }
     else
-        log() {
+        loginfo() {
             :
         }
     fi
 }
 
 runcmd() {
+    mkdir -- "$keydir" || logerrq "Could not acquire lock for [$keydir]."
+
     if [ -z "$stdinfl" ]; then
         eval "( $cmd ) &"
     else
         eval "( $cmd ) < '$stdinfl' &"
     fi
-    printf "%s" "$!" > "$keyfl"
+
+    printf "%s\n" "$!" > "$keydir/pid"
+    printf "%s\n" "$$" > "$keydir/selfpid"
+    printf "%s\n" "$cmd" > "$keydir/cmd"
+    printf "%s\n" "$argv" > "$keydir/argv"
+    # Credit for the following: https://unix.stackexchange.com/a/37844/401367
+    printf "%s\n" "$(ps h -p $$ -o args= | cut -f1 -d' ')" > "$keydir/shell"
 }
 
 stopcmd() {
     # shellcheck disable=SC2086
     { printf "%s\n" "$pid"; pgrep -P "$pid"; } | xargs -d '\n' -rn 1 $sudo kill $killargs 2> /dev/null
-    kill -0 "$pid" 2> /dev/null || rm -f -- "$keyfl" 2> /dev/null
+
+    kill -s 0 "$pid" || {
+        logwarn "Signals sent but process is still alive, not removing key directory."
+        return 1
+    }
+
+    rm -rf -- "$keydir"
+    loginfo "Wiped key directory."
 }
 
 main() {
     flsdir="$(getloc tglapp)" || logerrq "No $execname location is set." # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
 
-    keyfl="$flsdir/$keycode"
+    keydir="$flsdir/$keycode"
 
-    log "Found $execname location: $flsdir" \
+    loginfo "Found $execname location: $flsdir" \
         "Assigned keycode: $keycode" \
-        "Assigned key file: $keyfl"
+        "Assigned key directory: $keydir"
 
     [ "$status" = "1" ] && {
-        [ -f "$keyfl" ] && pid="$(cat -- "$keyfl")" && kill -s 0 "$pid" 2> /dev/null && {
-            log "Queried status on, exiting with code 0."
+        [ -d "$keydir" ] && kill -s 0 "$(cat -- "$keydir/pid" 2> /dev/null)" 2> /dev/null && {
+            loginfo "Queried status on, exiting with code 0."
             exit 0
         }
-        log "Queried status off, exiting with code 127."
+        loginfo "Queried status off, exiting with code 127."
         exit 127
     }
 
     [ "$willclean" = "1" ] && {
-        log "Cleaning dead processes."
+        loginfo "Cleaning dead processes."
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "${flsdir:?}"/*; do
             pid="$(cat -- "$i")"
             kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
         done
-        log "Cleaning succeeded, exiting with code 0."
+        loginfo "Cleaning succeeded, exiting with code 0."
         exit 0
     }
 
-    if [ -f "$keyfl" ]; then
-        log "Key file already exists, processing."
-        pid="$(cat -- "$keyfl")"
-        log "Found PID: $pid"
+    if [ -d "$keydir" ]; then
+        loginfo "Key directory already exists, processing."
+        pid="$(cat -- "$keydir/pid")"
+        loginfo "Found PID: $pid"
         if kill -s 0 "$pid" 2> /dev/null; then
-            log "Process is alive."
+            loginfo "Process is alive."
             if [ -z "$state" ] || [ "$state" = "off" ]; then
-                log "Killing process."
+                loginfo "Killing process."
                 stopcmd
-                log "Process killed."
+                loginfo "Process killed."
             elif [ "$forcestate" = "1" ]; then
-                log "Killing process."
+                loginfo "Killing process."
                 stopcmd
-                log "Process killed, force restarting."
+                loginfo "Process killed, force restarting."
                 runcmd
-                log "Process started."
+                loginfo "Process started."
                 wait
             fi
         else
-            log "Process is dead."
+            loginfo "Process is dead."
             if [ -z "$state" ] || [ "$state" = "off" ]; then
-                rm -f -- "$keyfl"
-                log "Removed key file."
+                rm -rf -- "$keydir"
+                loginfo "Wiped key directory."
                 [ "$actual" = "1" ] && {
-                    log "--actual is given, starting process."
+                    loginfo "--actual is given, starting process."
                     runcmd
-                    log "Process started."
+                    loginfo "Process started."
                     wait
                 }
             elif [ "$state" = "on" ]; then
-                log "Starting process."
+                loginfo "Starting process."
                 runcmd
-                log "Process started."
+                loginfo "Process started."
                 wait
             fi
         fi
     else
-        log "Key file does not exist."
+        loginfo "Key directory does not exist."
         if [ -z "$state" ] || [ "$state" = "on" ]; then
-            log "Starting process."
+            loginfo "Starting process."
             runcmd
-            log "Started process."
+            loginfo "Started process."
             wait
         elif [ "$forcestate" = "1" ]; then
-            log "Starting process."
+            loginfo "Starting process."
             runcmd
-            log "Started process, force restopping."
-            pid="$(cat -- "$keyfl")"
+            loginfo "Started process, force restopping."
+            pid="$(cat -- "$keydir/pid")"
             stopcmd
-            log "Process killed."
+            loginfo "Process killed."
         fi
     fi
 }
 
 clean() {
     [ -f "$stdinfl" ] && rm -f -- "$stdinfl"
-    [ -f "$keyfl" ] && rm -f -- "$keyfl"
+    [ -f "$keydir" ] && rm -rf -- "$keydir"
 }
 
 capturestdin
+argv="$0 $*"
 parseargs "$@"
 validargs
 processargs
-log "Arguments: $0 $*"
+loginfo "Arguments: $argv"
 trap 'clean' INT
-[ -n "$keyfl" ] && {
-    mkdir -p -- "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/"
-    printf "%s\n" "$cmd" > "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/$keyfl"
-}
 main
 clean
