@@ -288,6 +288,7 @@ capturestdin
 parseargs "$@"
 validargs
 processargs
+log "Arguments: $0 $*"
 trap 'clean' INT
 [ -n "$keyfl" ] && {
     mkdir -p -- "${XDG_CACHE_HOME:-"$HOME/.cache"}/tglapp/"
