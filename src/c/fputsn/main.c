@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     }
 
     for (i = 0; i < n; i++) {
-        printf("%s", argv[1]);
+        fputs(argv[1], stdout);
     }
 
     return 0;
