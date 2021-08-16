@@ -75,6 +75,10 @@ The suite will deliver the following features:
 - Usage: `getflloc key`
 - Description: 
 
+### [getflunsafe](getflunsafe)
+- Usage: `getflunsafe key`
+- Description: 
+
 ### [getloc](getloc)
 - Usage: `getloc key`
 - Description: 
@@ -107,6 +111,10 @@ The suite will deliver the following features:
 - Usage: `getreallocunsafe key`
 - Description: 
 
+### [i](i) 
+- Usage: `i [key executable file]...`
+- Description: Dynamic merge of [e](e), [open](open) and [v](v).
+
 ### [m](m) 
 - Usage: `m key`
 - Description: Marks the current directory with the key `key`.
@@ -114,6 +122,10 @@ The suite will deliver the following features:
 ### [mvloc](mvloc)
 - Usage: `mvloc location file1 ... fileN`
 - Description: Is equivalent to `mv file1 ... fileN "$(getloc location)"`.
+
+### [open](open)
+- Usage: `open executable`
+- Description: 
 
 ### [setall](setall)
 - Usage: `setall`

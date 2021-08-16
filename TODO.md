@@ -50,7 +50,6 @@
 - Write a version of `v` (from .zshrc) that has keys as in the pathfinding suite depending on the directory. Say, one executes `vm t dotfilesbak-tick` in `"$HOME/.dotfiles"`. When they execute `"$scriptname" t`, `dotfilesbak-tick` is opened with `"$EDITOR"`. Alternatively, this behaviour could be integrated in the currently existing mark functionality either by prioritising directory-specific marks or by making the user prepend the key by a character, say \_.
 - Write an `stest` wrapper that supports the negation of partial operators. As an example `stest -x ! -d` should return all files that are executable but are not directories. Alternatively, have a syntax like `stest -x !-d` or the similar.
 - Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
-- Make `parseargs()` into a sourceable script.
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 
@@ -64,7 +63,6 @@
 - Rewrite `brightmute` in a more robust fashion that would not oftenly break.
 - Consider `scrot` in `cpscr`.
 - Make `dupe`, `getnewpath` and alike use GNU `--backup` syntax instead of continuous trailing underscores.
-- Convert `open-steam` into a full Steam manager using the `steam://` protocol.
 - Make `-fin` options in `ffmw` global as they are used by every non-help subcommand.
 - Make `xins` use IFS= or IFS=\n.
 - Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getloc $$#)\""` could be used to do so.
@@ -86,7 +84,6 @@
 - Use `basename` and `dirname` instead of parameter expansions as they correctly deal with edge cases. If these edge cases are known not to be present, do use parameter expansions.
 - Into the pathfinding suite, add a system for custom aliases/functions/variables depending on the current directory of the user. This could be done by modifying the currently provided `cd` function.
 - Replace `printf` with `printf --`.
-- Perhaps merge `pathfinding/e`, `pathfinding/v` and `open`?
 - In all scripts that parse arguments, ensure that help printing and other actions are done after validating the arguments. If the arguments could not be validated, exit with a non-zero code (after printing help if it is given). This way, the scripts can be integrated more easily with or within other scripts by allowing the arguments to be immediately validated without executing the script (like kdialog, which wraps the real kdialog, validating the arguments without doing the action).
 - Scripts that require untrivial root access should not use `sudo`, but force the user to run the script as root. Scripts that require trivial root access should use `sudo` or `sudo -A` depending on whether they are graphical (for instance, if they use `dmenu`) or not.
 - Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
