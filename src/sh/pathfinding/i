@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+[ $# -eq 0 ] && exec "$EDITOR"
+
+for i; do
+    if contains "$i" "/" || [ -e "$i" ]; then
+        printf "%s\0" "$i"
+    elif [ -e "src/$i" ]; then
+        printf "%s\0" "src/$i"
+    elif fl="$(getflunsafe "$i")" || [ -n "${fl:="$(whereis -b "$i" | cut -d' ' -f2 | grep '^/')"}" ]; then
+        printf "%s\0" "$fl"
+    fi
+done | xargs -ro0 "$EDITOR" --
