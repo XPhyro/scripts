@@ -1,14 +1,7 @@
 #!/usr/bin/env sh
 
 for i; do
-    [ -f "$i" ] && {
-        while true; do
-            sleep 0.1
-            [ -f "$i" ] || break
-        done
-
+    until mkdir -- "$i"; do
         sleep 0.1
-    }
-
-    touch "$i"
+    done
 done

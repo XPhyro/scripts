@@ -5,22 +5,19 @@
 
 logfl="$(readlink -m -- "$(getfl clplog)")"
 bakdir="$(readlink -m -- "$(getloc clplogbak)")"
-lckfl="$(getfl clploglck)" || {
+lckdir="$(getloc clploglck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
 lastclp="$(xclip -o -se c)"
 oldclp="$lastclp"
 
-[ -f "$lckfl" ] && rm "$lckfl"
+[ -d "$lckdir" ] && rm -rf -- "$lckdir"
 
 while true; do
     while clipnotify; do
-        [ -f "$lckfl" ] && {
-            rm "$lckfl" # && {
-            #     oldclp="$lastclp"
-            #     lastclp="$(xclip -o -se c)"
-            # }
+        [ -d "$lckdir" ] && {
+            rm -rf -- "$lckdir"
             continue
         }
 

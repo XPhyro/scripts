@@ -24,14 +24,14 @@ blacklogfilepath = (
 )
 print("Found blacklisted log file path: %s" % blacklogfilepath)
 
-lockfilepath = (
-    run(["getfl", "notifloglck"], capture_output=True)
+lockdirpath = (
+    run(["getloc", "notifloglck"], capture_output=True)
     .stdout.decode("utf-8")
     .rstrip("\n")
 )
-print("Found lock file path: %s" % lockfilepath)
+print("Found lock file path: %s" % lockdirpath)
 
-if not logfilepath or not blacklogfilepath or not lockfilepath:
+if not logfilepath or not blacklogfilepath or not lockdirpath:
     print("getfl failed, exiting.", file=stderr)
     exit(1)
 
@@ -73,12 +73,12 @@ def filternotif(bus, message):
             )
             run(["dunstctl", "close"])
             log(blacklogfile, summary, body)
-        elif not isfile(lockfilepath):
+        elif not isdir(lockdirpath):
             print("Logging notification")
             log(logfile, summary, body)
         else:
             print("Lock file present, not logging")
-            remove(lockfilepath)
+            rmdir(lockdirpath)
     except Exception as e:
         print("Caught exception: " + repr(e))
 

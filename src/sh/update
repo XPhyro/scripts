@@ -2,7 +2,7 @@
 # Pull updates from git and compile programs. Used list file is the file coded upabl.
 
 cleanexit() {
-    rm "$lckfl"
+    rm "$lckdir"
     exit 0
 }
 
@@ -10,7 +10,7 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckfl="$(getfl upabllck)" || {
+lckdir="$(getloc upabllck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -22,21 +22,16 @@ lst="$(getfl upabl)" || {
 
 for i; do
     if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]; then
-        [ -f "$lckfl" ] && rm -f "$lckfl" && exit 0
+        rm -rf "$lckdir" 2> /dev/null
+        exit 0
     fi
 done
 
-[ -f "$lckfl" ] && {
-    log "Lock file is present, waiting..."
-
-    while [ -f "$lckfl" ]; do
-        sleep 1s
-    done
-}
+log "Acquiring lock..."
 
 trap cleanexit INT
 
-touch "$lckfl"
+lck "$lckdir"
 
 # yay -Syu # --noconfirm
 
@@ -74,7 +69,7 @@ while IFS= read -r i; do
     printf "\n"
 done < "$lst"
 
-rm -f -- "$lckfl"
+rm -rf -- "$lckdir"
 
 log "Done."
 
