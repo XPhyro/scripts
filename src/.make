@@ -8,16 +8,16 @@ logerrq() {
 install() {
     printf "%s\n" sh py | while IFS= read -r i; do
         cd "$i"
-        find '.' -mindepth 1 -type f -executable -not -path "./.archived/*" | tee -a ../.installed | xargs -d '\n' -r install -t /usr/local/bin --
+        find '.' -mindepth 1 -type f -executable -not -path "./.archived/*" -printf "%P\n" | tee -a ../.installed | xargs -d '\n' -r install -t /usr/local/bin --
         cd ..
     done
 
     cd c
-    find '.' -mindepth 1 -maxdepth 1 -type d -not -path "./.*" -printf "%P\n" | tee -a ../.installed | while IFS= read -r i; do
-        cd "$i"
-        gcc -O3 -Wall main.c -o "$i"
-        mv -f "$i" /usr/local/bin/"$i"
-        cd ..
+    find '.' -mindepth 1 -maxdepth 1 -type f -not -path "./.*" -printf "%P\n" | while IFS= read -r i; do
+        out="${i%.c}"
+        gcc -O3 -Wall "$i" -o "$out"
+        mv -f "$out" /usr/local/bin/"$out"
+        printf "%s\n" "$out" >> ../.installed
     done
 }
 
