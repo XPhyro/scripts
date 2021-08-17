@@ -30,6 +30,7 @@
 - Add an option to start applications in a `screen` named `"$keycode"` in `tglapp`. Also add an option to overwrite the `screen` name.
 - Support `--long-option=VALUE` in `parseargs()`. Since a switch is already used, `long-option|long-option=*)` could be used along with `value="${1#*=}"`.
 - Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
+- In `tglapp`, add support for force restarting applications via only a keycode. To do this, read the command to start from `*/cmd`.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
