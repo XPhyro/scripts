@@ -5,3 +5,5 @@ for i; do
         sleep 0.1
     done
 done
+
+exit 0
