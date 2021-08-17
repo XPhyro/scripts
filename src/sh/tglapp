@@ -10,7 +10,7 @@ printhelp() {
     printf "%s" \
 "$execname [OPTION...] COMMAND -- COMMAND
    -a, --actual
-       Use the actual status of applications to do work instead of the registered status. As an example, if an application is registered with a PID but is actually dead, the application will be cleaned and started if -P is passed. Inhibited by a following -p. See -p for more details.
+       Use the actual status of applications to do work instead of the registered status. As an example, if an application is registered with a PID but is actually dead, the application will be cleaned and started if -P is passed. Inhibited by a following -p. See -p for more details. If -l or --list are also given, -c is implied.
    --no-actual
        Use the registered status of applications to do work instead of the actual status. As an example, if an application is registered with a PID but is actually dead, the application will be just be cleaned -P is not passed. Inhibited by a following -P. See -P for more details.
    -c, --clean
@@ -23,6 +23,8 @@ printhelp() {
        Print help message and exit.
    -k KEYCODE, --keycode KEYCODE
        Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /.
+   -l, --list STYLE
+       List all applications started with $execname. STYLE can be one of: compact, normal. compact is recommended for scripting/grepping. -l uses the normal STYLE. If -a is also given, -c is implied. If -c is given or implied, listing will be done after cleaning.
    -S, --sudo
        Execute kill with sudo.
    -s, --status
@@ -56,7 +58,7 @@ assertarg() {
 }
 
 unsetargs() {
-    unset actual willclean forcestate keycode sudo status verbose
+    unset actual willclean forcestate keycode liststyle sudo status verbose
 }
 
 parseargs() {
@@ -74,6 +76,7 @@ parseargs() {
                         f) parseargs --force-state;;
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
+                        l) parseargs --list normal;;
                         S) parseargs --sudo;;
                         s) parseargs --status;;
                         T) shift; parseargs --toggle "$1";;
@@ -96,6 +99,8 @@ parseargs() {
                     help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
                     keycode=*      ) keycode="${opt#*=}"; assertarg "--keycode" "KEYCODE" "$keycode";;
+                    list           ) shift; assertarg "--list" "STYLE" "$1"; liststyle="$1";;
+                    list=*         ) liststyle="${opt#*=}"; assertarg "--list" "STYLE" "$liststyle";;
                     sudo           ) sudo="sudo";;
                     status         ) status=1;;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
@@ -152,7 +157,7 @@ validargcase() {
 }
 
 validargs() {
-    [ -z "$cmd" ] && [ "$willclean" != "1" ] && {
+    [ -z "$cmd" ] && [ "$willclean" != 1 ] && [ -z "$liststyle" ] && {
         if [ "$state" = "on" ] || [ -z "$keycode" ]; then
             logerrq "Command cannot be empty."
         fi
@@ -180,6 +185,8 @@ $(printf "%s" "$signals" | head -c -1)
 EOF2
     fi
 
+    [ -n "$liststyle" ] && [ "$actual" = 1 ] && willclean=1
+
     if [ "$verbose" = 1 ]; then
         loginfo() {
             printf "[INFO]: %s\n" "$@" >&2
@@ -205,8 +212,9 @@ runcmd() {
     printf "%s\n" "$$" > "$keydir/selfpid"
     printf "%s\n" "$cmd" > "$keydir/cmd"
     printf "%s\n" "$argv" > "$keydir/argv"
-    # Credit for the following: https://unix.stackexchange.com/a/37844/401367
-    printf "%s\n" "$(ps h -p $$ -o args= | cut -f1 -d' ')" > "$keydir/shell"
+    shell="$(ps h -p $$ -o args= | cut -d' ' -f1)" # https://unix.stackexchange.com/a/37844/401367
+    printf "%s\n" "$shell" > "$keydir/shell"
+    printf "%s\n" "$(realpath -P -- "$(whereis -b "$shell" | cut -d' ' -f2)")" > "$keydir/realshell"
 }
 
 stopcmd() {
@@ -240,13 +248,43 @@ main() {
         exit 127
     }
 
-    [ "$willclean" = "1" ] && {
+    [ "$willclean" = 1 ] && {
         loginfo "Cleaning dead processes."
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "${flsdir:?}"/*; do
             kill -s 0 "$(cat -- "$i/pid")" 2> /dev/null || rm -rf -- "$i"
         done
-        loginfo "Cleaning succeeded, exiting with code 0."
+
+        if [ -z "$liststyle" ]; then
+            loginfo "Cleaning finished, exiting with code 0."
+            exit 0
+        else
+            loginfo "Cleaning finished."
+        fi
+    }
+
+    [ -n "$liststyle" ] && {
+        loginfo "Listing to stdout."
+        cd "$flsdir" || logerrq "Could not cd to $flsdir."
+
+        case "$liststyle" in
+            compact) grep -R '';;
+            normal)
+                find "." -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r i; do
+                printf "%s\n" \
+                    "Keycode: $i" \
+                    "Arguments: $(cat -- "$i/argv")" \
+                    "Command: $(cat -- "$i/cmd")" \
+                    "PID: $(cat -- "$i/pid")" \
+                    "Self PID: $(cat -- "$i/selfpid")" \
+                    "Shell: $(cat -- "$i/shell")" \
+                    "Real Shell: $(cat -- "$i/realshell")" \
+                    ""
+                done | head -n -1
+                ;;
+        esac
+
+        loginfo "Listing finished, exiting with code 0."
         exit 0
     }
 
