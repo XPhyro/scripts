@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env execlineb
 # Remove color from stdin.
 # Taken from: https://stackoverflow.com/a/51141872/8403070.
 
-sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g'
+sed s/\x1B\[[0-9;]\{1,\}[A-Za-z]//g

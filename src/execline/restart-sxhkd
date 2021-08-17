@@ -1,0 +1,6 @@
+#!/usr/bin/env -S execlineb -s0
+# Restart sxhkd.
+
+importas HOME HOME
+cd ${HOME}
+setsid --fork -- screen -dmS sxhkd -- tglapp -avf -T on -k sxhkd -- sxhkd -m -1 $@

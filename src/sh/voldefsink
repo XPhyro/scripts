@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Print the default pulseaudio sink.
-
-pactl info | tail -n 3 | head -n 1 | awk '{print $3}'

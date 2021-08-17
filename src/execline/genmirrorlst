@@ -1,0 +1,3 @@
+#!/usr/bin/env execlineb
+
+sudo reflector --verbose --fastest 100 --age 24 --protocol https,rsync --sort rate --save /etc/pacman.d/mirrorlist

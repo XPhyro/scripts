@@ -6,7 +6,7 @@ logerrq() {
 }
 
 install() {
-    printf "%s\n" sh py | while IFS= read -r i; do
+    printf "%s\n" execline sh py | while IFS= read -r i; do
         cd "$i"
         find '.' -mindepth 1 -type f -executable -not -path "./.archived/*" -printf "%P\n" | tee -a ../.installed | xargs -d '\n' -r install -t /usr/local/bin --
         cd ..

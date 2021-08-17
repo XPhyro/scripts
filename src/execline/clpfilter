@@ -1,0 +1,8 @@
+#!/usr/bin/env -S execlineb -s0
+# Filter clipboard with a command.
+
+foreground { lckget clplog }
+pipeline { xclip -o -se c }
+pipeline { $@ }
+pipeline { sponge }
+xclip -se c

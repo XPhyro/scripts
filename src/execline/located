@@ -1,0 +1,4 @@
+#!/usr/bin/env -S execlineb -s0
+
+pipeline { locate $@ }
+stest -d
