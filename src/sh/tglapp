@@ -95,9 +95,11 @@ parseargs() {
                     no-force-state ) forcestate=0;;
                     help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
+                    keycode=*      ) keycode="${opt#*=}"; assertarg "--keycode" "KEYCODE" "$keycode";;
                     sudo           ) sudo="sudo";;
                     status         ) status=1;;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
+                    toggle=*       ) state="${opt#*=}"; assertarg "--toggle" "STATE" "$state";;
                     timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts$1
 "; signals="$signals$2
 "; shift;;

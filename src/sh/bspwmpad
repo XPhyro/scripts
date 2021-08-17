@@ -63,13 +63,17 @@ parseargs() {
                 opt="${1#??}"
                 
                 case "$opt" in
-                    directory ) shift; assertarg "-d, --directory" "PATH" "$1"; optdirectory="-d $1";;
-                    geometry  ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
-                    number    ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
-                    title     ) shift; assertarg "-t, --title" "TITLE" "$1"; opttitle="$1";;
-                    help      ) printhelp; exit 0;;
-                    ""        ) return 0;;
-                    *         ) printusage "$1"; exit 0;;
+                    directory   ) shift; assertarg "-d, --directory" "PATH" "$1"; optdirectory="-d $1";;
+                    directory=* ) optdirectory="-d ${opt#*=}"; assertarg "-d, --directory" "PATH" "$optdirectory";;
+                    geometry    ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
+                    geometry=*  ) optgeometry="-g ${opt#*=}"; assertarg "-g, --geometry" "GEOMETRY" "$optgeometry";;
+                    number      ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
+                    number=*    ) optnumber="${opt#*=}"; assertarg "-n, --number" "NUMBER" "$optnumber";;
+                    title       ) shift; assertarg "-t, --title" "TITLE" "$1"; opttitle="$1";;
+                    title=*     ) opttitle="${opt#*=}"; assertarg "-t, --title" "TITLE" "$opttitle";;
+                    help        ) printhelp; exit 0;;
+                    ""          ) return 0;;
+                    *           ) printusage "$1"; exit 0;;
                 esac
             fi
         else

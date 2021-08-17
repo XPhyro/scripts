@@ -28,7 +28,7 @@
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
 - Implement `-l, --list` in `tglapp`.
 - Add an option to start applications in a `screen` named `"$keycode"` in `tglapp`. Also add an option to overwrite the `screen` name.
-- Support `--long-option=VALUE` in `parseargs()`. Since a switch is already used, `long-option|long-option=*)` could be used along with `value="${1#*=}"`.
+- Support `--long-option=VALUE` in `ffmw`, `selfl` and `dwmpad`.
 - Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
 - In `tglapp`, add support for force restarting applications via only a keycode. To do this, read the command to start from `*/cmd`.
 - In `tglapp`, add `by-cmd`, `by-kc` (by-keycode), `by-hash` and `by-pid` sub-directories like `/dev/*/by-*`.

@@ -143,6 +143,7 @@ parseargs() {
                     editor        ) genscript="1";;
                     no-editor     ) genscript="0";;
                     interpreter   ) shift; assertarg "-i, --interpreter" "INTERPRETER" "$1"; interpreter="$1";;
+                    interpreter=* ) interpreter="${opt#*=}"; assertarg "-i, --interpreter" "INTERPRETER" "$interpreter";;
                     modified      ) flipcmd "$CMD_MODIFIED" "modifcmd";;
                     unmodified    ) flipcmd "$CMD_UNMODIFIED" "unmodifcmd";;
                     wiped         ) flipcmd "$CMD_WIPED" "wipecmd";;

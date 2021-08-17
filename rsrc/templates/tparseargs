@@ -70,14 +70,16 @@ parseargs() {
                 opt="${1#??}"
                 
                 case "$opt" in
-                    argument              ) shift; assertarg "-a, --argument" "ARGUMENT" "$1"; optargument="$1";;
-                    can-be-empty-argument ) shift; optcanbeemptyargument="$1";;
-                    option                ) optoption="1";;
-                    inverse-option        ) optoption="0";;
-                    option-type           ) optoptiontype="--option-type";;
-                    help                  ) printhelp; exit 0;;
-                    ""                    ) shift; break;;
-                    *                     ) printusage "--$opt"; exit 0;;
+                    argument                ) shift; assertarg "-a, --argument" "ARGUMENT" "$1"; optargument="$1";;
+                    argument=*              ) optargument="${opt#*=}"; assertarg "-a, --argument" "ARGUMENT" "$optargument";;
+                    can-be-empty-argument   ) shift; optcanbeemptyargument="$1";;
+                    can-be-empty-argument=* ) shift; optcanbeemptyargument="${opt#*=}";;
+                    option                  ) optoption="1";;
+                    inverse-option          ) optoption="0";;
+                    option-type             ) optoptiontype="--option-type";;
+                    help                    ) printhelp; exit 0;;
+                    ""                      ) shift; break;;
+                    *                       ) printusage "--$opt"; exit 0;;
                 esac
             fi
         else
