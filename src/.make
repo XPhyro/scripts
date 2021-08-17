@@ -13,10 +13,10 @@ install() {
     done
 
     cd c
-    find '.' -mindepth 1 -maxdepth 1 -type f -not -path "./.*" -printf "%P\n" | while IFS= read -r i; do
+    find '.' -mindepth 1 -type f -not -path "./.*" -printf "%P\n" | while IFS= read -r i; do
         out="${i%.c}"
-        gcc -O3 -Wall "$i" -o "$out"
-        mv -f "$out" /usr/local/bin/"$out"
+        out="${out##*/}"
+        gcc -O3 -Wall "$i" -o /usr/local/bin/"$out"
         printf "%s\n" "$out" >> ../.installed
     done
 }
