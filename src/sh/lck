@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 for i; do
-    until mkdir -- "$i"; do
+    until mkdir -- "$i" 2> /dev/null; do
         sleep 0.1
     done
 done
