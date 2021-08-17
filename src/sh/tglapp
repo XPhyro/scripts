@@ -209,7 +209,7 @@ stopcmd() {
     # shellcheck disable=SC2086
     { printf "%s\n" "$pid"; pgrep -P "$pid"; } | xargs -d '\n' -rn 1 $sudo kill $killargs 2> /dev/null
 
-    kill -s 0 "$pid" && {
+    kill -s 0 "$pid" 2> /dev/null && {
         logwarn "Signals sent but process is still alive, not removing key directory."
         return 1
     }
