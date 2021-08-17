@@ -32,6 +32,8 @@
 - Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
 - In `tglapp`, add support for force restarting applications via only a keycode. To do this, read the command to start from `*/cmd`.
 - In `tglapp`, add `by-cmd`, `by-kc` (by-keycode), `by-hash` and `by-pid` sub-directories like `/dev/*/by-*`.
+- Add usage statistics to `g`, `e` and `i` to rename keycodes to more efficient ones. Be sure to differentiate between scripted calls and interactive calls, this is probably a non-issue as the keycodes would be vastly different.
+- Use `get*unsafe` in `_[ge]*`.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
