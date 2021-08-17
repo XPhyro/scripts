@@ -180,6 +180,7 @@ EOF2
         loginfo() {
             printf "[INFO]: %s\n" "$@" >&2
         }
+        loginfo "Enabled verbose mode."
     else
         loginfo() {
             :
@@ -239,8 +240,7 @@ main() {
         loginfo "Cleaning dead processes."
         [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
         for i in "${flsdir:?}"/*; do
-            pid="$(cat -- "$i")"
-            kill -s 0 "$pid" 2> /dev/null || rm -f "$i"
+            kill -s 0 "$(cat -- "$i/pid")" 2> /dev/null || rm -rf -- "$i"
         done
         loginfo "Cleaning succeeded, exiting with code 0."
         exit 0
