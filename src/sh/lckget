@@ -1,3 +1,13 @@
 #!/usr/bin/env sh
 
-lckdir="$(getloc "${1}lck")" && exec lck "$lckdir"
+lckdir="$(getlocunsafe "${1}lck")" || {
+    printf "getlocunsafe failed with code $? for keycode ${1}lck, exiting with code 1.\n" >&2
+    exit 1
+}
+
+[ -n "$lckdir" ] || {
+    printf "getlocunsafe returned empty for keycode ${1}lck, exiting with code 2.\n" >&2
+    exit 1
+}
+
+exec lck "$lckdir"
