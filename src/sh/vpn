@@ -36,8 +36,8 @@ assertroot || exit 1
     fi
 }
 
-printf "Selected VPN: %s\n" "$VPN"
-{ "$VPN" --help || "$VPN" --version; } || exit 1
+printf "\nSelected VPN: %s\n" "$VPN"
+{ "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
 while true; do
     printf "\n"
