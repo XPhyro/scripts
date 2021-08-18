@@ -1,0 +1,3 @@
+#!/usr/bin/env execlineb
+
+base-ytdl --merge-output-format mkv
