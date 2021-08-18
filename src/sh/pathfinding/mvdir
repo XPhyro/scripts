@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Usage: mvloc location file1 ... fileN
+# Equivalent to: mv file1 ... fileN "$(getdir location)"
+
+dir="$(getdir "$1")" || {
+    printf "[ERROR]: getdir failed, aborting.\n"
+    exit 1
+}
+
+shift
+set -- "$@" "$dir"
+mv -n -- "$@"

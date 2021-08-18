@@ -3,8 +3,8 @@
 # TODO: After all of the documents are closed, ask whether $n was satisfactory, then save it such that it will not be asked the next time if it was satisfactory; else, ask for a new number and if given, save that instead.
 # TODO: Make this into a more general helper script to open a file in a directory based on some custom filtering/sorting, and use that helper script to do what this script currently does.
 
-dir="$(getloc mu)" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+dir="$(getdir mu)" || {
+    printf "[ERROR]: getdir failed, aborting.\n"
     exit 1
 }
 

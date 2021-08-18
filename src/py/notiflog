@@ -25,7 +25,7 @@ blacklogfilepath = (
 print("Found blacklisted log file path: %s" % blacklogfilepath)
 
 lockdirpath = (
-    run(["getloc", "notifloglck"], capture_output=True)
+    run(["getdir", "notifloglck"], capture_output=True)
     .stdout.decode("utf-8")
     .rstrip("\n")
 )

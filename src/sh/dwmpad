@@ -86,8 +86,8 @@ processargs() {
 }
 
 main() {
-    lckdir="$(getloc dwmpadlck)" || {
-        printf "[ERROR]: getloc failed, aborting.\n"
+    lckdir="$(getdir dwmpadlck)" || {
+        printf "[ERROR]: getdir failed, aborting.\n"
         exit 1
     }
 

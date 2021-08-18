@@ -79,15 +79,15 @@ The suite will deliver the following features:
 - Usage: `getflunsafe key`
 - Description: 
 
-### [getloc](getloc)
-- Usage: `getloc key`
+### [getdir](getdir)
+- Usage: `getdir key`
 - Description: 
 
-### [getlocall](getlocall)
-- Usage: `getlocall key`
+### [getdirall](getdirall)
+- Usage: `getdirall key`
 - Description: 
 
-### [getlocunsafe](getlocunsafe)
+### [getdirunsafe](getdirunsafe)
 - Usage: `getunlocsafe key`
 - Description: 
 
@@ -121,7 +121,7 @@ The suite will deliver the following features:
 
 ### [mvloc](mvloc)
 - Usage: `mvloc location file1 ... fileN`
-- Description: Is equivalent to `mv file1 ... fileN "$(getloc location)"`.
+- Description: Is equivalent to `mv file1 ... fileN "$(getdir location)"`.
 
 ### [open](open)
 - Usage: `open executable`
@@ -129,14 +129,14 @@ The suite will deliver the following features:
 
 ### [setall](setall)
 - Usage: `setall`
-- Description: Alias for running `setfl` and `setloc`.
+- Description: Alias for running `setfl` and `setdir`.
 
 ### [setfl](setfl)
 - Usage: `setfl`
 - Description: Should be run every time after `"$HOME/documents/sys-admin/locations"` is edited.
 
-### [setloc](setloc)
-- Usage: `setloc`
+### [setdir](setdir)
+- Usage: `setdir`
 - Description: Should be run every time after `"$HOME/documents/sys-admin/files"` is edited.
 
 ### [v](v)
@@ -152,7 +152,7 @@ PLACEHOLDER
 PLACEHOLDER
 
 ## Examples
-As an example, `getloc wallpaper` returns the path of the directory with the key `wallpaper` in, on average, 4.0 ms. `getfl` is a bit slower, with an average of 6.3 ms. Unsafe counterparts (i.e. `getlocunsafe` and `getflunsafe`) are respectively 1 and 3 ms faster. Apart from the main `getloc` and `getfl` utilities, there are `getflloc` and `getlocall`.
+As an example, `getdir wallpaper` returns the path of the directory with the key `wallpaper` in, on average, 4.0 ms. `getfl` is a bit slower, with an average of 6.3 ms. Unsafe counterparts (i.e. `getdirunsafe` and `getflunsafe`) are respectively 1 and 3 ms faster. Apart from the main `getdir` and `getfl` utilities, there are `getflloc` and `getdirall`.
 
 ## Other
 All benchmarks were done on a laptop with i7-8750H, 2667 MHz CL 15 RAM and a 7200 RPM HDD using `hyperfine` with sufficiently large number of warmup and benchmark iterations and `dash` (version 0.5.11.3) as `sh`.

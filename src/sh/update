@@ -10,7 +10,7 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckdir="$(getloc upabllck)" || {
+lckdir="$(getdir upabllck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -49,7 +49,7 @@ while IFS= read -r i; do
 
     log "Parsing $loc."
 
-    cd "$(getloc "$loc")" || {
+    cd "$(getdir "$loc")" || {
         log "Could not find location $loc."
         continue
     }

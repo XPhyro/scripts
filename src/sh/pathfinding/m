@@ -10,7 +10,7 @@ logerrq() {
 [ "$#" -ne 1 ] && logerrq "Only one mark is accepted, exiting."
 
 markfl="$(getfl mrk)" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+    printf "[ERROR]: getdir failed, aborting.\n"
     exit 1
 }
 

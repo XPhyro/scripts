@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-{ grep "^Exec=" "$(getloc lsa)/browser.desktop" | grep -q -- '--new-window' && printf "%s\n" "💞"; } > "$(getloc statbar)/7.5_statbarbrowser"
+{ grep "^Exec=" "$(getdir lsa)/browser.desktop" | grep -q -- '--new-window' && printf "%s\n" "💞"; } > "$(getdir statbar)/7.5_statbarbrowser"

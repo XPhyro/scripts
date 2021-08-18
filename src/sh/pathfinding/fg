@@ -4,7 +4,7 @@
 
 while true; do
     for i; do
-        loc="$(getloc "$i")"
+        loc="$(getdir "$i")"
         [ -d "$loc" ] && cd "$loc" && f
     done
 done

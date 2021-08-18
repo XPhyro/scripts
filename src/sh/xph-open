@@ -9,12 +9,12 @@ open() {
     fi
 }
 
-usa="$(getloc usa)" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+usa="$(getdir usa)" || {
+    printf "[ERROR]: getdir failed, aborting.\n"
     exit 1
 }
-lsa="$(getloc lsa)" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+lsa="$(getdir lsa)" || {
+    printf "[ERROR]: getdir failed, aborting.\n"
     exit 1
 }
 mim="$(getfl mim)" || {

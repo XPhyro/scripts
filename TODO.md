@@ -10,7 +10,7 @@
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a `dwmpad` or `bspwmpad`.
 - Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add an option in `dwmpad` and `bspwmpad` that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
-- When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getloc` and `getfl` could be implemented.
+- When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getdir` and `getfl` could be implemented.
 - Add support for regular files in mark scripts. A possible way could be to also add support for passed arguments for files in the marking process and check the file type; if it is a regular file, then the file could be marked in a different mark set. While using marks, first check if a directory mark exists. If there exists a directory mark, `cd` into it; else, open up the regular file for the given mark in `$EDITOR` if there is such a mark.
 - Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
 - Support non-terminal applications in `dwmpad` after scratchpad assignment is implemented in `dwm`.
@@ -41,9 +41,9 @@
 - Write a watson wrapper.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
-- Write `getfls` and `getlocs` that support multiple arguments unlike `getfl` and `getloc`. This might also be integrated in `getfl` and `getloc` in a lightweight manner.
+- Write `getfls` and `getdirs` that support multiple arguments unlike `getfl` and `getdir`. This might also be integrated in `getfl` and `getdir` in a lightweight manner.
 - Write scripts that would: print the value for a mark, print the mark for a given value (if marks are always in expanded form, also expand the given value; else, ensure that the equivalent values are considered).
-- Write a helper script that would make it easy for a script to implement hashmaps. Currently `getloc`, `getfl` and other scripts use directory/file structures as a workaround. This script would need to perform at least as well as the workaround, if not better, and be convenient to use.
+- Write a helper script that would make it easy for a script to implement hashmaps. Currently `getdir`, `getfl` and other scripts use directory/file structures as a workaround. This script would need to perform at least as well as the workaround, if not better, and be convenient to use.
 - Make the `¬`, `@` and `g` functions into stand-alone scripts. Add wrapper functions in rc file that would cd to the stdout if there is any. In these functions, stderr should be directly printed and not captured.
 - Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
 - Write a library-ish thing to make it easy for scripts, especially those in terminal file managers, to implement short-term smart thrash functionality that is considerate of the disk usage of the thrash.
@@ -69,7 +69,7 @@
 - Make `dupe`, `getnewpath` and alike use GNU `--backup` syntax instead of continuous trailing underscores.
 - Make `-fin` options in `ffmw` global as they are used by every non-help subcommand.
 - Make `xins` use IFS= or IFS=\n.
-- Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getloc $$#)\""` could be used to do so.
+- Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getdir $$#)\""` could be used to do so.
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
 - In `clplog` and other applicable scripts, use `\0` instead of `^M` for logging.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
@@ -92,4 +92,4 @@
 - Scripts that require untrivial root access should not use `sudo`, but force the user to run the script as root. Scripts that require trivial root access should use `sudo` or `sudo -A` depending on whether they are graphical (for instance, if they use `dmenu`) or not.
 - Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
 - Merge `bspwmpad{,init}` and `dwmpad{,init}` into `wmpad{,init}`. `wmpad{,init}` must work in both `bspwm` and `dwm` and should work in other WMs or DEs excluding the show/hide functionality.
-- Rename `getloc*` to `getdir*`.
+- Rename `getdir*` to `getdir*`.

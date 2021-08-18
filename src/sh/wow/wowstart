@@ -5,7 +5,7 @@ starttsm() {
 }
 
 startrio() {
-    "$(getloc prog)/RaiderIO/AppRun" &!
+    "$(getdir prog)/RaiderIO/AppRun" &!
 }
 
 startwow() {

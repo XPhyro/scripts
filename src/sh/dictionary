@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-loc="$(getloc dic)" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+loc="$(getdir dic)" || {
+    printf "[ERROR]: getdir failed, aborting.\n"
     exit 1
 }
 

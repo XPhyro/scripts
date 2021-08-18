@@ -10,7 +10,7 @@ ynq() {
 }
 
 if ynq "Use a simulation template?"; then
-    tfl="$(selfl -aRl 20 "$(getloc wowsimt)" | head -n 1)"
+    tfl="$(selfl -aRl 20 "$(getdir wowsimt)" | head -n 1)"
 
     armory="$(grep "^\s*armory=.*" "$tfl" | tail -n 1 | sed 's/^\s*armory=//')"
 
@@ -24,8 +24,8 @@ if ynq "Use a simulation template?"; then
 
     simcargs="'$tfl'"
 else
-    simloc="$(getloc wowsimt)" || {
-        printf "[ERROR]: getloc failed, aborting.\n"
+    simloc="$(getdir wowsimt)" || {
+        printf "[ERROR]: getdir failed, aborting.\n"
         exit 1
     }
 
@@ -52,7 +52,7 @@ else
     simcargs="'armory=$region,$realm,$selchar' 'calculate_scale_factors=$csf'"
 fi
 
-outfl="$(getloc "wowsimd")/$screenname.html"
+outfl="$(getdir "wowsimd")/$screenname.html"
 screen -dmS "$screenname" sh -c "simc $simcargs 'html=$outfl'"
 
 pid="$(ps -el --no-headers | grep "$(screen -ls | grep -F ".$screenname" | awk '{print $1}' | awk -F '.' '{print $1}')" | grep simc | head -n 1 | awk '{print $4}')"

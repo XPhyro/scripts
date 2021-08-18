@@ -2,7 +2,7 @@
 # Get directories or the directories of files with given codes.
 
 for i; do
-    loc="$(getloc "$i")" || {
+    loc="$(getdir "$i")" || {
         loc="$(getfl "$i")" || continue
         loc="${loc%/*}"
     }

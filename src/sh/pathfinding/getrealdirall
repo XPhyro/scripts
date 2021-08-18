@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-loc="$(getloc "$1")" || exit $?
+loc="$(getdirall "$1")" || exit $?
 exec realpath -P -- "${loc:?}"

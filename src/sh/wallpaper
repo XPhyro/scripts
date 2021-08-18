@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-waloc="$(getloc wa)" || {
-    printf "[ERROR]: getloc failed, aborting.\n"
+waloc="$(getdir wa)" || {
+    printf "[ERROR]: getdir failed, aborting.\n"
     exit 1
 }
 

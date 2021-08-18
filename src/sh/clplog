@@ -4,8 +4,8 @@
 # TODO: Only log if the string is not a special file when invoked with 'file' (after being dumped into a file), or check for non-printable characters and do not log if it has non-printable characters.
 
 logfl="$(readlink -m -- "$(getfl clplog)")"
-bakdir="$(readlink -m -- "$(getloc clplogbak)")"
-lckdir="$(getloc clploglck)" || {
+bakdir="$(readlink -m -- "$(getdir clplogbak)")"
+lckdir="$(getdir clploglck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
