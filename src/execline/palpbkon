@@ -1,0 +1,3 @@
+#!/usr/bin/env execlineb
+
+pactl load-module module-loopback latency_msec=1

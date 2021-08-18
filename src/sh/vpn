@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+assertroot || exit 1
+
+while true; do
+    case "$(readchar)" in
+        c) printf "Enter country code: "; "$VPN" c --cc "$(readstr)";;
+        d) "$VPN" d;;
+        f) "$VPN" c -f;;
+        i) "$VPN" c;;
+        r) "$VPN" r;;
+        s) "$VPN" s;;
+        h) printf "%s" \
+"c) connect to specific country
+d) disconnect
+f) connect to fastest
+r) reconnect
+i) connect interactively
+s) status
+h) print this
+q) quit
+";;
+        q) exit 0;;
+    esac
+done
