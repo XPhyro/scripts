@@ -2,14 +2,53 @@
 
 assertroot || exit 1
 
+[ -z "$VPN" ] && {
+    fls="$(printf "%s\n" "$PATH" | tr ':' '\n' | xargs -P 12 -I PATH find PATH -mindepth 1 -maxdepth 1 -type f -executable 2> /dev/null)"
+    possiblevpns="$(
+        {
+            # TODO: Write a wrapper script for the following multi-grepping.
+            printf "%s\n" "$fls" | grep -oi '[^/-]*vpn$' | sort
+            printf "%s\n" "$fls" | grep -oi '[^/]*vpn$' | sort
+            printf "%s\n" "$fls" | grep -oi '[^/]*vpn[^/]*$' | sort
+        } | grep -vFx "${0##*/}" | grep -vFx "openvpn" | uniqs | awk 'BEGIN {i = 0} {i += 1; print "  "i" "$0}'
+    )"
+
+    if [ -z "$possiblevpns" ]; then
+        printf "Could not find any VPNs. Enter the name of the command: "
+        VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
+    else
+        printf "%s\n" "Select the VPN command:" "  0 Enter manually" "$possiblevpns"
+
+        sel="$(
+            if [ "$(printf "%s\n" "$possiblevpns" | wc -l)" -lt 10 ]; then
+                readchar
+            else
+                readstr
+            fi
+        )"
+
+        if [ "$sel" -eq 0 ]; then
+            printf "Enter the name of the command: "
+            VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
+        else
+            VPN="$(printf "%s\n" "$possiblevpns" | torso "$sel" "$sel" | tail -c +"$((${#sel} + 4))")"
+        fi
+    fi
+}
+
+printf "Selected VPN: %s\n" "$VPN"
+{ "$VPN" --help || "$VPN" --version; } || exit 1
+
 while true; do
+    printf "\n"
+
     case "$(readchar)" in
         c) printf "Enter country code: "; "$VPN" c --cc "$(readstr)";;
-        d) "$VPN" d;;
-        f) "$VPN" c -f;;
-        i) "$VPN" c;;
-        r) "$VPN" r;;
-        s) "$VPN" s;;
+        d) "$VPN" disconnect;;
+        f) "$VPN" connect --fastest;;
+        i) "$VPN" connect;;
+        r) "$VPN" reconnect;;
+        s) "$VPN" status;;
         h) printf "%s" \
 "c) connect to specific country
 d) disconnect
