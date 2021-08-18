@@ -1,0 +1,3 @@
+#!/usr/bin/env -S execlineb -s0
+
+rdfind -minsize 1 -removeidentinode false -makehardlinks false -makesymlinks false -deleteduplicates true -dryrun false $0
