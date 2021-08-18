@@ -10,7 +10,7 @@ assertroot || exit 1
             printf "%s\n" "$fls" | grep -oi '[^/-]*vpn$' | sort
             printf "%s\n" "$fls" | grep -oi '[^/]*vpn$' | sort
             printf "%s\n" "$fls" | grep -oi '[^/]*vpn[^/]*$' | sort
-        } | grep -vFx "${0##*/}" | grep -vFx "openvpn" | uniqs | awk 'BEGIN {i = 0} {i += 1; print "  "i" "$0}'
+        } | grep -vFx "${0##*/}" | grep -vEx "(openvpn|statbarvpn|dwmbar-vpn|advpng|pcf2vpnc|vpnc|vpnc-disconnect)" | uniqs | awk 'BEGIN {i = 0} {i += 1; print "  "i" "$0}'
     )"
 
     if [ -z "$possiblevpns" ]; then
