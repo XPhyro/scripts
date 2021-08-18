@@ -92,3 +92,4 @@
 - Scripts that require untrivial root access should not use `sudo`, but force the user to run the script as root. Scripts that require trivial root access should use `sudo` or `sudo -A` depending on whether they are graphical (for instance, if they use `dmenu`) or not.
 - Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
 - Merge `bspwmpad{,init}` and `dwmpad{,init}` into `wmpad{,init}`. `wmpad{,init}` must work in both `bspwm` and `dwm` and should work in other WMs or DEs excluding the show/hide functionality.
+- Rename `getloc*` to `getdir*`.
