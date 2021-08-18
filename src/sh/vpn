@@ -18,20 +18,28 @@ assertroot || exit 1
         VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
     else
         printf "%s\n" "Select the VPN command:" "  0 Enter manually" "$possiblevpns"
-
+        selc="$(printf "%s\n" "$possiblevpns" | wc -l)"
         sel="$(
-            if [ "$(printf "%s\n" "$possiblevpns" | wc -l)" -lt 10 ]; then
+            if [ "$selc" -lt 10 ]; then
                 readchar
             else
                 readstr
             fi
         )"
 
+        [ -n "$(printf "%s\n" "$sel" | tr -d '[:digit:]')" ] && {
+            printf "You must enter the number before the command.\n\n"
+            exec "$0" "$@"
+        }
+
         if [ "$sel" -eq 0 ]; then
             printf "Enter the name of the command: "
             VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
-        else
+        elif [ "$sel" -lt "$((selc + 1))" ]; then
             VPN="$(printf "%s\n" "$possiblevpns" | torso "$sel" "$sel" | tail -c +"$((${#sel} + 4))")"
+        else
+            printf "You entered an invalid number.\n\n"
+            exec "$0" "$@"
         fi
     fi
 }
