@@ -2,7 +2,7 @@
 # Pull updates from git and compile programs. Used list file is the file coded upabl.
 
 cleanexit() {
-    rm "$lckdir"
+    rm -rf -- "$lckdir" 2> /dev/null
     exit 0
 }
 
@@ -10,7 +10,7 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckdir="$(getdir upabllck)" || {
+lckdir="$(getdirunsafe upabllck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
@@ -22,7 +22,7 @@ lst="$(getfl upabl)" || {
 
 for i; do
     if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]; then
-        rm -rf "$lckdir" 2> /dev/null
+        rm -rf -- "$lckdir" 2> /dev/null
         exit 0
     fi
 done

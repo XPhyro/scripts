@@ -5,7 +5,7 @@
 
 logfl="$(readlink -m -- "$(getfl clplog)")"
 bakdir="$(readlink -m -- "$(getdir clplogbak)")"
-lckdir="$(getdir clploglck)" || {
+lckdir="$(getdirunsafe clploglck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
 }
