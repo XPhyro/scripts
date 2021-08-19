@@ -44,8 +44,10 @@ assertroot || exit 1
     fi
 }
 
-printf "\nSelected VPN: %s\n" "$VPN"
+printf "\nSelected VPN: %s" "$VPN"
 { "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
+
+printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)" &
 
 while true; do
     printf "\n"
