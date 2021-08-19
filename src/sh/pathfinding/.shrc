@@ -1,51 +1,31 @@
-# vim: ft=sh
+# vim: ft=zsh
+# Works with bash and zsh.
 
 cd() {
-    dir="$1"
-    if [ -n "$dir" ]
-    then
-        [ ! -d "$dir" ] && dir="$(getloc "$dir" | inorcmd dirname "$dir")"
-    else
+    if [ $# -eq 0 ]; then
         dir="$HOME"
+    else
+        dir="$1"
+        if [ -n "$dir" ]; then
+            [ ! -d "$dir" ] && dir="$(getdir "$dir" | inorcmd dirname "$dir")"
+        else
+            return 1
+        fi
     fi
+
     cm ¬ "$PWD"
     builtin cd "$dir"
+    ec="$?"
+
+    toplevel="$(git rev-parse --show-toplevel 2> /dev/null)" && [ "$(realpath -P -- "$toplevel")" = "$(realpath -P -- .)" ] && git status
+
+    return "$ec"
 }
 
-¬() {
-    catfl mrk | IFS= while read -r i
-    do
-        mrk="$(printf "%s" "$i" | awk '{print $1}')"
-        [ "$mrk" = "¬" ] && {
-            cm ¬ "$PWD"
-            cd "$(printf "%s" "$i" | awk '{print $2}' | expandpath)"
-            return
-        }
-    done
-
-    printf "Could not find the previous mark.\n"
-}
-
-@() {
-    dir="$(_@ "$@")" && [ -n "$dir" ] && cd "$dir"
-}
-
-@i() {
-    dir="$(_@i "$@")" && [ -n "$dir" ] && cd "$dir"
-}
-
-g() {
-    dir="$(_g "$@")" && [ -n "$dir" ] && cd "$dir"
-}
-
-gi() {
-    dir="$(_gi "$@")" && [ -n "$dir" ] && cd "$dir"
-}
-
-fd() {
-    dir="$(env _fd "$@")" && [ -n "$dir" ] && cd "$dir"
-}
-
-ff() {
-    dir="$(_ff "$@")" && [ -n "$dir" ] && cd "$dir"
-}
+¬()  { cd "$(_¬ "$@")"      }
+@()  { cd "$(_@ "$@")"      }
+@i() { cd "$(_@i "$@")"     }
+g()  { cd "$(_g "$@")"      }
+gi() { cd "$(_gi "$@")"     }
+fd() { cd "$(env _fd "$@")" }
+ff() { cd "$(_ff "$@")"     }
