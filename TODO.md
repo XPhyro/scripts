@@ -3,7 +3,7 @@
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
-- Allow `m` to take input files. If an input file is given, mark the file; if not, mark the current working directory.
+- Allow `m` to take input files. If an input file is given, mark the file; if not, mark the current working directory. Similarly, support those files in `@` for editing.
 - In `contexec`, wrap each execution between printed headers. Also show the execution count.
 - In `dwmpad` and `bspwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - Add options in `latexstp` to not open the source/output files.
@@ -15,9 +15,7 @@
 - Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
 - Support non-terminal applications in `dwmpad` after scratchpad assignment is implemented in `dwm`.
 - In `steammgr`, keep a database of application IDs scraped from [steamdb](https://steamdb.info/apps) and present the user with relevant options. This could be done in two ways: either show the relevant options by being command-aware, or first show a meta prompt for all, installed and in-library games, and then show the IDs (or show the meta options in the installed prompt, and show another prompt with the selected if all or in-library is selected).
-- Allow marking files. @ should edit instead of navigate if the mark is of a file.
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
-- In `gacma`, instead of using the given paths directly, take their relative path with respect to the repository root.
 - Integrate *synctex* in `latexstp`. See [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html) and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 - Implement a no-quoting option in `tglapp` like the inverse of the one that exists in `mapexec`.
 - Allow setting the description in gacma, or create a new script for.
@@ -38,7 +36,6 @@
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
 - Write a todo manager which would be a generalised form of the deadline reminder.
-- Write a watson wrapper.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
 - Write `getfls` and `getdirs` that support multiple arguments unlike `getfl` and `getdir`. This might also be integrated in `getfl` and `getdir` in a lightweight manner.
@@ -47,9 +44,7 @@
 - Make the `¬`, `@` and `g` functions into stand-alone scripts. Add wrapper functions in rc file that would cd to the stdout if there is any. In these functions, stderr should be directly printed and not captured.
 - Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
 - Write a library-ish thing to make it easy for scripts, especially those in terminal file managers, to implement short-term smart thrash functionality that is considerate of the disk usage of the thrash.
-- Write a `dvtm` session manager using `dwmpad`, `abduco` and/or `screen`.
 - Timer, chronometer, alarm.
-- Colour printer to be used in other scripts.
 - Implement a crop subcommand in `ffmw`.
 - Write a version of `v` (from .zshrc) that has keys as in the pathfinding suite depending on the directory. Say, one executes `vm t dotfilesbak-tick` in `"$HOME/.dotfiles"`. When they execute `"$scriptname" t`, `dotfilesbak-tick` is opened with `"$EDITOR"`. Alternatively, this behaviour could be integrated in the currently existing mark functionality either by prioritising directory-specific marks or by making the user prepend the key by a character, say \_.
 - Write an `stest` wrapper that supports the negation of partial operators. As an example `stest -x ! -d` should return all files that are executable but are not directories. Alternatively, have a syntax like `stest -x !-d` or the similar.
@@ -61,7 +56,6 @@
 - Integrate -pc option of dmenu into usable scripts.
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
-- Make @ and ¬ into sourcable scripts instead of functions in .\*rc.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
 - Optimise `dwmpadinit` and `bspwmpadinit`'s PID updating with `inotifywait`.
 - Rewrite `brightmute` in a more robust fashion that would not oftenly break.
@@ -71,15 +65,11 @@
 - Make `xins` use IFS= or IFS=\n.
 - Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getdir $$#)\""` could be used to do so.
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
-- In `clplog` and other applicable scripts, use `\0` instead of `^M` for logging.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
-- Pass `-0` option to `file` in `wallpaper`.
-- Rewrite `notiflog` in Python using `dbus`. This will get rid of the ambiguities of `dbus-monitor` parsing.
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
-- Add `texpac` to notable scripts in [README.md](README.md) after it is written.
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is interrupted, killed, etc.
 - Add `exit 0` at the end of all scripts.
