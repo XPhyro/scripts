@@ -33,7 +33,7 @@
 - Add usage statistics to `g`, `e` and `i` to rename keycodes to more efficient ones. Be sure to differentiate between scripted calls and interactive calls, this is probably a non-issue as the keycodes would be vastly different.
 - Use `get*unsafe` in `_[ge]*`.
 - Make the mark '¬' not shared between terminals, but still saved after the terminal is closed. Load the value only at initialisation. In the interactive shell side, before exiting, `cp -f "$somedir/$$" "$somedir/0"` and when initialising, `cp "$somedir/0" "$somedir/$$"` can respectively be used to save and load.
-- In `tglapp`, implement `-Q KEYCODE, --query KEYCODE`, `-q, --quiet` and `-F, --fork` options. `-F` should use `setsid --fork -- "$realshell" -c`.
+- In `tglapp`, implement `-F, --fork` using `setsid --fork -- "$realshell" -c`.
 - In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the same keycode is currently active, check that the given command is the same as the currently running application. If the commands do not check out, exit with error and do not toggle any applications.
 
 # New scripts

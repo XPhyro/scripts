@@ -25,6 +25,8 @@ printhelp() {
        Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /.
    -l, --list STYLE
        List all applications started with $execname. STYLE can be one of: compact, normal. compact is recommended for scripting/grepping. -l uses the normal STYLE. If -a is also given, -c is implied. If -c is given or implied, listing will be done after cleaning.
+   -q, --quiet
+       If passed once, suppress stdout. If passed twice or more, suppress both stdout and stderr. Only the started application will be suppressed, $execname will print as usual.
    -S, --sudo
        Execute kill with sudo.
    -s, --status
@@ -58,7 +60,7 @@ assertarg() {
 }
 
 unsetargs() {
-    unset actual willclean forcestate keycode liststyle sudo status verbose
+    unset actual willclean forcestate keycode liststyle quiet sudo status verbose
 }
 
 parseargs() {
@@ -77,6 +79,7 @@ parseargs() {
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
                         l) parseargs --list normal;;
+                        q) parseargs --quiet;;
                         S) parseargs --sudo;;
                         s) parseargs --status;;
                         T) shift; parseargs --toggle "$1";;
@@ -101,6 +104,7 @@ parseargs() {
                     keycode=*      ) keycode="${opt#*=}"; assertarg "--keycode" "KEYCODE" "$keycode";;
                     list           ) shift; assertarg "--list" "STYLE" "$1"; liststyle="$1";;
                     list=*         ) liststyle="${opt#*=}"; assertarg "--list" "STYLE" "$liststyle";;
+                    quiet          ) quiet="1$quiet";;
                     sudo           ) sudo="sudo";;
                     status         ) status=1;;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
@@ -187,6 +191,12 @@ EOF2
 
     [ -n "$liststyle" ] && [ "$actual" = 1 ] && willclean=1
 
+    case "${#quiet}" in
+        0) :;;
+        1) quiet="> /dev/null";;
+        *) quiet="> /dev/null 2>&1";;
+    esac
+
     if [ "$verbose" = 1 ]; then
         loginfo() {
             printf "[INFO]: %s\n" "$@" >&2
@@ -203,9 +213,9 @@ runcmd() {
     mkdir -- "$keydir" || logerrq "Could not acquire lock for [$keydir]."
 
     if [ -z "$stdinfl" ]; then
-        eval "( $cmd ) &"
+        eval "( $cmd ) $quiet &"
     else
-        eval "( $cmd ) < '$stdinfl' &"
+        eval "( $cmd ) < '$stdinfl' $quiet &"
     fi
 
     printf "%s\n" "$!" > "$keydir/pid"
