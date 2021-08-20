@@ -215,6 +215,8 @@ runcmd() {
     shell="$(ps h -p $$ -o args= | cut -d' ' -f1)" # https://unix.stackexchange.com/a/37844/401367
     printf "%s\n" "$shell" > "$keydir/shell"
     printf "%s\n" "$(realpath -P -- "$(whereis -b "$shell" | cut -d' ' -f2)")" > "$keydir/realshell"
+    env > "$keydir/env"
+    set > "$keydir/var"
 }
 
 stopcmd() {
