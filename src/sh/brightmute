@@ -9,9 +9,9 @@ val="$(cat -- "$fl")"
 
 if [ "$val" = "0" ]; then
     val="$(brightnessctl g)"
-    brightnessctl s 0
+    sudo brightnessctl s 0
 else
-    brightnessctl s "$val"
+    sudo brightnessctl s "$val"
     val="0"
 fi
 
