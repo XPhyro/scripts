@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 
-bspc config pointer_follows_focus true
-bspc config pointer_follows_monitor true
+if [ -e "$XDG_CACHE_HOME/bspwm/.follows.lck" ]; then
+    follows=false
+else
+    follows=true
+fi
+
+bspc config pointer_follows_focus "$follows"
+bspc config pointer_follows_monitor "$follows"
 (eval "$*")
 bspc config pointer_follows_focus false
 bspc config pointer_follows_monitor false
