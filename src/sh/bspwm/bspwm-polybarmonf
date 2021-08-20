@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+bspc subscribe monitor_focus | while IFS= read -r _; do
+    polybar-msg hook bspwmmonf 1
+done
