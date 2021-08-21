@@ -14,7 +14,7 @@ printhelp() {
    --no-actual
        Use the registered status of applications to do work instead of the actual status. As an example, if an application is registered with a PID but is actually dead, the application will be just be cleaned -P is not passed. Inhibited by a following -P. See -P for more details.
    -c, --clean
-       Clean PIDs after dead processes and exit.
+       Clean dead processes and exit if no command given.
    -f, --force-state
        Force the state given via -T. If the current state is already STATE, the state will be flipped twice. Has no effect unless -T is passed. Inhibited by a following --no-force-state.
    --no-force-state
@@ -267,12 +267,11 @@ main() {
             kill -s 0 "$(cat -- "$i/pid")" 2> /dev/null || rm -rf -- "$i"
         done
 
-        if [ -z "$liststyle" ]; then
-            loginfo "Cleaning finished, exiting with code 0."
+        loginfo "Cleaning finished."
+        [ -z "$liststyle" ] && [ -z "$cmd" ] && {
+            loginfo "No command or auxiliary action given, exiting with code 0."
             exit 0
-        else
-            loginfo "Cleaning finished."
-        fi
+        }
     }
 
     [ -n "$liststyle" ] && {
