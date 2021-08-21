@@ -3,4 +3,4 @@
 
 importas HOME HOME
 cd ${HOME}
-setsid --fork -- screen -dmS sxhkd -- tglapp -avf -T on -k sxhkd -- sxhkd -m -1 $@
+setsid --fork -- screen -dmS sxhkd -- tglapp -avfc -T on -k sxhkd -- sxhkd -m -1 $@
