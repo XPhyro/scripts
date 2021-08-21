@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+[ "$#" -gt 1 ] && { 
+    printf "Less than 2 arguments are accepted.\n" >&2
+    exit 1
+}
+
+[ "$#" -eq 0 ] && {
+    printf "%s\n" "$HOME"
+    exit 0
+}
+
+fl="$(getflunsafe "$1")"
+
+if [ -f "$fl" ]; then
+    printf "%s\n" "${fl%/*}"
+else
+    printf "No such directory.\n" >&2
+    exit 1
+fi

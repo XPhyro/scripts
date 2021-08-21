@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Get directories or the directories of files with given codes.
+
+for i; do
+    loc="$(getdirunsafe "$i")" || {
+        loc="$(getflunsafe "$i")" || continue
+        loc="${loc%/*}"
+    }
+    expandpath "$loc"
+done

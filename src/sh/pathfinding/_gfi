@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+fl="$(fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs -d '\n' ls --color=always" < "$(getflunsafe fls)" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath)"
+printf "%s\n" "${fl%/*}"
