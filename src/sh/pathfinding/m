@@ -9,11 +9,7 @@ logerrq() {
 [ "$#" -eq 0 ] && logerrq "No mark given, exiting."
 [ "$#" -ne 1 ] && logerrq "Only one mark is accepted, exiting."
 
-markfl="$(getfl mrk)" || {
-    printf "[ERROR]: getdir failed, aborting.\n"
-    exit 1
-}
-
+markfl="$(getflunsafe mrk)"
 mark="$1"
 
 printf "%s\n" "$mark" | grep -qs "\s" && logerrq "Mark cannot contain whitespace, exiting."

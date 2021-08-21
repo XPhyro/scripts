@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-printf "%s\n" "$@" | xargs -d '\n' -rn 1 getfl | xargs -d '\n' -r cat 2> /dev/null
+printf "%s\n" "$@" | xargs -d '\n' -rn 1 getflunsafe | xargs -d '\n' -r cat 2> /dev/null
 exit $?

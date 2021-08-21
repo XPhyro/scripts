@@ -10,7 +10,7 @@
     exit 0
 }
 
-dir="$(getdirall "$1")"
+dir="$(getdirallunsafe "$1")"
 
 if [ -d "$dir" ]; then
     printf "%s\n" "$dir"

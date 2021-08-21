@@ -20,7 +20,7 @@ while IFS= read -r i; do
 
         exit 0
     }
-done < "$(getfl mrk)"
+done < "$(getflunsafe mrk)"
 
 printf "Mark $mark does not exist.\n" >&2
 exit 1

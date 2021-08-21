@@ -2,6 +2,6 @@
 # Get a file and edit it.
 
 for i; do
-    file="$(getflunsafe "$i")" || continue
-    "$EDITOR" -- "$file"
+    fl="$(getflunsafe "$i")" || continue
+    "$EDITOR" -- "$fl"
 done

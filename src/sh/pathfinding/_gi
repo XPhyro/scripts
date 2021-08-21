@@ -1,9 +1,4 @@
 #!/usr/bin/env sh
 # TODO: Include "$(getfl fls)". If the selection is a file, print its directory.
 
-locfl="$(getfl loc)" || {
-    printf "[ERROR]: getlfl failed, aborting.\n"
-    exit 1
-}
-
-fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs -d '\n' ls --color=always" < "$locfl" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath
+fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs -d '\n' ls --color=always" < "$(getfl loc)" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath
