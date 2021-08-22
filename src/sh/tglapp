@@ -319,8 +319,8 @@ main() {
             fi
         else
             loginfo "Process is dead."
+            rm -rf -- "$keydir"
             if [ -z "$state" ] || [ "$state" = "off" ]; then
-                rm -rf -- "$keydir"
                 loginfo "Wiped key directory."
                 [ "$actual" = "1" ] && {
                     loginfo "--actual is given, starting process."
