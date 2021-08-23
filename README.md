@@ -14,7 +14,7 @@ sudo make uninstall
 ```
 
 ## Environmental Variables
-Some scripts use optional or mandatory environmental variables for programs. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective program will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`.
+Some scripts use optional or mandatory environmental variables for programs. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective program will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`. Some scripts will not respect these as they use program-specific options, such as `rofi -font` or `st -d`.
 
 ## Notable scripts
 - [bspwmpad](src/sh/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, append `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" sticky=on state=floating hidden=on; done` to your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind.

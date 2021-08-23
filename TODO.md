@@ -1,6 +1,6 @@
 # Bugs
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
-- `ffmw decat` does not work as expected, fix.
+- `ffmw decat` does not work as expected, fix. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
