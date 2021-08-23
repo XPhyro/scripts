@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+SEP="${SEP:-"="}"
+END="${END-"
+"}"
+
+for j; do
+    bin="${j%%"$SEP"*}"
+    out="${j#*"$SEP"}"
+    [ "$bin" = "*" ] || command -v -- "$bin" > /dev/null 2>&1 && {
+        printf "%s%s" "$out" "$END"
+        exit 0
+    }
+done
+
+exit 1
