@@ -13,26 +13,34 @@ from time import time
 
 
 logfilepath = (
-    run(["getfl", "notiflog"], capture_output=True).stdout.decode("utf-8").rstrip("\n")
+    run(["getflunsafe", "notiflog"], capture_output=True).stdout.decode("utf-8").rstrip("\n")
 )
 print("Found log file path: %s" % logfilepath)
 
+if not logfilepath:
+    print("`getflunsafe notiflog` failed, exiting.", file=stderr)
+    exit(1)
+
 blacklogfilepath = (
-    run(["getfl", "notiflogblack"], capture_output=True)
+    run(["getflunsafe", "notiflogblack"], capture_output=True)
     .stdout.decode("utf-8")
     .rstrip("\n")
 )
 print("Found blacklisted log file path: %s" % blacklogfilepath)
 
+if not blacklogfilepath:
+    print("`getflunsafe notiflogblack` failed, exiting.", file=stderr)
+    exit(1)
+
 lockdirpath = (
-    run(["getdir", "notifloglck"], capture_output=True)
+    run(["getdirunsafe", "notifloglck"], capture_output=True)
     .stdout.decode("utf-8")
     .rstrip("\n")
 )
 print("Found lock file path: %s" % lockdirpath)
 
-if not logfilepath or not blacklogfilepath or not lockdirpath:
-    print("getfl failed, exiting.", file=stderr)
+if not lockdirpath:
+    print("`getdirunsafe notifloglck` failed, exiting.", file=stderr)
     exit(1)
 
 logfile = open(logfilepath, "a")
@@ -82,6 +90,11 @@ def filternotif(bus, message):
     except Exception as e:
         print("Caught exception: " + repr(e))
 
+
+try:
+    rmdir(lockdirpath)
+except:
+    pass
 
 DBusGMainLoop(set_as_default=True)
 
