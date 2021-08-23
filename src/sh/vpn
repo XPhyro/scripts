@@ -47,7 +47,11 @@ assertroot || exit 1
 printf "\nSelected VPN: %s" "$VPN"
 { "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
-printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)" &
+if pgrep -x -u root openvpn > /dev/null 2>&1; then
+    "$VPN" status
+else
+    printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)"
+fi
 
 while true; do
     printf "\n"
