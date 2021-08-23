@@ -3,4 +3,7 @@
 
 importas HOME HOME
 cd ${HOME}
+foreground { tglapp -T off -k sxhkd }
+foreground { tglapp -c }
+foreground { screen -wipe }
 setsid --fork -- screen -dmS sxhkd -- tglapp -avfc -T on -k sxhkd -- sxhkd -m -1 $@

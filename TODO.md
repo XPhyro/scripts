@@ -36,6 +36,7 @@
 - Make the mark '¬' not shared between terminals, but still saved after the terminal is closed. Load the value only at initialisation. In the interactive shell side, before exiting, `cp -f "$somedir/$$" "$somedir/0"` and when initialising, `cp "$somedir/0" "$somedir/$$"` can respectively be used to save and load.
 - In `tglapp`, implement `-F, --fork` using `setsid --fork -- "$realshell" -c`.
 - In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the same keycode is currently active, check that the given command is the same as the currently running application. If the commands do not check out, exit with error and do not toggle any applications.
+- In `*pad`, have an option to print the command after the date. Or make this the default and have an option to hide.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
