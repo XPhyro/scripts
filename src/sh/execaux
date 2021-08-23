@@ -2,4 +2,4 @@
 
 name="$1"
 shift || exit 1
-exec "$(whereis "${name##*/}" | awk '{$1=""; print $0}' | sed "s/$(realpath -- "$name" | sed 's,/,\\/,g')//" | awk '{print $1}')" "$@"
+exec "$(whereis -b "${name##*/}" | awk '{$1=""; print $0}' | sed "s/$(realpath -- "$name" | sed 's,/,\\/,g')//" | awk '{print $1}')" "$@"
