@@ -20,7 +20,7 @@ startall() {
 
 "/games/world-of-warcraft/drive_c/Program Files (x86)/World of Warcraft/_retail_/CurseBreaker" update &
 
-input="$(printf "All\nTSM\nRaiderIO\nWoW" | dmenu -i -p "wowstart:")"
+input="$(printf "All\nTSM\nRaiderIO\nWoW" | execmenu -i -p "wowstart:")"
 
 wait
 

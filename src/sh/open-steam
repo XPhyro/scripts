@@ -10,4 +10,4 @@ grep -E '\s*"path"\s*".*"$' "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | 
     find '.' -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j; do
         printf '%s\n' "$(grep '"appid"' -- "$j" | awk -F '"' '{print $4}') $(grep '"name"' -- "$j" | awk -F '"' '{print $4}')"
     done
-done | dmenu -i -l 25 -p "Select game:" | awk '{print $1}' | xargs -d '\n' -rI '{}' xdg-open 'steam://run/{}'
+done | execmenu -i -l 25 -p "Select game:" | awk '{print $1}' | xargs -d '\n' -rI '{}' xdg-open 'steam://run/{}'

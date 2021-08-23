@@ -5,4 +5,4 @@ loc="$(getdir popupnote)" || {
     exit 1
 }
 
-find "$loc" -mindepth 1 -maxdepth 1 -printf "%P\n" | dmenu -i -l 20 -p "popupnote:" | xargs -d '\n' -rI '{}' xdg-open "$loc/{}"
+find "$loc" -mindepth 1 -maxdepth 1 -printf "%P\n" | execmenu -i -l 20 -p "popupnote:" | xargs -d '\n' -rI '{}' xdg-open "$loc/{}"

@@ -47,7 +47,7 @@ case "$cmd" in
         done
         ;;
     dmenu) 
-        text="$(dmenu -p "key sequence:")"
+        text="$(execmenu -p "key sequence:")"
         while stopiffl; do
             xdotool type "$text"
             sleep 0.1

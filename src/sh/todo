@@ -8,16 +8,17 @@ fl="$(getfl todo)" || {
     exit 1
 }
 
-mode="$(printf "new\nmark\nremove\nlist" | dmenu -i -p "todo:")"
+menu="$(getmenu)"
+mode="$(printf "new\nmark\nremove\nlist" | $menu -i -p "todo:")"
 
 [ -z "$mode" ] && exit 0
 
 case "$mode" in
     new)
-        title="$(dmenu -p "title:")"
+        title="$($menu -p "title:")"
         [ -z "$title" ] && exit 0
-        desc="$(dmenu -p "description:")"
-        due="$(dmenu -p "due date:")"
+        desc="$($menu -p "description:")"
+        due="$($menu -p "due date:")"
         [ -z "$due" ] || {
             # check whether due is given relative or absolute
             :
@@ -28,31 +29,31 @@ case "$mode" in
         ;;
     flag)
         # DUNF: done, undone, new, important. DUN cannot coexist, while F can exist with DUN. N cannot be manually set.
-        flag="$(printf "D\nU\nF" | dmenu -i -p "flag:")"
+        flag="$(printf "D\nU\nF" | $menu -i -p "flag:")"
         case "$flag" in
             D)
-                sel="$(tail -n +3 | dmenu -i -p "todo:")" # TODO: show only that are UN
+                sel="$(tail -n +3 | $menu -i -p "todo:")" # TODO: show only that are UN
                 # if has UN, remove
                 # add D
                 ;;
             U)
-                sel="$(tail -n +3 | dmenu -i -p "todo:")" # TODO: show only that are D
+                sel="$(tail -n +3 | $menu -i -p "todo:")" # TODO: show only that are D
                 # if has DN, remove
                 # add U
                 ;;
             F)
-                sel="$(tail -n +3 | dmenu -i -p "todo:")" # TODO: show only that are UN
+                sel="$(tail -n +3 | $menu -i -p "todo:")" # TODO: show only that are UN
                 # toggle F: if has F, remove; else, add
                 ;;
             *) exit 1;;
         esac
         ;;
     remove)
-        sel="$(tail -n +3 "$fl" | dmenu -i -p "todo:")"
+        sel="$(tail -n +3 "$fl" | $menu -i -p "todo:")"
         # ask whether sure to remove "$sel"
         # if yes, remove "$sel"
         ;;
-    list) tail -n +3 "$fl" | awk -F '' '{print $1""$2" -> Due date: "$3}' | sed 's//: /g' | dmenu -i -p "todo:" -l 20; exit 0;;
+    list) tail -n +3 "$fl" | awk -F '' '{print $1""$2" -> Due date: "$3}' | sed 's//: /g' | $menu -i -p "todo:" -l 20; exit 0;;
     *) exit 1;;
 esac
 

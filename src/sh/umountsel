@@ -20,7 +20,7 @@ drives="$(
 
 [ -z "$drives" ] && exit 1
 
-chosen="$(printf "%s\n" "$drives" | dmenu -i -p "Unmount which drive?" | cut -d' ' -f1)"
+chosen="$(printf "%s\n" "$drives" | execmenu -i -p "Unmount which drive?" | cut -d' ' -f1)"
 
 [ -z "$chosen" ] && exit 1
 

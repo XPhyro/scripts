@@ -92,7 +92,8 @@ url/Opens store homepage in Steam store tab.
 url/SupportFrontPage
 validate/<appid> ## Validates the local files of an app."
 
-sel="$(printf "%s\n" "$cmds" | dmenu -l 20 -i -p "Command:")"
+menu="$(getmenu)"
+sel="$(printf "%s\n" "$cmds" | $menu -l 20 -i -p "Command:")"
 
 [ -z "$sel" ] && exit 0
 
@@ -114,10 +115,10 @@ if [ -z "${sel##*<*>*}" ]; then
                     find '.' -mindepth 1 -maxdepth 1 -type f -name "*.acf" -printf '%P\n' | while IFS= read -r j; do
                         printf '%s\n' "$(grep '"appid"' -- "$j" | awk -F '"' '{print $4}') $(grep '"name"' -- "$j" | awk -F '"' '{print $4}')"
                     done
-                done | dmenu -i -l 25 -p "Select game or enter game ID:" | awk '{print $1}'
+                done | $menu -i -l 25 -p "Select game or enter game ID:" | awk '{print $1}'
             )"
             ;;
-        *) str="$(dmenu -l 0 -p "<$strtype>:" < /dev/null)";;
+        *) str="$($menu -l 0 -p "<$strtype>:" < /dev/null)";;
     esac
 fi
 

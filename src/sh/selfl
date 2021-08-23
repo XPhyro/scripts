@@ -70,6 +70,7 @@ assertarg() {
 setdefargs(){
     linecount="0"
     root="/"
+    menu="$(getmenu)
 }
 
 parseargs() {
@@ -215,15 +216,15 @@ main() {
             grepfls
 
             if [ "$PWD" = "$root" ]; then
-                sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
+                sel="$(printf "%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
             elif [ -n "$git" ]; then
                 if contains "$(realpath -- "$PWD/.." )" "$( git rev-parse --show-toplevel)"; then
-                    sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
+                    sel="$(printf "..\n%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
                 else
-                    sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
+                    sel="$(printf "%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
                 fi
             else
-                sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
+                sel="$(printf "..\n%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || {
@@ -253,9 +254,9 @@ main() {
             grepfls
 
             if [ "$PWD" = "$root" ]; then
-                sel="$(printf "%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
+                sel="$(printf "%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
             else
-                sel="$(printf "..\n%s" "$fls"  | dmenu -i -l "$linecount" -p "$(getprompt)")"
+                sel="$(printf "..\n%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
             fi
 
             printf "%s" "$fls" | grep -Fxq "$sel" || sel="$(expandpath "$sel")"

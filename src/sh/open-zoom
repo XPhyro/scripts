@@ -17,7 +17,7 @@ $n$(printf "%s" "$i" | awk -F '' '{print $3}')"
     n=$((n + 1))
 done < "$fl"
 
-sel="$(printf "%s" "$lst" | dmenu -i -l 20)"
+sel="$(printf "%s" "$lst" | execmenu -i -l 20)"
 
 [ -n "$sel" ] || exit 0
 

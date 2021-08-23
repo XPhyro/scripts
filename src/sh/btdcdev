@@ -15,7 +15,7 @@ devs="$(
 if [ "$(printf "%s\n" "$devs" | wc -l)" = 1 ] && ! bluetoothctl info "${devs%%" "*}" | grep -iFq "keyboard"; then
     seldev="$devs"
 else
-    seldev="$(printf "%s" "$devs" | dmenu -i -p "Device to disconnect:")"
+    seldev="$(printf "%s" "$devs" | execmenu -i -p "Device to disconnect:")"
 fi
 
 [ -z "$seldev" ] && exit 0

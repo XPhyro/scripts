@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-sig="$(printf "STOP\nCONT\n" | dmenu -i -p "Suspend process:")"
+menu="$(getmenu)"
+sig="$(printf "STOP\nCONT\n" | $menu -i -p "Suspend process:")"
 
 [ "$sig" != "STOP" ] && [ "$sig" != "CONT" ] && exit 1
 
@@ -15,7 +16,7 @@ pss="$(printf "%s\n" "$pss" | awk '{if (substr($2, 0, 1) == "'"$sigstat"'") { $2
 
 [ -n "$pss" ] || exit 0
 
-selps="$(printf "%s\n" "$pss" | sed 's/^[^ ]\+\s\+//' | sort -u | dmenu -i -l 20 -p "Process to $sig:")"
+selps="$(printf "%s\n" "$pss" | sed 's/^[^ ]\+\s\+//' | sort -u | $menu -i -l 20 -p "Process to $sig:")"
 
 [ -n "$selps" ] || exit 0
 
@@ -27,7 +28,7 @@ pss="$(printf "%s\n" "$pss" | grep "$escapedselps$")"
 if [ "$(printf "%s\n" "$pss" | wc -l)" = "1" ]; then
     selps="$pss"
 else
-    selps="$(printf "%s\n" "$pss" | dmenu -i -l 20 -p "Entry to $sig:")"
+    selps="$(printf "%s\n" "$pss" | $menu -i -l 20 -p "Entry to $sig:")"
 fi
 
 [ -n "$selps" ] && printf "%s\n" "$selps" | awk '{print $1}' | xargs -d '\n' -rI '{}' kill "-$sig" '{}'
