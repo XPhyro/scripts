@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+fl="${XDG_CACHE_HOME:-"$HOME/.cache"}/headsetcontrol/sidetone"
+
+case "$(cat -- "$fl")" in
+    0) val=128;;
+    *) val=0;;
+esac
+
+headsetcontrol -s "$val" || {
+    ec="$?"
+    printf "" > "$fl"
+    exit "$ec"
+}
+
+printf "%s\n" "$val" > "$fl"
