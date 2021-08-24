@@ -37,6 +37,8 @@
 - In `tglapp`, implement `-F, --fork` using `setsid --fork -- "$realshell" -c`.
 - In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the same keycode is currently active, check that the given command is the same as the currently running application. If the commands do not check out, exit with error and do not toggle any applications.
 - In `*pad`, have an option to print the command after the date. Or make this the default and have an option to hide.
+- In `*pad`, add an option to use `tglapp`.
+- In `tglapp`, add an option to use `*pad`. If this option is given, when toggling the application, toggle the hidden status of the pad if it is on.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
