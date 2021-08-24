@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+bspc query -N -n ."$1" | grep -Fxq "$2"
