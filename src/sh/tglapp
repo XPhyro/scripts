@@ -25,6 +25,10 @@ printhelp() {
        Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /.
    -l, --list STYLE
        List all applications started with $execname. STYLE can be one of: compact, normal. compact is recommended for scripting/grepping. -l uses the normal STYLE. If -a is also given, -c is implied. If -c is given or implied, listing will be done after cleaning.
+   -Q, --quote
+       Automatically quote each argument using '. Arguments before -Q is passed are not affected.
+   --no-quote
+       Revert -Q. Arguments between -Q and --no-quote are still affected.
    -q, --quiet
        If passed once, suppress stdout. If passed twice or more, suppress both stdout and stderr. Only the started application will be suppressed, $execname will print as usual.
    -S, --sudo
@@ -60,7 +64,7 @@ assertarg() {
 }
 
 unsetargs() {
-    unset actual willclean forcestate keycode liststyle quiet sudo status verbose
+    unset actual willclean forcestate keycode liststyle quote quiet sudo status verbose
 }
 
 parseargs() {
@@ -79,6 +83,7 @@ parseargs() {
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
                         l) parseargs --list normal;;
+                        Q) parseargs --quote;;
                         q) parseargs --quiet;;
                         S) parseargs --sudo;;
                         s) parseargs --status;;
@@ -104,6 +109,8 @@ parseargs() {
                     keycode=*      ) keycode="${opt#*=}"; assertarg "--keycode" "KEYCODE" "$keycode";;
                     list           ) shift; assertarg "--list" "STYLE" "$1"; liststyle="$1";;
                     list=*         ) liststyle="${opt#*=}"; assertarg "--list" "STYLE" "$liststyle";;
+                    quote          ) quote=\';;
+                    no-quote       ) unset quote;;
                     quiet          ) quiet="1$quiet";;
                     sudo           ) sudo="sudo";;
                     status         ) status=1;;
@@ -118,14 +125,14 @@ parseargs() {
                 esac
             fi
         else
-            cmd="$cmd $1"
+            cmd="$cmd $quote$1$quote"
         fi
 
         shift
     done
 
     for i; do
-        cmd="$cmd $i"
+        cmd="$cmd $quote$i$quote"
     done
 }
 
