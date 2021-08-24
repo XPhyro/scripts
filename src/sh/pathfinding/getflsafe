@@ -6,6 +6,6 @@ item="$HOME/documents/sys-admin/files-container/${1:?}"
 [ -s "$item" ]
 fl="$(cat -- "$item")"
 fldir="${fl%/*}"
-mkdir -p -- "$fldir"
-touch -- "$fl"
+[ -d "$fldir" ] || mkdir -p -- "$fldir"
+[ -f "$fl" ] || touch -- "$fl"
 printf "%s\n" "$fl"

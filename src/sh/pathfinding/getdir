@@ -4,6 +4,6 @@
 set -e
 item="$HOME/documents/sys-admin/locations-container/${1:?}"
 [ -s "$item" ]
-loc="$(cat -- "$item")"
-[ -d "$loc" ] || mkdir -p -- "$loc"
-printf "%s\n" "$loc"
+dir="$(cat -- "$item")"
+[ -d "$dir" ] || mkdir -p -- "$dir"
+printf "%s\n" "$dir"
