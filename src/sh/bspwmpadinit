@@ -6,6 +6,7 @@ shift 2
 
 [ "$lck" != "0" ] && {
     printf "%s\n" "$$" > "$lckdir/$lck/pid"
+    xdotool search --limit 0 --classname "bspwmpad$lck" | xargs -d '\n' printf "0x%X\n" > "$lckdir/$lck/ids"
     printf "%s - %s\n" "bspwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
 
     if [ "$#" -eq 0 ]; then
