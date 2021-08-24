@@ -58,6 +58,7 @@
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
+- Write a hidden manager for `bspwm`. If the item being turned on/off belongs to `bspwmpad`, instead pass the job to it. This hidden manager should use the thumbnail feature of rofi as so: `rofi -show window -show-icons -window-thumbnail -theme thumbnail`. This requires some more work as with this command, `rofi` would just focus the selected window instead of printing it.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
