@@ -2,6 +2,7 @@
 
 {
     bspc subscribe node_swap node_transfer node_add node_remove &
+    bspc subscribe node_flag | grep --line-buffered -F "hidden off"
     bspc subscribe node_state | xargs -d "\n" -n 2 printf "%s %s\n" | grep --line-buffered -vE "^node_state .* fullscreen (on|off)"
 } | while IFS= read -r _; do
     [ -e "$XDG_CACHE_HOME/bspwm/.follows.lck" ] || ! wg="$(xdotool getactivewindow getwindowgeometry)" && continue
