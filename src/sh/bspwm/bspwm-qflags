@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+# Adapted from https://www.reddit.com/r/bspwm/comments/mzlwsf/get_node_flag/gw2vne9
+
+bspc query -T -n "${1:-"focused"}" | jq -rj '
+    [
+        [ "H", .hidden        ],
+        [ "S", .sticky        ],
+        [ "P", .private       ],
+        [ "L", .locked        ],
+        [ "M", .marked        ],
+        [ "U", .client.urgent ]
+    ]
+    | map(if .[1] then .[0] else "" end)
+    | add
+'
