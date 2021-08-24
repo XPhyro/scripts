@@ -99,7 +99,11 @@ main() {
         fd="$(bspc query -D -d focused)"
         printf "%s\n" "$ids" | while IFS= read -r i; do
             if [ "$(bspc query -D -n "$i")" = "$fd" ]; then
-                bspc node "$i" --flag hidden -f
+                if bspwm-qflag hidden "$i"; then
+                    bspc node "$i" --flag hidden=false -f
+                else
+                    bspc node "$i" --flag hidden=true -d last:^20
+                fi
             else
                 bspc node "$i" -d "$fd" --flag hidden=false -f
             fi
