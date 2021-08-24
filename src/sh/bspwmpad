@@ -95,7 +95,7 @@ main() {
         exit 1
     }
 
-    [ -n "$optnumber" ] && {
+    [ -n "$optnumber" ] && [ -f "$lckdir/$optnumber/ids" ] && {
         fd="$(bspc query -D -d focused)"
         while IFS= read -r i; do
             if [ "$(bspc query -D -n "$i")" = "$fd" ]; then
