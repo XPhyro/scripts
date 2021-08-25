@@ -8,10 +8,11 @@ dir="$(getdir mu)" || {
     exit 1
 }
 
-fl="$(find "$dir" -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%P\n" | sort -nr | cut -d ';' -f2- | dmenu -i -l 20 -p "Select sheet music:")" || exit 1
+menu="$(getmenu)"
+fl="$(find "$dir" -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%P\n" | sort -nr | cut -d ';' -f2- | $menu -i -l 20 -p "Select sheet music:")" || exit 1
 
 while true; do
-    n="$(seq 4 | dmenu -F -p "How many to open:")" || exit 1
+    n="$(seq 4 | $menu -p "How many to open:")" || exit 1
     printf "%s" "$n" | grep -xq "[[:digit:]]\+" && break
 done
 
