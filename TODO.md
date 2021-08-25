@@ -39,6 +39,7 @@
 - In `*pad`, have an option to print the command after the date. Or make this the default and have an option to hide.
 - In `*pad`, add an option to use `tglapp`.
 - In `tglapp`, add an option to use `*pad`. If this option is given, when toggling the application, toggle the hidden status of the pad if it is on.
+- In `tglapp` ad an option to auto-restart the application when it exits. Make this behaviour togglable between only non-zero codes and all codes.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
@@ -59,6 +60,7 @@
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a hidden manager for `bspwm`. If the item being turned on/off belongs to `bspwmpad`, instead pass the job to it. This hidden manager should use the thumbnail feature of rofi as so: `rofi -show window -show-icons -window-thumbnail -theme thumbnail`. This requires some more work as with this command, `rofi` would just focus the selected window instead of printing it.
+- Write a `gacma` alternative named `gacmam` that does not take files but rather uses all modified files. Also write `gacmam` which uses both modified and untracked files.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
