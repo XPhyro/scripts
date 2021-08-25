@@ -3,7 +3,7 @@
 fl="${XDG_CACHE_HOME:-"$HOME/.cache"}/headsetcontrol/sidetone"
 
 case "$(cat -- "$fl")" in
-    0) val=128;;
+    0) val="${1:-128}";;
     *) val=0;;
 esac
 
