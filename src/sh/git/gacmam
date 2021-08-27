@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+message="$1"
+description="$2"
+
+git diff --name-status | grep "^M" | cut -d'	' -f2- | xargs -r -d '\n' git add --
+git commit -m "$message" -m "$description"
