@@ -1,6 +1,7 @@
 # Bugs
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 - `ffmw decat` does not work as expected, fix. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
+- Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
@@ -19,7 +20,6 @@
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
 - Integrate *synctex* in `latexstp`. See [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html) and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 - Implement a no-quoting option in `tglapp` like the inverse of the one that exists in `mapexec`.
-- Allow setting the description in gacma, or create a new script for.
 - In `bright*`, fade the brightness.
 - In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
 - `ffmpeg` fails to parse the filename (why does it even parse it?) if it contains one of the following characters `:,`. Make `ffmw` create a symlink pointing to the input file(s) to mitigate the issue.
@@ -60,7 +60,6 @@
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a hidden manager for `bspwm`. If the item being turned on/off belongs to `bspwmpad`, instead pass the job to it. This hidden manager should use the thumbnail feature of rofi as so: `rofi -show window -show-icons -window-thumbnail -theme thumbnail`. This requires some more work as with this command, `rofi` would just focus the selected window instead of printing it.
-- Write a `gacma` alternative named `gacmam` that does not take files but rather uses all modified files. Also write `gacmam` which uses both modified and untracked files.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
