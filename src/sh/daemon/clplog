@@ -15,25 +15,26 @@ oldclp="$lastclp"
 [ -d "$lckdir" ] && rm -rf -- "$lckdir"
 
 while true; do
-    while clipnotify; do
-        [ -d "$lckdir" ] && {
-            rm -rf -- "$lckdir"
-            continue
-        }
+    clipnotify
 
-        clp="$(xclip -o -se c)"
-        [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue
-        [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ] && {
-            printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$(date +%s)" "$(printf "%s\n" "$clp" | tr '\n' '')" >> "$logfl"
-            lastclp="$clp"
-            oldclp=""
+    [ -d "$lckdir" ] && {
+        rm -rf -- "$lckdir"
+        continue
+    }
 
-            [ "$(du -b -- "$logfl" | cut -f1)" -gt "5242879" ] && {
-                lastnum="$(find "$bakdir" -mindepth 1 -printf "%P\n" | sort -n | tail -n 1)"
-                [ -z "$lastnum" ] && lastnum="-1"
-                mv -- "$logfl" "$bakdir/$((lastnum + 1))"
-                touch "$logfl"
-            }
+    clp="$(xclip -o -se c)"
+    [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue
+
+    [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ] && {
+        printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$(date +%s)" "$(printf "%s\n" "$clp" | tr '\n' '')" >> "$logfl"
+        lastclp="$clp"
+        oldclp=""
+
+        [ "$(du -b -- "$logfl" | cut -f1)" -gt "5242879" ] && {
+            lastnum="$(find "$bakdir" -mindepth 1 -printf "%P\n" | sort -n | tail -n 1)"
+            [ -z "$lastnum" ] && lastnum="-1"
+            mv -- "$logfl" "$bakdir/$((lastnum + 1))"
+            touch "$logfl"
         }
-    done
+    }
 done
