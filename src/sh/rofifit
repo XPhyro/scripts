@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+stdinfl="$(mktemp)"
+cp -- /dev/stdin "$stdinfl"
+
+for i; do
+    [ "$i" = "-dmenu" ] && exec rofi "$@" -width -"$(($(wc -L < "$stdinfl") + 2))" < "$stdinfl"
+done
+
+exec rofi "$@" < "$stdinfl"

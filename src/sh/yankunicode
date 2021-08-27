@@ -2,7 +2,7 @@
 # Choose a unicode character and copy it.
 
 fl="${XDG_DATA_HOME:-"$HOME"}/code/rsrc/unicode/unicode-characters"
-chosen="$(cut -d ';' -f1 -- "$fl" | rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))" | sed "s/ .*//")"
+chosen="$(cut -d ';' -f1 -- "$fl" | rofifit -dmenu -i -matching fuzzy -font 'JetBrainsMono 16' -p 'yankunicode:' | sed "s/ .*//")"
 [ -z "$chosen" ] && exit 0
 lckget clplog
 printf "%s" "$chosen" | tr -d '\n' | xclip -se c
