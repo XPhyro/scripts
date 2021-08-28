@@ -53,6 +53,7 @@ parseargs() {
                         g) shift; parseargs --geometry "$1";;
                         n) shift; parseargs --number "$1";;
                         t) shift; parseargs --title "$1";;
+                        v) parseargs --verbose;;
                         h) parseargs --help;;
                         *) printusage "$1"; exit 0;;
                     esac
@@ -71,6 +72,7 @@ parseargs() {
                     number=*    ) optnumber="${opt#*=}"; assertarg "-n, --number" "NUMBER" "$optnumber";;
                     title       ) shift; assertarg "-t, --title" "TITLE" "$1"; opttitle="$1";;
                     title=*     ) opttitle="${opt#*=}"; assertarg "-t, --title" "TITLE" "$opttitle";;
+                    verbose     ) export BSPWMPADINIT_VERBOSE=1; set -x;;
                     help        ) printhelp; exit 0;;
                     ""          ) return 0;;
                     *           ) printusage "$1"; exit 0;;

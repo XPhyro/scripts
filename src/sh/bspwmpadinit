@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+[ "$BSPWMPADINIT_VERBOSE" = 1 ] && set -x
+
 lckdir="$1"
 lck="$2"
 shift 2
@@ -10,9 +12,11 @@ shift 2
     printf "%s - %s\n" "bspwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
 
     if [ "$#" -eq 0 ]; then
+        printf "%s\n" "Deploying shell: $SHELL"
         exec "$SHELL"
     else
         { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
+        printf "%s\n" "Running command: $*"
         exec "$@"
     fi
 }

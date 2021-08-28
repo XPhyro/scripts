@@ -23,7 +23,6 @@
 - In `bright*`, fade the brightness.
 - In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
 - `ffmpeg` fails to parse the filename (why does it even parse it?) if it contains one of the following characters `:,`. Make `ffmw` create a symlink pointing to the input file(s) to mitigate the issue.
-- In `bspwmpad`, move the node to the current desktop if it is in a different desktop. Regardless of its previous state, if it was moved, it should be shown.
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
 - Implement `-l, --list` in `tglapp`.
 - Add an option to start applications in a `screen` named `"$keycode"` in `tglapp`. Also add an option to overwrite the `screen` name.
@@ -36,7 +35,6 @@
 - Make the mark '¬' not shared between terminals, but still saved after the terminal is closed. Load the value only at initialisation. In the interactive shell side, before exiting, `cp -f "$somedir/$$" "$somedir/0"` and when initialising, `cp "$somedir/0" "$somedir/$$"` can respectively be used to save and load.
 - In `tglapp`, implement `-F, --fork` using `setsid --fork -- "$realshell" -c`.
 - In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the same keycode is currently active, check that the given command is the same as the currently running application. If the commands do not check out, exit with error and do not toggle any applications.
-- In `*pad`, have an option to print the command after the date. Or make this the default and have an option to hide.
 - In `*pad`, add an option to use `tglapp`.
 - In `tglapp`, add an option to use `*pad`. If this option is given, when toggling the application, toggle the hidden status of the pad if it is on.
 - In `tglapp` ad an option to auto-restart the application when it exits. Make this behaviour togglable between only non-zero codes and all codes.
