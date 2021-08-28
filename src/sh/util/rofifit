@@ -3,8 +3,24 @@
 stdinfl="$(mktemp)"
 cp -- /dev/stdin "$stdinfl"
 
+unset isdmenu hasprompt
+prompt=0
+
 for i; do
-    [ "$i" = "-dmenu" ] && exec rofi "$@" -theme-str "window { width: $((($(wc -L < "$stdinfl") + 2) * 16)); }" < "$stdinfl"
+    [ "$i" = "-dmenu" ] && {
+        isdmenu=1
+        continue
+    }
+
+    [ "$isdmenu" = 1 ] && [ "$i" = "-p" ] && {
+        hasprompt=1
+        continue
+    }
+    [ "$hasprompt" = 1 ] && {
+        prompt="$i"
+        break
+    }
 done
 
+[ "$isdmenu" = 1 ] && exec rofi "$@" -theme-str "window { width: $((($(max "${#prompt}" "$(wc -L < "$stdinfl")") + 2) * 16)); }" < "$stdinfl"
 exec rofi "$@" < "$stdinfl"
