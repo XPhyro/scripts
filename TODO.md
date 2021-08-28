@@ -38,6 +38,8 @@
 - In `*pad`, add an option to use `tglapp`.
 - In `tglapp`, add an option to use `*pad`. If this option is given, when toggling the application, toggle the hidden status of the pad if it is on.
 - In `tglapp` ad an option to auto-restart the application when it exits. Make this behaviour togglable between only non-zero codes and all codes.
+- In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of `execmenu`.
+- Do not assume a font size of 16 in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming short.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
@@ -57,7 +59,6 @@
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
-- Write a hidden manager for `bspwm`. If the item being turned on/off belongs to `bspwmpad`, instead pass the job to it. This hidden manager should use the thumbnail feature of rofi as so: `rofi -show window -show-icons -window-thumbnail -theme thumbnail`. This requires some more work as with this command, `rofi` would just focus the selected window instead of printing it.
 
 # Refactoring / Rewriting
 - Integrate -pc option of dmenu into usable scripts.
@@ -89,3 +90,4 @@
 - Scripts that require untrivial root access should not use `sudo`, but force the user to run the script as root. Scripts that require trivial root access should use `sudo` or `sudo -A` depending on whether they are graphical (for instance, if they use `dmenu`) or not.
 - Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
 - Merge `bspwmpad{,init}` and `dwmpad{,init}` into `wmpad{,init}`. `wmpad{,init}` must work in both `bspwm` and `dwm` and should work in other WMs or DEs excluding the show/hide functionality.
+- For easy debugging, in every shell script, add `eval "$(setverbose)"`. `setverbose` should check for the value of an environmental variable, say `SHELL_VERBOSE`, and print `set -x` if it is 1. This way, debugging nested scripts will be easier. Be sure not to include this in stderr-sensitive scripts (which there is none?).
