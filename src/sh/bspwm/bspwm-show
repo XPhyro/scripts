@@ -2,6 +2,11 @@
 
 bspc query -N -n .hidden.window | while IFS= read -r i; do
     printf "%s: %s\n" "$i" "$(xprop -id "$i" WM_NAME | cut -d\" -f2- | head -c -2)"
-done | xins -Rs -- execmenu | while IFS= read -r i; do
-    bspc node "$(printf "%s\n" "$i" | cut -d: -f1)" --flag hidden=false -f
+done | xins -Rs -- execmenu | while IFS=: read -r i _; do
+    instance="$(xprop -id "$i" WM_CLASS | cut -d\" -f2)"
+    if [ "${instance%[0-9]}" = "bspwmpad" ]; then
+        bspwmpad -n "${instance#${instance%?}}"
+    else
+        bspc node "$(printf "%s\n" "$i")" --flag hidden=false -f
+    fi
 done
