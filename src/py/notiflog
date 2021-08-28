@@ -13,7 +13,9 @@ from time import time
 
 
 logfilepath = (
-    run(["getflunsafe", "notiflog"], capture_output=True).stdout.decode("utf-8").rstrip("\n")
+    run(["getflunsafe", "notiflog"], capture_output=True)
+    .stdout.decode("utf-8")
+    .rstrip("\n")
 )
 print("Found log file path: %s" % logfilepath)
 
@@ -69,8 +71,8 @@ def filternotif(bus, message):
         ]
 
         print(
-            "Received notification:\nSummary:\n%s\nBody:\n%s\nApp Name: %s\nID: %s\nApp Icon: %s\nExpire Timeout: %s\n"
-            % (summary, body, appname, id, appicon, expiretimeout)
+            "Received notification:\nTime: %s\nSummary:\n%s\nBody:\n%s\nApp Name: %s\nID: %s\nApp Icon: %s\nExpire Timeout: %s\n"
+            % (floor(time()), summary, body, appname, id, appicon, expiretimeout)
         )
 
         if isblacklisted(
