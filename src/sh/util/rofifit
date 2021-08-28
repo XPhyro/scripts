@@ -4,7 +4,7 @@ stdinfl="$(mktemp)"
 cp -- /dev/stdin "$stdinfl"
 
 for i; do
-    [ "$i" = "-dmenu" ] && exec rofi "$@" -width -"$(($(wc -L < "$stdinfl") + 2))" < "$stdinfl"
+    [ "$i" = "-dmenu" ] && exec rofi "$@" -theme-str "window { width: $((($(wc -L < "$stdinfl") + 2) * 16)); }" < "$stdinfl"
 done
 
 exec rofi "$@" < "$stdinfl"
