@@ -1,5 +1,4 @@
 # Bugs
-- In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 - `ffmw decat` does not work as expected, fix. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 
@@ -60,7 +59,7 @@
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 
-# Refactoring / Rewriting
+# Refactoring / Rewriting / Reworking
 - Integrate -pc option of dmenu into usable scripts.
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
@@ -75,6 +74,7 @@
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
+- In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
