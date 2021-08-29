@@ -38,7 +38,7 @@
 - In `tglapp`, add an option to use `*pad`. If this option is given, when toggling the application, toggle the hidden status of the pad if it is on.
 - In `tglapp` ad an option to auto-restart the application when it exits. Make this behaviour togglable between only non-zero codes and all codes.
 - In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of `execmenu`.
-- Do not assume a font size of 16 in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming short.
+- Do not assume a font size in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming *very* short.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
