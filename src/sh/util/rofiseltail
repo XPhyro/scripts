@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+stdinfl="$(mktemp)"
+[ ! -t 0 ] && cp -- /dev/stdin "$stdinfl"
+
+exec "$@" -selected-row "$(($(wc -l < "$stdinfl") - 1))" < "$stdinfl"
