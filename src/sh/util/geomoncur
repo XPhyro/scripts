@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+xrandr --current | grep -F -- "$(moncur) connected " | awk '{print $(NF - 11)}'
