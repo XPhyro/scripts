@@ -22,5 +22,9 @@ for i; do
     }
 done
 
-[ "$isdmenu" = 1 ] && exec rofi "$@" -theme-str "window { width: $((($(max "${#prompt}" "$(wc -L < "$stdinfl")") + 2) * 16)); }" < "$stdinfl"
+
+[ "$isdmenu" = 1 ] && {
+    res="$(xrandr --current | grep -F -- "$(moncur) connected " | cut -d' ' -f4 | cut -d+ -f1)"
+    exec rofi "$@" -theme-str "window { width: $(min "$(max "$((50 + 12 * $(wc -L < "$stdinfl")))" "$((50 + 12 * ${#prompt}))")" "$((${res%%x*} / 2))"); height: $(min "$((37 + 23 * $(wc -l < "$stdinfl")))" "$((${res##*x} / 2 + 3))"); }" < "$stdinfl"
+}
 exec rofi "$@" < "$stdinfl"
