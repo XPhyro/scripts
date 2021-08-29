@@ -24,10 +24,10 @@ done
 
 [ "$isdmenu" = 1 ] && {
     res="$(resmoncur)"
-    exec rofi "$@" -theme-str "
+    exec "$@" -theme-str "
         window {
             width: $(min "$(max "$((50 + 12 * $(wc -L < "$stdinfl")))" "$((200 + 12 * ${#prompt}))")" "$((${res%%x*} / 2))");
             height: $(min "$((37 + 23 * $(wc -l < "$stdinfl")))" "$((${res##*x} / 2 + 3))");
         }" < "$stdinfl"
 }
-exec rofi "$@" < "$stdinfl"
+exec "$@" < "$stdinfl"
