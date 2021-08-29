@@ -5,7 +5,7 @@ logfl="$(getfl xdgopenlog)" || {
     exit 1
 }
 
-sel="$(awk -F ';' '{$1=strftime("%a %Y-%m-%d %H:%M:%S;", $1); print $0}' "$logfl" | dmenu -sel 200000000 -l 20 -p 'xdg-reopen:')"
+sel="$(awk -F ';' '{$1=strftime("%a %Y-%m-%d %H:%M:%S;", $1); print $0}' "$logfl" | rofiseltail rofi -l 20 -p 'xdg-reopen:')"
 
 [ -z "$sel" ] && exit 0
 

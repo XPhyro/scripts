@@ -6,8 +6,10 @@ exitnotif() {
 }
 
 ynq() {
-    equals "$(printf "y\nn" | dmenu -i -p "$1")" y yes
+    equals "$(printf "y\nn" | $menu -i -p "$1")" y yes
 }
+
+menu="$(getmenu)"
 
 if ynq "Use a simulation template?"; then
     tfl="$(selfl -aRl 20 "$(getdir wowsimt)" | head -n 1)"
@@ -33,7 +35,7 @@ else
     realm="$(cat "$simloc/.realm")"
     chars="$(cat "$simloc/.chars")"
 
-    selchar="$(printf "%s" "$chars" | dmenu -i)"
+    selchar="$(printf "%s" "$chars" | $menu -i)"
     [ -z "$selchar" ] && exit 1
 
     screenname="simc-$selchar"
@@ -46,7 +48,7 @@ else
 
     screenname="$screenname-$(date +%s)"
 
-    csf="$(printf "0\n1" | dmenu -p "Compute scale factors?")"
+    csf="$(printf "0\n1" | $menu -p "Compute scale factors?")"
     equals "$csf" 0 1 || exit 1
 
     simcargs="'armory=$region,$realm,$selchar' 'calculate_scale_factors=$csf'"
