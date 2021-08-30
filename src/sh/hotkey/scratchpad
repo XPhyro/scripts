@@ -31,7 +31,7 @@ fi
 
 path="$dir/$file"
 
-vim -c "$vimcmd" -- "$path"
+vim -c "se ft=config | filetype detect | $vimcmd" -- "$path"
 
 [ "$isnew" = "1" ] && {
     [ -f "$path" ] && title="$(printf "%s\n" "" | $menu -p "Title for \"$path\":")"
