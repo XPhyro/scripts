@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+pactl list sources | grep '	Monitor of Sink: ' | grep -vF "$(voldefsink)" | grep -vF "	Monitor of Sink: n/a" | head -n 1 | cut -d' ' -f4
