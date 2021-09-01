@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Set the volume of the default pulseaudio sink.
-
-execmenu -p "Enter volume %:" < /dev/null | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' | xargs -d '\n' -rI '{}' pactl set-sink-volume "$(volauxsink)" '{}%'

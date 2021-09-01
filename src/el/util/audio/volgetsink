@@ -1,0 +1,7 @@
+#!/usr/bin/env -S execlineb -s1
+# Print the default pulseaudio source.
+
+pipeline { pactl get-sink-volume $1 }
+pipeline { head -n 1 }
+pipeline { awk "{print $5}" }
+tr -d %
