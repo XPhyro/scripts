@@ -31,9 +31,9 @@ esac
 case "$(file --mime-type --brief "$fl")" in
     text/*|*/xml)
         tmp="$(mktemp)"
-        { [ "${fl%.*}" = "$fl" ] || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq "${fl##*.}"; } && bat --color=always --style=plain --pager=never --decorations=never -- "$fl" > "$tmp" && sed -i -E 's/\[38;5;231m(.*)\[0m$/\1/' "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
-            highlight --replace-tabs=4 --out-format=truecolor --force --style=candy -- "$fl" > "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
-                vimcat -o "$tmp" -- "$fl" || cp -- "$fl" "$tmp"
+        { [ "${fl%.*}" = "$fl" ] || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq "${fl##*.}"; } && timeout 5s bat --color=always --style=plain --pager=never --decorations=never -- "$fl" > "$tmp" && sed -i -E 's/\[38;5;231m(.*)\[0m$/\1/' "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
+            timeout 5s highlight --replace-tabs=4 --out-format=truecolor --force --style=candy -- "$fl" > "$tmp" && grep -Pq '\033\[[^5][;m]' "$tmp" || {
+                timeout 5s vimcat -o "$tmp" -- "$fl" || cp -- "$fl" "$tmp"
             }
         }
         cat -- "$tmp"
