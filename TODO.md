@@ -95,3 +95,4 @@
 - Register a tray icon using `yad` in applicable scripts.
   - Daemons could benefit well from this.
   - `tglapp` could benefit from this. A single tray icon when right clicked should show all `tglapp` applications. For this, a subscription and a server (like `lf`'s) system should be implemented.
+- Show errors with `rofi -e "$message"` in applicable headless scripts.
