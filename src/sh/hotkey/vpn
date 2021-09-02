@@ -44,7 +44,7 @@ assertroot || exit 1
     fi
 }
 
-printf "\nSelected VPN: %s" "$VPN"
+printf "\nSelected VPN: %s\n" "$VPN"
 { "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
 if pgrep -x -u root openvpn > /dev/null 2>&1; then
