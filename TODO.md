@@ -92,3 +92,6 @@
 - Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
 - Merge `bspwmpad{,init}` and `dwmpad{,init}` into `wmpad{,init}`. `wmpad{,init}` must work in both `bspwm` and `dwm` and should work in other WMs or DEs excluding the show/hide functionality.
 - For easy debugging, in every shell script, add `eval "$(setverbose)"`. `setverbose` should check for the value of an environmental variable, say `SHELL_VERBOSE`, and print `set -x` if it is 1. This way, debugging nested scripts will be easier. Be sure not to include this in stderr-sensitive scripts (which there is none?).
+- Register a tray icon using `yad` in applicable scripts.
+  - Daemons could benefit well from this.
+  - `tglapp` could benefit from this. A single tray icon when right clicked should show all `tglapp` applications. For this, a subscription and a server (like `lf`'s) system should be implemented.
