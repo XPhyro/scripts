@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+pactl set-sink-volume "$1" "$(volgetsink "$1")%"
