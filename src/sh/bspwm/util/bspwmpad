@@ -13,6 +13,8 @@ printhelp() {
        Use pad number NUMBER. Number can be an integer between 0 and 9. If 0 is passed, the given command is ignored and statistics about the other pads are shown.
    -t TITLE, --title TITLE
        Title of the st instance. If not given, 'bspwmpad #NUMBER' will be used.
+   -v, --verbose
+       Print commands as executed.
    -h, --help
        Print help message and exit."
 }
