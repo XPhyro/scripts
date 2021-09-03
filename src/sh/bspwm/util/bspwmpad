@@ -93,26 +93,37 @@ processargs() {
     [ -n "$optnumber" ] && { [ "${#optnumber}" -ne 1 ] || [ -z "$(printf "%s" "$optnumber" | tr -dc '0-9')" ]; } && logerrq "Invalid NUMBER passed, exiting."
 }
 
+handlenode() {
+    id="$1"
+    fd="${2:-"$(bspc query -D -d focused)"}"
+    if [ "$(bspc query -D -n "$id")" = "$fd" ]; then
+        if bspwm-qflag hidden "$id"; then
+            bspc node "$id" --flag hidden=false -f
+        else
+            bspc node "$id" --flag hidden=true -d last:^20
+        fi
+    else
+        bspc node "$id" -d "$fd" --flag hidden=false -f
+    fi
+}
+
 main() {
     lckdir="$(getdir bspwmpadlck)" || {
         printf "[ERROR]: getdir failed, aborting.\n"
         exit 1
     }
 
-    [ -n "$optnumber" ] && [ -f "$lckdir/$optnumber/ids" ] && {
-        fd="$(bspc query -D -d focused)"
-        while IFS= read -r i; do
-            if [ "$(bspc query -D -n "$i")" = "$fd" ]; then
-                if bspwm-qflag hidden "$i"; then
-                    bspc node "$i" --flag hidden=false -f
-                else
-                    bspc node "$i" --flag hidden=true -d last:^20
-                fi
-            else
-                bspc node "$i" -d "$fd" --flag hidden=false -f
-            fi
-        done < "$lckdir/$optnumber/ids"
-        exit 0
+    [ -n "$optnumber" ] && {
+        if [ -f "$lckdir/$optnumber/ids" ]; then
+            fd="$(bspc query -D -d focused)"
+            while IFS= read -r i; do
+                handlenode "$i" "$fd"
+            done < "$lckdir/$optnumber/ids"
+            exit 0
+        elif [ -d "$lckdir/$optnumber" ]; then
+            handlenode "$(xdotool search --limit 1 --classname "bspwmpad$lck")"
+            exit 0
+        fi
     }
 
     lck="$( 
@@ -143,7 +154,7 @@ main() {
 
     # shellcheck disable=SC2086
     st $optdirectory $optgeometry -n "bspwmpad$lck" -t "${opttitle:-"bspwmpad #$lck: ${*:-"$SHELL"}"}" -e bspwmpadinit "$lckdir" "$lck" "$@" &
-    until ids="$(xdotool search --classname "bspwmpad$lck")"; do
+    until ids="$(xdotool search --limit 0 --classname "bspwmpad$lck")"; do
         sleep 0.1
     done
     printf "%s\n" "$ids" | while IFS= read -r i; do
