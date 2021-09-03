@@ -96,3 +96,4 @@
   - Daemons could benefit well from this.
   - `tglapp` could benefit from this. A single tray icon when right clicked should show all `tglapp` applications. For this, a subscription and a server (like `lf`'s) system should be implemented.
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
+- Support non-root installation in `.make`, like the `Makefile` of `sumsize`.
