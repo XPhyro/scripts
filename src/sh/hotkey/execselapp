@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+sel="$(
+    fd -e .desktop -uu '.' "${XDG_DATA_HOME:-"$HOME/.local/share"}/applications" "/usr/local/share/applications" "/usr/share/applications" | while IFS= read -r fl; do
+        entry="$(grep -A 2000000000 -Fx "[Desktop Entry]" -- "$fl")"
+        name="$(printf "%s\n" "$entry" | grep -m 1 "^Name=")"
+        comment="$(printf "%s\n" "$entry" | grep -m 1 "^Comment=")"
+        exe="$(printf "%s\n" "$entry" | grep -m 1 "^Exec=")"
+        isterm="$(printf "%s\n" "$entry" | grep -m 1 "^Terminal=")"
+        printf "%s\n%s\n%s\n%s\0" "$name" "$comment" "$exe" "$isterm"
+    done | rofi -dmenu -i -matching fuzzy -sep '\0' -eh 4 -p "Application to start:"
+)"
+
+name="$(printf "%s\n" "$sel" | grep -m 1 "^Name=")"
+comment="$(printf "%s\n" "$sel" | grep -m 1 "^Comment=")"
+exe="$(printf "%s\n" "$sel" | grep -m 1 "^Exec=")"
+terminal="$(printf "%s\n" "$sel" | grep -m 1 "^Terminal=")"
+
+if [ "$terminal" = "Terminal=false" ]; then
+    "$PAD" -- sh -c "${exe#*=}"
+else
+    eval "${exe#*=}"
+fi
