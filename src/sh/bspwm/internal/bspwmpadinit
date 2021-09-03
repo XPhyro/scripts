@@ -21,7 +21,6 @@ shift 2
     fi
 }
 
-
 while true; do
     pid="2147483647,$(find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',')"
     top -n 1 -p "${pid%?}"
