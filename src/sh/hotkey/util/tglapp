@@ -168,13 +168,15 @@ validargcase() {
 }
 
 validargs() {
-    [ -z "$cmd" ] && [ "$willclean" != 1 ] && [ -z "$liststyle" ] && {
+    if [ -n "$liststyle" ]; then
+        equals "$liststyle" compact normal || logerrq "STYLE is invalid. See \`$execname -h\` for details."
+    elif [ -z "$cmd" ] && [ "$willclean" != 1 ]; then
         if [ "$state" = "on" ] || [ -z "$keycode" ]; then
             logerrq "Command cannot be empty."
         fi
-    }
+    fi
     validargcase "$state" "state" "on" "off"
-    [ -n "$timeouts" ] && printf "%s" "$timeouts" | grep -q '[^0-9]' && logerrq "TIMEOUT is invalid. See $execname -h for details."
+    [ -n "$timeouts" ] && printf "%s" "$timeouts" | grep -q '[^0-9]' && logerrq "TIMEOUT is invalid. See \`$execname -h\` for details."
     [ -n "$signals" ] && printf "%s" "$signals" | grep -Evxq 'HUP|INT|QUIT|ILL|TRAP|ABRT|IOT|BUS|FPE|KILL|USR1|SEGV|USR2|PIPE|ALRM|TERM|STKFLT|CHLD|CLD|CONT|STOP|TSTP|TTIN|TTOU|URG|XCPU|XFSZ|VTALRM|PROF|WINCH|IO|POLL|PWR|SYS|(3[01]|[12][0-9]|[1-9])' && logerrq "SIGNAL is invalid. See kill -L for valid signals. Note that RT signals are not supported."
     contains "$keycode" "/" && logerrq "KEYCODE cannot contain /."
 }
