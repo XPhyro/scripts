@@ -16,8 +16,8 @@ comment="$(printf "%s\n" "$sel" | grep -m 1 "^Comment=")"
 exe="$(printf "%s\n" "$sel" | grep -m 1 "^Exec=")"
 terminal="$(printf "%s\n" "$sel" | grep -m 1 "^Terminal=")"
 
-if [ "$terminal" = "Terminal=false" ]; then
-    "$PAD" -- sh -c "${exe#*=}"
-else
+if [ "$terminal" != "Terminal=true" ]; then
     eval "${exe#*=}"
+else
+    exec "$PAD" -- sh -c "${exe#*=}"
 fi
