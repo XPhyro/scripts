@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+players="$(playerctl -l)"
+if [ "$(printf "%s\n" "$players" | wc -l)" -lt 2 ]; then
+    playerctl "$@"
+else
+    printf "%s\n" "$players" | execmenu | xargs -d '\n' -rI PLAYER playerctl -p PLAYER "$@"
+fi
