@@ -2,9 +2,11 @@
 
 fl="${XDG_CACHE_HOME:-"$HOME/.cache"}/headsetcontrol/sidetone"
 
+[ "$#" -eq 0 ] && exec tr -d '\n' < "$fl"
+
 case "$(cat -- "$fl")" in
-    0) val="${1:-128}";;
-    *) val=0;;
+    "$1") val=0;;
+    *) val="$1";;
 esac
 
 headsetcontrol -s "$val" || {
