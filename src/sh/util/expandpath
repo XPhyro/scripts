@@ -22,7 +22,9 @@ expandpath() {
             home="${path%%/*}"
             rest="${path#*/}"
             user="${home#?}"
-            if [ "$user" = "root" ]; then
+            if [ -z "$user" ]; then
+                printf "%s/%s\n" "$home" "$rest"
+            elif [ "$user" = "root" ]; then
                 if [ -z "$rest" ] || [ "$home" = "$rest" ]; then
                     printf "/root\n"
                 else
@@ -35,7 +37,7 @@ expandpath() {
                     printf "/home/%s/%s\n" "$user" "$rest"
                 fi
             else
-                printf "%s/%s\n" "$home" "$rest"
+                printf "%s\n" "$path"
             fi
             ;;
     esac
