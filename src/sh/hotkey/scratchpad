@@ -34,6 +34,6 @@ path="$dir/$file"
 vim -c "se ft=config | filetype detect | $vimcmd" -- "$path"
 
 [ "$isnew" = "1" ] && {
-    [ -f "$path" ] && title="$(printf "%s\n" "" | $menu -p "Title for \"$path\":")"
+    [ -f "$path" ] && title="$(printf "" | $menu -p "Title for \"$path\":")"
     [ -n "$title" ] && mv -- "$path" "${path}_$title"
 }
