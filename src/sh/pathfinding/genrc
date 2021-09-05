@@ -17,7 +17,7 @@ printf "##\n#\n\n## Go Instructions ##\n" >> "$rtmp"
 printf "##\n#\n\n## Go Instructions ##\n" >> "$ltmp"
 
 while read -r cmd loc; do
-    loc="$(expandpath "$loc")"
+    loc="$(wordexp "$loc")"
 
     printf "map g%s cd %s\n" "$cmd" "$loc" >> "$rtmp"
     printf "map g%s :cd %s\n" "$cmd" "$loc" >> "$ltmp"
@@ -27,7 +27,7 @@ printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$rtmp"
 printf "\n## Shell Commands ##\n# Edit with Vim #\n" >> "$ltmp"
 
 while read -r cmd fl; do
-    fl="$(expandpath "$fl")"
+    fl="$(wordexp "$fl")"
 
     printf "map e%s shell vim %s\n" "$cmd" "$fl" >> "$rtmp"
     printf "map E%s \$vim %s\n" "$cmd" "$fl" >> "$ltmp"

@@ -12,5 +12,5 @@ while IFS=" " read -r i j; do
         exit 1
     }
     
-    printf "%s\n" "$j" | expandpath > "$container/$i"
+    printf "%s\n" "$j" | wordexp > "$container/$i"
 done < "$flsfl"
