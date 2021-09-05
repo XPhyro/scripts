@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+# Expand ~.
+
+expandpath() {
+    [ "${1%"${1#?}"}" != "~" ] && {
+        printf "%s\n" "$1"
+        return 0
+    }
+
+    path="$(printf "%s\n" "$1" | sed 's|/\+|/|g')"
+    [ "${path#"${path%?}"}" = "/" ] && path="${path%?}"
+
+    [ "$path" = "~" ] && {
+        printf "%s\n" "$HOME"
+        return 0
+    }
+
+    # shellcheck disable=SC2088
+    case "$path" in
+        "~/"* ) printf "%s\n" "$HOME${path#?}";;
+        *     ) 
+            home="${path%%/*}"
+            rest="${path#*/}"
+            user="${home#?}"
+            if [ "$user" = "root" ]; then
+                if [ -z "$rest" ] || [ "$home" = "$rest" ]; then
+                    printf "/root\n"
+                else
+                    printf "/root/%s\n" "$rest"
+                fi
+            elif id "$user" > /dev/null 2>&1; then
+                if [ -z "$rest" ] || [ "$home" = "$rest" ]; then
+                    printf "/home/%s\n" "$user"
+                else
+                    printf "/home/%s/%s\n" "$user" "$rest"
+                fi
+            else
+                printf "%s/%s\n" "$home" "$rest"
+            fi
+            ;;
+    esac
+}
+
+if [ "$#" -ne 0 ]; then
+    for i; do
+        expandpath "$i"
+    done
+elif [ ! -t 0 ]; then
+    while IFS= read -r i; do
+        expandpath "$i"
+    done < "${@:-/dev/stdin}"
+fi
