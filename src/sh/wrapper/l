@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+if [ "$#" -eq 0 ]; then
+    less -R
+elif [ -e "$1" ]; then
+    previewtext "$@" | less -R
+else
+    eval "$*" | less -R
+fi

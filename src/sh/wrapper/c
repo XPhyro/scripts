@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+[ "$#" -eq 0 ] && exit 0
+
+if [ -e "$1" ]; then
+    previewtext "$@"
+else
+    whereis -b "$@" | awk '{if (NF > 1) print $2}' | xargs -d '\n' -r strings --
+fi
