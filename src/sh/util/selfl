@@ -172,11 +172,11 @@ main() {
                         return
                     }
 
-                    fls="$( 
+                    fls="$(
                         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do 
                             cdsafe "$i"
 
-                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]; then
+                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] && [ "$(git rev-parse HEAD)" = "$initgithash" ]; then
                                 printf "%s\n" "$i"
                             fi
 
@@ -195,11 +195,11 @@ main() {
                         return
                     }
 
-                    fls="$( 
+                    fls="$(
                         find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do 
                             cdsafe "$i"
 
-                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null )" = "true" ] && [ "$( git rev-parse HEAD)" = "$initgithash" ]; then
+                            if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] && [ "$(git rev-parse HEAD)" = "$initgithash" ]; then
                                 printf "%s\n" "$i"
                             fi
 
@@ -218,7 +218,7 @@ main() {
             if [ "$PWD" = "$root" ]; then
                 sel="$(printf "%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
             elif [ -n "$git" ]; then
-                if contains "$(realpath -- "$PWD/.." )" "$( git rev-parse --show-toplevel)"; then
+                if contains "$(realpath -- "$PWD/..")" "$(git rev-parse --show-toplevel)"; then
                     sel="$(printf "..\n%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
                 else
                     sel="$(printf "%s" "$fls"  | $menu -i -l "$linecount" -p "$(getprompt)")"
