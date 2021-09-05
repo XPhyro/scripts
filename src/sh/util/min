@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-if [ "$1" -lt "$2" ]; then
-    printf "%s\n" "$1"
-else
-    printf "%s\n" "$2"
-fi
