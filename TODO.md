@@ -40,6 +40,7 @@
 - In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of `execmenu`.
 - Do not assume a font size in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming *very* short.
 - In `*pad`, add an option to hide the cursor.
+- In `setdir`, allow `/` in the keycode.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
@@ -97,3 +98,4 @@
   - `tglapp` could benefit from this. A single tray icon when right clicked should show all `tglapp` applications. For this, a subscription and a server (like `lf`'s) system should be implemented.
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
 - Support non-root installation in `.make`, like the `Makefile` of `sumsize`.
+- Rename `expandpath` to `wordexp` as it does more than expanding `~`. `unexpandpath` should either stay under the same name, or be rewritten to conform with the to-be `wordexp`.
