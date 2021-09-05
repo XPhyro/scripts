@@ -6,5 +6,5 @@ for i; do
         loc="$(getfl "$i")" || continue
         loc="${loc%/*}"
     }
-    expandpath "$loc"
+    printf "%s\n" "$loc"
 done
