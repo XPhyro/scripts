@@ -1,8 +1,0 @@
-#!/usr/bin/env sh
-
-[ "$(id -u)" != 0 ] && {
-    printf "This script needs to be executed as root.\n" 2> /dev/null
-    exit 1
-}
-
-exit 0
