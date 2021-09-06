@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+tmp="$(mktemp)"
+
+if [ "$#" -ne 0 ]; then
+    cat "$@" > "$tmp"
+elif [ ! -t 0 ]; then
+    cp -f -- /dev/stdin "$tmp"
+fi
+
+size="$(du -b -- "$tmp")"
+while true; do
+    perl -p -e 'chomp if eof' -- "$tmp" | sponge -- "$tmp"
+    newsize="$(du -b -- "$tmp")"
+    [ "$size" = "$newsize" ] && {
+        cat -- "$tmp"
+        exit 0
+    }
+    size="$newsize"
+done
