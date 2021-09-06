@@ -41,6 +41,7 @@
 - Do not assume a font size in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming *very* short.
 - In `*pad`, add an option to hide the cursor.
 - In `setdir`, allow `/` in the keycode.
+- In `tglapp`, log stdout and stderr to `tglappdir/keycode/std*` without capturing.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
