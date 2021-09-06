@@ -3,50 +3,24 @@
 
 open() {
     if [ "$(grep -E -m 1 "^Terminal=.*" -- "$2" | sed 's/^Terminal=//')" = "true" ]; then
-        xdg-open "$1" 
+        exec xdg-open "$1" 
     else
         xdg-open "$1" &
     fi
 }
 
-usa="$(getdir usa)" || {
-    printf "[ERROR]: getdir failed, aborting.\n"
-    exit 1
-}
-lsa="$(getdir lsa)" || {
-    printf "[ERROR]: getdir failed, aborting.\n"
-    exit 1
-}
-mim="$(getfl mim)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
-    exit 1
-}
+case "$(mimetype --brief -- "$1")" in
+    text/*         ) exec "$EDITOR" -- "$1";;
+    application/pdf) exec zathura   -- "$1";;
+esac
 
-for i; do
-    [ "$(mimetype --brief -- "$i" | cut -d/ -f-1)" = "text" ] && {
-        eval "'$EDITOR' -- '$i'"
-        continue
-    }
+dtf="$(grep -m 1 "$(mimetype -- "$1" | awk '{print $2}')" "$(getfl mim)" | sed -e 's/^.*=//' -e 's/;$//')"
+[ -z "$dtf" ] && exec xdg-open "$1"
 
-    # find desktop file
-    dtf="$(grep -m 1 "$(mimetype -- "$i" | awk '{print $2}')" "$mim" | sed -e 's/^.*=//' -e 's/;$//')"
-
-    [ -n "$dtf" ] || {
-        xdg-open "$i"
-        continue
-    }
-
-    lf="$(find "$lsa" -name "$dtf" | sort | head -n 1)"
-
-    [ -n "$lf" ] && {
-        open "$i" "$lf"
-        continue
-    }
-
-    uf="$(find "$usa" -name "$dtf" | sort | head -n 1)"
-
-    [ -n "$uf" ] && {
-        open "$i" "$uf"
-        continue
-    }
-done
+lf="$(find "$(getdir lsa)" -name "$dtf" | sort | head -n 1)"
+if [ -n "$lf" ]; then
+    open "$1" "$lf"
+else
+    uf="$(find "$(getdir usa)" -name "$dtf" | sort | head -n 1)"
+    [ -n "$uf" ] && open "$1" "$uf"
+fi
