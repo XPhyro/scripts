@@ -222,9 +222,9 @@ runcmd() {
     mkdir -- "$keydir" || logerrq "Could not acquire lock for [$keydir]."
 
     if [ -z "$stdinfl" ]; then
-        eval "( $cmd ) $quiet &"
+        eval "( $cmd ) $quiet &" 1> "$keydir/stdout" 2> "$keydir/stderr"
     else
-        eval "( $cmd ) < '$stdinfl' $quiet &"
+        eval "( $cmd ) < '$stdinfl' $quiet &" 1> "$keydir/stdout" 2> "$keydir/stderr"
     fi
 
     printf "%s\n" "$!" > "$keydir/pid"
@@ -236,6 +236,8 @@ runcmd() {
     printf "%s\n" "$(realpath -P -- "$(whereis -b "$shell" | cut -d' ' -f2)")" > "$keydir/realshell"
     env > "$keydir/env"
     set > "$keydir/var"
+    cat -- "$keydir/stdout" &
+    cat -- "$keydir/stderr" &
 }
 
 stopcmd() {
