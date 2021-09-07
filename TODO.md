@@ -62,6 +62,7 @@
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a C script that is like `wordexp` but only for tilde expansion as in `expandpath`. This way, high-performance tilde expansion can be safely done.
+- Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
 
 # Refactoring / Rewriting / Reworking
 - Integrate -pc option of dmenu into usable scripts.
@@ -100,3 +101,4 @@
   - `tglapp` could benefit from this. A single tray icon when right clicked should show all `tglapp` applications. For this, a subscription and a server (like `lf`'s) system should be implemented.
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
 - Support non-root installation in `.make`, like the `Makefile` of `sumsize`.
+- Remove `, exiting` from errors.
