@@ -3,16 +3,16 @@
 
 seldev="$(
     bluetoothctl paired-devices | while read -r _ i devname; do
-        [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" != "true" ] && printf "%s %s\n" "$i" "$devname"
+        [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s\n" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" != "true" ] && printf "%s %s\n" "$i" "$devname"
     done | sort -r | xins -rs -- execmenu -i -p "Which device to connect to?"
 )"
 
 [ -z "$seldev" ] && exit 0
 
-seldevname="$(printf "%s" "$seldev" | awk '{$1=""; print substr($0,2)}')"
-seldev="$(printf "%s" "$seldev" | awk '{print $1}')"
+seldevname="$(printf "%s\n" "$seldev" | awk '{$1=""; print substr($0,2)}')"
+seldev="$(printf "%s\n" "$seldev" | awk '{print $1}')"
 
-if printf "%s" "$seldev" | awk '{print $1}' | xargs -d '\n' -rn 1 bluetoothctl connect; then
+if printf "%s\n" "$seldev" | awk '{print $1}' | xargs -d '\n' -rn 1 bluetoothctl connect; then
     notify-send -t 1000 "✔ $seldevname" "Connected to device."
 else
     notify-send -t 1000 "❌ $seldevname" "Could not connect to device."

@@ -3,7 +3,7 @@
 
 devs="$(
     bluetoothctl paired-devices | while read -r _ i devname; do
-        [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" = "true" ] && printf "%s %s\n" "$i" "$devname"
+        [ "$(qdbus --system org.bluez "/org/bluez/hci0/dev_$(printf "%s\n" "$i" | tr ':' '_')" org.bluez.Device1.Connected)" = "true" ] && printf "%s %s\n" "$i" "$devname"
     done | sort
 )"
 
@@ -15,7 +15,7 @@ devs="$(
 if [ "$(printf "%s\n" "$devs" | wc -l)" = 1 ] && ! bluetoothctl info "${devs%%" "*}" | grep -iFq "keyboard"; then
     seldev="$devs"
 else
-    seldev="$(printf "%s" "$devs" | execmenu -i -p "Device to disconnect:")"
+    seldev="$(printf "%s\n" "$devs" | execmenu -i -p "Device to disconnect:")"
 fi
 
 [ -z "$seldev" ] && exit 0
