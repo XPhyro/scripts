@@ -1,10 +1,32 @@
 #!/usr/bin/env sh
 # Show weather forecast.
-# Designed to work as a scratchpad for dwm with st.
+# Designed to be used with $PAD.
 
 v1="$(mktemp)"
 v2="$(mktemp)"
+
+trap "rm -f -- '$v1' '$v2'" INT EXIT TERM
+
 curl v1.wttr.in/"$WTTR_LOCATION" 2> /dev/null | head -n -2 > "$v1"
 curl v2.wttr.in/"$WTTR_LOCATION" 2> /dev/null | head -n -2 > "$v2"
+
+# awk -F '\n' -v MAXL="$(wc -L < "$v1")" -- '{
+#     printf("%s", $0);
+#     diff = MAXL - length($0);
+#     if (diff < 0)
+#         diff = 0;
+#     for (i = 0; i < diff; printf(" "), i++);
+#     printf("\n");
+# }' "$v1" | sponge -- "$v1"
+
+# maxl="$(wc -L < "$v1")"
+# while IFS= read -r i; do
+#     printf "%s" "$i"
+#     fputsn " " "$(max 0 "$((maxl - ${#i}))")"
+#     printf "\n"
+# done < "$v1" | sponge "$v1"
+
 paste -- "$v1" "$v2"
+rm -f -- "$v1" "$v2"
+
 readchar > /dev/null
