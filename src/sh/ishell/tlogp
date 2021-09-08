@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+awk -- '{print strftime("%a %Y-%m-%d %H:%M:%S", $1)}' "$@"

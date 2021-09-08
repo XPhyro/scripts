@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Print the logs taken by uplog.
-
-awk '{print strftime("%a %Y-%m-%d %H:%M:%S", $1)}' "$(getfl uplog)"
