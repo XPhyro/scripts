@@ -102,3 +102,4 @@
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
 - Support non-root installation in `.make`, like the `Makefile` of `sumsize`.
 - Remove `, exiting` from errors.
+- `set -e` in every script.
