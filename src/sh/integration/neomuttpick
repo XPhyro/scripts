@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-# Add the following to your neomuttrc:
-# macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"
-
-kdialog --getopenfilename "$HOME" --multiple | awk '{print "push <attach-file>"$0"<enter>"}' > "/tmp/neomuttpick"
