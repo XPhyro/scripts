@@ -1,6 +1,7 @@
 # Bugs
 - `ffmw decat` does not work as expected, fix. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
+- In `tglapp`, `--list=compact` prints stdout and stderr, fix.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
@@ -42,6 +43,7 @@
 - In `*pad`, add an option to hide the cursor.
 - In `setdir`, allow `/` in the keycode.
 - In `tglapp`, add an option that disables auto-unlocking, allowing the user to review the stdout/stderr of the command.
+- In `syncmail`, allow adding a temporary blacklist. If a lock is present, do not send a notification for the blacklisted senders/titles.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
