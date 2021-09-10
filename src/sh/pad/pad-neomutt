@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+"$PAD" -g 160x50 -- neomutt
