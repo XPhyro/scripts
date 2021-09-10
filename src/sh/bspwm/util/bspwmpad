@@ -152,6 +152,8 @@ main() {
 
     shift "$argcmdcount"
 
+    export PAD_LEVEL=1
+
     # shellcheck disable=SC2086
     st $optdirectory $optgeometry -n "bspwmpad$lck" -t "${opttitle:-"bspwmpad #$lck: ${*:-"$SHELL"}"}" -e bspwmpadinit "$lckdir" "$lck" "$@" &
     until ids="$(xdotool search --limit 0 --classname "bspwmpad$lck")"; do
@@ -168,6 +170,13 @@ clean() {
 }
 
 preprocessargs "$@"
+[ -z "$PAD_LEVEL" ] && PAD_LEVEL=0
+[ "$PAD_LEVEL" -gt 0 ] && {
+    shift "$argcmdcount"
+    export PAD_LEVEL="$((PAD_LEVEL + 1))"
+    eval "${@:-"$SHELL"}"
+    exit "$?"
+}
 parseargs "$@"
 processargs
 trap clean TERM
