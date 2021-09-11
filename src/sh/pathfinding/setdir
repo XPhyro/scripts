@@ -12,5 +12,6 @@ while IFS=" " read -r i j; do
         exit 1
     }
     
-    printf "%s\n" "$j" | wordexp > "$container/$i"
+    # substitution must be after wordexp
+    printf "%s\n" "$j" | wordexp | sed -e 's|/\+|/|g' -e 's|/$||' > "$container/$i"
 done < "$locfl"
