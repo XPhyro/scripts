@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <errno.h>
 
 int main(int argc, char *argv[])
 {
@@ -14,11 +15,16 @@ int main(int argc, char *argv[])
     }
 
     for (i = 1; i < argc; i++) {
+        errno = 0;
         x = strtod(argv[i], &endptr);
 
+        if (errno) {
+            perror("strtod");
+            return 2;
+        }
         if (argv[i] == endptr) {
             fputs("Invalid number given, exiting.\n", stderr);
-            return 1;
+            return 2;
         }
 
         if (x > max)
