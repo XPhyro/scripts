@@ -105,3 +105,4 @@
 - Support non-root installation in `.make`, like the `Makefile` of `sumsize`.
 - Remove `, exiting` from errors.
 - `set -e` in every script.
+- Use `getopt` if available. Use `getopts` otherwise. Be sure to check the `parseargs()` of individual scripts to see quirky parsing. Some scripts have non-standard parsing.
