@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-flsfl="$HOME/documents/sys-admin/files"
+flsfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files"
 sort -o "$flsfl" -- "$flsfl"
 container="$flsfl-container"
 rm -rf -- "$container"

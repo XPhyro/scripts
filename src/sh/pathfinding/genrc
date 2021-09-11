@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 # Generate rc files.
 
-locations="$HOME/documents/sys-admin/locations"
-files="$HOME/documents/sys-admin/files"
+confdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding"
+locations="$confdir/directories"
+files="$confdir/files"
 ranger="$HOME/.dotfiles-sensitive/root/$HOME/.config/ranger/rc.conf"
 lf="$HOME/.dotfiles-sensitive/root/$HOME/.config/lf/lfrc-sensitive"
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-locfl="$HOME/documents/sys-admin/locations"
+locfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories"
 sort -o "$locfl" -- "$locfl"
 container="$locfl-container"
 rm -rf -- "$container"

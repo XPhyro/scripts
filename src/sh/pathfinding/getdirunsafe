@@ -2,7 +2,7 @@
 # Get directories with given codes.
 
 set -e
-item="$HOME/documents/sys-admin/locations-container/$1"
+item="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories-container/$1"
 [ -s "$item" ]
 loc="$(cat -- "$item")"
 printf "%s\n" "$loc"
