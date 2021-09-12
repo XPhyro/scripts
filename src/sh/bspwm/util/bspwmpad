@@ -172,7 +172,7 @@ clean() {
 preprocessargs "$@"
 [ -z "$PAD_LEVEL" ] && PAD_LEVEL=0
 [ -z "$PAD_FORCE" ] && export PAD_FORCE=0
-[ "$PAD_FORCE" -ne 0 ] && [ "$PAD_LEVEL" -gt 0 ] && {
+[ "$PAD_FORCE" -eq 0 ] && [ "$PAD_LEVEL" -gt 0 ] && {
     shift "$argcmdcount"
     export PAD_LEVEL="$((PAD_LEVEL + 1))"
     eval "${@:-"$SHELL"}"
