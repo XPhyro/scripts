@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 case "$1" in
-    p) cat <&0;;
+    C-p|p) cat <&0;;
 esac
