@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+killall -u "$USER" polybar
+
 mons="$(bspc query -M --names)"
 firstmon="$(printf "%s\n" "$mons" | head -n 1)"
 defsink="$(voldefsink)"
