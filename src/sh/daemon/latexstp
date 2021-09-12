@@ -151,7 +151,7 @@ compile() {
 }
 
 dispatchcompiler() {
-    "${PAD:-bspwmpad}" -- sh -c "
+    bspwmpad -Hg 80x50 -- sh -c "
     compile() {
         $(printcompile | sed "/^\s*\[ '1' != '1' \] &&/d")
     }
