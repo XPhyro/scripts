@@ -42,6 +42,8 @@ preprocessargs() {
 }
 
 parseargs() {
+    unset optdirectory optgeometry optnumber opttitle opthidden
+
     while [ -n "$1" ]; do
         if [ "${1%"${1#?}"}" = "-" ]; then
             if  [ "${1%"${1#??}"}" != "--" ]; then
@@ -56,6 +58,7 @@ parseargs() {
                         n) shift; parseargs --number "$1";;
                         t) shift; parseargs --title "$1";;
                         v) parseargs --verbose;;
+                        H) parseargs --hidden;;
                         h) parseargs --help;;
                         *) printusage "$1"; exit 0;;
                     esac
@@ -75,6 +78,7 @@ parseargs() {
                     title       ) shift; assertarg "-t, --title" "TITLE" "$1"; opttitle="$1";;
                     title=*     ) opttitle="${opt#*=}"; assertarg "-t, --title" "TITLE" "$opttitle";;
                     verbose     ) export BSPWMPADINIT_VERBOSE=1; set -x;;
+                    hidden      ) opthidden=1;;
                     help        ) printhelp; exit 0;;
                     ""          ) return 0;;
                     *           ) printusage "$1"; exit 0;;
@@ -159,9 +163,15 @@ main() {
     until ids="$(xdotool search --limit 0 --classname "bspwmpad$lck")"; do
         sleep 0.1
     done
-    printf "%s\n" "$ids" | while IFS= read -r i; do
-        bspc node "$i" --flag hidden -f
-    done
+    if [ "$opthidden" != 1 ]; then
+        printf "%s\n" "$ids" | while IFS= read -r i; do
+            bspc node "$i" --flag hidden -f
+        done
+    else
+        printf "%s\n" "$ids" | while IFS= read -r i; do
+            bspc node "$i" --flag hidden=true -d last:^20
+        done
+    fi
     wait
 }
 
