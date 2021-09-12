@@ -11,7 +11,7 @@ esac
 
 headsetcontrol -s "$val" || {
     ec="$?"
-    printf "" > "$fl"
+    truncate -s 0 -- "$fl"
     exit "$ec"
 }
 
