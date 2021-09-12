@@ -5,6 +5,6 @@
     yay -Syu || color red "ERROR(s) encountered."
     jobs %% && printf "Waiting for [update].\n"
     wait
-    color green "All done. Check for errors.\n"
+    color green "All done. Check for errors."
     readstr
 '
