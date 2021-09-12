@@ -33,6 +33,10 @@ assertarg() {
     [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
 }
 
+setdefargs() {
+    unset optdirectory optgeometry optnumber opttitle opthidden
+}
+
 preprocessargs() {
     argcmdcount=0
     for i; do
@@ -42,8 +46,6 @@ preprocessargs() {
 }
 
 parseargs() {
-    unset optdirectory optgeometry optnumber opttitle opthidden
-
     while [ -n "$1" ]; do
         if [ "${1%"${1#?}"}" = "-" ]; then
             if  [ "${1%"${1#??}"}" != "--" ]; then
@@ -179,6 +181,7 @@ clean() {
     rm -rf -- "${lckdir:?}/${lck:?}"
 }
 
+setdefargs
 preprocessargs "$@"
 [ -z "$PAD_LEVEL" ] && PAD_LEVEL=0
 [ -z "$PAD_FORCE" ] && export PAD_FORCE=0
