@@ -36,13 +36,16 @@
 - In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the same keycode is currently active, check that the given command is the same as the currently running application. If the commands do not check out, exit with error and do not toggle any applications.
 - In `bspwmpad`, add an option to use `tglapp`.
 - In `tglapp`, add an option to use `bspwmpad`. If this option is given, when toggling the application, toggle the hidden status of the pad if it is on.
-- In `tglapp` ad an option to auto-restart the application when it exits. Make this behaviour togglable between only non-zero codes and all codes.
+- In `tglapp` add an option to auto-restart the application when it exits. Make this behaviour togglable between only non-zero codes and all codes.
 - In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of `execmenu`.
 - Do not assume a font size in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming *very* short.
 - In `bspwmpad`, add an option to hide the cursor.
 - In `setdir`, allow `/` in the keycode.
 - In `tglapp`, add an option that disables auto-unlocking, allowing the user to review the stdout/stderr of the command.
-- In `syncmail`, allow adding a temporary blacklist. If a lock is present, do not send a notification for the blacklisted senders/titles.
+- In `syncmail`, allow adding temporary and permanent blacklist. If a lock is present, do not send a notification for the blacklisted senders/titles/bodies.
+- In `gcm`, if there is no staged files and if 2 arguments are given, assume the second argument is a file.
+- In `latexstp`, allow passing arguments to `bspwmpad`.
+- `getopt()` in `argn`.
 
 # New scripts
 - Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
