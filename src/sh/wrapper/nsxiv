@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-preargs="${NSXIV_ARGS_PRE:-"-a -N nsxiv-env"}"
+preargs="${NSXIV_ARGS_PRE:-"-a"}"
 postargs="$NSXIV_ARGS_POST"
 
 {
@@ -12,4 +12,4 @@ postargs="$NSXIV_ARGS_POST"
             printf "%s\0" $postargs --
         fi
     done
-} | exec xargs -0 nsxiv
+} | exec xargs -0 execaux "${0##*/}"
