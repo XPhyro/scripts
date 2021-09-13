@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-fl="${XDG_CACHE_HOME:-"$HOME/.cache"}/headsetcontrol/sidetone"
+cfgdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/headsetcontrol"
+mkdir -p -- "$cfgdir"
+fl="$cfgdir/sidetone"
 
 [ "$#" -eq 0 ] && exec tr -d '\n' < "$fl"
 
@@ -11,8 +13,8 @@ esac
 
 headsetcontrol -s "$val" || {
     ec="$?"
-    truncate -s 0 -- "$fl"
+    printf "%s" -2 > "$fl"
     exit "$ec"
 }
 
-printf "%s\n" "$val" > "$fl"
+printf "%s" "$val" > "$fl"
