@@ -45,7 +45,7 @@
 printf "\nSelected VPN: %s\n" "$VPN"
 { "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
-if pgrep -x -u root openvpn > /dev/null 2>&1; then
+if pgrep -u root openvpn > /dev/null 2>&1; then
     "$VPN" status
 else
     printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)"
