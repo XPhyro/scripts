@@ -6,9 +6,12 @@ logerrq() {
 }
 
 install() {
+    mkdir /usr/local/bin/wrapper 2> /dev/null && printf "There was no /usr/local/bin/wrapper directory, so it was created for you. Be sure to add it to your PATH with high priority.\n" >&2
+
     printf "%s\n" el py sh | while IFS= read -r i; do
         cd "$i"
-        find '.' -mindepth 1 -type f -executable -not -path "./.archived/*" -printf "%P\n" | tee -a ../.installed | xargs -d '\n' -r install -t /usr/local/bin --
+        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -not -path "*/wrapper/*" -printf "%P\0/usr/local/bin/%f\0" | tee -a ../.installed | xargs -r0 -n 2 cp -f --
+        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -path "*/wrapper/*" -printf "%P\0/usr/local/bin/wrapper/%f\0" | tee -a ../.installed | xargs -r0 -n 2 cp -f --
         cd ..
     done
 
@@ -17,12 +20,13 @@ install() {
         out="${i%.c}"
         out="${out##*/}"
         gcc -O3 -Wall "$i" -o /usr/local/bin/"$out" &
-        printf "%s\n" "$out" >> ../.installed
+        printf "\0%s\0" "$out" >> ../.installed
     done
 }
 
 uninstall() {
-    cat .installed | sort -u | xargs -d '\n' -rI '{}' rm -f '/usr/local/bin/{}'
+    # need argn from c/, it's okay since were in uninstall()
+    xargs -r0 argn 1 -1 2 < .installed | xargs -r0 rm -f --
     rm -f .installed
 }
 
@@ -30,8 +34,8 @@ set -e
 
 [ "$(id -u)" != 0 ] && logerrq "This script needs to be executed as root.\n"
 
-case "$*" in
+case "$1" in
     install) install;;
     uninstall) uninstall;;
-    *) logerrq "Arguments must be 'install' or 'uninstall', not [%s]." "$*";;
+    *) logerrq "Arguments must be 'install' or 'uninstall', not [%s]." "$1";;
 esac
