@@ -67,6 +67,12 @@
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a C script that is like `wordexp` but only for tilde expansion as in `expandpath`. This way, high-performance tilde expansion can be safely done.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
+- Add this:
+```sh
+tmp="$(stty -icanon min 0 time 0)"
+while read _; do :; done
+stty $tmp > /dev/null
+```
 
 # Refactoring / Rewriting / Reworking
 - Integrate -pc option of dmenu into usable scripts.
