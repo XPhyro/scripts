@@ -51,6 +51,8 @@ else
     printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)"
 fi
 
+flushterm
+
 while true; do
     printf "\n"
 
