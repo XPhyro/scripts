@@ -13,8 +13,7 @@ char *strnext(char *s)
 int main(int argc, char *argv[])
 {
     char *sep, *end, *line, *eol;
-    char c;
-    int i;
+    int i, c;
     size_t len;
     ssize_t nread;
 
