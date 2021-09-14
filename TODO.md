@@ -2,6 +2,7 @@
 - `ffmw decat` does not work as expected, fix. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr, fix.
+- In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
