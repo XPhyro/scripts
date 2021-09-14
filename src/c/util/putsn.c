@@ -27,9 +27,8 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
         puts(argv[1]);
-    }
 
     return 0;
 }

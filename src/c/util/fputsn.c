@@ -24,9 +24,8 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
         fputs(argv[1], stdout);
-    }
 
     return 0;
 }

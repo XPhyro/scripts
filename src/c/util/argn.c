@@ -36,11 +36,9 @@ int main(int argc, char *argv[])
     argv += 4 + beg;
     argc -= 4 + beg;
 
-    for (i = 0; i < argc && i < end; i++) {
-        if (!(i % inc)) {
+    for (i = 0; i < argc && i < end; i++)
+        if (!(i % inc))
             printf("%s%c", argv[i], '\0');
-        }
-    }
     
     return 0;
 }
