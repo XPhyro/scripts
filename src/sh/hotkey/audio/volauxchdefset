@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Change the volume of the secondary pulseaudio sink.
+
+lckdir="/tmp/${0##*/}-lckdir"
+lck "$lckdir"
+
+sink="$(voldefsink)"
+vol="$(volgetsink "$sink")"
+pactl set-sink-volume "$(volauxsink)" "$@"
+pactl set-sink-volume "$sink" "$vol"
+
+rm -rf "$lckdir"

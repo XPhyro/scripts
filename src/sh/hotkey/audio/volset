@@ -2,4 +2,4 @@
 # Set the volume of the default pulseaudio sink.
 
 sink="$(voldefsink)"
-execmenu -p "Enter def volume $(volgetsink "$sink")%:" < /dev/null | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' | xargs -d '\n' -rI '{}' pactl set-sink-volume "$sink" '{}%'
+execmenu -p "Enter def volume $(volgetsink "$sink"):" < /dev/null | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' | xargs -d '\n' -rI '{}' pactl set-sink-volume "$sink" '{}%'

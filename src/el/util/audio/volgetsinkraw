@@ -1,0 +1,5 @@
+#!/usr/bin/env -S execlineb -s1
+
+pipeline { pactl get-sink-volume $1 }
+pipeline { head -n 1 }
+awk "{print $5}"
