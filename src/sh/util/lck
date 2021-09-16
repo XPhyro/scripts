@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 for i; do
-    until mkdir -- "$i" 2> /dev/null; do
-        sleep 0.1
+    until mkdir -- "$i" > /dev/null 2>&1; do
+        inotifywait -e delete_self -- "$i" > /dev/null 2>&1
     done
 done
 
