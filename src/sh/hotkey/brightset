@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 # Set the brightness of the screen(s?). This only affects the laptop screen on my system.
 
-execmenu -p "Enter brightness %:" < /dev/null | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' | xargs -d '\n' -rI '{}' sudo brightnessctl s '{}%'
+execmenu -p "Enter brightness %:" < /dev/null \
+    | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' \
+    | xargs -d '\n' -rI '{}' sudo brightnessctl s '{}%'

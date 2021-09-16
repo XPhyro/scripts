@@ -8,7 +8,8 @@ shift 2
 
 [ "$lck" != "0" ] && {
     printf "%s\n" "$$" > "$lckdir/$lck/pid"
-    xdotool search --limit 0 --classname "bspwmpad$lck" | xargs -d '\n' printf "0x%X\n" > "$lckdir/$lck/ids"
+    xdotool search --limit 0 --classname "bspwmpad$lck" \
+        | xargs -d '\n' printf "0x%X\n" > "$lckdir/$lck/ids"
     printf "%s - %s\n" "bspwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
 
     if [ "$#" -eq 0 ]; then
@@ -22,7 +23,9 @@ shift 2
 }
 
 while true; do
-    pid="2147483647,$(find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ',')"
+    pid="2147483647,$(
+        find "$lckdir" -mindepth 2 -maxdepth 2 -name "pid" -exec cat {} \; | tr '\n' ','
+    )"
     top -n 1 -p "${pid%?}"
     tput civis
     sleep 1

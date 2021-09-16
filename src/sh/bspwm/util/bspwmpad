@@ -71,14 +71,42 @@ parseargs() {
                 opt="${1#??}"
                 
                 case "$opt" in
-                    directory   ) shift; assertarg "-d, --directory" "PATH" "$1"; optdirectory="-d $1";;
-                    directory=* ) optdirectory="-d ${opt#*=}"; assertarg "-d, --directory" "PATH" "$optdirectory";;
-                    geometry    ) shift; assertarg "-g, --geometry" "GEOMETRY" "$1"; optgeometry="-g $1";;
-                    geometry=*  ) optgeometry="-g ${opt#*=}"; assertarg "-g, --geometry" "GEOMETRY" "$optgeometry";;
-                    number      ) shift; assertarg "-n, --number" "NUMBER" "$1"; optnumber="$1";;
-                    number=*    ) optnumber="${opt#*=}"; assertarg "-n, --number" "NUMBER" "$optnumber";;
-                    title       ) shift; assertarg "-t, --title" "TITLE" "$1"; opttitle="$1";;
-                    title=*     ) opttitle="${opt#*=}"; assertarg "-t, --title" "TITLE" "$opttitle";;
+                    directory   )
+                        shift
+                        assertarg "-d, --directory" "PATH" "$1"
+                        optdirectory="-d $1"
+                        ;;
+                    directory=* )
+                        optdirectory="-d ${opt#*=}"
+                        assertarg "-d, --directory" "PATH" "$optdirectory"
+                        ;;
+                    geometry    )
+                        shift
+                        assertarg "-g, --geometry" "GEOMETRY" "$1"
+                        optgeometry="-g $1"
+                        ;;
+                    geometry=*  )
+                        optgeometry="-g ${opt#*=}"
+                        assertarg "-g, --geometry" "GEOMETRY" "$optgeometry"
+                        ;;
+                    number      )
+                        shift
+                        assertarg "-n, --number" "NUMBER" "$1"
+                        optnumber="$1"
+                        ;;
+                    number=*    )
+                        optnumber="${opt#*=}"
+                        assertarg "-n, --number" "NUMBER" "$optnumber"
+                        ;;
+                    title       )
+                        shift
+                        assertarg "-t, --title" "TITLE" "$1"
+                        opttitle="$1"
+                        ;;
+                    title=*     )
+                        opttitle="${opt#*=}"
+                        assertarg "-t, --title" "TITLE" "$opttitle"
+                        ;;
                     verbose     ) export BSPWMPADINIT_VERBOSE=1; set -x;;
                     hidden      ) opthidden=1;;
                     help        ) printhelp; exit 0;;
@@ -96,7 +124,10 @@ parseargs() {
 }
 
 processargs() {
-    [ -n "$optnumber" ] && { [ "${#optnumber}" -ne 1 ] || [ -z "$(printf "%s" "$optnumber" | tr -dc '0-9')" ]; } && logerrq "Invalid NUMBER passed, exiting."
+    [ -n "$optnumber" ] \
+        && { [ "${#optnumber}" -ne 1 ] \
+                || [ -z "$(printf "%s" "$optnumber" | tr -dc '0-9')" ]
+        } && logerrq "Invalid NUMBER passed, exiting."
 }
 
 handlenode() {
@@ -161,7 +192,9 @@ main() {
     export PAD_LEVEL="$((PAD_LEVEL + 1))"
 
     # shellcheck disable=SC2086
-    st $optdirectory $optgeometry -n "bspwmpad$lck" -t "${opttitle:-"bspwmpad #$lck: ${*:-"$SHELL"}"}" -e bspwmpadinit "$lckdir" "$lck" "$@" &
+    st $optdirectory $optgeometry -n "bspwmpad$lck" \
+        -t "${opttitle:-"bspwmpad #$lck: ${*:-"$SHELL"}"}" \
+        -e bspwmpadinit "$lckdir" "$lck" "$@" &
     until ids="$(xdotool search --limit 0 --classname "bspwmpad$lck")"; do
         sleep 0.1
     done

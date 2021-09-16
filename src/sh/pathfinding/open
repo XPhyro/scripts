@@ -4,7 +4,8 @@
 paths="$(whereis -b "$@" | cut -d' ' -f2 | grep '^/')"
 
 if [ -n "$paths" ]; then
-    [ "$(printf "%s\n" "$paths" | wc -l)" -eq "$#" ] > /dev/null 2>&1 || printf "Some files were not found.\n" >&2
+    [ "$(printf "%s\n" "$paths" | wc -l)" -eq "$#" ] > /dev/null 2>&1 \
+        || printf "Some files were not found.\n" >&2
     "$EDITOR" -- $paths
 else
     printf "No files were found.\n" >&2

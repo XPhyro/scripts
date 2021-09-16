@@ -1,3 +1,11 @@
 #!/usr/bin/env sh
 
-fzf --preview "printf '%s\n' {} | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' | expandpath | xargs -d '\n' bat -p --color=always --" < "$(getfl fls)" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | expandpath | xargs -rod '\n' "$EDITOR"
+
+fzf --preview "printf '%s\n' {} \
+                   | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}' \
+                   | expandpath \
+                   | xargs -d '\n' bat -p --color=always --
+    " < "$(getfl fls)" \
+    | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' \
+    | expandpath \
+    | xargs -rod '\n' "$EDITOR"

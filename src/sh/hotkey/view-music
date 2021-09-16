@@ -1,7 +1,11 @@
 #!/usr/bin/env sh
 # Find music scores in PDF format, prompt them with dmenu and open the selected one.
-# TODO: After all of the documents are closed, ask whether $n was satisfactory, then save it such that it will not be asked the next time if it was satisfactory; else, ask for a new number and if given, save that instead.
-# TODO: Make this into a more general helper script to open a file in a directory based on some custom filtering/sorting, and use that helper script to do what this script currently does.
+# TODO: After all of the documents are closed, ask whether $n was satisfactory,
+#       then save it such that it will not be asked the next time if it was
+#       satisfactory; else, ask for a new number and if given, save that instead.
+# TODO: Make this into a more general helper script to open a file in a directory
+#       based on some custom filtering/sorting, and use that helper script to do
+#       what this script currently does.
 
 dir="$(getdir mu)" || {
     printf "[ERROR]: getdir failed, aborting.\n"
@@ -9,7 +13,12 @@ dir="$(getdir mu)" || {
 }
 
 menu="$(getmenu)"
-fl="$(find "$dir" -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%P\n" | sort -nr | cut -d ';' -f2- | $menu -i -l 20 -p "Select sheet music:")" || exit 1
+fl="$(
+    find "$dir" -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%P\n" \
+        | sort -nr \
+        | cut -d ';' -f2- \
+        | $menu -i -l 20 -p "Select sheet music:"
+)" || exit 1
 
 while true; do
     n="$(seq 4 | $menu -p "How many to open:")" || exit 1

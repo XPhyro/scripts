@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-# Show a calendar and execute calctdiff (a python script to parse a date in many forms and compute the difference between that date and today (i.e. date minus today)).
+# Show a calendar and execute calctdiff (a python script to parse a date in many forms
+# and compute the difference between that date and today (i.e. date minus today)).
 # Designed to work as a scratchpad for dwm with st, hence the shortened name pop-up calendar.
 
 printf "\n"

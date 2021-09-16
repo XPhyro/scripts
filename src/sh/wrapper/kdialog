@@ -1,8 +1,16 @@
 #!/usr/bin/env sh
 # kdialog wrapper to not use awful file dialogs.
-# If you're using dwm, bspwm or other generic graphical environments, you should 'export XDG_CURRENT_DESKTOP=kde' in your shell profile and prepend 'unset XDG_CURRENT_DESKTOP' in xdg-open (unless you're using the included xdg-open wrapper).
+# 
+# If you're using dwm, bspwm or other generic graphical environments,
+# you should 'export XDG_CURRENT_DESKTOP=kde' in your shell profile
+# and prepend 'unset XDG_CURRENT_DESKTOP' in xdg-open (unless you're
+# using the included xdg-open wrapper).
+# 
 # If you're using KDE, you do not need to change anything.
-# If you're not using KDE or a generic environment, you need to either change your default file picker, or transform this script to fit your file picker.
+# 
+# If you're not using KDE or a generic environment,
+# you need to either change your default file picker,
+# or transform this script to fit your file picker.
 
 realkdialog() {
     execaux "$0" "$@"

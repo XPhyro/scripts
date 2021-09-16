@@ -2,7 +2,11 @@
 # Select a file using fzf and open them in "$EDITOR".
 
 main() {
-    fl="$(find . -type f -not -path "*/.git/*" -printf "%P\n" | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 'right,60%,wrap')" || exit $?
+    fl="$(
+        find . -type f -not -path "*/.git/*" -printf "%P\n" \
+            | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
+                  --preview-window 'right,60%,wrap'
+    )" || exit $?
     [ -n "$fl" ] && "$EDITOR" -- "$fl"
 }
 

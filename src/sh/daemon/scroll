@@ -9,7 +9,9 @@ scrolloutput() {
     wl="$(printf "%s\n" "$str" | tr -d '\n' | wc -c)"
 
     while [ -p "$fifo" ]; do
-        printf "%s%s%s\n" "$str" "$sep" "$(printf "%s\n" "$str" | head -c "$((i - 1))")" | tail -c "+$i" | head -c "$l"
+        printf "%s%s%s\n" "$str" "$sep" "$(printf "%s\n" "$str" | head -c "$((i - 1))")" \
+            | tail -c "+$i" \
+            | head -c "$l"
         printf "\n"
 
         i="$((i + 1))"

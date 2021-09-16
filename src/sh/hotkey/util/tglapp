@@ -106,9 +106,15 @@ parseargs() {
                     no-force-state ) forcestate=0;;
                     help           ) printhelp; exit 0;;
                     keycode        ) shift; assertarg "--keycode" "KEYCODE" "$1"; keycode="$1";;
-                    keycode=*      ) keycode="${opt#*=}"; assertarg "--keycode" "KEYCODE" "$keycode";;
+                    keycode=*      )
+                        keycode="${opt#*=}"
+                        assertarg "--keycode" "KEYCODE" "$keycode"
+                        ;;
                     list           ) shift; assertarg "--list" "STYLE" "$1"; liststyle="$1";;
-                    list=*         ) liststyle="${opt#*=}"; assertarg "--list" "STYLE" "$liststyle";;
+                    list=*         )
+                        liststyle="${opt#*=}"
+                        assertarg "--list" "STYLE" "$liststyle"
+                        ;;
                     quote          ) quote=\';;
                     no-quote       ) unset quote;;
                     quiet          ) quiet="1$quiet";;
@@ -116,9 +122,16 @@ parseargs() {
                     status         ) status=1;;
                     toggle         ) shift; assertarg "--toggle" "STATE" "$1"; state="$1";;
                     toggle=*       ) state="${opt#*=}"; assertarg "--toggle" "STATE" "$state";;
-                    timeout        ) shift; assertarg "--timeout" "TIMEOUT" "$1"; assertarg "--timeout" "SIGNAL" "$2"; timeouts="$timeouts$1
-"; signals="$signals$2
-"; shift;;
+                    timeout        )
+                        shift
+                        assertarg "--timeout" "TIMEOUT" "$1"
+                        assertarg "--timeout" "SIGNAL" "$2"
+                        timeouts="$timeouts$1
+"
+                        signals="$signals$2
+"
+                        shift
+                        ;;
                     verbose        ) verbose=1;;
                     ""             ) shift; break;;
                     *              ) printusage "--$opt"; exit 0;;
@@ -169,7 +182,8 @@ validargcase() {
 
 validargs() {
     if [ -n "$liststyle" ]; then
-        equals "$liststyle" compact normal || logerrq "STYLE is invalid. See \`$execname -h\` for details."
+        equals "$liststyle" compact normal \
+            || logerrq "STYLE is invalid. See \`$execname -h\` for details."
     elif [ -z "$cmd" ] && [ "$willclean" != 1 ]; then
         if [ "$state" = "on" ] || [ -z "$keycode" ]; then
             logerrq "Command cannot be empty."
@@ -177,14 +191,18 @@ validargs() {
     fi
     validargcase "$state" "state" "on" "off"
     [ -n "$timeouts" ] && printf "%s" "$timeouts" | grep -q '[^0-9]' && logerrq "TIMEOUT is invalid. See \`$execname -h\` for details."
-    [ -n "$signals" ] && printf "%s" "$signals" | grep -Evxq 'HUP|INT|QUIT|ILL|TRAP|ABRT|IOT|BUS|FPE|KILL|USR1|SEGV|USR2|PIPE|ALRM|TERM|STKFLT|CHLD|CLD|CONT|STOP|TSTP|TTIN|TTOU|URG|XCPU|XFSZ|VTALRM|PROF|WINCH|IO|POLL|PWR|SYS|(3[01]|[12][0-9]|[1-9])' && logerrq "SIGNAL is invalid. See kill -L for valid signals. Note that RT signals are not supported."
+    [ -n "$signals" ] && \
+        printf "%s" "$signals" | grep -Evxq 'HUP|INT|QUIT|ILL|TRAP|ABRT|IOT|BUS|FPE|KILL|USR1|SEGV|USR2|PIPE|ALRM|TERM|STKFLT|CHLD|CLD|CONT|STOP|TSTP|TTIN|TTOU|URG|XCPU|XFSZ|VTALRM|PROF|WINCH|IO|POLL|PWR|SYS|(3[01]|[12][0-9]|[1-9])' \
+        && logerrq "SIGNAL is invalid. See kill -L for valid signals. Note that RT signals are not supported."
     contains "$keycode" "/" && logerrq "KEYCODE cannot contain /."
 }
 
 processargs() {
     cmd="${cmd#?}"
 
-    [ -z "$keycode" ] && keycode="$(printf "%s" "$cmd" | sha512sum | awk '{print $1}' | tr -d '\n')"
+    [ -z "$keycode" ] && keycode="$(
+        printf "%s" "$cmd" | sha512sum | awk '{print $1}' | tr -d '\n'
+    )"
 
     if [ -z "$timeouts" ]; then
         killargs=""
@@ -254,7 +272,9 @@ stopcmd() {
 }
 
 main() {
-    flsdir="$(getdir tglapp)" || logerrq "No $execname location is set." # Recommended to be a subdirectory of a directory mounted on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
+     # `getdir tglapp` is recommended to be a subdirectory of a directory mounted
+     # on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
+    flsdir="$(getdir tglapp)" || logerrq "No $execname location is set."
 
     keydir="$flsdir/$keycode"
 
@@ -273,7 +293,8 @@ main() {
 
     [ "$willclean" = 1 ] && {
         loginfo "Cleaning dead processes."
-        [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning." # Ensure we're not wiping root.
+        # Ensure we're not wiping root.
+        [ -z "$flsdir" ] && logerrq "A fatal error occurred, panicking instead of cleaning."
         for i in "${flsdir:?}"/*; do
             kill -s 0 "$(cat -- "$i/pid")" 2> /dev/null || rm -rf -- "$i"
         done

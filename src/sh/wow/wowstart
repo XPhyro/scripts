@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
 starttsm() {
-    WINEPREFIX=/games/wow-tsm wine setsid --fork -- '/games/wow-tsm/drive_c/Program Files (x86)/TradeSkillMaster Application/app/TSMApplication.exe' &
+    WINEPREFIX=/games/wow-tsm wine setsid --fork -- \
+        '/games/wow-tsm/drive_c/Program Files (x86)/TradeSkillMaster Application/app/TSMApplication.exe' &
 }
 
 startrio() {

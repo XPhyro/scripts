@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
-# Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically 'batch' but better.
-# TODO: Add an option to first start async processes and then execute the sync processes that would work both when -e is passed and otherwise. Alternatively, make this the default behaviour.
+# Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines
+# synchronously or asynchronously. Basically 'batch' but better.
+# TODO: Add an option to first start async processes and then execute the sync processes that
+# would work both when -e is passed and otherwise. Alternatively, make this the default behaviour.
 
 execname="${0##*/}"
 
@@ -137,12 +139,23 @@ parseargs() {
                 opt="${1#??}"
                 
                 case "$opt" in
-                    async         ) shift; [ -n "$(printf "%s" "$1" | tr -d 'amuw')" ] && logargerrq "--async" "$1"; flipasync "$1";;
+                    async         )
+                        shift
+                        [ -n "$(printf "%s" "$1" | tr -d 'amuw')" ] && logargerrq "--async" "$1"
+                        flipasync "$1"
+                        ;;
                     all           ) flipcmd "$CMD_ALL" "allcmd";;
                     editor        ) genscript="1";;
                     no-editor     ) genscript="0";;
-                    interpreter   ) shift; assertarg "-i, --interpreter" "INTERPRETER" "$1"; interpreter="$1";;
-                    interpreter=* ) interpreter="${opt#*=}"; assertarg "-i, --interpreter" "INTERPRETER" "$interpreter";;
+                    interpreter   )
+                        shift
+                        assertarg "-i, --interpreter" "INTERPRETER" "$1"
+                        interpreter="$1"
+                        ;;
+                    interpreter=* )
+                        interpreter="${opt#*=}"
+                        assertarg "-i, --interpreter" "INTERPRETER" "$interpreter"
+                        ;;
                     modified      ) flipcmd "$CMD_MODIFIED" "modifcmd";;
                     unmodified    ) flipcmd "$CMD_UNMODIFIED" "unmodifcmd";;
                     wiped         ) flipcmd "$CMD_WIPED" "wipecmd";;
@@ -184,7 +197,12 @@ setdefargs() {
 }
 
 validateargs() {
-    [ "$genscript" != "1" ] && { [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ]; } && { [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ]; } && { [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ]; } && { [ -z "$allcmd" ] || [ "$allcmd" = ":" ]; } && logq "Nothing to do"
+    [ "$genscript" != "1" ] \
+        && { [ -z "$unmodifcmd" ] || [ "$unmodifcmd" = ":" ]; } \
+        && { [ -z "$modifcmd" ] || [ "$modifcmd" = ":" ]; } \
+        && { [ -z "$wipecmd" ] || [ "$wipecmd" = ":" ]; } \
+        && { [ -z "$allcmd" ] || [ "$allcmd" = ":" ]; } \
+        && logq "Nothing to do"
 }
 
 processargs() {
@@ -217,10 +235,14 @@ main() {
     tmpfl="$(mktemp)"
 
     if [ ! -t 0 ]; then
-        cp -f -- /dev/stdin "$ogtmpfl" # TODO: Late capturing of stdin might be a problem later on, beware.
+        # TODO: Late capturing of stdin might be a problem later on, beware.
+        cp -f -- /dev/stdin "$ogtmpfl"
         [ ! -s "$ogtmpfl" ] && logerrq "stdin is empty"
     else
-        find '.' -mindepth 1 -maxdepth 1 -printf "%P\n" -type f -or -type l | sort -dV | sed '/^\./d' > "$ogtmpfl"
+        find '.' -mindepth 1 -maxdepth 1 -printf "%P\n" -type f -or -type l \
+            | sort -dV \
+            | sed '/^\./d' \
+            > "$ogtmpfl"
     fi
 
     cp -f -- "$ogtmpfl" "$tmpfl"

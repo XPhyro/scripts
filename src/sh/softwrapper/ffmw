@@ -227,7 +227,11 @@ parseargs() {
                     print-performance    ) pperf="perf stat";;
                     no-print-performance ) pperf="";;
                     quiet                ) quiet="${quiet}1";;
-                    threads              ) shift; assertarg "--threads" "COUNT" "$1"; threads="-threads $1";;
+                    threads              )
+                        shift
+                        assertarg "--threads" "COUNT" "$1"
+                        threads="-threads $1"
+                        ;;
                     *                    ) printusage "--$opt";;
                 esac
             fi
@@ -269,12 +273,19 @@ parseargs() {
                         opt="${1#??}"
                         
                         case "$opt" in
-                            constant-rate-factor ) shift; assertarg "--constant-rate-factor" "FACTOR" "$1"; factor="$1";;
+                            constant-rate-factor )
+                                shift
+                                assertarg "--constant-rate-factor" "FACTOR" "$1"
+                                factor="$1"
+                                ;;
                             force                ) overwrite="-y";;
                             help                 ) printhelp "optimize"; exit 0;;
                             interactive          ) overwrite="";;
                             no-clobber           ) overwrite="-n";;
-                            preset               ) shift; assertarg "--preset" "PRESET" "$1"; preset="$1";;
+                            preset               ) shift
+                                assertarg "--preset" "PRESET" "$1"
+                                preset="$1"
+                                ;;
                             remove               ) remove="1";;
                             ""                   ) shift; break;;
                             *                    ) printusage "--$opt" "optimize";;
@@ -299,15 +310,21 @@ $1"
             outfl="$(printf "%s" "$argv" | tail -n 1)"
 
             [ -z "$factor" ] && factor=23
-            [ "$(printf "%s\n" "$factor" | tr -c -d '[:digit:]')" = "$factor" ] || printferrq "FACTOR must be an integer.\n"
+            [ "$(printf "%s\n" "$factor" | tr -c -d '[:digit:]')" = "$factor" ] \
+                || printferrq "FACTOR must be an integer.\n"
 
             [ -z "$preset" ] && preset=medium
-            [ "$factor" -gt -1 ] && [ "$factor" -lt 52 ] || printferrq "FACTOR must be in the range 0-51."
-            equals "$preset" ultrafast superfast veryfast faster fast medium slow slower veryslow placebo || printferrq "PRESET must be one of these: ultrafast superfast veryfast faster fast medium slow slower veryslow placebo\n"
+            [ "$factor" -gt -1 ] && [ "$factor" -lt 52 ] \
+                || printferrq "FACTOR must be in the range 0-51."
+            equals "$preset" ultrafast superfast veryfast faster fast \
+                             medium slow slower veryslow placebo \
+                || printferrq "PRESET must be one of these: ultrafast superfast veryfast faster fast medium slow slower veryslow placebo\n"
 
-            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
+                && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
 
-            printf "%s" "$infls" | grep -Fxq -- "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+            printf "%s" "$infls" | grep -Fxq -- "$outfl" \
+                && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
             ;;
         concat)
             while [ -n "$1" ]; do
@@ -337,12 +354,20 @@ $1"
                         opt="${1#??}"
                         
                         case "$opt" in
-                            filter        ) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
+                            filter        )
+                                shift
+                                assertarg "--filter" "COMMAND" "$1"
+                                filter="$1"
+                                ;;
                             force         ) overwrite="-y";;
                             help          ) printhelp "concat"; exit 0;;
                             interactive   ) overwrite="";;
                             move-to-first ) movefirst="1";;
-                            move-to       ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                            move-to       )
+                                shift
+                                assertarg "--move-to" "MOVEFILE" "$1"
+                                movefile="$1"
+                                ;;
                             no-clobber    ) overwrite="-n";;
                             remove        ) remove="1";;
                             stdin         ) stdin="1";;
@@ -368,9 +393,11 @@ $1"
             infls="$(printf "%s" "$argv" | head -n -1)"
             outfl="$(printf "%s" "$argv" | tail -n 1)"
 
-            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] \
+                && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
 
-            printf "%s" "$infls" | grep -Fxq -- "$outfl" && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+            printf "%s" "$infls" | grep -Fxq -- "$outfl" \
+                && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
             ;;
         crop)
             while [ -n "$1" ]; do
@@ -408,7 +435,11 @@ $1"
                             help             ) printhelp "crop"; exit 0;;
                             interactive      ) overwrite="";;
                             move-to-original ) moveorig="1";;
-                            move-to          ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                            move-to          )
+                                shift
+                                assertarg "--move-to" "MOVEFILE" "$1"
+                                movefile="$1"
+                                ;;
                             no-clobber       ) overwrite="-n";;
                             remove           ) remove="1";;
                             ""               ) shift; break;;
@@ -430,24 +461,29 @@ $1"
 
             argv="$(printf "%s" "$argv" | tail -n +2)"
 
-            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 4 ] && printferrq "Exactly 4 positional arguments are required and accepted, exiting.\n"
+            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 4 ] \
+                && printferrq "Exactly 4 positional arguments are required and accepted, exiting.\n"
 
             infl="$(printf "%s\n" "$argv" | head -n 1)"
             outfl="$(printf "%s\n" "$argv" | tail -n 3 | head -n 1)"
             beginmark="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
             endmark="$(printf "%s\n" "$argv" | tail -n 1)"
 
-            [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
+            [ "$outfl" = "$infl" ] \
+                && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
             [ "$beginmark" = "-" ] && beginmark="0"
 
             if [ "$endmark" = "-" ]; then
                 endmark=""
             else
-                endmarkts="$(printf "%s\n" "$marks" | sed -E '/^([0-9]+:)?[0-9]{2}:[0-9]{2}(.[0-9]{3})?$/d')"
+                endmarkts="$(
+                    printf "%s\n" "$marks" | sed -E '/^([0-9]+:)?[0-9]{2}:[0-9]{2}(.[0-9]{3})?$/d'
+                )"
                 endmarkdur="$(printf "%s\n" "$marks" | sed -E '/^[0-9]+(\.[0-9]+)?$/d')"
 
                 if [ -n "$endmarkts" ]; then
-                    [ -n "$endmarkdur" ] && printferrq "ENDMARK must either be a timestamp or a duration.\n"
+                    [ -n "$endmarkdur" ] \
+                        && printferrq "ENDMARK must either be a timestamp or a duration.\n"
                     endmark="-t $endmark"
                 else
                     endmark="-to $endmark"
@@ -509,11 +545,13 @@ $1"
             infl="$(printf "%s\n" "$argv" | head -n 1)"
 
             if [ "$partname" = "1" ]; then
-                [ "$(printf "%s\n" "$argv" | wc -l)" -lt 2 ] && printferrq "--part-name is given. At least 2 positional arguments are expected, exiting.\n"
+                [ "$(printf "%s\n" "$argv" | wc -l)" -lt 2 ] \
+                    && printferrq "--part-name is given. At least 2 positional arguments are expected, exiting.\n"
                 outpat="%s Part %d.mkv"
                 marks="$(printf "%s\n" "$argv" | tail -n +2)"
             else
-                [ "$(printf "%s\n" "$argv" | wc -l)" -lt 3 ] && printferrq "At least 3 positional arguments are expected, exiting.\n"
+                [ "$(printf "%s\n" "$argv" | wc -l)" -lt 3 ] \
+                    && printferrq "At least 3 positional arguments are expected, exiting.\n"
                 outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
                 marks="$(printf "%s\n" "$argv" | tail -n +3)"
             fi
@@ -583,10 +621,12 @@ $1"
             infl="$(printf "%s\n" "$argv" | head -n 1)"
 
             if [ "$partname" = "1" ]; then
-                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
+                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
+                    && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
                 outpat="${infl%.*} Part %d.mkv"
             else
-                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
+                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] \
+                    && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
                 outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
             fi
 
@@ -622,7 +662,11 @@ $1"
                             help             ) printhelp "trim"; exit 0;;
                             interactive      ) overwrite="";;
                             move-to-original ) moveorig="1";;
-                            move-to          ) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                            move-to          )
+                                shift
+                                assertarg "--move-to" "MOVEFILE" "$1"
+                                movefile="$1"
+                                ;;
                             no-clobber       ) overwrite="-n";;
                             remove           ) remove="1";;
                             ""               ) shift; break;;
@@ -644,7 +688,8 @@ $1"
 
             argv="$(printf "%s" "$argv" | tail -n +2)"
 
-            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
+            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
+                && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
 
             infl="$(printf "%s\n" "$argv" | head -n 1)"
             outfl="$(printf "%s\n" "$argv" | tail -n 1)"
@@ -722,19 +767,27 @@ concat() {
 }
 
 crop() {
-    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$beginmark" -i "$infl" $endmark -safe 0 -c copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$beginmark" -i "$infl" $endmark -safe 0 -c copy "$outfl" \
+        || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
     [ -n "$movefile" ] && mv $mvoverwrite -- "$outfl" "$movefile"
 }
 
 decat() {
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -to "$(printf "%s\n" "$marks" | head -n 1)" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\11/g')" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -to "$(
+        printf "%s\n" "$marks" | head -n 1
+    )" -safe 0 -c copy "$(
+        printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\11/g'
+    )" || printferrq "ffmpeg failed, exiting.\n"
 
     n=2
-    [ "$(printf "%s\n" "$marks" | wc -l)" -ne 1 ] && while IFS= read -r ss <&3 && IFS= read -r to <&4
+    [ "$(printf "%s\n" "$marks" | wc -l)" -ne 1 ] \
+        && while IFS= read -r ss <&3 && IFS= read -r to <&4
     do
-        $pperf ffmpeg -hide_banner $threads $overwrite -ss "$ss" -i "$infl" -to "$to" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g')" || printferrq "ffmpeg failed, exiting.\n"
+        $pperf ffmpeg -hide_banner $threads $overwrite -ss "$ss" -i "$infl" -to "$to" -safe 0 -c copy "$(
+            printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g'
+        )" || printferrq "ffmpeg failed, exiting.\n"
         : $((n += 1))
     done 3<<EOF1 4<<EOF2
 $(printf "%s\n" "$marks" | head -n -1)
@@ -742,7 +795,11 @@ EOF1
 $(printf "%s\n" "$marks" | tail -n +2)
 EOF2
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$(printf "%s\n" "$marks" | tail -n 1)" -i "$infl" -safe 0 -c copy "$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g')" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$(
+        printf "%s\n" "$marks" | tail -n 1
+    )" -i "$infl" -safe 0 -c copy "$(
+        printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g'
+    )" || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
 }
@@ -753,14 +810,24 @@ help() {
 
 split() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" || printferrq "ffmpeg failed, exiting.\n"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" \
+        || printferrq "ffmpeg failed, exiting.\n"
     [ "$remove" = "1" ] && rm -- "$infl"
 }
 
 trim() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -vf "$(ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" | awk '{print $NF}' | LC_ALL=C sort | LC_ALL=C uniq -c | LC_ALL=C sort -nr | head -n 1 | sed 's/^\s*[0-9]\+\s\+\(.*\)$/\1/')" -safe 0 -c:a copy "$outfl"
+    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -vf "$(
+        ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 \
+            | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" \
+            | awk '{print $NF}' \
+            | LC_ALL=C sort \
+            | LC_ALL=C uniq -c \
+            | LC_ALL=C sort -nr \
+            | head -n 1 \
+            | sed 's/^\s*[0-9]\+\s\+\(.*\)$/\1/'
+    )" -safe 0 -c:a copy "$outfl"
 
     [ "$remove" = "1" ] && rm -- "$infl"
 

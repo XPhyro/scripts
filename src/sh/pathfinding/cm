@@ -9,9 +9,11 @@ mrkfl="$(getflunsafe mrk)"
 [ "$mark" != "¬" ] && {
     curval="$(grep "^$mark\s" -- "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g')"
     [ "$curval" != "$val" ] && {
-        printf "Current value: %s\nNew value    : %s\nOverwrite mark [%s]? (y/N)\n" "$curval" "$val" "$mark"
+        printf "Current value: %s\nNew value    : %s\nOverwrite mark [%s]? (y/N)\n" \
+                               "$curval"          "$val"              "$mark"
         equals "$(readchar)" Y y || exit 0
     }
 }
 
-gawk -i inplace -v mrkfl="$mark" -v val="$val" '$1 == mrkfl {$0 = ""; $1 = mrkfl; $2 = val}1' "$mrkfl"
+gawk -i inplace -v mrkfl="$mark" -v val="$val" \
+    '$1 == mrkfl {$0 = ""; $1 = mrkfl; $2 = val}1' "$mrkfl"

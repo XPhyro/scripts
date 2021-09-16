@@ -41,8 +41,11 @@ else
     screenname="simc-$selchar"
 
     prevscreenname="$(screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)")" 
-    [ "$prevscreenname" ] && ynq "A simulation for $selchar already exists. Would you like to see its progress instead?" && {
-        "$TERMINAL" -e screen -r "$(printf "%s" "$prevscreenname" | awk '{print $1}' | awk -F '.' '{print $2}')" > /dev/null
+    [ "$prevscreenname" ] && \
+        ynq "A simulation for $selchar already exists. Would you like to see its progress instead?" && {
+        "$TERMINAL" -e screen -r "$(printf "%s" "$prevscreenname" \
+        | awk '{print $1}' \
+        | awk -F '.' '{print $2}')" > /dev/null
         exit 0
     }
 
@@ -57,7 +60,15 @@ fi
 outfl="$(getdir "wowsimd")/$screenname.html"
 screen -dmS "$screenname" sh -c "simc $simcargs 'html=$outfl'"
 
-pid="$(ps -el --no-headers | grep "$(screen -ls | grep -F ".$screenname" | awk '{print $1}' | awk -F '.' '{print $1}')" | grep simc | head -n 1 | awk '{print $4}')"
+pid="$(
+    ps -el --no-headers \
+        | grep "$(
+                screen -ls | grep -F ".$screenname" | awk '{print $1}' | awk -F '.' '{print $1}'
+            )" \
+        | grep simc \
+        | head -n 1 \
+        | awk '{print $4}'
+)"
 
 kill -0 "$pid" || exitnotif "Simulation could not start."
 
@@ -66,7 +77,8 @@ Region   : $region
 Realm    : $realm
 Character: $selchar" &
 
-ynq "See simulation progress?" && kill -0 "$pid" && "$TERMINAL" -e screen -r "$screenname" > /dev/null &
+ynq "See simulation progress?" && kill -0 "$pid" \
+    && "$TERMINAL" -e screen -r "$screenname" > /dev/null &
 
 pids="$(sudo strace -e trace=none -e signal=none -q -p "$pid" 2>&1 | awk '{print $4}')"
 

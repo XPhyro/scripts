@@ -1,14 +1,21 @@
 #!/usr/bin/env sh
 
 [ -z "$VPN" ] && {
-    fls="$(printf "%s\n" "$PATH" | tr ':' '\n' | xargs -P 12 -I PATH find PATH -mindepth 1 -maxdepth 1 -type f -executable 2> /dev/null)"
+    fls="$(
+        printf "%s\n" "$PATH" \
+            | tr ':' '\n' \
+            | xargs -P 12 -I PATH find PATH -mindepth 1 -maxdepth 1 -type f -executable 2> /dev/null
+    )"
     possiblevpns="$(
         {
             # TODO: Write a wrapper script for the following multi-grepping.
             printf "%s\n" "$fls" | grep -oi '[^/-]*vpn$' | sort
             printf "%s\n" "$fls" | grep -oi '[^/]*vpn$' | sort
             printf "%s\n" "$fls" | grep -oi '[^/]*vpn[^/]*$' | sort
-        } | grep -vFx "${0##*/}" | grep -vEx "(openvpn|statbarvpn|dwmbar-vpn|advpng|pcf2vpnc|vpnc|vpnc-disconnect)" | uniqs | awk 'BEGIN {i = 0} {i += 1; print "  "i" "$0}'
+        } | grep -vFx "${0##*/}" \
+            | grep -vEx "(openvpn|statbarvpn|dwmbar-vpn|advpng|pcf2vpnc|vpnc|vpnc-disconnect)" \
+            | uniqs \
+            | awk 'BEGIN {i = 0} {i += 1; print "  "i" "$0}'
     )"
 
     if [ -z "$possiblevpns" ]; then
@@ -34,7 +41,11 @@
             printf "Enter the name of the command: "
             VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
         elif [ "$sel" -lt "$((selc + 1))" ]; then
-            VPN="$(printf "%s\n" "$possiblevpns" | torso "$sel" "$sel" | tail -c +"$((${#sel} + 4))")"
+            VPN="$(
+                printf "%s\n" "$possiblevpns" \
+                    | torso "$sel" "$sel" \
+                    | tail -c +"$((${#sel} + 4))"
+            )"
         else
             printf "You entered an invalid number.\n\n"
             exec "$0" "$@"

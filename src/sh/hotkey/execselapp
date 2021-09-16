@@ -1,7 +1,11 @@
 #!/usr/bin/env sh
 
 sel="$(
-    fd -e .desktop -uu '.' "${XDG_DATA_HOME:-"$HOME/.local/share"}/applications" "/usr/local/share/applications" "/usr/share/applications" | while IFS= read -r fl; do
+    fd -e .desktop -uu '.' \
+                       "${XDG_DATA_HOME:-"$HOME/.local/share"}/applications" \
+                       "/usr/local/share/applications" \
+                       "/usr/share/applications" \
+        | while IFS= read -r fl; do
         entry="$(grep -A 2000000000 -Fx "[Desktop Entry]" -- "$fl")"
         name="$(printf "%s\n" "$entry" | grep -m 1 "^Name=")"
         comment="$(printf "%s\n" "$entry" | grep -m 1 "^Comment=")"

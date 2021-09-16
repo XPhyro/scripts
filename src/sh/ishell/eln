@@ -47,7 +47,9 @@ eval "'$EDITOR' -- '$tmpfl'"
 cmp -s -- "$origtmpfl" "$tmpfl" && exit 0
 
 while IFS='' read -r fl symlink <&3 && IFS='' read -r ogfl ogsymlink <&4; do
-    if [ "$fl" != "$ogfl" ] || [ -z "$symlink" ] || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] || [ "$symlink" = "NO FILE" ] || [ "$symlink" = "$ogsymlink" ]; then
+    if [ "$fl" != "$ogfl" ] || [ -z "$symlink" ] \
+        || [ "$symlink" = "DIRECTORY" ] || [ "$symlink" = "REGULAR FILE" ] \
+        || [ "$symlink" = "NO FILE" ] || [ "$symlink" = "$ogsymlink" ]; then
         printf "Ignoring line [%s%s].\n" "$fl" "$symlink"
         continue
     fi
@@ -56,7 +58,8 @@ while IFS='' read -r fl symlink <&3 && IFS='' read -r ogfl ogsymlink <&4; do
         rm -f "$fl"
     elif [ -d "$fl" ]; then
         [ -e "$symlink" ] || {
-            printf "Refusing to overwrite directory [%s] as the destination [%s] does not exist.\n" "$fl" "$symlink"
+            printf "Refusing to overwrite directory [%s] as the destination [%s] does not exist.\n" \
+                                                     "$fl"                   "$symlink"
             continue
         }
 
@@ -64,7 +67,8 @@ while IFS='' read -r fl symlink <&3 && IFS='' read -r ogfl ogsymlink <&4; do
         rm -rf -- "$fl"
     elif [ -e "$fl" ]; then
         [ -e "$symlink" ] || {
-            printf "Refusing to overwrite file [%s] as the destination [%s] does not exist.\n" "$fl" "$symlink"
+            printf "Refusing to overwrite file [%s] as the destination [%s] does not exist.\n" \
+                                                "$fl"                   "$symlink"
             continue
         }
 

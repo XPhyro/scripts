@@ -14,7 +14,10 @@ case "$(mimetype --brief -- "$1")" in
     application/pdf) exec zathura   -- "$1";;
 esac
 
-dtf="$(grep -m 1 "$(mimetype -- "$1" | awk '{print $2}')" "$(getfl mim)" | sed -e 's/^.*=//' -e 's/;$//')"
+dtf="$(
+    grep -m 1 "$(mimetype -- "$1" | awk '{print $2}')" "$(getfl mim)" \
+        | sed -e 's/^.*=//' -e 's/;$//'
+)"
 [ -z "$dtf" ] && exec xdg-open "$1"
 
 lf="$(find "$(getdir lsa)" -name "$dtf" | sort | head -n 1)"

@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-# Use speedtest to test internet connection and log the results. speedtestlogp can be used to print the logs.
+# Use speedtest to test internet connection and log the results.
+# speedtestlogp can be used to print the logs.
 
 ping -c 1 speedtest.net > /dev/null 2>&1 || {
     printf "%s\n" "Cannot reach speedtest.net servers, exiting."
@@ -13,7 +14,19 @@ result="$( speedtest || {
     exit 1
 } )"
 
-log="$(date +%s );$(printf "%s\n" "$result" | grep "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//' );$(printf "%s\n" "$result" | grep "Hosted by" | sed -e 's/Hosted by //' -e 's/:.*//');$( printf "%s\n" "$result" | grep "Hosted by" | awk '{print $(NF - 1)" "$NF}');$( printf "%s\n" "$result" | grep "Download:" | awk '{print $2" "$3}');$( printf "%s\n" "$result" | grep "Upload:" | awk '{print $2" "$3}')"
+log="$(
+    date +%s
+);$(
+    printf "%s\n" "$result" | grep -F "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//'
+);$(
+    printf "%s\n" "$result" | grep -F "Hosted by"    | sed -e 's/Hosted by //' -e 's/:.*//'
+);$(
+    printf "%s\n" "$result" | grep -F "Hosted by"    | awk '{print $(NF - 1)" "$NF}'
+);$(
+    printf "%s\n" "$result" | grep -F "Download:"    | awk '{print $2" "$3}'
+);$(
+    printf "%s\n" "$result" | grep -F "Upload:"      | awk '{print $2" "$3}'
+)"
 
 printf "\n%s\n" "$log" | sed 's/;/\n/g'
 printf "\n\nLogging results...\n"

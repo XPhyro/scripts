@@ -2,7 +2,10 @@
 # Draw status bar.
 
 while true; do
-    find "$(getdir statbar)" -mindepth 1 -maxdepth 1 -type f | sort -V | xargs -d '\n' -r cat | sed ':a;N;$!ba;s/\n/ | /g'
+    find "$(getdir statbar)" -mindepth 1 -maxdepth 1 -type f \
+        | sort -V \
+        | xargs -d '\n' -r cat \
+        | sed ':a;N;$!ba;s/\n/ | /g'
     sleep 0.5
 done | lemonbar -g x20++ -f JetBrainsMono-10 -B '#AA000000'
 

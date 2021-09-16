@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
-# Adapted from https://www.reddit.com/r/commandline/comments/4wmvjf/change_the_current_focused_windows_volume_in/.
+# Adapted from:
+# https://www.reddit.com/r/commandline/comments/4wmvjf/change_the_current_focused_windows_volume_in/.
 
-cpid="$(xprop -notype -id "$(xprop -root _NET_ACTIVE_WINDOW | cut -d\  -f5)" _NET_WM_PID | cut -d\  -f3)"
+cpid="$(
+    xprop -notype -id "$(xprop -root _NET_ACTIVE_WINDOW | cut -d\  -f5)" _NET_WM_PID | cut -d\  -f3
+)"
 sinkid="$(pactl list sink-inputs | awk -F '[#\n]' '/'"$cpid"'/{print$2}' RS="\n\n")"
 
 pactl set-sink-input-volume "$sinkid" "$@"

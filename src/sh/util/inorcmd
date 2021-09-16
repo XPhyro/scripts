@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-# Pipe stdin to stdout if present and non-empty, else evaluate the given arguments and output its stdout.
+# Pipe stdin to stdout if present and non-empty, else
+# evaluate the given arguments and output its stdout.
 
 if [ ! -t 0 ]; then
     stdinfl="$(mktemp)"

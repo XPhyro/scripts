@@ -1,3 +1,7 @@
 #!/usr/bin/env sh
 
-pactl list sources | grep '	Monitor of Sink: ' | grep -vF "$(voldefsink)" | grep -vF -m 1 "	Monitor of Sink: n/a" | cut -d' ' -f4
+pactl list sources \
+    | grep '	Monitor of Sink: ' \
+    | grep -vF "$(voldefsink)" \
+    | grep -vF -m 1 "	Monitor of Sink: n/a" \
+    | cut -d' ' -f4

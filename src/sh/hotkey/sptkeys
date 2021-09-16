@@ -6,9 +6,20 @@ fl="$(getfl sptkeys)" || {
 }
 
 data="$(cat -- "$fl")"
-long1="$(printf "%s\n" "$data" | awk -F '' '{print $1}' | awk 'length > max_length { max_length = length; longest_line = $0 } END { print max_length }')"
-long2="$(printf "%s\n" "$data"| awk -F '' '{print $2}' | awk 'length > max_length { max_length = length; longest_line = $0 } END { print max_length }')"
-long3="$(printf "%s\n" "$data" | awk -F '' '{print $3}' | awk 'length > max_length { max_length = length; longest_line = $0 } END { print max_length }')"
+long1="$(
+    printf "%s\n" "$data" \
+        | awk -F '' '{print $1}' \
+        | awk 'length > max_length { max_length = length; longest_line = $0 } END { print max_length }')"
+long2="$(
+    printf "%s\n" "$data" \
+        | awk -F '' '{print $2}' \
+        | awk 'length > max_length { max_length = length; longest_line = $0 } END { print max_length }'
+)"
+long3="$(
+    printf "%s\n" "$data" \
+        | awk -F '' '{print $3}' \
+        | awk 'length > max_length { max_length = length; longest_line = $0 } END { print max_length }'
+)"
 
 tmpfl="$(mktemp)"
 sep="      "

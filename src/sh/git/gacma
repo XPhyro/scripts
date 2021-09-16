@@ -4,10 +4,16 @@
 message="$1"
 shift
 
-fls="$(printf "%s\n" "$@" | xargs -d '\n' -rn 1 realpath "--relative-to=$(git rev-parse --show-toplevel)" -- | sed 's|^src/||')"
+fls="$(
+    printf "%s\n" "$@" \
+        | xargs -d '\n' -rn 1 realpath "--relative-to=$(git rev-parse --show-toplevel)" -- \
+        | sed 's|^src/||'
+)"
 
 if [ "$#" -eq 1 ]; then
     git add -- "$1" && git commit -m "$message $fls"
 else
-    git add -- "$@" && git commit -m "$message $(printf "%s\n" "$fls" | sed 's/$/, /' | sort | tr -d '\n' | sed 's/, \([^ ]*\), $/ and \1/')"
+    git add -- "$@" && git commit -m "$message $(
+        printf "%s\n" "$fls" | sed 's/$/, /' | sort | tr -d '\n' | sed 's/, \([^ ]*\), $/ and \1/'
+    )"
 fi

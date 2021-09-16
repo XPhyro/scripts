@@ -123,7 +123,12 @@ parseargs() {
                     perl-regex     ) regextype="-P";;
                     prompt         ) shift; prompt="$1"; customprompt="1";;
                     root-as-init   ) rootasinit="1";;
-                    root           ) shift; assertarg "--root" "ROOT" "$1"; root="$1"; rootasinit="0";;
+                    root           )
+                        shift
+                        assertarg "--root" "ROOT" "$1"
+                        root="$1"
+                        rootasinit="0"
+                        ;;
                     show-hidden    ) showhidden="1";;
                     invert-match   ) invertmatch="-v";;
                     ""             ) shift; break;;
@@ -145,9 +150,8 @@ parseargs() {
 }
 
 grepfls() {
-    [ -n "$regex" ] && {
+    [ -n "$regex" ] && \
         fls="$(printf "%s" "$fls" | grep $regextype $ignorecase $invertmatch -e "$regex")"
-    }
 }
 
 getprompt() {
