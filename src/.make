@@ -8,7 +8,7 @@ logerrq() {
 install() {
     mkdir /usr/local/bin/wrapper 2> /dev/null && printf "There was no /usr/local/bin/wrapper directory, so it was created for you. Be sure to add it to your PATH with high priority.\n" >&2
 
-    printf "%s\n" el py sh | while IFS= read -r i; do
+    for i in bash el py sh; do
         cd "$i"
         find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -not -path "*/wrapper/*" -printf "%P\0/usr/local/bin/%f\0" | tee -a ../.installed | xargs -r0 -n 2 cp -f --
         find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -path "*/wrapper/*" -printf "%P\0/usr/local/bin/wrapper/%f\0" | tee -a ../.installed | xargs -r0 -n 2 cp -f --
