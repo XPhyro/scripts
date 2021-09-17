@@ -5,7 +5,7 @@ lckdir="/tmp/${0##*/}-lckdir"
 lck "$lckdir"
 
 sink="$(voldefsink)"
-vol="$(volgetsink "$sink")"
+vol="$(volgetsinkraw "$sink")"
 pactl set-sink-volume "$(volauxsink)" "$@"
 pactl set-sink-volume "$sink" "$vol"
 
