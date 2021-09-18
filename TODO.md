@@ -49,7 +49,7 @@
 - `getopt()` in `argn`.
 
 # New scripts
-- Create software alternatives to the `bright*` scripts that work on hardware level. Use `xr --output "$(mondef)" --brightness "$brightness"`. Create a more general version that automatically uses the hardware one if supported on hardware, else use the software one.
+- Create software-level alternatives to the `bright*` scripts.
 - Finish `todo`.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink them to the original locations.
@@ -68,6 +68,8 @@
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a C script that is like `wordexp` but only for tilde expansion as in `expandpath`. This way, high-performance tilde expansion can be safely done.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
+- Write a `getfl`/`getdir` alternative that takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output of the scripts are to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
+- Write a script to be `eval`ed at the beginning of all other POSIX-compatible scripts that prints `set -x` if `[ "SHELL_VERBOSE" -eq 1 ]`.
 
 # Refactoring / Rewriting / Reworking
 - Integrate -pc option of dmenu into usable scripts.
