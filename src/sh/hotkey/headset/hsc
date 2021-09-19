@@ -7,7 +7,7 @@ headsetcontrol > /dev/null || {
 
 while true; do
     case "$(readchar)" in
-        s) printf "Value (s): " >&2; headsetcontrol -s "$(readstr)";;
+        s) printf "Value (s): " >&2; tglsidetone "$(readstr)";;
         b) headsetcontrol -b;;
         i) printf "Value (i): " >&2; headsetcontrol -i "$(readstr)";;
         m) headsetcontrol -m;;
