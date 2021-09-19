@@ -11,7 +11,7 @@ int parsenum(char *s)
     n = strtol(s, &endptr, 10);
 
     if (errno) {
-        perror("strtoull");
+        perror("strtol");
         exit(2);
     }
     if (s == endptr) {
