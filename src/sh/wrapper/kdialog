@@ -81,10 +81,11 @@ main() {
         tmplffiles="$(mktemp)"
         cp -f -- "$lffiles" "$tmplffiles"
         truncate -c -s 5 -- "$lffiles"
-        printf "%s\n" "$dir/$fl" >> "$lffiles"
+        savefl="$(getnewpath "$dir/$fl")"
+        printf "%s\n" "$savefl" >> "$lffiles"
         lf -remote 'send sync'
 
-        touch -- "$dir/$fl"
+        touch -- "$savefl"
 
         "${PAD:-bspwmpad}" -g 160x50 -t "${argtitle}Save File [$argsavefilter] [Single Only]" -- lfrun -- "$dir" &
 
