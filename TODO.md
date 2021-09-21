@@ -47,6 +47,8 @@
 - In `gcm`, if there is no staged files and if 2 arguments are given, assume the second argument is a file.
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - `getopt()` in `argn`.
+- In `bspwmpad`, add a `-T` option that sets `state=tiled`.
+- In `bspwmpad`, document the `-H` option in the help menu.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.
