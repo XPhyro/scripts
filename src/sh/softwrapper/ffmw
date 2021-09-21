@@ -57,6 +57,8 @@ printhelp() {
 "  crop [INFILE] [OUTFILE] [BEGINMARK] [ENDMARK]
    crop INFILE according to BEGINMARK and ENDMARK and write the resultant to OUTFILE. BEGINMARK must be a timestamp in the format HH:MM:SS.sss, where hour and millisecond fields can be omitted. ENDMARK can be a timestamp or a duration. BEGINMARK or ENDMARK can be -, in which case they will respectively be treated as the beginning or the ending of INFILE.
 
+    -a, --accurate
+        Crop accurately to the nearest frame. This will force a re-encode and thus will be much slower. If you can, first crop without -a, then crop finely with it.
     -f, --force
         Overwrite the output file if it exists.
     -h, --help
@@ -153,7 +155,11 @@ Global options:
     -q, --quiet
         Suppress stdout. Pass twice to also suppress stderr. This option takes effect only after arguments are parsed.
     -t COUNT, --threads COUNT
-        Pass -threads COUNT to ffmpeg."
+        Pass -threads COUNT to ffmpeg.
+    -v, --verbose
+        Execute \`set -x\`.
+    --no-verbose
+        Revert -v."
 
             printf "\nValid subcommands: %s\n\n" "$subcommands"
             lastsubcmd="$(printf "%s" "$subcommands" | sed 's/.*\s//')"
@@ -213,6 +219,7 @@ parseargs() {
                         p) pperf="perf stat";;
                         q) quiet="${quiet}1";;
                         t) shift; assertarg "-t" "COUNT" "$1"; threads="-threads $1";;
+                        v) set -x;;
                         *) printusage "-$opt";;
                     esac
 
@@ -232,6 +239,8 @@ parseargs() {
                         assertarg "--threads" "COUNT" "$1"
                         threads="-threads $1"
                         ;;
+                    verbose              ) set -x;;
+                    no-verbose           ) set +x;;
                     *                    ) printusage "--$opt";;
                 esac
             fi
@@ -401,7 +410,7 @@ $1"
             ;;
         crop)
             while [ -n "$1" ]; do
-                [ "$1" = "-" ] && {
+                [ "$1" = "-" ] && [ "$(printf "%s\n" "$argv" | wc -l)" -lt 4 ] && {
                     argv="$argv
 $1"
                     shift
@@ -415,6 +424,7 @@ $1"
                             opt="${sopt%"${sopt#?}"}"
 
                             case "$opt" in
+                                a ) accurate="1";;
                                 f ) overwrite="-y";;
                                 h ) printhelp "crop"; exit 0;;
                                 i ) overwrite="";;
@@ -431,6 +441,7 @@ $1"
                         opt="${1#??}"
                         
                         case "$opt" in
+                            accurate         ) accurate="1";;
                             force            ) overwrite="-y";;
                             help             ) printhelp "crop"; exit 0;;
                             interactive      ) overwrite="";;
@@ -767,7 +778,13 @@ concat() {
 }
 
 crop() {
-    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$beginmark" -i "$infl" $endmark -safe 0 -c copy "$outfl" \
+    if [ "$accurate" = "1" ]; then
+        codec="libx265"
+    else
+        codec="copy"
+    fi
+
+    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v "$codec" -c:a copy "$outfl" \
         || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
