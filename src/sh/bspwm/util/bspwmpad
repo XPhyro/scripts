@@ -1,4 +1,14 @@
 #!/usr/bin/env sh
+# 
+# For optimum operation, include
+# ```
+# seq 0 9 | while IFS= read -r i; do
+#     bspc rule -a "*:bspwmpad$i" state=floating hidden=true
+# done
+# ```
+# in your `bspwmrc`.
+# 
+# bspwm is not required for operation, but the script was designed with it in mind.
 
 execname="${0##*/}"
 
@@ -15,6 +25,8 @@ printhelp() {
        Title of the st instance. If not given, 'bspwmpad #NUMBER' will be used.
    -v, --verbose
        Print commands as executed.
+   -H, --hidden
+       Start the pad hidden.
    -h, --help
        Print help message and exit."
 }
