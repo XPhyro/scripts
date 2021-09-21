@@ -21,6 +21,8 @@ printhelp() {
        Define the geometry that st should use. See st(1) for details.
    -n NUMBER, --number NUMBER
        Use pad number NUMBER. Number can be an integer between 0 and 9. If 0 is passed, the given command is ignored and statistics about the other pads are shown.
+   -T, --tiled
+       Start in tiled mode.
    -t TITLE, --title TITLE
        Title of the st instance. If not given, 'bspwmpad #NUMBER' will be used.
    -v, --verbose
@@ -46,7 +48,7 @@ assertarg() {
 }
 
 setdefargs() {
-    unset optdirectory optgeometry optnumber opttitle opthidden
+    unset optdirectory optgeometry optnumber opttiled opttitle opthidden
 }
 
 preprocessargs() {
@@ -70,6 +72,7 @@ parseargs() {
                         d) shift; parseargs --directory "$1";;
                         g) shift; parseargs --geometry "$1";;
                         n) shift; parseargs --number "$1";;
+                        T) parseargs --tiled;;
                         t) shift; parseargs --title "$1";;
                         v) parseargs --verbose;;
                         H) parseargs --hidden;;
@@ -110,6 +113,7 @@ parseargs() {
                         optnumber="${opt#*=}"
                         assertarg "-n, --number" "NUMBER" "$optnumber"
                         ;;
+                    tiled       ) opttiled=1;;
                     title       )
                         shift
                         assertarg "-t, --title" "TITLE" "$1"
@@ -210,15 +214,18 @@ main() {
     until ids="$(xdotool search --limit 0 --classname "bspwmpad$lck")"; do
         sleep 0.1
     done
-    if [ "$opthidden" != 1 ]; then
-        printf "%s\n" "$ids" | while IFS= read -r i; do
-            bspc node "$i" --flag hidden -f
-        done
+
+    if [ "$opthidden" = 1 ]; then
+        bspcargs="--flag hidden=true -d last:^20"
     else
-        printf "%s\n" "$ids" | while IFS= read -r i; do
-            bspc node "$i" --flag hidden=true -d last:^20
-        done
+        bspcargs="--flag hidden -f"
     fi
+    [ "$opttiled" = 1 ] && bspcargs="--state tiled $bspcargs"
+
+    printf "%s\n" "$ids" | while IFS= read -r i; do
+        bspc node "$i" $bspcargs
+    done
+
     wait
 }
 
