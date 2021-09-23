@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+# $1: path to image file
+# $2: image width
+# $3: image height
+
+printf "%s  %s  %s\n" \
+    "$(du -Hh -- "$1" | cut -f1)" \
+    "$2x$3" \
+    "${1##*/}"
+
