@@ -24,7 +24,7 @@ install() {
     find '.' -mindepth 1 -type f -not -path "./.*" -printf "%P\n" | while IFS= read -r i; do
         out="${i%.c}"
         out="${out##*/}"
-        gcc -O3 -Wall "$i" -o /usr/local/bin/"$out" &
+        gcc -O3 -std=c99 -pedantic -Wall "$i" -o /usr/local/bin/"$out" &
         printf "\0%s\0" "$out" >> ../.installed
     done
 }

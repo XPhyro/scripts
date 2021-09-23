@@ -1,6 +1,8 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 char *strnext(char *s)
 {
@@ -51,7 +53,7 @@ int main(int argc, char *argv[])
             }
         }
         printf("%s%s", line, end);
-newline:
+newline: ;
     }
     
     return 0;
