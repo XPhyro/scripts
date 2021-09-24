@@ -18,7 +18,8 @@ shift 2
     else
         { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
         printf "%s\n\n" "Running command: $*"
-        exec "$@"
+        (eval "$@")
+        exit "$?"
     fi
 }
 
