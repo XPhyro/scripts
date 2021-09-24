@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         if (*eol == '\n')
             *eol = '\0';
         for (i = 1; i < argc; i++) {
-            if (strcmp(line, argv[i]) == 0) {
+            if (!strcmp(line, argv[i])) {
                 printf("%s%s", strnext(argv[i]), end);
                 goto newline;
             }
