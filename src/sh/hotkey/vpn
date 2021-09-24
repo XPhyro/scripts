@@ -54,12 +54,12 @@
 }
 
 printf "\nSelected VPN: %s\n" "$VPN"
-{ "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
+{ timeout 2 "$VPN" --help || timeout 2 "$VPN" --version; } > /dev/null || exit 1
 
 if pgrep -u root openvpn > /dev/null 2>&1; then
-    "$VPN" status
+    timeout 5 "$VPN" status
 else
-    printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)"
+    printf "IP Address: %s\n" "$(timeout 5 curl ipinfo.io/ip 2> /dev/null)"
 fi
 
 flushterm
