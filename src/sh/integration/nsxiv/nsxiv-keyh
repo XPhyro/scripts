@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+printf "%s\n" "$1" >&2
+
 case "$1" in
     C-p|p) cat <&0;;
 esac
