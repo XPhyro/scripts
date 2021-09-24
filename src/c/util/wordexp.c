@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     int i;
     char *line = NULL;
     size_t size;
+    ssize_t len;
     wordexp_t result;
 
     if (argc != 1) {
@@ -18,8 +19,9 @@ int main(int argc, char *argv[])
             wordfree(&result);
         }
     } else {
-        while (getline(&line, &size, stdin) != -1) {
-            line[strlen(line) - 1] = '\0';
+        while ((len = getline(&line, &size, stdin)) != -1) {
+            if (line[len - 1] == '\n')
+                line[len - 1] = '\0';
             wordexp(line, &result, 0);
             printf("%s\n", result.we_wordv[0]);
             wordfree(&result);
