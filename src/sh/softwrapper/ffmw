@@ -410,7 +410,7 @@ $1"
             ;;
         crop)
             while [ -n "$1" ]; do
-                [ "$1" = "-" ] && [ "$(printf "%s\n" "$argv" | wc -l)" -lt 4 ] && {
+                [ "$1" = "-" ] && [ "$(printf "%s\n" "$argv" | wc -l)" -lt 5 ] && {
                     argv="$argv
 $1"
                     shift
