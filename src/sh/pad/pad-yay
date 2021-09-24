@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+"$PAD" -- '
+    if yay -Syu; then
+        color green "All done."
+    else
+        color red "ERROR(s) encountered."
+    fi
+    flushterm
+    readstr
+'
