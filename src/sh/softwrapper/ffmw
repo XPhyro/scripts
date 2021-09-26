@@ -8,7 +8,12 @@ execname="${0##*/}"
 
 printhelp() {
     case "$1" in
-        optimise|optimize)
+        optimise)
+            printf "%s\n" \
+"  optimise [INFILE]... [TEMPOUTFILE]
+   Alias for optimize."
+            ;;
+        optimize)
             printf "%s\n" \
 "  optimize [INFILE]... [TEMPOUTFILE]
    Optimize INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
