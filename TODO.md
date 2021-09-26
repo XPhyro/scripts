@@ -47,7 +47,6 @@
 - In `gcm`, if there is no staged files and if 2 arguments are given, assume the second argument is a file.
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - `getopt()` in `argn`.
-- Add `reverse` in `ffmw` that reverses the whole video.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.
