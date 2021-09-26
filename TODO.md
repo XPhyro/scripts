@@ -3,6 +3,7 @@
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr, fix.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
+- `shufr` segfaults when streams are too large, fix. After fixing, use `shufr` in `wallpaper`.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
