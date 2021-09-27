@@ -19,8 +19,22 @@ int main(int argc, char *argv[])
     ssize_t len;
     FILE *file;
 
-    while ((i = getopt(argc, argv, "l:n:rz0")) != -1) {
+    while ((i = getopt(argc, argv, "hl:n:rz0")) != -1) {
         switch (i) {
+            case 'h':
+                puts("Usage shufr [OPTION]... [FILE]\n"
+                     "Repeat a random permutation of the input lines to standard output.\n"
+                     "\n"
+                     "With no FILE, read standard input.\n"
+                     "\n"
+                     "  -h        display this help and exit\n"
+                     "  -l COUNT  output at most COUNT lines\n"
+                     "  -n COUNT  make sure the last COUNT lines are different\n"
+                     "  -r        ignored\n"
+                     "  -z        line delimiter is NUL, not newline\n"
+                     "  -0        line delimiter is NUL, not newline");
+                exit(EXIT_SUCCESS);
+                break;
             case 'l':
                 errno = 0;
                 lprint = strtoul(optarg, &tmpstr, 10);
@@ -53,6 +67,7 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
+                puts("Try 'shufr -h' for more information.");
                 exit(EXIT_FAILURE);
                 break;
         }
