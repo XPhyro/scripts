@@ -24,7 +24,6 @@
 - In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
 - `ffmpeg` fails to parse the filename (why does it even parse it?) if it contains one of the following characters `:,`. Make `ffmw` create a symlink pointing to the input file(s) to mitigate the issue.
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
-- Implement `-l, --list` in `tglapp`.
 - Add an option to start applications in a `screen` named `"$keycode"` in `tglapp`. Also add an option to overwrite the `screen` name.
 - Support `--long-option=VALUE` in `ffmw` and `selfl`.
 - Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU usage of `ffmpeg` using `cpulimit`.
@@ -72,7 +71,6 @@
 - Write a script to be `eval`ed at the beginning of all other POSIX-compatible scripts that prints `set -x` if `[ "SHELL_VERBOSE" -eq 1 ]`.
 
 # Refactoring / Rewriting / Reworking
-- Integrate -pc option of dmenu into usable scripts.
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
