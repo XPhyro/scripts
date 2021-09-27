@@ -7,17 +7,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
-                             if (line[len++ - 1] == delim) \
-                                 len--; \
-                             tmpstr = malloc(len * sizeof(char)); \
-                             memcpy(tmpstr, line, len); \
-                             tmpstr[len - 1] = '\0'; \
-                             lines[i++] = tmpstr; \
-                             if (i == n) \
-                                 lines = realloc(lines, (n *= 2) * sizeof(char *)); \
-                         }
-
 int main(int argc, char *argv[])
 {
     int n = 100, nfile, i, j, k;
@@ -66,6 +55,17 @@ int main(int argc, char *argv[])
     files = argv + optind;
     nfile = argc - optind;
 
+#define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
+                             if (line[len - 1] != delim) \
+                                 len++; \
+                             tmpstr = malloc(len * sizeof(char)); \
+                             memcpy(tmpstr, line, len); \
+                             tmpstr[len - 1] = '\0'; \
+                             lines[i++] = tmpstr; \
+                             if (i == n) \
+                                 lines = realloc(lines, (n *= 2) * sizeof(char *)); \
+                         }
+
     i = 0;
     if (nfile == 0) {
         SETLINES(stdin);
@@ -95,7 +95,8 @@ newcycle:
             ihist[nsame + i] = iarr[i] = k;
         }
         for (i = 0; i < nsame; i++) {
-            printf("%s%c", lines[ihist[i] = iarr[i]], delim);
+            fputs(lines[ihist[i] = iarr[i]], stdout);
+            putchar(delim);
             if (lprint && ++nprint == lprint)
                 exit(EXIT_SUCCESS);
         }
