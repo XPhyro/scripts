@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
                     exit(EXIT_FAILURE);
                 }
                 if (optarg == tmpstr) {
-                    fputs("ERROR[shufr]: Invalid number given to option -l.\n", stderr);
+                    fputs("shufr: invalid number given to option -l\n", stderr);
                     exit(EXIT_FAILURE);
                 }
                 break;
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
                     exit(EXIT_FAILURE);
                 }
                 if (optarg == tmpstr) {
-                    fputs("ERROR[shufr]: Invalid number given to option -n.\n", stderr);
+                    fputs("shufr: invalid number given to option -n\n", stderr);
                     exit(EXIT_FAILURE);
                 }
                 break;
