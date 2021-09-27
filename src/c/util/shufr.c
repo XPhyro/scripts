@@ -8,11 +8,14 @@
 #include <errno.h>
 
 #define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
-                             tmpstr = malloc((len - 1) * sizeof(char)); \
-                             memcpy(tmpstr, line, len - 1); \
+                             if (line[len++ - 1] == delim) \
+                                 len--; \
+                             tmpstr = malloc(len * sizeof(char)); \
+                             memcpy(tmpstr, line, len); \
+                             tmpstr[len - 1] = '\0'; \
                              lines[i++] = tmpstr; \
                              if (i == n) \
-                                 lines = realloc(line, (n *= 2) * sizeof(char *)); \
+                                 lines = realloc(lines, (n *= 2) * sizeof(char *)); \
                          }
 
 int main(int argc, char *argv[])
