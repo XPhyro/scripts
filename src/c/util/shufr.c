@@ -45,9 +45,15 @@ int main(int argc, char *argv[])
                     exit(EXIT_FAILURE);
                 }
                 break;
+            case 'r':
+                /* ignored */
+                break;
             case 'z':
             case '0':
                 delim = '\0';
+                break;
+            default:
+                exit(EXIT_FAILURE);
                 break;
         }
     }
