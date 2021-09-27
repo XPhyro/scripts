@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     ssize_t len;
     FILE *file;
 
-    while ((i = getopt(argc, argv, "l:n:z0")) != -1) {
+    while ((i = getopt(argc, argv, "l:n:rz0")) != -1) {
         switch (i) {
             case 'l':
                 errno = 0;
