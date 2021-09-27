@@ -81,6 +81,11 @@ int main(int argc, char *argv[])
         fclose(file);
     }
 
+    if (i == 0) {
+        puts("shufr: no lines to repeat");
+        exit(EXIT_FAILURE);
+    }
+
     lines = realloc(lines, (n = i) * sizeof(char *));
     ihist = malloc(nsbuf * sizeof(int));
     iarr  = malloc(nsame * sizeof(int));
