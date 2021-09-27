@@ -30,8 +30,7 @@ install() {
 }
 
 uninstall() {
-    # need argn from c/, it's okay since were in uninstall()
-    xargs -r0 argn 1 -1 2 < .installed | xargs -r0 rm -f --
+    xargs -r0 -n 2 sh -c 'printf "%s\0" "$2"' -- < .installed | xargs -r0 rm -f --
     rm -f .installed
 }
 
