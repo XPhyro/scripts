@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     for (i = 1; i < argc - 1; i++) {
         fputs(argv[i], stdout);
-        fputs(" ", stdout);
+        putchar(' ');
     }
     fputs(argv[argc - 1], stdout);
 
