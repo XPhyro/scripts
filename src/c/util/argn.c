@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
 {
     int beg, end, inc, i;
 
+    if (argc < 4)
+        fputs("argn: at least 3 arguments are required\n", stderr);
+
     beg = parsenum(argv[1]);
     end = parsenum(argv[2]);
     inc = parsenum(argv[3]);
@@ -39,6 +42,6 @@ int main(int argc, char *argv[])
     for (i = 0; i < argc && i < end; i++)
         if (!(i % inc))
             printf("%s%c", argv[i], '\0');
-    
+
     return 0;
 }
