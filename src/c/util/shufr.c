@@ -7,6 +7,19 @@
 #include <unistd.h>
 #include <errno.h>
 
+#define PUTERRS(ERRMSG) fputs("shufr: "ERRMSG"\n", stderr)
+
+#define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
+                             if (line[len - 1] != delim) \
+                                 len++; \
+                             tmpstr = malloc(len * sizeof(char)); \
+                             memcpy(tmpstr, line, len); \
+                             tmpstr[len - 1] = '\0'; \
+                             lines[i++] = tmpstr; \
+                             if (i == n) \
+                                 lines = realloc(lines, (n *= 2) * sizeof(char *)); \
+                         }
+
 int main(int argc, char *argv[])
 {
     int n = 100, nfile, i, j, k;
@@ -43,7 +56,7 @@ int main(int argc, char *argv[])
                     exit(EXIT_FAILURE);
                 }
                 if (optarg == tmpstr) {
-                    fputs("shufr: invalid number given to option -l\n", stderr);
+                    PUTERRS("invalid number given to option -l");
                     exit(EXIT_FAILURE);
                 }
                 break;
@@ -55,7 +68,7 @@ int main(int argc, char *argv[])
                     exit(EXIT_FAILURE);
                 }
                 if (optarg == tmpstr) {
-                    fputs("shufr: invalid number given to option -n\n", stderr);
+                    PUTERRS("invalid number given to option -n");
                     exit(EXIT_FAILURE);
                 }
                 break;
@@ -67,7 +80,7 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
-                puts("Try 'shufr -h' for more information.");
+                fputs("Try 'shufr -h' for more information.\n", stderr);
                 exit(EXIT_FAILURE);
                 break;
         }
@@ -75,17 +88,6 @@ int main(int argc, char *argv[])
 
     files = argv + optind;
     nfile = argc - optind;
-
-#define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
-                             if (line[len - 1] != delim) \
-                                 len++; \
-                             tmpstr = malloc(len * sizeof(char)); \
-                             memcpy(tmpstr, line, len); \
-                             tmpstr[len - 1] = '\0'; \
-                             lines[i++] = tmpstr; \
-                             if (i == n) \
-                                 lines = realloc(lines, (n *= 2) * sizeof(char *)); \
-                         }
 
     i = 0;
     if (nfile == 0) {
@@ -97,7 +99,7 @@ int main(int argc, char *argv[])
     }
 
     if (i == 0) {
-        puts("shufr: no lines to repeat");
+        PUTERRS("no lines to repeat");
         exit(EXIT_FAILURE);
     }
 
