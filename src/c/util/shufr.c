@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "hl:n:rz0")) != -1) {
         switch (i) {
             case 'h':
-                puts("Usage shufr [OPTION]... [FILE]\n"
+                puts("Usage shufr [OPTION]... [FILE]...\n"
                      "Repeat a random permutation of the input lines to standard output.\n"
                      "\n"
                      "With no FILE, read standard input.\n"
