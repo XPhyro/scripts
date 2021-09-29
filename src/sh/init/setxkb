@@ -21,7 +21,7 @@ eval "
     xmodmap -e 'keycode 108 = Super_R' \
         -e 'keycode 9 = Caps_Lock' \
         $(
-            printf "%s\n" "$km" | END= maps \
+            printf "%s\n" "$km" | END= fmaps \
                 gb="-e 'keycode 135 = Menu'" \
                 tr="-e 'keycode 135 = ISO_Level3_Shift'"
         )

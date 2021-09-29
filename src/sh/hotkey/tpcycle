@@ -7,5 +7,5 @@ xinput "$(
         | head -n 2 \
         | tail -n 1 \
         | awk '{print $4}' \
-        | END= maps 1=--disable 0=--enable
+        | END= fmaps 1=--disable 0=--enable
 )" "$tpid"
