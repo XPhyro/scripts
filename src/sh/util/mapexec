@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 # Open stdin in $EDITOR and execute commands against all, modified, unmodified or wiped lines
-# synchronously or asynchronously. Basically 'batch' but better.
+# synchronously or asynchronously. Basically `batch` but better.
+#
 # TODO: Add an option to first start async processes and then execute the sync processes that
-# would work both when -e is passed and otherwise. Alternatively, make this the default behaviour.
+#       would work both when -e is passed and otherwise. Alternatively, make this the default
+#       behaviour.
 
 execname="${0##*/}"
 
@@ -95,7 +97,7 @@ flipasync() {
                     eval "$j=' &'"
                 fi
             }
-            
+
         done 3<<EOF3 4<<EOF4
 a
 m
@@ -137,7 +139,7 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                
+
                 case "$opt" in
                     async         )
                         shift
