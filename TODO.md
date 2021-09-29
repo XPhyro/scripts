@@ -70,7 +70,7 @@
 - Write a C script that is like `wordexp` but only for tilde expansion as in `expandpath`. This way, high-performance tilde expansion can be safely done.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
 - Write a `getfl`/`getdir` alternative that takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output of the scripts are to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
-- Write a script to be `eval`ed at the beginning of all other POSIX-compatible scripts that prints `set -x` if `[ "SHELL_VERBOSE" -eq 1 ]`.
+- Write tests (especially for `c/*`).
 
 # Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
@@ -112,3 +112,4 @@
 - Use `getopt` if available. Use `getopts` otherwise. Be sure to check the `parseargs()` of individual scripts to see quirky parsing. Some scripts have non-standard parsing.
 - Use `ulck` in `ulckget`.
 - Use `ulck` instead of manually releasing locks.
+- `eval` the output of `eval-verbose` in every shell script.
