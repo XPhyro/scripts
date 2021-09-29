@@ -46,6 +46,8 @@
 - In `gcm`, if there is no staged files and if 2 arguments are given, assume the second argument is a file.
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - `getopt()` in `argn`.
+- In `shufr`, if the number of lines is less than or equal to `nsame`, set `nsame` to 1 less than that to make sure `shufr` does not get stuck. Notify that this has been done via stderr.
+- Support NUL as delimiter in `fmaps`.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.
