@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define DIE(ERRMSG) { fputs("argn: "ERRMSG"\n", stderr); \
+                      exit(EXIT_FAILURE); }
+
 int parsenum(char *s)
 {
     int n;
@@ -12,12 +15,10 @@ int parsenum(char *s)
 
     if (errno) {
         perror("strtol");
-        exit(2);
+        exit(EXIT_FAILURE);
     }
-    if (s == endptr) {
-        fputs("Invalid number given, exiting.\n", stderr);
-        exit(2);
-    }
+    if (s == endptr)
+        DIE("invalid number given");
 
     return n;
 }
@@ -27,7 +28,7 @@ int main(int argc, char *argv[])
     int beg, end, inc, i;
 
     if (argc < 4)
-        fputs("argn: at least 3 arguments are required\n", stderr);
+        DIE("at least 3 arguments are required");
 
     beg = parsenum(argv[1]);
     end = parsenum(argv[2]);

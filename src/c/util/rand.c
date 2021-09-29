@@ -3,7 +3,8 @@
 #include <time.h>
 #include <errno.h>
 
-#define PUTERRS(ERRMSG) fputs("rand: "ERRMSG"\n", stderr)
+#define DIE(ERRMSG) { fputs("rand: "ERRMSG"\n", stderr); \
+                      exit(EXIT_FAILURE); }
 
 int parsenum(char *s)
 {
@@ -17,10 +18,8 @@ int parsenum(char *s)
         perror("strtol");
         exit(EXIT_FAILURE);
     }
-    if (s == endptr || n < 1) {
-        PUTERRS("invalid number given");
-        exit(EXIT_FAILURE);
-    }
+    if (s == endptr || n < 1)
+        DIE("invalid number given");
 
     return n;
 }
@@ -42,8 +41,7 @@ int main(int argc, char *argv[])
         case 1:
             break;
         default:
-            PUTERRS("invalid number of arguments");
-            exit(EXIT_FAILURE);
+            DIE("invalid number of arguments");
             break;
     }
 

@@ -3,16 +3,17 @@
 #include <math.h>
 #include <errno.h>
 
+#define DIE(ERRMSG) { fputs("min: "ERRMSG"\n", stderr); \
+                      exit(EXIT_FAILURE); }
+
 int main(int argc, char *argv[])
 {
     double min = INFINITY, x;
     int i;
     char *endptr;
 
-    if (argc == 1) {
-        fputs("At least 1 argument is expected, exiting.\n", stderr);
-        return 1;
-    }
+    if (argc == 1)
+        DIE("no argument given");
 
     for (i = 1; i < argc; i++) {
         errno = 0;
@@ -22,10 +23,8 @@ int main(int argc, char *argv[])
             perror("strtod");
             return 2;
         }
-        if (argv[i] == endptr) {
-            fputs("Invalid number given, exiting.\n", stderr);
-            return 2;
-        }
+        if (argv[i] == endptr)
+            DIE("invalid number given");
 
         if (x < min)
             min = x;

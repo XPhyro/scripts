@@ -5,6 +5,9 @@
 #include <string.h>
 #include <sys/types.h>
 
+#define DIE(ERRMSG) { fputs("fmaps: "ERRMSG"\n", stderr); \
+                      exit(EXIT_FAILURE); }
+
 int main(int argc, char *argv[])
 {
     char *sep, *end, *def, *line, *eol, *s;
@@ -33,10 +36,8 @@ int main(int argc, char *argv[])
 
     for (i = 1; i < argc; i++) {
         s = strstr(argv[i], sep);
-        if (!s) {
-            fputs("fmaps: argument does not contain separator\n", stderr);
-            exit(EXIT_FAILURE);
-        }
+        if (!s)
+            DIE("argument does not contain separator");
         *s = '\0';
     }
 

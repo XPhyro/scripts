@@ -7,7 +7,8 @@
 #include <unistd.h>
 #include <errno.h>
 
-#define PUTERRS(ERRMSG) fputs("shufr: "ERRMSG"\n", stderr)
+#define DIE(ERRMSG) { fputs("shufr: "ERRMSG"\n", stderr); \
+                      exit(EXIT_FAILURE); }
 
 #define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
                              if (line[len - 1] != delim) \
@@ -55,10 +56,8 @@ int main(int argc, char *argv[])
                     perror("strtoul");
                     exit(EXIT_FAILURE);
                 }
-                if (optarg == tmpstr) {
-                    PUTERRS("invalid number given to option -l");
-                    exit(EXIT_FAILURE);
-                }
+                if (optarg == tmpstr)
+                    DIE("invalid number given to option -l");
                 break;
             case 'n':
                 errno = 0;
@@ -67,10 +66,8 @@ int main(int argc, char *argv[])
                     perror("strtoul");
                     exit(EXIT_FAILURE);
                 }
-                if (optarg == tmpstr) {
-                    PUTERRS("invalid number given to option -n");
-                    exit(EXIT_FAILURE);
-                }
+                if (optarg == tmpstr)
+                    DIE("invalid number given to option -n");
                 break;
             case 'r':
                 /* ignored */
@@ -98,10 +95,8 @@ int main(int argc, char *argv[])
         fclose(file);
     }
 
-    if (i == 0) {
-        PUTERRS("no lines to repeat");
-        exit(EXIT_FAILURE);
-    }
+    if (i == 0)
+        DIE("no lines to repeat");
 
     lines = realloc(lines, (n = i) * sizeof(char *));
     ihist = malloc(nsbuf * sizeof(int));
