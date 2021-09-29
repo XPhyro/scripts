@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+n="$1"
+shift
+
+i=-1
+while [ "$((i += 1))" -lt "$n" ]; do
+    (eval "$@")
+done
+
+wait
