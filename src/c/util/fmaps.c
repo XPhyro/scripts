@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     len = 0;
     while ((nread = getline(&line, &len, stdin)) != -1) {
         eol = line;
-        while(*(++eol));
+        while(*++eol);
         eol = eol - 1;
         if (*eol == '\n')
             *eol = '\0';
