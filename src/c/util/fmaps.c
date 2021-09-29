@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    char *sep, *end, *line, *eol, *s;
+    char *sep, *end, *def, *line, *eol, *s;
     int i, c, offset;
     size_t len;
     ssize_t nread;
@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
         *s = '\0';
     }
 
+    def = getenv("DEF");
+
     line = NULL;
     len = 0;
     while ((nread = getline(&line, &len, stdin)) != -1) {
@@ -54,7 +56,10 @@ int main(int argc, char *argv[])
                 goto newline;
             }
         }
-        printf("%s%s", line, end);
+        if (!def)
+            printf("%s%s", line, end);
+        else
+            printf("%s%s", def, end);
 newline: ;
     }
 
