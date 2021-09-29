@@ -5,18 +5,10 @@
 #include <string.h>
 #include <sys/types.h>
 
-char *strnext(char *s)
-{
-    char *scp;
-    scp = s;
-    while(*(scp++));
-    return scp;
-}
-
 int main(int argc, char *argv[])
 {
-    char *sep, *end, *line, *eol;
-    int i, c;
+    char *sep, *end, *line, *eol, *s;
+    int i, c, offset;
     size_t len;
     ssize_t nread;
 
@@ -37,19 +29,28 @@ int main(int argc, char *argv[])
     sep = getenv("SEP");
     if (!sep)
         sep = "=";
+    offset = strlen(sep);
 
-    for (i = 1; i < argc; i++)
-        argv[i] = strtok(argv[i], sep);
+    for (i = 1; i < argc; i++) {
+        s = strstr(argv[i], sep);
+        if (!s) {
+            fputs("fmaps: argument does not contain separator\n", stderr);
+            exit(EXIT_FAILURE);
+        }
+        *s = '\0';
+    }
 
     line = NULL;
     len = 0;
     while ((nread = getline(&line, &len, stdin)) != -1) {
-        eol = strnext(line) - 2;
+        eol = line;
+        while(*(++eol));
+        eol = eol - 1;
         if (*eol == '\n')
             *eol = '\0';
         for (i = 1; i < argc; i++) {
             if (!strcmp(line, argv[i])) {
-                printf("%s%s", strnext(argv[i]), end);
+                printf("%s%s", argv[i] + strlen(argv[i]) + offset, end);
                 goto newline;
             }
         }
