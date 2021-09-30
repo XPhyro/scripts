@@ -1,8 +1,0 @@
-#!/usr/bin/env sh
-# Get a file with the given code.
-
-set -e
-item="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files-container/$1"
-[ -s "$item" ]
-fl="$(cat -- "$item")"
-printf "%s\n" "$fl"
