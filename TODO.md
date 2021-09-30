@@ -3,6 +3,7 @@
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr, fix.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
+- In `shufr`, if `nsame` is not trivially small compared to `n`, it either stalls or gets into an infinite loop. Determine whether this is a bug or intended behaviour. If it is a bug, fix it; else, warn the user.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
@@ -46,7 +47,6 @@
 - In `gcm`, if there is no staged files and if 2 arguments are given, assume the second argument is a file.
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - `getopt()` in `argn`.
-- In `shufr`, if the number of lines is less than or equal to `nsame`, set `nsame` to 1 less than that to make sure `shufr` does not get stuck. Notify that this has been done via stderr.
 - Support NUL as delimiter in `fmaps`.
 
 # New scripts
