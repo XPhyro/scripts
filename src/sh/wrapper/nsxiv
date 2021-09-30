@@ -3,8 +3,7 @@
 preargs="${NSXIV_ARGS_PRE:-"-a"}"
 postargs="$NSXIV_ARGS_POST"
 
-{
-    printf "%s\0" $preargs
+{   printf "%s\0" $preargs
     for i; do
         if [ "$i" != "--" ]; then
             printf "%s\0" "$i"

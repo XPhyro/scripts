@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
-{
-    bspc subscribe node_swap node_transfer node_remove &
+{   bspc subscribe node_swap node_transfer node_remove &
     bspc subscribe node_flag | grep --line-buffered -F "hidden off" &
     bspc subscribe node_state \
         | xargs -d "\n" -n 2 printf "%s %s\n" \

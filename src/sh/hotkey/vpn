@@ -7,8 +7,7 @@
             | xargs -P 12 -I PATH find PATH -mindepth 1 -maxdepth 1 -type f -executable 2> /dev/null
     )"
     possiblevpns="$(
-        {
-            # TODO: Write a wrapper script for the following multi-grepping.
+        {   # TODO: Write a wrapper script for the following multi-grepping.
             printf "%s\n" "$fls" | grep -oi '[^/-]*vpn$' | sort
             printf "%s\n" "$fls" | grep -oi '[^/]*vpn$' | sort
             printf "%s\n" "$fls" | grep -oi '[^/]*vpn[^/]*$' | sort

@@ -97,7 +97,7 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                
+
                 case "$opt" in
                     actual         ) actual=1;;
                     no-actual      ) actual=0;;
