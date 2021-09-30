@@ -19,10 +19,8 @@ def setfilepaths():
     global logfile
     global blacklogfile
 
-    logfilepath = (
-        run(["getflunsafe", "notiflog"], capture_output=True)
-        .stdout.decode("utf-8")
-        .rstrip("\n")
+    logfilepath = run(["getflunsafe", "notiflog"], capture_output=True).stdout.decode(
+        "utf-8"
     )
     print("Found log file path: %s" % logfilepath)
 
@@ -30,22 +28,18 @@ def setfilepaths():
         print("`getflunsafe notiflog` failed, exiting.", file=stderr)
         exit(1)
 
-    blacklogfilepath = (
-        run(["getflunsafe", "notiflogblack"], capture_output=True)
-        .stdout.decode("utf-8")
-        .rstrip("\n")
-    )
+    blacklogfilepath = run(
+        ["getflunsafe", "notiflogblack"], capture_output=True
+    ).stdout.decode("utf-8")
     print("Found blacklisted log file path: %s" % blacklogfilepath)
 
     if not blacklogfilepath:
         print("`getflunsafe notiflogblack` failed, exiting.", file=stderr)
         exit(1)
 
-    lockdirpath = (
-        run(["getdirunsafe", "notifloglck"], capture_output=True)
-        .stdout.decode("utf-8")
-        .rstrip("\n")
-    )
+    lockdirpath = run(
+        ["getdirunsafe", "notifloglck"], capture_output=True
+    ).stdout.decode("utf-8")
     print("Found lock file path: %s" % lockdirpath)
 
     if not lockdirpath:
