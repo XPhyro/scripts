@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-# Get directories with given codes.
-
-set -e
-item="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories-container/${1:?}"
-[ -s "$item" ]
-dir="$(cat -- "$item")"
-[ -d "$dir" ] || mkdir -p -- "$dir"
-printf "%s" "$dir"
