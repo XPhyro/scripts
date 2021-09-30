@@ -7,4 +7,4 @@ item="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files-container/${
 fl="$(cat -- "$item")"
 fldir="${fl%/*}"
 [ -d "$fldir" ] || mkdir -p -- "$fldir"
-printf "%s\n" "$fl"
+printf "%s" "$fl"
