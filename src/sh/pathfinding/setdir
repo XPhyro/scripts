@@ -11,7 +11,7 @@ while IFS=" " read -r i j; do
         printf "Keycode cannot contain /, aborting.\n"
         exit 1
     }
-    
+
     # substitution must be after wordexp
-    printf "%s\n" "$j" | wordexp | sed -e 's|/\+|/|g' -e 's|/$||' > "$container/$i"
+    printf "%s\n" "$j" | wordexp | sed -e 's|/\+|/|g' -e 's|/$||' | perl -p -e 'chomp if eof' > "$container/$i"
 done < "$locfl"

@@ -11,6 +11,6 @@ while IFS=" " read -r i j; do
         printf "Keycode cannot contain /, aborting.\n"
         exit 1
     }
-    
-    printf "%s\n" "$j" | wordexp > "$container/$i"
+
+    printf "%s\n" "$j" | wordexp | perl -p -e 'chomp if eof' > "$container/$i"
 done < "$flsfl"
