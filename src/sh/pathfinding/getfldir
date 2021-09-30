@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 # Get the directories of files with given codes.
 
-fls="$HOME/documents/sys-admin/files"
-
 for i; do
-    dirname -- "$(printf "%s\n" "$(grep -E "^$i\s+.*" -- "$fls" | awk '{print $2}')")"
+    dirname -- "$(getflunsafe "$i")"
 done
