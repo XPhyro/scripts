@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
                     perror("strtoul");
                     exit(EXIT_FAILURE);
                 }
-                if (optarg == tmpstr)
+                if (optarg == tmpstr || nsame < 1)
                     DIE("invalid number given to option -n");
                 break;
             case 'r':
