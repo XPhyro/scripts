@@ -22,6 +22,10 @@ fl="$(
 
 while true; do
     n="$(: | $menu -p "How many to open:")" || exit 1
+    [ -z "$n" ] && {
+        n=1
+        break
+    }
     printf "%s" "$n" | grep -xq "[[:digit:]]\+" && break
 done
 
