@@ -48,6 +48,7 @@
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - `getopt()` in `argn`.
 - Support NUL as delimiter in `fmaps`.
+- In `bspwmpad`, support killing the command running in the given pad number and replacing it. This function should require a valid and non-zero `-n` to be passed.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.
