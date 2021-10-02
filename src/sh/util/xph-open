@@ -11,7 +11,7 @@ open() {
 
 case "$(mimetype --brief -- "$1")" in
     text/*         )
-        if tty -s; then
+        if [ -t 0 ]; then
             exec "$EDITOR" -- "$1"
         else
             exec "$TERMINAL" -e "$EDITOR" -- "$1"
