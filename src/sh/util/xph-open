@@ -3,14 +3,20 @@
 
 open() {
     if [ "$(grep -E -m 1 "^Terminal=.*" -- "$2" | sed 's/^Terminal=//')" = "true" ]; then
-        exec xdg-open "$1" 
+        exec xdg-open "$1"
     else
         xdg-open "$1" &
     fi
 }
 
 case "$(mimetype --brief -- "$1")" in
-    text/*         ) exec "$EDITOR" -- "$1";;
+    text/*         )
+        if tty -s; then
+            exec "$EDITOR" -- "$1"
+        else
+            exec "$TERMINAL" -e "$EDITOR" -- "$1"
+        fi
+        ;;
     application/pdf) exec zathura   -- "$1";;
 esac
 
