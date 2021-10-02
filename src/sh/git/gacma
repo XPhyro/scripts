@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
-[ "$#" -lt 2 ] && exit 1
+[ "$#" -lt 1 ] && exit 1
 message="$1"
 shift
 
 toplevel="$(git rev-parse --show-toplevel)"
 
-if [ -n "$*" ]; then
+if [ "$#" -ne 0 ] && [ -n "$*" ]; then
     fls="$(
         printf "%s\n" "$@" \
             | xargs -d '\n' -rn 1 realpath "--relative-to=$toplevel" -- \
