@@ -1,5 +1,19 @@
 #!/usr/bin/env sh
 
+execvpn() {
+    "$VPN" "$@" | sed '/^$/d'
+}
+
+unset optstatus
+while getopts "sv:" OPT
+do
+    case "$OPT" in
+        s) optstatus=1;;
+        v) VPN="$OPTARG";;
+    esac
+done
+shift "$((OPTIND - 1))"
+
 [ -z "$VPN" ] && {
     fls="$(
         printf "%s\n" "$PATH" \
@@ -52,28 +66,37 @@
     fi
 }
 
-printf "\nSelected VPN: %s\n" "$VPN"
+printf "Selected VPN: "
+color yellow "$VPN
+"
 { timeout 2 "$VPN" --help || timeout 2 "$VPN" --version; } > /dev/null || exit 1
 
 if pgrep -u root openvpn > /dev/null 2>&1; then
-    timeout 5 "$VPN" status
+    if [ -n "$optstatus" ]; then
+        timeout 5 "$VPN" status
+    else
+        color green "An OpenVPN connection exists."
+    fi
 else
-    printf "IP Address: %s\n" "$(timeout 5 curl ipinfo.io/ip 2> /dev/null)"
+    if [ -n "$optstatus" ]; then
+        printf "IP Address: %s\n" "$(timeout 5 curl ipinfo.io/ip 2> /dev/null)"
+    else
+        color red "No OpenVPN connections exist."
+    fi
 fi
 
 flushterm
 
 while true; do
     printf "\n"
-
     case "$(readchar)" in
-        c) printf "Enter country code: "; "$VPN" c --cc "$(readstr)";;
-        d) "$VPN" disconnect;;
-        f) "$VPN" connect --fastest;;
-        i) "$VPN" connect;;
-        r) "$VPN" reconnect;;
-        s) "$VPN" status;;
-        q) exit 0;;
+        c) printf "Enter country code: "; execvpn c --cc "$(readstr)";;
+        d) execvpn disconnect;;
+        f) execvpn connect --fastest;;
+        i) execvpn connect;;
+        r) execvpn reconnect;;
+        s) execvpn status;;
+        q) printf "\r\033[A\033[2K"; exit 0;;
         *) printf "%s" \
 "c) connect to specific country
 d) disconnect
