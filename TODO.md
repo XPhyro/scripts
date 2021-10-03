@@ -48,6 +48,7 @@
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - `getopt()` in `argn`.
 - Support NUL as delimiter in `fmaps`.
+- In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and replacing it. This function should require a valid and non-zero `-n` to be passed.
 
 # New scripts
@@ -114,3 +115,4 @@
 - Use `ulck` in `ulckget`.
 - Use `ulck` instead of manually releasing locks.
 - `eval` the output of `eval-verbose` in every shell script.
+- Do not print error messages in case `get*` fails in scripts as those already print errors to stderr.
