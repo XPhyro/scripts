@@ -11,7 +11,7 @@
                       exit(EXIT_FAILURE); }
 
 #define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
-                             if (line[len - 1] != delim) \
+                             if (len && line[len - 1] != delim) \
                                  len++; \
                              tmpstr = malloc(len * sizeof(char)); \
                              memcpy(tmpstr, line, len); \
