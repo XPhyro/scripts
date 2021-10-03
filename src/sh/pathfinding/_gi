@@ -5,6 +5,6 @@ fzf --preview "printf '%s\n' {}
                    | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}'
                    | expandpath
                    | xargs -d '\n' ls --color=always
-    " < "$(getfl loc)"
+    " < "$(getfl dir)"
     | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
     | expandpath
