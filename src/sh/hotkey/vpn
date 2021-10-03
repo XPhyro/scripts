@@ -5,9 +5,18 @@ execvpn() {
 }
 
 unset optstatus
-while getopts "sv:" OPT
+while getopts "hsv:" OPT
 do
     case "$OPT" in
+        h)
+            printf "%s" \
+"vpn [OPTION...]
+   -h      Print help message and exit.
+   -s      Print detailed status before initialisation.
+   -v VPN  Set the VPN executable to use to VPN.
+"
+            exit 0
+            ;;
         s) optstatus=1;;
         v) VPN="$OPTARG";;
     esac
@@ -69,17 +78,17 @@ shift "$((OPTIND - 1))"
 printf "Selected VPN: "
 color yellow "$VPN
 "
-{ timeout 2 "$VPN" --help || timeout 2 "$VPN" --version; } > /dev/null || exit 1
+{ "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
 if pgrep -u root openvpn > /dev/null 2>&1; then
     if [ -n "$optstatus" ]; then
-        timeout 5 "$VPN" status
+        execvpn status
     else
         color green "An OpenVPN connection exists."
     fi
 else
     if [ -n "$optstatus" ]; then
-        printf "IP Address: %s\n" "$(timeout 5 curl ipinfo.io/ip 2> /dev/null)"
+        printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)"
     else
         color red "No OpenVPN connections exist."
     fi
