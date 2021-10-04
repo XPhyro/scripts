@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
 
-path="$1"
-printf "%s\n" "$path" | (
-    IFS=. read -r name rest
-    while [ -e "${name}_.$rest" ]; do
-        name="$name"_
-    done
-    printf "%s\n" "${name}_.$rest"
-)
+name="${1%.*}"
+rest="${1##*.}"
+while [ -e "$name.$rest" ]; do
+    name="$name"_
+done
+printf "%s\n" "$name.$rest"
