@@ -9,8 +9,8 @@ bool streq(const char *s1, const char *s2)
         return !s2;
 
     for (;;) {
-        c1 = *(s1++);
-        c2 = *(s2++);
+        c1 = *s1++;
+        c2 = *s2++;
         if (!c1)
             return !c2;
         if (c1 != c2)
@@ -27,8 +27,8 @@ bool strneq(const char *s1, const char *s2, size_t n)
         return !s2;
 
     for (i = 0; i < n; i++) {
-        c1 = *(s1++);
-        c2 = *(s2++);
+        c1 = *s1++;
+        c2 = *s2++;
         if (!c1)
             return !c2;
         if (c1 != c2)
