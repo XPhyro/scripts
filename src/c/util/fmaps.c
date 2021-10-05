@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include "../include/strutil.h"
+
 #define DIE(ERRMSG) { fputs("fmaps: "ERRMSG"\n", stderr); \
                       exit(EXIT_FAILURE); }
 
@@ -52,7 +54,7 @@ int main(int argc, char *argv[])
         if (*eol == '\n')
             *eol = '\0';
         for (i = 1; i < argc; i++) {
-            if (!strcmp(line, argv[i])) {
+            if (streq(line, argv[i])) {
                 printf("%s%s", argv[i] + strlen(argv[i]) + offset, end);
                 goto newline;
             }
