@@ -50,6 +50,7 @@
 - Support NUL as delimiter in `fmaps`.
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and replacing it. This function should require a valid and non-zero `-n` to be passed.
+- In C `get*`, add diagnostic error messages.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.

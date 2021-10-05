@@ -7,6 +7,9 @@ This repository is a collection of my scripts. Most of them are written in POSIX
 sudo make install
 ```
 
+### Wrapper Scripts
+If you would like to use the provided wrapper scripts, add `/usr/local/bin/wrapper` to your `$PATH` with higher priority than the wrapped scripts' locations.
+
 ## Uninstallation
 
 ```sh
@@ -16,7 +19,7 @@ sudo make uninstall
 ## Environmental Variables
 Some scripts use optional or mandatory environmental variables for programs. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective program will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`. Some scripts will not respect these as they use program-specific options, such as `rofi -font` or `st -d`.
 
-## Notable scripts
+## Notable Scripts
 - [bspwmpad](src/sh/bspwm/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind.
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language.
 - [dwmpad](src/sh/dwm/dwmpad): Dynamic scratchpads for [dwm](https://dwm.suckless.org). For optimum operation, patch the source: see my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro). dwm is not required for operation, but the script was designed with it in mind.
@@ -32,8 +35,8 @@ Some scripts use optional or mandatory environmental variables for programs. Ass
 - [tglapp](src/sh/hotkey/tglapp): Toggle an application on/off based on hashcodes. Originally written for toggling applications with the same hotkey via `sxhkd`.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input.
 
-## Notice that
-- Some of these scripts assume that some of the other scripts are in your `PATH`.
+## Notice
+- Some of these scripts assume that some of the other scripts are in your `$PATH`.
 - None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU-specific options are used (for instance, `sed -i`).
 - All scripts were written with only Linux in mind. Although they will often be compatible with all Unix-like and Unix-derived systems, they might not always be portable to non-Linux systems.
