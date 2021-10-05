@@ -27,7 +27,7 @@
 
 #define TESTCASE(CHAR, FUNC) case CHAR: postests[CHAR - 'A'] = FUNC; break
 
-#define TESTFUNCDEF(NAME) bool NAME(const char* path, struct stat *st)
+#define TESTFUNCDEF(NAME)    bool NAME(const char* path, struct stat *st)
 #define TESTFUNC(NAME, RET)  TESTFUNCDEF(NAME) { return RET; }
 
 #define STEST(PATH) match = stest(PATH); \
