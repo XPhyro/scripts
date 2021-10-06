@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
         postests[i] = NULL;
     }
 
-    while ((i = getopt(argc, argv, "AabcdefGgHhkLlNn:Oo:pqrSsuVvwxz0?")) != -1) {
+    while ((i = getopt(argc, argv, "AabcdefGgHhkLlNn:Oo:pqrSsuVvwxz0")) != -1) {
         switch (i) {
             case 'A':
                 optall = true;
