@@ -48,9 +48,8 @@ int main(int argc, char *argv[])
 
     for (i = 1, j = 0; i < linelen + 1; i++) {
         if (readdir[i] == '/') {
-            if (j) {
+            if (j)
                 readdir[j] = '/';
-            }
             readdir[j = i] = '\0';
             mkdir(readdir, 0755);
         }
