@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 {
-    grep "^Exec=" "$(getdir lsa)/browser.desktop" | grep -q -- '--new-window' && printf "%s\n" "💞"
-} > "$(getdir statbar)/7.5_statbarbrowser"
+    grep "^Exec=" "$(getdirunsafe lsa)/browser.desktop" | grep -q -- '--new-window' && printf "%s\n" "💞"
+} > "$(getdirunsafe statbar)/7.5_statbarbrowser"

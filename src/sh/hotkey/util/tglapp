@@ -272,9 +272,9 @@ stopcmd() {
 }
 
 main() {
-     # `getdir tglapp` is recommended to be a subdirectory of a directory mounted
+     # `getdirsafe tglapp` is recommended to be a subdirectory of a directory mounted
      # on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
-    flsdir="$(getdir tglapp)" || logerrq "No $execname location is set."
+    flsdir="$(getdirsafe tglapp)" || logerrq "No $execname location is set."
 
     keydir="$flsdir/$keycode"
 

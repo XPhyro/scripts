@@ -3,4 +3,4 @@
 
 {
     [ "$(xset q | head -n 4 | tail -n 1 | awk '{print $4}')" = 'on' ] && printf "%s\n" "Caps"
-} > "$(getdir statbar)/0_statbarcaps"
+} > "$(getdirunsafe statbar)/0_statbarcaps"

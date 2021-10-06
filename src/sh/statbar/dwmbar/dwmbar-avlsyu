@@ -2,4 +2,4 @@
 # Query updateable packages.
 
 l="$(cat ~/.avlsyu)"
-{ [ "$l" -gt 0 ] && printf "%s\n" "$l 📦"; } > "$(getdir statbar)/5_statbaravlsyu"
+{ [ "$l" -gt 0 ] && printf "%s\n" "$l 📦"; } > "$(getdirunsafe statbar)/5_statbaravlsyu"

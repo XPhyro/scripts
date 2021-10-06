@@ -12,4 +12,4 @@ fi
 
 printf "%s\n" "$(
     printf "%s\n" "$stat" | sed '7q;d' | awk '{print $5}' | sed 's/%//'
-) $glyph" > "$(getdir statbar)/10_statbarvol"
+) $glyph" > "$(getdirunsafe statbar)/10_statbarvol"

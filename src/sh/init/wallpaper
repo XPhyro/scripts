@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-wadir="$(getdir wa)" || {
-    printf "[ERROR]: getdir failed, aborting.\n"
+wadir="$(getdirsafe wa)" || {
+    printf "[ERROR]: getdirsafe failed, aborting.\n"
     exit 1
 }
 

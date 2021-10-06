@@ -12,7 +12,7 @@ ynq() {
 menu="$(getmenu)"
 
 if ynq "Use a simulation template?"; then
-    tfl="$(selfl -aRl 20 "$(getdir wowsimt)" | head -n 1)"
+    tfl="$(selfl -aRl 20 "$(getdirsafe wowsimt)" | head -n 1)"
 
     armory="$(grep "^\s*armory=.*" "$tfl" | tail -n 1 | sed 's/^\s*armory=//')"
 
@@ -26,8 +26,8 @@ if ynq "Use a simulation template?"; then
 
     simcargs="'$tfl'"
 else
-    simloc="$(getdir wowsimt)" || {
-        printf "[ERROR]: getdir failed, aborting.\n"
+    simloc="$(getdirsafe wowsimt)" || {
+        printf "[ERROR]: getdirsafe failed, aborting.\n"
         exit 1
     }
 
@@ -40,7 +40,7 @@ else
 
     screenname="simc-$selchar"
 
-    prevscreenname="$(screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)")" 
+    prevscreenname="$(screen -ls | grep ".$screenname-[0-9]\{10\}\s(Detached)")"
     [ "$prevscreenname" ] && \
         ynq "A simulation for $selchar already exists. Would you like to see its progress instead?" && {
         "$TERMINAL" -e screen -r "$(printf "%s" "$prevscreenname" \
@@ -57,7 +57,7 @@ else
     simcargs="'armory=$region,$realm,$selchar' 'calculate_scale_factors=$csf'"
 fi
 
-outfl="$(getdir "wowsimd")/$screenname.html"
+outfl="$(getdirsafe "wowsimd")/$screenname.html"
 screen -dmS "$screenname" sh -c "simc $simcargs 'html=$outfl'"
 
 pid="$(

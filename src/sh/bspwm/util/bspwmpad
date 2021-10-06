@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# 
+#
 # For optimum operation, include
 # ```
 # seq 0 9 | while IFS= read -r i; do
@@ -7,7 +7,7 @@
 # done
 # ```
 # in your `bspwmrc`.
-# 
+#
 # bspwm is not required for operation, but the script was designed with it in mind.
 
 execname="${0##*/}"
@@ -84,7 +84,7 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                
+
                 case "$opt" in
                     directory   )
                         shift
@@ -161,8 +161,8 @@ handlenode() {
 }
 
 main() {
-    lckdir="$(getdir bspwmpadlck)" || {
-        printf "[ERROR]: getdir failed, aborting.\n"
+    lckdir="$(getdirsafe bspwmpadlck)" || {
+        printf "[ERROR]: getdirsafe failed, aborting.\n"
         exit 1
     }
 
@@ -179,7 +179,7 @@ main() {
         fi
     }
 
-    lck="$( 
+    lck="$(
         printf "%s\n" "${optnumber:-"$(seq 1 9)"}" | while IFS= read -r i; do
             mkdir -- "$lckdir/$i" 2> /dev/null && {
                 printf "%s" "$i"

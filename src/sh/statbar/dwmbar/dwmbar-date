@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Query date.
 
-date +"%a %F %R" > "$(getdir statbar)/11_statbardate"
+date +"%a %F %R" > "$(getdirunsafe statbar)/11_statbardate"

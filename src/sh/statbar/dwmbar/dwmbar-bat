@@ -6,4 +6,4 @@ cap="$(cat "$bat/capacity")"
 
 {
     [ "$cap" != "100" ] && [ "$(cat "$bat/current_now")" != "0" ] && printf "%s\n" "$cap 🔋"
-} > "$(getdir statbar)/7_statbarbat"
+} > "$(getdirunsafe statbar)/7_statbarbat"

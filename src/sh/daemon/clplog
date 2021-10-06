@@ -7,7 +7,7 @@
 #       non-printable characters.
 
 logfl="$(readlink -m -- "$(getfl clplog)")"
-bakdir="$(readlink -m -- "$(getdir clplogbak)")"
+bakdir="$(readlink -m -- "$(getdirsafe clplogbak)")"
 lckdir="$(getdirunsafe clploglck)" || {
     printf "[ERROR]: getfl failed, aborting.\n"
     exit 1
