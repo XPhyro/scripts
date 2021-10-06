@@ -3,7 +3,7 @@
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr, fix.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
-- In `shufr`, if `nsame` is not trivially small compared to `n`, it either stalls or gets into an infinite loop. Determine whether this is a bug or intended behaviour. If it is a bug, fix it; else, warn the user.
+- In `shufr`, if `nsame` is not trivially small compared to `n`, the execution becomes extremely intensive and slow. Fix this by having an array of indices and removing the index from the array once it is used, allowing the random choice to be unique. The other checks should still be in place.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.

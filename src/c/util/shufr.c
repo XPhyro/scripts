@@ -2,15 +2,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <memory.h>
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
 
-#define DIE(ERRMSG) { fputs("shufr: "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(...) { fputs("shufr: ", stderr); \
+                   fprintf(stderr, __VA_ARGS__); \
+                   fputc('\n', stderr); \
+                   exit(EXIT_FAILURE); }
 
-#define SETLINES(stream) while ((len = getdelim(&line, &size, delim, stream)) != -1) { \
+#define SETLINES(STREAM) while ((len = getdelim(&line, &size, delim, STREAM)) != -1) { \
                              if (len && line[len - 1] != delim) \
                                  len++; \
                              tmpstr = malloc(len * sizeof(char)); \
@@ -21,11 +24,17 @@
                                  lines = realloc(lines, (n *= 2) * sizeof(char *)); \
                          }
 
+#define PRINT(LINE) fputs(LINE, stdout); \
+                    putchar(delim); \
+                    if (optlimit && ++nprint == lprint) \
+                        exit(EXIT_SUCCESS)
+
 int main(int argc, char *argv[])
 {
-    int n = 100, nfile, i, j, k;
+    bool optlimit = false;
+    int n = 100, nfile, i, j, r;
     int *ihist, *iarr;
-    unsigned int lprint = 0, nprint = 0, nsame = 1, nsbuf = 2;
+    unsigned int lprint = 0, nprint = 0, nsame = 2, nsbuf;
     char delim = '\n';
     char *line = NULL, *tmpstr = NULL;
     char **lines = malloc(n * sizeof(char *)), **files;
@@ -43,7 +52,7 @@ int main(int argc, char *argv[])
                      "\n"
                      "  -h        display this help and exit\n"
                      "  -l COUNT  output at most COUNT lines\n"
-                     "  -n COUNT  make sure the last COUNT lines are different\n"
+                     "  -n COUNT  make sure the last COUNT lines have different indices\n"
                      "  -r        ignored\n"
                      "  -z        line delimiter is NUL, not newline\n"
                      "  -0        line delimiter is NUL, not newline");
@@ -58,15 +67,16 @@ int main(int argc, char *argv[])
                 }
                 if (optarg == tmpstr)
                     DIE("invalid number given to option -l");
+                optlimit = true;
                 break;
             case 'n':
                 errno = 0;
-                nsbuf = 2 * (nsame = strtoul(optarg, &tmpstr, 10));
+                nsame = strtoul(optarg, &tmpstr, 10);
                 if (errno) {
                     perror("strtoul");
                     exit(EXIT_FAILURE);
                 }
-                if (optarg == tmpstr || nsame < 1)
+                if (optarg == tmpstr)
                     DIE("invalid number given to option -n");
                 break;
             case 'r':
@@ -83,6 +93,9 @@ int main(int argc, char *argv[])
         }
     }
 
+    if (optlimit && !lprint)
+        exit(EXIT_SUCCESS);
+
     files = argv + optind;
     nfile = argc - optind;
 
@@ -94,38 +107,60 @@ int main(int argc, char *argv[])
         SETLINES(file);
         fclose(file);
     }
+    n = i;
 
-    if (i == 0)
+    if (n == 0)
         DIE("no lines to repeat");
 
-    lines = realloc(lines, (n = i) * sizeof(char *));
-    ihist = malloc(nsbuf * sizeof(int));
-    iarr  = malloc(nsame * sizeof(int));
-
-    for (i = 0; i < nsbuf; i++) {
-        ihist[i] = -1;
+    lines = realloc(lines, n * sizeof(char *));
+    srand(time(NULL));
+    for (i = 0; i < n; i++)
+    {
+        tmpstr = lines[r = rand() % n];
+        lines[r] = lines[i];
+        lines[i] = tmpstr;
     }
 
-    srand(time(NULL));
+    if (n < nsame) {
+        for (i = 0; i < n; i++) {
+            PRINT(lines[i]);
+        }
+        DIE("input line count (%u) is less than nsame (%u)", n, nsame);
+    }
+
+    if (nsame < 2) {
+        for (;;) {
+            PRINT(lines[rand() % n]);
+        }
+    }
+
+    iarr  = malloc(nsame * sizeof(int));
+    if (nsame == n) {
+        for (;;) {
+            for (i = 0; i < n; i++) {
+                PRINT(lines[i]);
+            }
+        }
+    }
+
+    ihist = malloc((nsbuf = nsame * 2) * sizeof(int));
+    for (i = 0; i < nsbuf; ihist[i++] = -1);
+
     for (;;) {
 newcycle:
         for (i = 0; i < nsame; i++) {
-            k = rand() % n;
+            r = rand() % n;
             for (j = 0; j < nsbuf; ++j) {
-                if (ihist[j] == k)
+                if (ihist[j] == r)
                     goto newcycle;
             }
-            ihist[nsame + i] = iarr[i] = k;
+            ihist[nsame + i] = iarr[i] = r;
         }
         for (i = 0; i < nsame; i++) {
-            fputs(lines[ihist[i] = iarr[i]], stdout);
-            putchar(delim);
-            if (lprint && ++nprint == lprint)
-                exit(EXIT_SUCCESS);
+            PRINT(lines[ihist[i] = iarr[i]]);
         }
-        for (i = nsame; i < nsbuf; i++) {
-            ihist[i] = -1;
-        }
+        for (i = nsame; i < nsbuf; ihist[i++] = -1);
+        for (i = 0; i < nsame; ihist[i] = ihist[i + 1], i++);
     }
 
     return 0;
