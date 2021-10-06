@@ -21,7 +21,7 @@ install() {
     done
 
     cd c
-    find '.' -mindepth 1 -type f -not -path "./.*" -printf "%P\n" | while IFS= read -r i; do
+    find '.' -mindepth 1 -type f -not -path "./.*" -not -path "*/include/*" -printf "%P\n" | while IFS= read -r i; do
         out="${i%.c}"
         out="${out##*/}"
         gcc -O3 -std=c99 -pedantic -Wall "$i" -o /usr/local/bin/"$out" &
