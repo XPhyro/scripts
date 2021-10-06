@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
         DIE("directory database is corrupted, generate a fresh copy");
 
-    rmkparent(line, 0755);
+    rmkdir(line, 0755);
 
     fputs(line, stdout);
 

@@ -5,10 +5,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <sys/sendfile.h>
 #include <errno.h>
-#include <dirent.h>
-#include <sys/stat.h>
+
+#include "../include/sysutil.h"
 
 #define DIE(ERRMSG) { fputs("getfl: "ERRMSG"\n", stderr); \
                       exit(EXIT_FAILURE); }
@@ -16,8 +15,7 @@
 int main(int argc, char *argv[])
 {
     const char *confdir = "/scripts/pathfinding/files-container/";
-    char *prefix, *path, *s, *line, *readdir;
-    int i, j;
+    char *prefix, *path, *s, *line;
     size_t size, linesize;
     ssize_t linelen;
     FILE *fl;
@@ -43,17 +41,7 @@ int main(int argc, char *argv[])
     if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
         DIE("directory database is corrupted, generate a fresh copy");
 
-    readdir = malloc((linelen + 1) * sizeof(char));
-    memcpy(readdir, line, linelen + 1);
-
-    for (i = 1, j = 0; i < linelen + 1; i++) {
-        if (readdir[i] == '/') {
-            if (j)
-                readdir[j] = '/';
-            readdir[j = i] = '\0';
-            mkdir(readdir, 0755);
-        }
-    }
+    rmkparent(line, 0755);
 
     fputs(line, stdout);
 
