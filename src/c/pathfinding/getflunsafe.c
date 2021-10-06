@@ -5,7 +5,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <sys/sendfile.h>
 #include <errno.h>
 
 #define DIE(ERRMSG) { fputs("getflunsafe: "ERRMSG"\n", stderr); \
