@@ -1,9 +1,5 @@
 #!/usr/bin/env sh
 
-execvpn() {
-    "$VPN" "$@" | sed '/^$/d'
-}
-
 unset optstatus
 while getopts "hsv:" OPT
 do
@@ -76,8 +72,7 @@ shift "$((OPTIND - 1))"
 }
 
 printf "Selected VPN: "
-color yellow "$VPN
-"
+color yellow "$VPN"
 { "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
 if pgrep -u root openvpn > /dev/null 2>&1; then
@@ -97,14 +92,15 @@ fi
 flushterm
 
 while true; do
+    fputsn "―" "$(tput cols)"
     printf "\n"
     case "$(readchar)" in
-        c) printf "Enter country code: "; execvpn c --cc "$(readstr)";;
-        d) execvpn disconnect;;
-        f) execvpn connect --fastest;;
-        i) execvpn connect;;
-        r) execvpn reconnect;;
-        s) execvpn status;;
+        c) printf "Enter country code: "; "$VPN" c --cc "$(readstr)";;
+        d) "$VPN" disconnect;;
+        f) "$VPN" connect --fastest;;
+        i) "$VPN" connect;;
+        r) "$VPN" reconnect;;
+        s) "$VPN" status;;
         q) printf "\r\033[A\033[2K"; exit 0;;
         *) printf "%s" \
 "c) connect to specific country
