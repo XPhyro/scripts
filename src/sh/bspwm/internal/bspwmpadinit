@@ -13,11 +13,11 @@ shift 2
     printf "%s - %s\n" "bspwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
 
     if [ "$#" -eq 0 ]; then
-        printf "%s\n\n" "Deploying shell: $SHELL"
+        printf "%s\n%s\n\n" "Deploying shell: $SHELL" "$(fputsn "‾" "$(tput cols)")"
         exec "$SHELL"
     else
         { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
-        printf "%s\n\n" "Running command: $*"
+        printf "%s\n%s\n\n" "Running command: $*" "$(fputsn "‾" "$(tput cols)")"
         (eval "$@")
         exit "$?"
     fi
