@@ -5,7 +5,7 @@
 fifo="$(mktemp)" > /dev/null 2>&1
 rm -f -- "$fifo" > /dev/null 2>&1
 mkfifo -- "$fifo" > /dev/null 2>&1
-scroll "$fifo" &
+scrollstr "$fifo" &
 sleep 0.1
 eval "$1" > "$fifo"
 while true; do
