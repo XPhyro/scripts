@@ -41,10 +41,7 @@
 #define TESTFUNCDEF(NAME)    bool NAME(const char* path, struct stat *st)
 #define TESTFUNC(NAME, RET)  TESTFUNCDEF(NAME) { return RET; }
 
-#define STEST(PATH) match = stest(PATH); \
-                    if (optinvert) \
-                        match = !match; \
-                    if (match) { \
+#define STEST(PATH) if (stest(PATH)) { \
                         if (!optquiet) {\
                             fputs(line, stdout); \
                             putchar(delim); \
@@ -125,7 +122,7 @@ bool stest(const char *path)
             LOG("running test -%c...", i + 'A');
             if (!postests[i](path, &st)) {
                 LOG(" fail\n");
-                return false;
+                return optinvert;
             }
             LOG(" pass\n");
         }
@@ -133,13 +130,13 @@ bool stest(const char *path)
             LOG("running inverse test -%c...", i + 'A');
             if (negtests[i](path, &st)) {
                 LOG(" fail\n");
-                return false;
+                return optinvert;
             }
             LOG(" pass\n");
         }
     }
 
-    return true;
+    return !optinvert;
 }
 
 inline void printhelp()
@@ -201,7 +198,7 @@ int main(int argc, char *argv[])
 {
     int i, nfiles;
     char delim = '\n';
-    bool hasnomatch = false, hasmatch = false, match;
+    bool hasnomatch = false, hasmatch = false;
     char *line = NULL;
     char **files;
     size_t size;
