@@ -25,6 +25,7 @@
 #define LOG(...) if (optverbose) \
                      fprintf(stderr, __VA_ARGS__)
 
+#define OPTCASE(CHAR, VAR)   case CHAR: VAR = true; break
 #define TESTCASE(CHAR, FUNC) case CHAR: postests[CHAR - 'A'] = FUNC; break
 
 #define TESTFUNCDEF(NAME)    bool NAME(const char* path, struct stat *st)
@@ -48,8 +49,8 @@
 bool optquiet = false, optinvert = false, optverbose = false, optall = false;
 struct stat newer, older;
 
-bool (*postests[TESTCOUNTMAX])(const char *, struct stat *);
-/* bool (*func)(const char *) negtests[]; */
+bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
+/* bool (*func)(const char *) negtests[] = { NULL }; */
 
 TESTFUNCDEF(testhidden)
 {
@@ -186,15 +187,9 @@ int main(int argc, char *argv[])
     size_t size;
     ssize_t len;
 
-    for (i = 0; i < TESTCOUNTMAX; i++) {
-        postests[i] = NULL;
-    }
-
     while ((i = getopt(argc, argv, "AabcdefGgHhkLlNn:Oo:pqrSsuVvwxz0")) != -1) {
         switch (i) {
-            case 'A':
-                optall = true;
-                break;
+            OPTCASE('A', optall);
             TESTCASE('a', testhidden);
             TESTCASE('b', testblock);
             TESTCASE('c', testchar);
@@ -220,19 +215,13 @@ int main(int argc, char *argv[])
                 postests['o' - 'A'] = testolder;
                 break;
             TESTCASE('p', testfifo);
-            case 'q':
-                optquiet = true;
-                break;
+            OPTCASE('q', optquiet);
             TESTCASE('r', testread);
             TESTCASE('S', testsocket);
             TESTCASE('s', testnonempty);
             TESTCASE('u', testuid);
-            case 'V':
-                optverbose = true;
-                break;
-            case 'v':
-                optinvert = true;
-                break;
+            OPTCASE('V', optverbose);
+            OPTCASE('v', optinvert);
             TESTCASE('w', testwrite);
             TESTCASE('x', testexec);
             case 'z':
