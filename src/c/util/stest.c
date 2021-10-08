@@ -5,6 +5,7 @@
  *  - More options
  *  - No -l option (test directory contents)
  *  - Ability to pass files as arguments
+ *  - Ability to have partial inverse tests
  *
  *  The implementation uses code in small chunks from the BSDCoreUtils/GNU test,
  *  as well as the suckless stest.
@@ -25,8 +26,17 @@
 #define LOG(...) if (optverbose) \
                      fprintf(stderr, __VA_ARGS__)
 
-#define OPTCASE(CHAR, VAR)   case CHAR: VAR = true; break
-#define TESTCASE(CHAR, FUNC) case CHAR: postests[CHAR - 'A'] = FUNC; break
+#define OPTCASE(CHAR, VAR)          case CHAR: VAR = true; break
+#define TESTCASENOBREAK(CHAR, FUNC) case CHAR: \
+                                        if (!postests[CHAR - 'A']) { \
+                                            postests[CHAR - 'A'] = FUNC; \
+                                            negtests[CHAR - 'A'] = NULL; \
+                                        } \
+                                        else { \
+                                            postests[CHAR - 'A'] = NULL; \
+                                            negtests[CHAR - 'A'] = FUNC; \
+                                        }
+#define TESTCASE(CHAR, FUNC)            TESTCASENOBREAK(CHAR, FUNC); break
 
 #define TESTFUNCDEF(NAME)    bool NAME(const char* path, struct stat *st)
 #define TESTFUNC(NAME, RET)  TESTFUNCDEF(NAME) { return RET; }
@@ -50,7 +60,7 @@ bool optquiet = false, optinvert = false, optverbose = false, optall = false;
 struct stat newer, older;
 
 bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
-/* bool (*func)(const char *) negtests[] = { NULL }; */
+bool (*negtests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 
 TESTFUNCDEF(testhidden)
 {
@@ -114,10 +124,18 @@ bool stest(const char *path)
         if (postests[i]) {
             LOG("running test -%c...", i + 'A');
             if (!postests[i](path, &st)) {
-                LOG(" false\n");
+                LOG(" fail\n");
                 return false;
             }
-            LOG(" true\n");
+            LOG(" pass\n");
+        }
+        if (negtests[i]) {
+            LOG("running inverse test -%c...", i + 'A');
+            if (negtests[i](path, &st)) {
+                LOG(" fail\n");
+                return false;
+            }
+            LOG(" pass\n");
         }
     }
 
@@ -132,6 +150,8 @@ inline void printhelp()
           "With no PATH, read standard input.\n"
           "\n"
           "All options are compliant with the file options of POSIX and GNU test. There are some extra options.\n"
+          "\n"
+          "Pass the same test option even times to invert that particular test."
           "\n"
           "  -A       indicate success if some files passed, see 'Exit Codes'\n"
           "  -a       test whether files are hidden\n"
@@ -205,14 +225,12 @@ int main(int argc, char *argv[])
             TESTCASE('k', teststicky);
             TESTCASE('L', testlink);
             TESTCASE('N', testmodif);
-            case 'n':
+            TESTCASENOBREAK('n', testnewer);
                 stat(optarg, &newer);
-                postests['n' - 'A'] = testnewer;
                 break;
             TESTCASE('O', testeuid);
-            case 'o':
+            TESTCASENOBREAK('o', testolder);
                 stat(optarg, &older);
-                postests['o' - 'A'] = testolder;
                 break;
             TESTCASE('p', testfifo);
             OPTCASE('q', optquiet);
