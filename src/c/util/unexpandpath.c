@@ -45,9 +45,8 @@ void unexpand(const char *path)
     s[len = j] = '\0';
 
     for (i = 0; i < nusers; i++) {
-        if (!strneq(users[i].home, s, users[i].homelen)) {
+        if (!strneq(users[i].home, s, users[i].homelen))
             continue;
-        }
         putchar('~');
         fputs(users[i].name, stdout);
         if (s[users[i].homelen]) {
