@@ -12,7 +12,6 @@
 - In `bspwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - Add options in `latexstp` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a `$PAD`.
-- Allow assigning different images per display in `wallpaper`. `hsetroot` does not seem to support this.
 - Add an option in `bspwmpad` that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
 - When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getdir` and `getfl` could be implemented.
 - Add support for regular files in mark scripts. A possible way could be to also add support for passed arguments for files in the marking process and check the file type; if it is a regular file, then the file could be marked in a different mark set. While using marks, first check if a directory mark exists. If there exists a directory mark, `cd` into it; else, open up the regular file for the given mark in `$EDITOR` if there is such a mark.
@@ -65,12 +64,10 @@
 - Timer, chronometer, alarm.
 - Implement a crop subcommand in `ffmw`.
 - Write a version of `v` (from .zshrc) that has keys as in the pathfinding suite depending on the directory. Say, one executes `vm t dotfilesbak-tick` in `"$HOME/.dotfiles"`. When they execute `"$scriptname" t`, `dotfilesbak-tick` is opened with `"$EDITOR"`. Alternatively, this behaviour could be integrated in the currently existing mark functionality either by prioritising directory-specific marks or by making the user prepend the key by a character, say \_.
-- Write an `stest` wrapper that supports the negation of partial operators. As an example `stest -x ! -d` should return all files that are executable but are not directories. Alternatively, have a syntax like `stest -x !-d` or the similar.
 - Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
-- Write a C script that is like `wordexp` but only for tilde expansion as in `expandpath`. This way, high-performance tilde expansion can be safely done.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
 - Write a `getfl`/`getdir` alternative that takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output of the scripts are to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
 - Write tests (especially for `c/*`).
