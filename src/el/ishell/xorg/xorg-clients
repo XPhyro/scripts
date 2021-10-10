@@ -1,0 +1,1 @@
+#!/usr/bin/env -S execlineb -c "pipeline { lsof -U +c 15 } pipeline { cut -d\" \" -f1 } pipeline { sort } pipeline { uniq -c } sort -rn"
