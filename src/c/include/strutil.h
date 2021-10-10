@@ -37,3 +37,44 @@ bool strneq(const char *s1, const char *s2, size_t n)
 
     return true;
 }
+
+bool strpfx(const char *s, const char *pfx)
+{
+    char cs, cpfx;
+
+    if (!s)
+        return !pfx;
+
+    for (;;) {
+        cs = *s++;
+        cpfx = *pfx++;
+        if (!cs)
+            return !cpfx;
+        if (!cpfx)
+            return true;
+        if (cs != cpfx)
+            return false;
+    }
+}
+
+bool strnpfx(const char *s, const char *pfx, size_t n)
+{
+    size_t i;
+    char cs, cpfx;
+
+    if (!s)
+        return !pfx;
+
+    for (i = 0; i < n; i++) {
+        cs = *s++;
+        cpfx = *pfx++;
+        if (!cs)
+            return !cpfx;
+        if (!cpfx)
+            return true;
+        if (cs != cpfx)
+            return false;
+    }
+
+    return true;
+}
