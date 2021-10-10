@@ -1,6 +1,17 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+char *strend(const char *s)
+{
+    char *tmp = s;
+    for (;;) {
+        if (!*tmp)
+            break;
+        tmp++;
+    }
+    return tmp;
+}
+
 bool streq(const char *s1, const char *s2)
 {
     char c1, c2;
@@ -74,6 +85,49 @@ bool strnpfx(const char *s, const char *pfx, size_t n)
             return true;
         if (cs != cpfx)
             return false;
+    }
+
+    return true;
+}
+
+bool strsfx(const char *s, const char *sfx)
+{
+    char *send, *sfxend;
+
+    if (!s)
+        return !sfx;
+
+    send = strend(s);
+    sfxend = strend(sfx);
+
+    for (;;) {
+        if (*--send != *--sfxend)
+            return false;
+        if (send == s)
+            return sfxend == sfx;
+        if (sfxend == sfx)
+            return true;
+    }
+}
+
+bool strnsfx(const char *s, const char *sfx, size_t n)
+{
+    size_t i;
+    char *send, *sfxend;
+
+    if (!s)
+        return !sfx;
+
+    send = strend(s);
+    sfxend = strend(sfx);
+
+    for (i = 0; i < n; i++) {
+        if (*--send != *--sfxend)
+            return false;
+        if (send == s)
+            return sfxend == sfx;
+        if (sfxend == sfx)
+            return true;
     }
 
     return true;
