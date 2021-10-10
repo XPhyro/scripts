@@ -8,9 +8,7 @@ wadir="$(getdirsafe wa)" || {
 find "$wadir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
     | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
     | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-    | shufr -0  -n 6 \
-    | xargs -r0 -n 2 sh -c '
-        bgs -z "$1" "$2"
-        printf "%s\n" "$1" "$2" > '"$waloc/.current-wallpapers"'
+    | xargs -r0 -n 1 sh -c '
+        hsetroot -cover "$1"
         sleep '"${*:-15m}"'
     ' --
