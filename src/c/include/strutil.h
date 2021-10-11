@@ -3,13 +3,12 @@
 
 char *strend(const char *s)
 {
-    char *tmp = s;
     for (;;) {
-        if (!*tmp)
+        if (!*s)
             break;
-        tmp++;
+        s++;
     }
-    return tmp;
+    return (char *)s;
 }
 
 bool streq(const char *s1, const char *s2)
