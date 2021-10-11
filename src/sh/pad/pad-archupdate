@@ -2,7 +2,7 @@
 
 "$PAD" -- '
     update > /dev/null 2>&1 &
-    yay -Syu || color red "ERROR(s) encountered."
+    time yay -Syu || color red "ERROR(s) encountered."
     jobs %% && printf "Waiting for [update].\n"
     wait
     color green "All done. Check for errors."
