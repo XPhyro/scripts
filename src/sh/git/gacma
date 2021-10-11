@@ -17,12 +17,9 @@ else
         {   git diff --name-status
             git diff --cached --name-status
         } | cut -d'	' -f2- \
-          | xargs -d '\n' -rn 1 realpath "--relative-to=$toplevel" --
+          | xargs -d '\n' -rn 1 realpath "--relative-to=$toplevel" -- \
+          | sed 's|^src/||'
     )"
-    IFS='
-'
-    set -- $fls
-    fls="$(printf "%s\n" "$fls" | sed 's|^src/||')"
 fi
 
 if [ "$#" -eq 1 ]; then
