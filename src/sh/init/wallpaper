@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -x
-
 execname="${0##*/}"
 
 logerrq() {
@@ -10,7 +8,7 @@ logerrq() {
 }
 
 unset optcount opttime
-while getopts "ht:n:" OPT
+while getopts "d:hn:t:x:" OPT
 do
     case "$OPT" in
         d)
@@ -28,7 +26,6 @@ do
 "
             exit 0
             ;;
-
         n)
             [ "$OPTARG" -gt 0 ] || logerrq "COUNT must be a valid positive integer."
             optcount="$OPTARG"
