@@ -1,14 +1,78 @@
 #!/usr/bin/env sh
 
-wadir="$(getdirsafe wa)" || {
-    printf "[ERROR]: getdirsafe failed, aborting.\n"
+set -x
+
+execname="${0##*/}"
+
+logerrq() {
+    printf "%s: %s\n" "$execname" "$1" >&2
     exit 1
 }
 
-find "$wadir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
-    | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
-    | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-    | xargs -r0 -n 1 sh -c '
-        hsetroot -cover "$1"
-        sleep '"${*:-15m}"'
-    ' --
+unset optcount opttime
+while getopts "ht:n:" OPT
+do
+    case "$OPT" in
+        d)
+            [ -d "$OPTARG" ] || logerrq "DIR must be a valid directory."
+            optdir="$OPTARG"
+            ;;
+        h)
+            printf "%s" \
+"wallpaper [OPTION...]
+   -d DIR     Use DIR as wallpaper directory. Default is \`getdirsafe wa\`.
+   -h         Print help message and exit.
+   -n COUNT   Print detailed status before initialisation. Default is your display count as of initialisation. Ignored if -m is not 'bgs'.
+   -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
+   -x EXEC    Executable to use. Can be 'hsetroot' or 'bgs'.
+"
+            exit 0
+            ;;
+
+        n)
+            [ "$OPTARG" -gt 0 ] || logerrq "COUNT must be a valid positive integer."
+            optcount="$OPTARG"
+            ;;
+        t) opttime="$OPTARG";;
+        x)
+            case "$OPTARG" in
+                hsetroot|bgs) ;;
+                *           ) logerrq "EXEC must be 'hsetroot' or 'bgs'.";;
+            esac
+            optexec="$OPTARG"
+            ;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ -z "$optdir" ] && {
+    optdir="$(getdirsafe wa)" || logerrq "getdirsafe failed."
+}
+[ -z "$opttime" ] && opttime=15m
+[ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
+[ -z "$optexec" ] && optexec="$(fmapsb bgs=bgs hsetroot=hsetroot)"
+
+case "$optexec" in
+    hsetroot)
+        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+            | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
+            | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
+            | shufr -0  -n 3 \
+            | xargs -r0 -n 1 sh -c '
+                hsetroot -cover "$1"
+                printf "%s\n" "$1" > '"$optdir/.current-wallpapers"'
+                sleep '"$opttime"'
+            ' --
+        ;;
+    bgs)
+        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+            | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
+            | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
+            | shufr -0  -n "$((optcount * 3))" \
+            | xargs -r0 -n "$optcount" sh -c '
+                bgs -z "$@"
+                printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
+                sleep '"$opttime"'
+            ' --
+        ;;
+esac
