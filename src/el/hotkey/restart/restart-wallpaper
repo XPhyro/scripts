@@ -1,3 +1,0 @@
-#!/usr/bin/env -S execlineb -s0
-
-tglapp -k restart-wallpaper $@ -- wallpaper 15m
