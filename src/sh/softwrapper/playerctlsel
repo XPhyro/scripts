@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-players="$(playerctl -l)"
+players="$(playerctl -l -i "$PLAYERCTLSELIGNORE")"
 if [ "$(printf "%s\n" "$players" | wc -l)" -lt 2 ]; then
     playerctl "$@"
 else
