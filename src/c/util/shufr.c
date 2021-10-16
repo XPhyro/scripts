@@ -32,12 +32,12 @@
 int main(int argc, char *argv[])
 {
     bool optlimit = false;
-    int n = 100, nfile, i, j, r;
+    int n = 100, i, j, r;
     int *ihist, *iarr;
     unsigned int lprint = 0, nprint = 0, nsame = 2, nsbuf;
     char delim = '\n';
     char *line = NULL, *tmpstr = NULL;
-    char **lines = malloc(n * sizeof(char *)), **files;
+    char **lines = malloc(n * sizeof(char *));
     size_t size;
     ssize_t len;
     FILE *file;
@@ -96,14 +96,14 @@ int main(int argc, char *argv[])
     if (optlimit && !lprint)
         exit(EXIT_SUCCESS);
 
-    files = argv + optind;
-    nfile = argc - optind;
+    argv += optind;
+    argc -= optind;
 
     i = 0;
-    if (nfile == 0) {
+    if (argc == 0) {
         SETLINES(stdin);
-    } else for (j = 0; j < nfile; j++) {
-        file = fopen(files[j], "r");
+    } else for (j = 0; j < argc; j++) {
+        file = fopen(argv[j], "r");
         SETLINES(file);
         fclose(file);
     }

@@ -64,9 +64,8 @@ endline:
 
 int main(int argc, char *argv[])
 {
-    int i, nfiles;
+    int i;
     char *line = NULL, *tmpstr;
-    char **files;
     size_t size, len;
     struct passwd *pw = NULL;
     user u;
@@ -95,8 +94,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    files  = argv + optind;
-    nfiles = argc - optind;
+    argv += optind;
+    argc -= optind;
 
     users = malloc(NUSERSINIT * sizeof(user));
 
@@ -121,14 +120,14 @@ int main(int argc, char *argv[])
     }
     users = realloc(users, (nusers = i) * sizeof(user));
 
-    if (!nfiles) {
+    if (!argc) {
         while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
             if (len && line[len - 1] == delim)
                 line[len - 1] = '\0';
             unexpand(line);
         }
-    } else for (i = 0; i < nfiles; i++) {
-        unexpand(files[i]);
+    } else for (i = 0; i < argc; i++) {
+        unexpand(argv[i]);
     }
 
     return 0;

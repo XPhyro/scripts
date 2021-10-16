@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    argv  = argv + optind;
-    argc = argc - optind;
+    argv += optind;
+    argc -= optind;
 
     if (!argc) {
         while ((len = getdelim(&line, &size, delim, stdin)) != -1) {

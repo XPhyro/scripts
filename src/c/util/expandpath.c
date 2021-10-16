@@ -72,9 +72,8 @@ void expand(const char *path)
 
 int main(int argc, char *argv[])
 {
-    int i, nfiles;
+    int i;
     char *line = NULL;
-    char **files;
     size_t size;
     ssize_t len;
 
@@ -102,20 +101,20 @@ int main(int argc, char *argv[])
         }
     }
 
-    files  = argv + optind;
-    nfiles = argc - optind;
+    argv += optind;
+    argc -= optind;
 
     if (!(home = getenv("HOME")) && !(home = getpwuid(getuid())->pw_dir))
         DIE("could not determine home directory");
 
-    if (!nfiles) {
+    if (!argc) {
         while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
             if (len && line[len - 1] == delim)
                 line[len - 1] = '\0';
             expand(line);
         }
-    } else for (i = 0; i < nfiles; i++) {
-        expand(files[i]);
+    } else for (i = 0; i < argc; i++) {
+        expand(argv[i]);
     }
 
     return 0;
