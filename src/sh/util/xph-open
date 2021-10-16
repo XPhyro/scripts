@@ -26,10 +26,9 @@ dtf="$(
 )"
 [ -z "$dtf" ] && exec xdg-open "$1"
 
-lf="$(find "$(getdirsafe lsa)" -name "$dtf" | sort | head -n 1)"
+lf="$(find "${XDG_DATA_HOME:-"$HOME/.local/share"}/applications" "/usr/local/share/applications" "/usr/share/applications" -name "$dtf" | head -n 1)"
 if [ -n "$lf" ]; then
     open "$1" "$lf"
 else
-    uf="$(find "$(getdirsafe usa)" -name "$dtf" | sort | head -n 1)"
-    [ -n "$uf" ] && open "$1" "$uf"
+    exec xdg-open "$1"
 fi
