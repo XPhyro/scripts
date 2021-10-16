@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     char **maps;
     int i, offset, nmap;
     size_t linelen = 0;
+    size_t *maplens;
     ssize_t nread = 0;
 
     while ((i = getopt(argc, argv, "d:e:hs:z0")) != -1) {
@@ -67,11 +68,13 @@ int main(int argc, char *argv[])
         sep = "=";
     offset = strlen(sep);
 
+    maplens = malloc(nmap * sizeof(size_t));
     for (i = 0; i < nmap; i++) {
         s = strstr(maps[i], sep);
         if (!s)
             DIE("MAPPING does not contain SEP");
         *s = '\0';
+        maplens[i] = s - maps[i];
     }
 
     while ((nread = getdelim(&line, &linelen, delim, stdin)) != -1) {
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
             *eol = '\0';
         for (i = 0; i < nmap; i++) {
             if (streq(line, maps[i])) {
-                printf("%s%s", maps[i] + strlen(maps[i]) + offset, end);
+                printf("%s%s", maps[i] + maplens[i] + offset, end);
                 goto newline;
             }
         }
