@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     for (i = 0; i < nmap; i++) {
         s = strstr(maps[i], sep);
         if (!s)
-            DIE("argument does not contain separator");
+            DIE("MAPPING does not contain SEP");
         *s = '\0';
     }
 
