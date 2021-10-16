@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include "../include/strutil.h"
 
@@ -12,18 +13,58 @@
 
 int main(int argc, char *argv[])
 {
-    char *sep, *end, *def, *line, *eol, *s;
-    int i, c, offset;
+    char delim = '\n';
+    char *sep = NULL, *end = NULL, *def = NULL, *line, *eol, *s;
+    char **maps;
+    int i, c, offset, nmap;
     size_t len;
     ssize_t nread;
 
-    end = getenv("END");
-    if (!end)
+    while ((i = getopt(argc, argv, "d:e:hs:z0")) != -1) {
+        switch (i) {
+            case 'd':
+                def = optarg;
+                break;
+            case 'e':
+                end = optarg;
+                break;
+            case 'h':
+                puts("Usage: fmaps [OPTION]... [MAPPING]...\n"
+                     "Map standard input according to the given mappings. A MAPPING is in the form [KEY][SEP][VAL].\n"
+                     "\n"
+                     "If -d, -e or -s are not given, read the respective environment variables DEF, END and SEP.\n"
+                     "\n"
+                     "  -d DEF    set the default output to DEF\n"
+                     "  -e END    set the end-of-line string to END. default is \\n\n"
+                     "  -h        display this help and exit\n"
+                     "  -s SEP    set the mapping separator to SEP. default is =\n"
+                     "  -z        line delimiter is NUL, not newline\n"
+                     "  -0        line delimiter is NUL, not newline");
+                exit(EXIT_SUCCESS);
+                break;
+            case 's':
+                sep = optarg;
+                break;
+            case 'z':
+            case '0':
+                delim = '\0';
+                break;
+            default:
+                fputs("Try 'fmaps -h' for more information.\n", stderr);
+                exit(EXIT_FAILURE);
+                break;
+        }
+    }
+
+    maps = argv + optind;
+    nmap = argc - optind;
+
+    if (!end && !(end = getenv("END")))
         end = "\n";
 
-    if (argc == 1) {
+    if (!nmap) {
         while((c = getchar()) != EOF) {
-            if (c != '\n')
+            if (c != delim)
                 putchar(c);
             else
                 fputs(end, stdout);
@@ -31,31 +72,31 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    sep = getenv("SEP");
-    if (!sep)
+    if (!sep && !(sep = getenv("SEP")))
         sep = "=";
     offset = strlen(sep);
 
-    for (i = 1; i < argc; i++) {
-        s = strstr(argv[i], sep);
+    for (i = 0; i < nmap; i++) {
+        s = strstr(maps[i], sep);
         if (!s)
             DIE("argument does not contain separator");
         *s = '\0';
     }
 
-    def = getenv("DEF");
+    if (!def)
+        def = getenv("DEF");
 
     line = NULL;
     len = 0;
-    while ((nread = getline(&line, &len, stdin)) != -1) {
+    while ((nread = getdelim(&line, &len, delim, stdin)) != -1) {
         eol = line;
         while(*++eol);
         eol = eol - 1;
         if (*eol == '\n')
             *eol = '\0';
-        for (i = 1; i < argc; i++) {
-            if (streq(line, argv[i])) {
-                printf("%s%s", argv[i] + strlen(argv[i]) + offset, end);
+        for (i = 0; i < nmap; i++) {
+            if (streq(line, maps[i])) {
+                printf("%s%s", maps[i] + strlen(maps[i]) + offset, end);
                 goto newline;
             }
         }
