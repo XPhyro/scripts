@@ -14,11 +14,11 @@
 int main(int argc, char *argv[])
 {
     char delim = '\n';
-    char *sep = NULL, *end = NULL, *def = NULL, *line, *eol, *s;
+    char *sep = NULL, *end = NULL, *def = NULL, *line = NULL, *eol, *s;
     char **maps;
-    int i, c, offset, nmap;
-    size_t len;
-    ssize_t nread;
+    int i, offset, nmap;
+    size_t linelen = 0;
+    ssize_t nread = 0;
 
     while ((i = getopt(argc, argv, "d:e:hs:z0")) != -1) {
         switch (i) {
@@ -59,19 +59,10 @@ int main(int argc, char *argv[])
     maps = argv + optind;
     nmap = argc - optind;
 
+    if (!def)
+        def = getenv("DEF");
     if (!end && !(end = getenv("END")))
         end = "\n";
-
-    if (!nmap) {
-        while((c = getchar()) != EOF) {
-            if (c != delim)
-                putchar(c);
-            else
-                fputs(end, stdout);
-        }
-        return 0;
-    }
-
     if (!sep && !(sep = getenv("SEP")))
         sep = "=";
     offset = strlen(sep);
@@ -83,12 +74,7 @@ int main(int argc, char *argv[])
         *s = '\0';
     }
 
-    if (!def)
-        def = getenv("DEF");
-
-    line = NULL;
-    len = 0;
-    while ((nread = getdelim(&line, &len, delim, stdin)) != -1) {
+    while ((nread = getdelim(&line, &linelen, delim, stdin)) != -1) {
         eol = line;
         while(*++eol);
         eol = eol - 1;
