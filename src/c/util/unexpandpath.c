@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "hz0")) != -1) {
         switch (i) {
             case 'h':
-                puts("Usage unexpandpath [OPTION]... [PATH]...\n"
+                puts("Usage: unexpandpath [OPTION]... [PATH]...\n"
                      "Like `wordexp`, but only expands tildes.\n"
                      "\n"
                      "With no PATH, read standard input.\n"

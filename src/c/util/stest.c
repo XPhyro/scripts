@@ -141,7 +141,7 @@ bool stest(const char *path)
 
 inline void printhelp()
 {
-    fputs("Usage stest [OPTION]... [PATH]...\n"
+    fputs("Usage: stest [OPTION]... [PATH]...\n"
           "Filter a list of files by properties.\n"
           "\n"
           "With no PATH, read standard input.\n"

@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
                 optnodelim = true;
                 break;
             case 'h':
-                puts("Usage sum [OPTION]... [NUMBER]...\n"
+                puts("Usage: sum [OPTION]... [NUMBER]...\n"
                      "Sum numbers.\n"
                      "\n"
                      "With no NUMBER, read standard input.\n"
