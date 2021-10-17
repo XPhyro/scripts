@@ -5,55 +5,30 @@ import re
 import sys
 import argparse
 import datetime as dt
-import input_helper as ih
 
 
-def parseargs():
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--exit-on-error", action="store_true")
     args = parser.parse_args()
 
-
-def getdate(msg):
+    now = dt.datetime.now()
     while True:
-        s = re.sub("\s|[-/_|,.]", "", input(msg))
-
+        s = re.sub("\s|[-/_|,.]", "", input("Enter date: "))
         l = len(s)
-        if l == 4:
-            try:
-                year = dt.datetime.now().year
-                month = int(s[0:2])
-                day = int(s[0:4])
-
-                return dt.datetime(year, month, day)
-            except:
-                if args.exit_on_error:
-                    sys.exit(1)
-                print("You must enter a valid date.")
-                continue
-        elif l == 8:
+        date = None
+        try:
+            if l == 4:
+                date = dt.datetime(now.year, int(s[0:2]), int(s[2:4]))
+            elif l == 8:
+                date = dt.datetime(int(s[0:4]), int(s[4:6]), int(s[6:8]))
+            else:
+                raise Exception("internal exception")
+            print(date - now)
+        except:
             if args.exit_on_error:
                 sys.exit(1)
-            print("Input could not be understood.")
-            continue
-        else:
-            try:
-                year = int(s[0:4])
-                month = int(s[4:6])
-                day = int(s[6:8])
-
-                return dt.datetime(year, month, day)
-            except:
-                if args.exit_on_error:
-                    sys.exit(1)
-                print("You must enter a valid date.")
-                continue
-
-
-def main():
-    now = dt.datetime.now()
-    date = getdate("Enter date: ")
-    print(date - now)
+            print("Input is invalid.")
 
 
 if __name__ == "__main__":
