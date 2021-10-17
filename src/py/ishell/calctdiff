@@ -21,7 +21,7 @@ def getdate(msg):
         l = len(s)
         if l == 4:
             try:
-                year = 2020
+                year = dt.datetime.now().year
                 month = int(s[0:2])
                 day = int(s[0:4])
 
