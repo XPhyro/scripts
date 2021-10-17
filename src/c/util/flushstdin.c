@@ -1,9 +1,10 @@
-#include <stdio.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-    int c;
-    while((c = getchar()) != EOF);
+    unsigned char buf[2048];
+
+    while (read(STDIN_FILENO, buf, sizeof(buf)));
 
     return 0;
 }
