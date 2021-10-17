@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     int i;
     char *endptr;
 
-    if (argc == 1)
+    if (argc < 2)
         DIE("no argument given");
 
     for (i = 1; i < argc; i++) {
