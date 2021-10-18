@@ -43,7 +43,7 @@
 
 #define STEST(PATH) if (stest(PATH)) { \
                         if (!optquiet) {\
-                            fputs(line, stdout); \
+                            fputs(PATH, stdout); \
                             putchar(delim); \
                         } \
                         hasmatch = true; \
