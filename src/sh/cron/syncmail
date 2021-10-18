@@ -5,7 +5,7 @@ timefile="$HOME/.config/mutt/.syncmailtime"
 maildir="$HOME/.local/share/mail"
 accdir="$HOME/.config/mutt/accounts"
 
-mbsync -a > /dev/null
+mbsync -a || color red "could not sync mails"
 
 find "$maildir" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r i; do
     acc="$(printf "%s" "$i" | sed "s/.*\///")"
@@ -23,6 +23,6 @@ find "$maildir" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r i; do
         )." &
 done
 
-notmuch new > /dev/null
+notmuch new || color red "could not index mails"
 
 touch -- "$timefile"
