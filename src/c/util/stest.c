@@ -150,7 +150,7 @@ inline void printhelp()
           "\n"
           "Pass the same test option even times to invert that particular test."
           "\n"
-          "  -A       indicate success if some files passed, see 'Exit Codes'\n"
+          "  -A       indicate success only if all files passed, see 'Exit Codes'\n"
           "  -a       test whether files are hidden\n"
           "  -b       test whether files are block specials\n"
           "  -c       test whether files are character specials\n"
