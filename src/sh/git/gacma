@@ -14,13 +14,17 @@ if [ "$#" -ne 0 ] && [ -n "$*" ]; then
     )"
 else
     fls="$(
-        {   git diff --name-status
-            git diff --cached --name-status
-        } | cut -d'	' -f2- \
+        {
+            {   git diff --name-status
+                git diff --cached --name-status
+            } | cut -d'	' -f2-
+            git ls-files -o --exclude-standard --directory | sed 's|$|/*|'
+        } | uniqs \
           | xargs -d '\n' -rn 1 realpath "--relative-to=$toplevel" --
     )"
     IFS='
 '
+    set -o noglob
     set -- $fls
     fls="$(printf "%s\n" "$fls" | sed 's|^src/||')"
 fi
