@@ -1,0 +1,3 @@
+#!/usr/bin/env -S execlineb -s0
+
+gallery-dl --retries 25 --mtime-from-date --ugoira-conv-lossless --download-archive ~/.config/scripts/gallery-dl-download-archive $@
