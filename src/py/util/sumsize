@@ -6,10 +6,7 @@ import argparse
 import re
 
 
-UNITS = ["k", "m", "g", "t", "p"]
-
-
-def col(val):
+def argtypecol(val):
     ival = int(val)
     if ival <= 0:
         raise argparse.ArgumentTypeError(f"{ val } is not a valid column value.")
@@ -36,7 +33,7 @@ def parseargs():
         "-c",
         "--column",
         help="which column to consider as sizes (default 1)",
-        type=col,
+        type=argtypecol,
         default=1,
     )
     parser.add_argument(
@@ -54,75 +51,63 @@ def parseargs():
     args = parser.parse_args()
 
 
-def sumsize(sizes):
-    s = 0
-
-    pf = re.compile(r"[k|M|G|T|P]?i?B", re.IGNORECASE)
-    ps = re.compile(r"[0-9]+\.?[0-9]*")
-
-    for i in sizes:
-        _sizes = ps.findall(i)
-        size = float(_sizes[0]) if isinstance(_sizes, list) and len(_sizes) else 0.0
-
-        if size == 0:
-            continue
-
-        _factors = pf.findall(i)
-        factor = (
-            _factors[0].lower() if isinstance(_factors, list) and len(_factors) else "B"
-        )
-
-        m = 1
-        c = 1024 if "i" in factor else 1000
-        for k, w in enumerate(UNITS):
-            if w in factor:
-                m = c ** (k + 1)
-                break
-
-        s += size * m
-
-    return s
-
-
-def addsize(f):
-    global size
-    size += sumsize([re.split("\s", i)[args.column - 1] for i in f.readlines()])
-
-
-def formatsize(size, fig=2, useb=False, unitless=False):
-    size = int(size)
-    if unitless:
-        return str(size)
-
-    c = 1000 if useb else 1024
-    for i, j in reversed(list(enumerate(UNITS))):
-        m = size / (c ** (i + 1))
-        if m > 1:
-            f = f"%.{fig}f" % m
-            return f"{ f }{ j.upper() }{ '' if useb else 'i' }B"
-    return f"{ size }B"
-
-
 def main():
-    global size
-
     parseargs()
-    size = 0
 
     if not len(args.files) and stdin.isatty():
         exit(0)
 
+    UNITS = ["k", "m", "g", "t", "p"]
+
+    totalsize = 0
+    pf = re.compile(r"[k|M|G|T|P]?i?B", re.IGNORECASE)
+    ps = re.compile(r"[0-9]+\.?[0-9]*")
+    if (not len(args.files) or args.double_input) and not stdin.isatty():
+        args.files.append(0)
     for i in args.files:
         with open(i, "r") as f:
-            addsize(f)
-    if (not len(args.files) or args.double_input) and not stdin.isatty():
-        addsize(stdin)
+            ds = 0
+            for i in [re.split("\s", i)[args.column - 1] for i in f.readlines()]:
+                sizes = ps.findall(i)
+                size = (
+                    float(sizes[0]) if isinstance(sizes, list) and len(sizes) else 0.0
+                )
 
-    figure = args.figure if args.figure is not None else 2
+                if size == 0:
+                    continue
 
-    formattedSize = formatsize(size, fig=figure, useb=args.useb, unitless=args.unitless)
+                factors = pf.findall(i)
+                factor = (
+                    factors[0].lower()
+                    if isinstance(factors, list) and len(factors)
+                    else "B"
+                )
 
-    print(formattedSize)
+                m = 1
+                c = 1024 if "i" in factor else 1000
+                for k, w in enumerate(UNITS):
+                    if w in factor:
+                        m = c ** (k + 1)
+                        break
+
+                ds += size * m
+
+            totalsize += ds
+
+    totalsize = int(totalsize)
+
+    if args.unitless:
+        print(str(totalsize))
+        return
+
+    c = 1000 if args.useb else 1024
+    for i, j in reversed(list(enumerate(UNITS))):
+        m = totalsize / (c ** (i + 1))
+        if m > 1:
+            f = f"%.{args.figure if args.figure is not None else 2}f" % m
+            print(f"{f}{j.upper()}{'' if args.useb else 'i'}B")
+            return
+    print(f"{totalsize}B")
 
 
 if __name__ == "__main__":
