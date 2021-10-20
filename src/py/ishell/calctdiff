@@ -4,7 +4,7 @@
 import re
 import sys
 import argparse
-import datetime as dt
+from datetime import datetime as dt
 
 
 def main():
@@ -12,16 +12,15 @@ def main():
     parser.add_argument("-e", "--exit-on-error", action="store_true")
     args = parser.parse_args()
 
-    now = dt.datetime.now()
+    now = dt.now()
     while True:
         s = re.sub("\s|[-/_|,.]", "", input("Enter date: "))
         l = len(s)
-        date = None
         try:
             if l == 4:
-                date = dt.datetime(now.year, int(s[0:2]), int(s[2:4]))
+                date = dt(now.year, int(s[0:2]), int(s[2:4]))
             elif l == 8:
-                date = dt.datetime(int(s[0:4]), int(s[4:6]), int(s[6:8]))
+                date = dt(int(s[0:4]), int(s[4:6]), int(s[6:8]))
             else:
                 raise Exception("internal exception")
             print(date - now)
