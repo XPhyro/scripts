@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-unset code
+code=0
 setfl || code=1
 setdir || code=1
-exit ${code:-0}
+exit $code
