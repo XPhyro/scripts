@@ -12,18 +12,12 @@ def main():
     parser.add_argument("-e", "--exit-on-error", action="store_true")
     args = parser.parse_args()
 
-    now = dt.now()
     while True:
         s = re.sub("\s|[-/_|,.]", "", input("Enter date: "))
-        l = len(s)
         try:
-            if l == 4:
-                date = dt(now.year, int(s[0:2]), int(s[2:4]))
-            elif l == 8:
-                date = dt(int(s[0:4]), int(s[4:6]), int(s[6:8]))
-            else:
-                raise Exception("internal exception")
-            print(date - now)
+            date = dt(int(s[:-4]), int(s[-4:-2]), int(s[-2:]))
+            now = dt.now()
+            print(f"\tDate: {date}\n\tNow: {now}\n\tDifference: {date - now}\n")
         except:
             if args.exit_on_error:
                 sys.exit(1)
