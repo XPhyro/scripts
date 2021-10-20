@@ -21,39 +21,39 @@ The suite will deliver the following features:
 
 ### [_@](_@)
 - Usage: `@ key`
-- Description: 
+- Description:
 
 ### [_@i](_@i)
 - Usage: `@i`
-- Description: 
+- Description:
 
 ### [_fd](_fd)
 - Usage: `fd`
-- Description: 
+- Description:
 
 ### [_ff](_ff)
 - Usage: `ff`
-- Description: 
+- Description:
 
 ### [_g](_g)
 - Usage: `g key`
-- Description: 
+- Description:
 
 ### [_gi](_gi)
 - Usage: `gi`
-- Description: 
+- Description:
 
 ### [_¬](_¬)
 - Usage: `¬`
-- Description: 
+- Description:
 
 ### [batfl](batfl)
 - Usage: `batfl key`
-- Description: 
+- Description:
 
 ### [catfl](catfl)
 - Usage: `catfl key`
-- Description: 
+- Description:
 
 ### [cm](cm)
 - Usage: NA
@@ -61,61 +61,61 @@ The suite will deliver the following features:
 
 ### [e](e)
 - Usage: `e key`
-- Description: 
+- Description:
 
 ### [ei](ei)
 - Usage: `ei`
-- Description: 
+- Description:
 
 ### [getfl](getfl)
 - Usage: `getfl key`
-- Description: 
+- Description:
 
 ### [getflloc](getflloc)
 - Usage: `getflloc key`
-- Description: 
+- Description:
 
 ### [getflunsafe](getflunsafe)
 - Usage: `getflunsafe key`
-- Description: 
+- Description:
 
 ### [getdir](getdir)
 - Usage: `getdir key`
-- Description: 
+- Description:
 
 ### [getdirall](getdirall)
 - Usage: `getdirall key`
-- Description: 
+- Description:
 
 ### [getdirunsafe](getdirunsafe)
 - Usage: `getunlocsafe key`
-- Description: 
+- Description:
 
 ### [getrealfl](getrealfl)
 - Usage: `getrealfl key`
-- Description: 
+- Description:
 
 ### [getrealflloc](getrealflloc)
 - Usage: `getrealflloc key`
-- Description: 
+- Description:
 
 ### [getrealloc](getrealloc)
 - Usage: `getrealloc key`
-- Description: 
+- Description:
 
 ### [getreallocall](getreallocall)
 - Usage: `getreallocall key`
-- Description: 
+- Description:
 
 ### [getreallocunsafe](getreallocunsafe)
 - Usage: `getreallocunsafe key`
-- Description: 
+- Description:
 
-### [i](i) 
+### [i](i)
 - Usage: `i [key executable file]...`
 - Description: Dynamic merge of [e](e), [open](open) and [v](v).
 
-### [m](m) 
+### [m](m)
 - Usage: `m key`
 - Description: Marks the current directory with the key `key`.
 
@@ -125,7 +125,7 @@ The suite will deliver the following features:
 
 ### [open](open)
 - Usage: `open executable`
-- Description: 
+- Description:
 
 ### [setall](setall)
 - Usage: `setall`
@@ -151,8 +151,5 @@ PLACEHOLDER
 ### Scripts
 PLACEHOLDER
 
-## Examples
-As an example, `getdir wallpaper` returns the path of the directory with the key `wallpaper` in, on average, 4.0 ms. `getfl` is a bit slower, with an average of 6.3 ms. Unsafe counterparts (i.e. `getdirunsafe` and `getflunsafe`) are respectively 1 and 3 ms faster. Apart from the main `getdir` and `getfl` utilities, there are `getflloc` and `getdirall`.
-
 ## Other
-All benchmarks were done on a laptop with i7-8750H, 2667 MHz CL 15 RAM and a 7200 RPM HDD using `hyperfine` with sufficiently large number of warmup and benchmark iterations and `dash` (version 0.5.11.3) as `sh`.
+Some scripts are written in C, see [c/pathfinding](../../c/pathfinding/).
