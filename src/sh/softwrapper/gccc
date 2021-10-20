@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
-if [ "$1" = "clean" ] || [ "$1" = "c" ]; then
-    rm -f -- main.c program
-    return
-fi
-
-gcc main.c -Wall -o program && ./program "$@"
+case "$1" in
+    c|clean) rm -f -- main.c program;;
+    *      ) gcc main.c -Wall -o program && ./program "$@";;
+esac
