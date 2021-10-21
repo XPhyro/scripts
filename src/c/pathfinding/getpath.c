@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     }
 
     if (filemodes == FILEMODE_NONE)
-        DIE("at least one of -cdf must be passed");
+        DIE("at least one of -df must be passed");
 
     argv += optind;
     argc -= optind;
