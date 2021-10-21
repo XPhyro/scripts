@@ -40,7 +40,6 @@
 - In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of `execmenu`.
 - Do not assume a font size in `rofifit`. The new calculation should still be generous such that it would not make the same mistake as `rofi` trimming *very* short.
 - In `bspwmpad`, add an option to hide the cursor.
-- In `setdir`, allow `/` in the keycode.
 - In `tglapp`, add an option that disables auto-unlocking, allowing the user to review the stdout/stderr of the command.
 - In `syncmail`, allow adding temporary and permanent blacklist. If a lock is present, do not send a notification for the blacklisted senders/titles/bodies.
 - In `gcm`, if there is no staged files and if 2 arguments are given, assume the second argument is a file.

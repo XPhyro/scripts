@@ -1,16 +1,28 @@
 #!/usr/bin/env sh
 
+logerr() {
+    printf "%s: %s\n" "${0##*/}" "$1" >&2
+}
+
 flsfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files"
 sort -o "$flsfl" -- "$flsfl"
 container="$flsfl-container"
 rm -rf -- "$container"
 mkdir -p -- "$container"
 
-while IFS=" " read -r i j; do
-    contains "$i" / && {
-        printf "Keycode cannot contain /, aborting.\n"
-        exit 1
+cd "$container" || {
+    logerr "could not cd into container: $container"
+    exit 1
+}
+while IFS=" " read -r key val; do
+    suffixes "$key" / && {
+        logerr "key ends with /: $key"
+        continue
     }
-
-    printf "%s\n" "$j" | wordexp | perl -p -e 'chomp if eof' > "$container/$i"
+    [ -e "$key" ] && {
+        logerr "key is duplicate: $key"
+        continue
+    }
+    mkparent "$key"
+    printf "%s\n" "$val" | wordexp | perl -p -e 'chomp if eof' > "$key"
 done < "$flsfl"
