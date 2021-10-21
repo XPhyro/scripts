@@ -2,48 +2,32 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pwd.h>
 #include <errno.h>
 
-#include "../include/sysutil.h"
+#include "../include/pathfinding.h"
 
-#define DIE(ERRMSG) { fputs("getdir: "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(...) { fputs("getdirsafe: ", stderr); \
+                   fprintf(stderr, __VA_ARGS__); \
+                   exit(EXIT_FAILURE); }
 
 int main(int argc, char *argv[])
 {
-    const char *confdir = "/scripts/pathfinding/directories-container/";
-    char *prefix, *path, *s, *line;
-    size_t size, linesize;
-    ssize_t linelen;
-    FILE *fl;
+    char *s;
 
     if (argc != 2)
-        DIE("invalid argument count");
+        DIE("invalid argument count\n");
 
-    if (!(prefix = getenv("XDG_CONFIG_HOME"))) {
-        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
-            DIE("could not determine config directory");
-        prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)));
-        snprintf(prefix, size, "%s/.config", s);
+    errno = 0;
+    s = getdir(argv[1]);
+
+    if (errno) {
+        if (s)
+            DIE("%s\n", s);
+        return 1;
     }
 
-    path = malloc(size = (strlen(prefix) + strlen(confdir) + strlen(argv[1]) + 1) * sizeof(char));
-    snprintf(path, size, "%s%s%s", prefix, confdir, argv[1]);
-
-    if (!(fl = fopen(path, "rb"))) {
-        perror("fopen");
-        return EXIT_FAILURE;
-    }
-
-    if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
-        DIE("directory database is corrupted, generate a fresh copy");
-
-    rmkdir(line, 0755);
-
-    fputs(line, stdout);
+    rmkdir(s, 0755);
+    fputs(s, stdout);
 
     return 0;
 }
