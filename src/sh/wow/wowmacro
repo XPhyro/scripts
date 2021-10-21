@@ -7,8 +7,8 @@ stopiffl() {
     }
 }
 
-stopfl="$(getfl stopwowmacro)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+stopfl="$(getpath -f -- stopwowmacro)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 

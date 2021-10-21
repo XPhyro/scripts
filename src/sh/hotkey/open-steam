@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Prompt installed steam games and run the selected one.
 
-grep -E '\s*"path"\s*".*"$' "$(getfl steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i; do
+grep -E '\s*"path"\s*".*"$' "$(getpath -f -- steamlibdirs)" | awk -F '"' '{print $4}' | while IFS= read -r i; do
     cd "$i/steamapps" || {
         printf "%s\n" "Could not cd into '$i/steamapps', passing."
         continue

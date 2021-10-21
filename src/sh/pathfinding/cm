@@ -4,7 +4,7 @@
 mark="$1"
 [ -z "$mark" ] && exit 1
 val="$2"
-mrkfl="$(getflunsafe mrk)"
+mrkfl="$(getpath -fu -- mrk)"
 
 [ "$mark" != "¬" ] && {
     curval="$(grep "^$mark\s" -- "$mrkfl" | sed 's/^[^ ]*\s*\|\s*$//g')"

@@ -106,7 +106,7 @@ if [ -z "${sel##*<*>*}" ]; then
     case "$strtype" in
         appid)
             str="$(
-                grep -E '\s*"[0-9]+"\s*".*"$' -- "$(getfl steamlibdirs)" \
+                grep -E '\s*"[0-9]+"\s*".*"$' -- "$(getpath -f -- steamlibdirs)" \
                     | awk -F '"' '{print $4}' \
                     | while IFS= read -r i; do
                         cd "$i/steamapps" || {

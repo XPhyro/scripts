@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-loc="$(getdirunsafe "$1")" || exit $?
+loc="$(getpath -du -- "$1")" || exit $?
 exec realpath -P -- "${loc:?}"

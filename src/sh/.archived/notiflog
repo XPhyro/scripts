@@ -2,12 +2,12 @@
 # Log notifications.
 # Archived in favour of python-dbus to prevent ambiguous parsing of dbus-monitor.
 
-fl="$(getfl notiflog)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+fl="$(getpath -f -- notiflog)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
-lckfl="$(getfl notifloglck)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+lckfl="$(getpath -f -- notifloglck)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 beg="##beg##"

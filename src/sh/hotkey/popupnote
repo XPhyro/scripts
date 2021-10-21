@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-loc="$(getdirsafe popupnote)" || {
-    printf "[ERROR]: getdirsafe failed, aborting.\n"
+loc="$(getpath -ds -- popupnote)" || {
+    printf "[ERROR]: getpath -ds -- failed, aborting.\n"
     exit 1
 }
 

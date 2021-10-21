@@ -12,4 +12,4 @@ while IFS=\; read -r evaldir dir cmd; do
     }
 
     eval "$cmd"
-done < "$(getfl refdoc)"
+done < "$(getpath -f -- refdoc)"

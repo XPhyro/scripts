@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-logfl="$(getfl xdgopenlog)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+logfl="$(getpath -f -- xdgopenlog)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 

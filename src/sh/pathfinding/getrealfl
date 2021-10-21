@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-fl="$(getfl "$1")" || exit $?
+fl="$(getpath -f -- "$1")" || exit $?
 exec realpath -P -- "${fl:?}"

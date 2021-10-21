@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-printf "%s\n" "$@" | xargs -d '\n' -rn 1 getflunsafe | xargs -d '\n' -r bat 2> /dev/null
+printf "%s\n" "$@" | xargs -d '\n' -rn 1 getpath -fu -- | xargs -d '\n' -r bat 2> /dev/null
 exit $?

@@ -10,13 +10,13 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckdir="$(getdirunsafe upabllck)" || {
-    printf "[ERROR]: getdirunsafe failed, aborting.\n"
+lckdir="$(getpath -du -- upabllck)" || {
+    printf "[ERROR]: getpath -du -- failed, aborting.\n"
     exit 1
 }
 
-lst="$(getfl upabl)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+lst="$(getpath -f -- upabl)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 
@@ -49,7 +49,7 @@ while IFS= read -r i; do
 
     log "Parsing $loc."
 
-    cd "$(getdirsafe "$loc")" || {
+    cd "$(getpath -ds -- "$loc")" || {
         log "Could not find location $loc."
         continue
     }

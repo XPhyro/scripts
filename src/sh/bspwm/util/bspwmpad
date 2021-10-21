@@ -161,8 +161,8 @@ handlenode() {
 }
 
 main() {
-    lckdir="$(getdirsafe bspwmpadlck)" || {
-        printf "[ERROR]: getdirsafe failed, aborting.\n"
+    lckdir="$(getpath -ds -- bspwmpadlck)" || {
+        printf "[ERROR]: getpath -ds -- failed, aborting.\n"
         exit 1
     }
 

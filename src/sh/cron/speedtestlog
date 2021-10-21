@@ -31,8 +31,8 @@ log="$(
 printf "\n%s\n" "$log" | sed 's/;/\n/g'
 printf "\n\nLogging results...\n"
 
-fl="$(getfl stl)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+fl="$(getpath -f -- stl)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 

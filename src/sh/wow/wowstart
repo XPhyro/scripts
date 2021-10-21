@@ -6,7 +6,7 @@ starttsm() {
 }
 
 startrio() {
-    setsid --fork -- "$(getdirsafe prog)/RaiderIO/AppRun" &
+    setsid --fork -- "$(getpath -ds -- prog)/RaiderIO/AppRun" &
 }
 
 startwow() {

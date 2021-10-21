@@ -18,7 +18,7 @@ do
         h)
             printf "%s" \
 "wallpaper [OPTION...]
-   -d DIR     Use DIR as wallpaper directory. Default is \`getdirsafe wa\`.
+   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`.
    -h         Print help message and exit.
    -n COUNT   Print detailed status before initialisation. Default is your display count as of initialisation. Ignored if -m is not 'bgs'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
@@ -43,7 +43,7 @@ done
 shift "$((OPTIND - 1))"
 
 [ -z "$optdir" ] && {
-    optdir="$(getdirsafe wa)" || logerrq "getdirsafe failed."
+    optdir="$(getpath -ds -- wa)" || logerrq "getpath -ds -- failed."
 }
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"

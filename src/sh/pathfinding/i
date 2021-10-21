@@ -7,7 +7,7 @@ for i; do
         printf "%s\0" "$i"
     elif [ -e "src/$i" ]; then
         printf "%s\0" "src/$i"
-    elif fl="$(getflunsafe "$i")" \
+    elif fl="$(getpath -fu -- "$i")" \
         || [ -n "${fl:="$(whereis -b "$i" | cut -d' ' -f2 | grep '^/')"}" ]; then
         printf "%s\0" "$fl"
     fi

@@ -3,7 +3,7 @@
 # This script and clplog assume that the copied string does not contain the character .
 
 sel="$(
-    perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' -- "$(getfl clplog)" \
+    perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' -- "$(getpath -f -- clplog)" \
         | tail -n +3 \
         | head -n -1 \
         | rofiseltail rofi -dmenu -i -l 8 -p "yank:"

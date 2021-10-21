@@ -3,4 +3,4 @@
 
 {
     [ "$(xset q | head -n 4 | tail -n 1 | awk '{print $8}')" = 'on' ] && printf "%s\n" "Num"
-} > "$(getdirunsafe statbar)/1_statbarnum"
+} > "$(getpath -du -- statbar)/1_statbarnum"

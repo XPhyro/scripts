@@ -8,6 +8,6 @@ while IFS='' read -r label mp _; do
     printf "%s\n" "$devs" | while read -r devname devlabel devmp _; do
         [ "$(env printf "$devlabel")" = "$label" ] && [ -z "$devmp" ] && mount "$devname" "$mp"
     done
-done < "$(getfl mounts)"
+done < "$(getpath -f -- mounts)"
 
 exit 0

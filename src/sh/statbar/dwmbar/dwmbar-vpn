@@ -3,4 +3,4 @@
 
 {
     [ "$("$VPN" s | grep Status: | awk '{print $2}')" = "Connected" ] && printf "%s\n" "🌐"
-} > "$(getdirunsafe statbar)/6_statbarvpn"
+} > "$(getpath -du -- statbar)/6_statbarvpn"

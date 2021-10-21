@@ -6,10 +6,10 @@
 #       dumped into a file), or check for non-printable characters and do not log if it has
 #       non-printable characters.
 
-logfl="$(readlink -m -- "$(getfl clplog)")"
-bakdir="$(readlink -m -- "$(getdirsafe clplogbak)")"
-lckdir="$(getdirunsafe clploglck)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+logfl="$(readlink -m -- "$(getpath -f -- clplog)")"
+bakdir="$(readlink -m -- "$(getpath -ds -- clplogbak)")"
+lckdir="$(getpath -du -- clploglck)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 lastclp="$(xclip -o -se c)"

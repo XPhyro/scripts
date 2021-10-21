@@ -2,5 +2,5 @@
 # Get the directories of files with given codes.
 
 for i; do
-    dirname -- "$(getflunsafe "$i")"
+    dirname -- "$(getpath -fu -- "$i")"
 done

@@ -5,7 +5,7 @@ fl="$(
                        | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}'
                        | expandpath
                        | xargs -d '\n' ls --color=always
-        " < "$(getflunsafe fls)" \
+        " < "$(getpath -fu -- fls)" \
         | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' \
         | expandpath
 )"

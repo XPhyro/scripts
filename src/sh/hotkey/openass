@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 # xph-open assignments.
 
-loc="$(getdir ass)" || {
-    printf "[ERROR]: getdir failed, aborting.\n"
+loc="$(getpath -d -- ass)" || {
+    printf "[ERROR]: getpath -d -- failed, aborting.\n"
     exit 1
 }
 find -L "$loc" -mindepth 1 -type f -printf "%T@;%p\n" \

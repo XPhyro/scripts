@@ -7,7 +7,7 @@ cd() {
     else
         dir="$1"
         if [ -n "$dir" ]; then
-            [ ! -d "$dir" ] && dir="$(getdir "$dir" | inorcmd dirname "$dir")"
+            [ ! -d "$dir" ] && dir="$(getpath -d -- "$dir" | inorcmd dirname "$dir")"
         else
             return 1
         fi

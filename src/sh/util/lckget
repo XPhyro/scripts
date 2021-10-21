@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
-lckdir="$(getdirunsafe "${1}lck")" || {
-    printf "getdirunsafe failed with code $? for keycode ${1}lck, exiting with code 1.\n" >&2
+lckdir="$(getpath -du -- "${1}lck")" || {
+    printf "getpath -du -- failed with code $? for keycode ${1}lck, exiting with code 1.\n" >&2
     exit 1
 }
 
 [ -n "$lckdir" ] || {
-    printf "getdirunsafe returned empty for keycode ${1}lck, exiting with code 2.\n" >&2
+    printf "getpath -du -- returned empty for keycode ${1}lck, exiting with code 2.\n" >&2
     exit 1
 }
 

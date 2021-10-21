@@ -5,6 +5,6 @@ fzf --preview "printf '%s\n' {}
                    | expandpath
                    | xargs -d '\n'
                    ls --color=always --
-    " < "$(getflunsafe mrk)"
+    " < "$(getpath -fu -- mrk)"
     | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
     | expandpath

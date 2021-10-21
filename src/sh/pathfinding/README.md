@@ -68,7 +68,7 @@ The suite will deliver the following features:
 - Description:
 
 ### [getfl](getfl)
-- Usage: `getfl key`
+- Usage: `getpath -f -- key`
 - Description:
 
 ### [getflloc](getflloc)
@@ -76,11 +76,11 @@ The suite will deliver the following features:
 - Description:
 
 ### [getflunsafe](getflunsafe)
-- Usage: `getflunsafe key`
+- Usage: `getpath -fu -- key`
 - Description:
 
 ### [getdir](getdir)
-- Usage: `getdir key`
+- Usage: `getpath -d -- key`
 - Description:
 
 ### [getdirall](getdirall)
@@ -121,7 +121,7 @@ The suite will deliver the following features:
 
 ### [mvloc](mvloc)
 - Usage: `mvloc location file1 ... fileN`
-- Description: Is equivalent to `mv file1 ... fileN "$(getdir location)"`.
+- Description: Is equivalent to `mv file1 ... fileN "$(getpath -d -- location)"`.
 
 ### [open](open)
 - Usage: `open executable`

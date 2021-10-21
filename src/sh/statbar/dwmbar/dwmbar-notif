@@ -2,4 +2,4 @@
 
 {
     [ "$(dunstctl is-paused)" = "true" ] && printf "%s\n" "📮"
-} > "$(getdirunsafe statbar)/7.7_statbarnotif"
+} > "$(getpath -du -- statbar)/7.7_statbarnotif"

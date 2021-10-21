@@ -10,7 +10,7 @@
     exit 0
 }
 
-fl="$(getflunsafe "$1")"
+fl="$(getpath -fu -- "$1")"
 
 if [ -f "$fl" ]; then
     printf "%s\n" "${fl%/*}"

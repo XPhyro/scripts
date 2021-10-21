@@ -86,8 +86,8 @@ processargs() {
 }
 
 main() {
-    lckdir="$(getdir dwmpadlck)" || {
-        printf "[ERROR]: getdir failed, aborting.\n"
+    lckdir="$(getpath -d -- dwmpadlck)" || {
+        printf "[ERROR]: getpath -d -- failed, aborting.\n"
         exit 1
     }
 

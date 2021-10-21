@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # Query X keymap.
 
-printf "%s\n" "$(xkb-switch) ⌨" > "$(getdirunsafe statbar)/3_statbarkm"
+printf "%s\n" "$(xkb-switch) ⌨" > "$(getpath -du -- statbar)/3_statbarkm"

@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 # Usage: mvloc location file1 ... fileN
-# Equivalent to: mv file1 ... fileN "$(getdirsafe location)"
+# Equivalent to: mv file1 ... fileN "$(getpath -ds -- location)"
 
-dir="$(getdirsafe "$1")" || {
-    printf "[ERROR]: getdirsafe failed, aborting.\n"
+dir="$(getpath -ds -- "$1")" || {
+    printf "[ERROR]: getpath -ds -- failed, aborting.\n"
     exit 1
 }
 

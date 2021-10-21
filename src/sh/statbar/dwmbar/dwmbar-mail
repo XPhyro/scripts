@@ -8,4 +8,4 @@ unread="$(
 )"
 {
     [ "$unread" = 0 ] || printf "%s\n" "$unread 📧" 2>/dev/null
-} > "$(getdirunsafe statbar)/4_statbarmail"
+} > "$(getpath -du -- statbar)/4_statbarmail"

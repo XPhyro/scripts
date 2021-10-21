@@ -7,8 +7,8 @@
 #       based on some custom filtering/sorting, and use that helper script to do
 #       what this script currently does.
 
-dir="$(getdirunsafe mu)" || {
-    printf "[ERROR]: getdirunsafe failed, aborting.\n"
+dir="$(getpath -du -- mu)" || {
+    printf "[ERROR]: getpath -du -- failed, aborting.\n"
     exit 1
 }
 

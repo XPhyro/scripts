@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
-# TODO: Include "$(getfl fls)". If the selection is a file, print its directory.
+# TODO: Include "$(getpath -f -- fls)". If the selection is a file, print its directory.
 
 fzf --preview "printf '%s\n' {}
                    | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}'
                    | expandpath
                    | xargs -d '\n' ls --color=always
-    " < "$(getfl dir)"
+    " < "$(getpath -f -- dir)"
     | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
     | expandpath

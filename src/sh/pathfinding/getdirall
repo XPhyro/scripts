@@ -2,8 +2,8 @@
 # Get directories or the directories of files with given codes.
 
 for i; do
-    loc="$(getdir "$i")" || {
-        loc="$(getfl "$i")" || continue
+    loc="$(getpath -d -- "$i")" || {
+        loc="$(getpath -f -- "$i")" || continue
         loc="${loc%/*}"
     }
     printf "%s\n" "$loc"

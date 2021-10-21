@@ -21,7 +21,7 @@ case "$(mimetype --brief -- "$1")" in
 esac
 
 dtf="$(
-    grep -m 1 "$(mimetype -- "$1" | awk '{print $2}')" "$(getfl mim)" \
+    grep -m 1 "$(mimetype -- "$1" | awk '{print $2}')" "$(getpath -f -- mim)" \
         | sed -e 's/^.*=//' -e 's/;$//'
 )"
 [ -z "$dtf" ] && exec xdg-open "$1"

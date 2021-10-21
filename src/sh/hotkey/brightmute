@@ -2,8 +2,8 @@
 # Log the current brightness, then set it to 0 if it is not 0 else set it
 # to the previously logged value. This only affects the laptop screen on my system.
 
-fl="$(getfl brtcch)" || {
-    printf "[ERROR]: getfl failed, aborting.\n"
+fl="$(getpath -f -- brtcch)" || {
+    printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1
 }
 val="$(cat -- "$fl")"

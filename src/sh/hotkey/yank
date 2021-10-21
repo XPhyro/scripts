@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
 lckget clplog
-execmenu < "$(getfl ynk)" | awk -F ";" '{print $2}' | sed 's/^ //' | tr -d '\n' | xclip -se c
+execmenu < "$(getpath -f -- ynk)" | awk -F ";" '{print $2}' | sed 's/^ //' | tr -d '\n' | xclip -se c
