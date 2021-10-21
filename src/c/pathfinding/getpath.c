@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <errno.h>
+#include <sys/param.h>
 
 #include "../include/sysutil.h"
 
@@ -26,41 +27,18 @@ typedef enum {
     FILEMODE_FILE = 2,
 } FILEMODES;
 
-char *getpath(const char *confdir, const char *keycode)
-{
-    char *prefix, *path, *s, *line = NULL;
-    size_t size, linesize = 0;
-    ssize_t linelen;
-    FILE *fl;
-
-    if (!(prefix = getenv("XDG_CONFIG_HOME"))) {
-        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
-            DIE("could not determine config directory\n");
-        prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)));
-        snprintf(prefix, size, "%s/.config", s);
-    }
-
-    path = malloc(size = (strlen(prefix) + strlen(confdir) + strlen(keycode) + 1) * sizeof(char));
-    snprintf(path, size, "%s%s%s", prefix, confdir, keycode);
-
-    if (!(fl = fopen(path, "rb"))) {
-        perror("fopen");
-        exit(EXIT_FAILURE);
-    }
-
-    if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
-        DIE("directory database is corrupted, generate a fresh copy\n");
-
-    return line;
-}
-
 int main(int argc, char *argv[])
 {
-    bool b;
-    bool optboth = false;
+    const char *flcont = "/scripts/pathfinding/files-container/";
+    const char *dircont = "/scripts/pathfinding/directories-container/";
+    const char *confdir;
+    bool b, optboth = false;
     int i;
     char delim = '\n';
-    char *s, *confdir;
+    char *s, *prefix, *path, *line = NULL;
+    size_t st, size, contmargin, kcmargin, linesize = 0;
+    ssize_t linelen;
+    FILE *fl;
     FILEMODES filemodes = FILEMODE_NONE;
     SAFETYMODE safetymode = SAFETYMODE_NORMAL;
 
@@ -116,47 +94,62 @@ int main(int argc, char *argv[])
     argv += optind;
     argc -= optind;
 
-    for (i = 0; i < argc; i++) {
-        for (b = false; ; b = !b) {
-            errno = 0;
+    if (!(prefix = getenv("XDG_CONFIG_HOME"))) {
+        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
+            DIE("could not determine config directory\n");
+        prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)));
+        snprintf(prefix, size, "%s/.config", s);
+    }
 
+    contmargin = strlen(prefix) + MAX(strlen(flcont), strlen(dircont));
+    path = NULL; /* suppress -Wmaybe-uninitialized */
+    size = 0;    /* suppress -Wmaybe-uninitialized */
+
+    for (i = kcmargin = errno = 0; i < argc; i++) {
+        if (!*argv[i])
+            DIE("keycode is empty");
+
+        if ((st = strlen(argv[i])) > kcmargin)
+            path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char));
+
+        for (b = false; ; b = !b) {
             if (!b) {
                 if (!(filemodes & FILEMODE_FILE))
                     continue;
-                else
-                    confdir = "/scripts/pathfinding/files-container/";
+                confdir = flcont;
             } else {
                 if (!(filemodes & FILEMODE_DIR))
                     break;
-                else
-                    confdir = "/scripts/pathfinding/directories-container/";
+                confdir = dircont;
             }
 
-            s = getpath(confdir, argv[i]);
+            snprintf(path, size, "%s%s%s", prefix, confdir, argv[i]);
 
-            if (errno) {
-                if (s)
-                    DIE("%s\n", s);
+            if (!(fl = fopen(path, "rb"))) {
+                perror("fopen");
                 return 1;
             }
+
+            if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
+                DIE("directory database is corrupted, generate a fresh copy\n");
 
             switch (safetymode) {
                 case SAFETYMODE_UNSAFE:
                     break;
                 case SAFETYMODE_NORMAL:
-                    rmkparent(s, 0755);
+                    rmkparent(line, 0755);
                     break;
                 case SAFETYMODE_SAFE:
-                    (b ? rmkdir : rmkfile)(s, 0755);
+                    (b ? rmkdir : rmkfile)(line, 0755);
                     break;
             }
 
-            printf("%s%c", s, delim);
+            printf("%s%c", line, delim);
 
             if (b || !optboth)
                 break;
         }
     }
 
-    return 0;
+    return errno ? 1 : 0;
 }
