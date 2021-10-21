@@ -6,7 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <errno.h>
 #include <sys/param.h>
 
 #include "../include/sysutil.h"
@@ -105,7 +104,7 @@ int main(int argc, char *argv[])
     path = NULL; /* suppress -Wmaybe-uninitialized */
     size = 0;    /* suppress -Wmaybe-uninitialized */
 
-    for (i = kcmargin = errno = 0; i < argc; i++) {
+    for (i = kcmargin = 0; i < argc; i++) {
         if (!*argv[i])
             DIE("keycode is empty");
 
@@ -151,5 +150,5 @@ int main(int argc, char *argv[])
         }
     }
 
-    return errno ? 1 : 0;
+    return 0;
 }
