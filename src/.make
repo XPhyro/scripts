@@ -38,8 +38,8 @@ set -e
 
 [ "$(id -u)" != 0 ] && logerrq "This script needs to be executed as root.\n"
 
-case "$1" in
+case "$*" in
     install) install;;
     uninstall) uninstall;;
-    *) logerrq "Arguments must be 'install' or 'uninstall', not [%s]." "$1";;
+    *) logerrq "Arguments must be 'install' or 'uninstall', not [%s]." "$*";;
 esac
