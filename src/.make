@@ -6,15 +6,15 @@ logerrq() {
 }
 
 install() {
-    mkdir /usr/local/bin/wrapper 2> /dev/null \
-        && printf "There was no /usr/local/bin/wrapper directory, so it was created for you. Be sure to add it to your PATH with high priority.\n" >&2
+    mkdir "$prefix/wrapper" 2> /dev/null \
+        && printf "There was no $prefix/wrapper directory, so it was created for you. Be sure to add it to your PATH with high priority.\n" >&2
 
     for i in bash el py sh; do
         cd "$i"
-        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -not -path "*/wrapper/*" -printf "%P\0/usr/local/bin/%f\0" \
+        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -not -path "*/wrapper/*" -printf "%P\0$prefix/%f\0" \
             | tee -a ../.installed \
             | xargs -r0 -n 2 cp -f --
-        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -path "*/wrapper/*" -printf "%P\0/usr/local/bin/wrapper/%f\0" \
+        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" -path "*/wrapper/*" -printf "%P\0$prefix/wrapper/%f\0" \
             | tee -a ../.installed \
             | xargs -r0 -n 2 cp -f --
         cd ..
@@ -24,7 +24,7 @@ install() {
     find '.' -mindepth 1 -type f -not -path "./.*" -not -path "*/include/*" -printf "%P\n" | while IFS= read -r i; do
         out="${i%.c}"
         out="${out##*/}"
-        gcc -O3 -std=c99 -pedantic -Wall "$i" -o /usr/local/bin/"$out" &
+        gcc -O3 -std=c99 -pedantic -Wall "$i" -o "$prefix/$out" &
         printf "\0%s\0" "$out" >> ../.installed
     done
 }
@@ -36,7 +36,13 @@ uninstall() {
 
 set -e
 
-[ "$(id -u)" != 0 ] && logerrq "This script needs to be executed as root.\n"
+if [ -n "$PREFIX" ]; then
+    prefix="$PREFIX/bin"
+elif [ "$(id -u)" != 0 ]; then
+    prefix="$HOME/.local/bin"
+else
+    prefix="/usr/local/bin"
+fi
 
 case "$*" in
     install) install;;
