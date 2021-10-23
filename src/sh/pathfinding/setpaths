@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+
+logerr() {
+    printf "%s: %s\n" "${0##*/}" "$i" >&2
+}
+
+set -- "${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files" "${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories"
+
+for i; do
+    rm -rf -- "$i-container"
+    mkdir -p -- "$i-container"
+
+    cd "$i-container" || {
+        logerr "could not cd into container: $i-container"
+        exit 1
+    }
+    grep -vE -- "^(\s*#|$)" "$i" | while IFS=" " read -r key val; do
+        suffixes "$key" / && {
+            logerr "key ends with /: $key"
+            continue
+        }
+        [ -e "$key" ] && {
+            logerr "key is duplicate: $key"
+            continue
+        }
+        mkparent "$key"
+        printf "%s\n" "$val" | wordexp | perl -p -e 'chomp if eof' > "$key"
+    done
+done
