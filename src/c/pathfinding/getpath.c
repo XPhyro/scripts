@@ -28,8 +28,8 @@ typedef enum {
 
 int main(int argc, char *argv[])
 {
-    const char *flcont = "/scripts/pathfinding/files-container/";
-    const char *dircont = "/scripts/pathfinding/directories-container/";
+    const char *const flcont = "/scripts/pathfinding/files-container/";
+    const char *const dircont = "/scripts/pathfinding/directories-container/";
     const char *confdir;
     bool b, optboth = false;
     int i;
