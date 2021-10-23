@@ -70,6 +70,7 @@
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
 - Write a `getfl`/`getdir` alternative that takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output of the scripts are to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
 - Write tests (especially for `c/*`).
+- Write a manager for *suckless*-like software that handles updating to upstream, applying patches to the fresh copy and building & installing.
 
 # Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
