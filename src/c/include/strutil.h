@@ -3,11 +3,7 @@
 
 char *strend(const char *s)
 {
-    for (;;) {
-        if (!*s)
-            break;
-        s++;
-    }
+    for (; *s; s++);
     return (char *)s;
 }
 
