@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
                 filemodes |= FILEMODE_FILE;
                 break;
             case 'h':
-                puts("Usage: getpath -d [OPTION]... [KEYCODE]...\n"
+                puts("Usage: getpath [OPTION]... [KEYCODE]...\n"
                      "Get paths based on keycodes.\n"
                      "\n"
                      "By default, all parents of the path are created, but the last element is left as-is.\n"
