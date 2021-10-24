@@ -77,10 +77,11 @@ int main(int argc, char *argv[])
     }
 
     while ((nread = getdelim(&line, &linelen, delim, stdin)) != -1) {
-        eol = line;
-        while(*++eol);
-        eol = eol - 1;
-        if (*eol == '\n')
+        if (!*line) {
+            fputs(end, stdout);
+            goto newline;
+        }
+        if (delim == '\n' && *(eol = strend(line) - 1) == '\n')
             *eol = '\0';
         for (i = 0; i < argc; i++) {
             if (streq(line, argv[i])) {
