@@ -23,9 +23,8 @@ validate() {
 
 optmod="p"
 unset dbfl optreal
-while getopts "adfhPpRr" OPT; do
+while getopts "acdfhPpRr" OPT; do
     case "$OPT" in
-        a) optmod="a";;
         d) dbfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories";;
         f) dbfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files";;
         h)
@@ -37,22 +36,21 @@ Edit the pathfinding database.
 
 By default, mode -p is selected. Either -d or -f must be passed.
 
-  -a        select append mode, override -pRr
+  -a        select append mode, override -cpRr
+  -c        select edit mode, override -apRr
   -d        edit directory database, override -f
   -f        edit file database, override -d
   -h        display this help and exit
   -P        pass PATHs through \`realpath -mP\`
-  -p        select prepend mode, override -aRr
-  -R        select path remove mode, override -apr
-  -r        select keycode remove mode, override -apR
+  -p        select prepend mode, override -acRr
+  -R        select path remove mode, override -acpr
+  -r        select keycode remove mode, override -acpR
 "
             exit 0
             ;;
         P) optreal=1;;
-        p) optmod="p";;
-        R) optmod="R";;
-        r) optmod="r";;
-        *) logerrq "see \`$execname -h\`";;
+        \?) logerrq "see \`$execname -h\`";;
+        *) optmod="$OPT";;
     esac
 done
 shift "$((OPTIND - 1))"
@@ -66,6 +64,17 @@ case "$optmod" in
             [ "$optreal" = 1 ] && set -- "$1" "$(realpath -mPq -- "$2")"
             validate "$1" "$2"
             printf "%s\r%s\n" "$1" "$2" >> "$dbfl"
+            return 2
+        }
+        ;;
+    c)
+        edit() {
+            gawk -i inplace -F '\r' -v KC="$1" -v PATH="$2" -- '{
+                if ($1 == KC)
+                    printf("%s\r%s\n", KC, PATH);
+                else
+                    print($0);
+            }' "$dbfl"
             return 2
         }
         ;;
