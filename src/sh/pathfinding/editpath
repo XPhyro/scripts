@@ -1,0 +1,92 @@
+#!/usr/bin/env sh
+
+execname="${0##*/}"
+
+logerr() {
+    printf "%s: %s\n" "$execname" "$1" >&2
+}
+
+logerrq() {
+    logerr "$@"
+    exit 1
+}
+
+validate() {
+    contains "$1" "
+" "" && logerrq "key cannot contain \n or \r: $1"
+    contains "$2" "
+" "" && logerrq "value cannot contain \n or \r: $2"
+    grep -m 1 -F -- "$1" "$dbfl" > /dev/null && logerrq "duplicate key: $1"
+}
+
+optmod="p"
+unset dbfl optreal
+while getopts "adfhPpr" OPT; do
+    case "$OPT" in
+        a) optmod="a";;
+        d) dbfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories";;
+        f) dbfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files";;
+        h)
+            printf "%s" \
+"Usage: $execname [OPTION]... [[KEY] [PATH]]...
+Usage: $execname -r [OPTION]... [KEY]...
+Edit the pathfinding database.
+
+By default, -p is selected. Either -d or -f must be passed.
+
+  -a        select append mode, override -pr
+  -d        select directory mode, override -f
+  -f        select file mode, override -d
+  -h        display this help and exit
+  -P        pass PATHs through \`realpath -mP\`
+  -p        select prepend mode, override -ar
+  -r        select remove mode, override -ap
+"
+            exit 0
+            ;;
+        P) optreal=1;;
+        p) optmod="p";;
+        r) optmod="r";;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ -z "$dbfl" ] && logerrq "either -d or -f must be passed, see \`$execname -h\`"
+[ "$optmod" != "r" ] && [ "$(($# % 2))" -ne 0 ] && logerrq "every KEY must be paired with a PATH"
+
+case "$optmod" in
+    a)
+        edit() {
+            [ "$optreal" = 1 ] && set -- "$1" "$(realpath -mPq -- "$2")"
+            validate "$1" "$2"
+            printf "%s\r%s\n" "$1" "$2" >> "$dbfl"
+            return 2
+        }
+        ;;
+    p)
+        edit() {
+            [ "$optreal" = 1 ] && set -- "$1" "$(realpath -mPq -- "$2")"
+            validate "$1" "$2"
+            {
+                printf "%s\r%s\n" "$1" "$2"
+                cat -- "$dbfl"
+            } | sponge -- "$dbfl"
+            return 2
+        }
+        ;;
+    r)
+        edit() {
+            grep -vF -- "$1" "$dbfl" | sponge -- "$dbfl"
+            return 1
+        }
+        ;;
+esac
+
+chmod -- 600 "$dbfl"
+while [ "$#" -gt 0 ]; do
+    edit "$@"
+    shift "$?"
+done
+chmod -- 400 "$dbfl"
+
+genpath
