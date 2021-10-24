@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 lckdir="$(getpath -du -- "${1}lck")" || {
     printf "getpath -du -- failed with code $? for keycode ${1}lck, exiting with code 1.\n" >&2
     exit 1

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Edit given links.
 
+eval "$(evalverbose)"
+
 clean() {
     rm -f -- "$tmpfl" "$origtmpfl" 2> /dev/null
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 fl="$(getpath -f -- sptkeys)" || {
     printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1

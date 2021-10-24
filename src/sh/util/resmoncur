@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 xrandr --current | grep -F -- "$(moncur) connected " | awk '{print $(NF - 11)}' | cut -d+ -f1

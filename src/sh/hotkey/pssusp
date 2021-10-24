@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 menu="$(getmenu)"
 sig="$(printf "STOP\nCONT\n" | $menu -i -p "Suspend process:")"
 

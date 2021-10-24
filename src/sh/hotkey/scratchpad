@@ -2,6 +2,8 @@
 # Take and manage notes with dmenu.
 # Designed to work as a scratchpad to dwm with st.
 
+eval "$(evalverbose)"
+
 dir="$HOME/documents/notes/scratchpad"
 
 files="$(find "$dir" -type f -printf "%f\n" | sort -rV)"

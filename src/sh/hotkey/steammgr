@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 cmds="AddNonSteamGame ## Opens the Steam checklist menu to add non-Steam games.
 advertise/<appid> ## Opens the store to an application's page.
 appnews/<appid> ## Opens up the news page for an app.

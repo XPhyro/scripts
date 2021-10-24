@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 players="$(playerctl -l -i "$PLAYERCTLSELIGNORE")"
 if [ "$(printf "%s\n" "$players" | wc -l)" -lt 2 ]; then
     playerctl "$@"

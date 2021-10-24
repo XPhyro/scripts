@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 for i; do
     case "$i" in
         *.tar.bz|*.tar.bz2|*.tbz|*.tbz2 ) tar        xjvf "$i";;

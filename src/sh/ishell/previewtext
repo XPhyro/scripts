@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 logerr() {
     tput setaf 1
     printf "[%s]: %s\n" "$execname" "$1" >&2
@@ -31,7 +33,7 @@ esac
 case "$(file --mime-type --brief -- "$fl")" in
     text/*|*/xml)
         tmp="$(mktemp)"
-        { 
+        {
             [ "${fl%.*}" = "$fl" ] \
                 || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq -- "${fl##*.}"
         } && timeout 5s bat --color=always --style=plain --pager=never --decorations=never -- "$fl" > "$tmp" \

@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 bspc query -N -n ."$1" | grep -Fxq "$2"

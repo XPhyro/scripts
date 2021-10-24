@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 ifne false || exit 1
 exec cat <&0

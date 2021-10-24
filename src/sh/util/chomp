@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 tmp="$(mktemp)"
 
 if [ "$#" -ne 0 ]; then

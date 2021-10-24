@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 [ "$#" -lt 1 ] && exit 1
 message="$1"
 shift

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 while true; do
     i=-1
     while [ "$((i += 1))" -lt "${3:-"3"}" ]; do

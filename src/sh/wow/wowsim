@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 exitnotif() {
     notify-send -t 3000 "wowsim" "ERROR: $1"
     exit 1

@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 printf "%s" "$@" | sed -E 's/(.)/\1\x00/g' | xargs -r0 -I CHAR printf "%d\n" "'CHAR"

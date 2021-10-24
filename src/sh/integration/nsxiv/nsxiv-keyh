@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 printf "%s\n" "$1" >&2
 
 case "$1" in

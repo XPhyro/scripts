@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 method="${3:-"-n"}"
 [ "$method" != "-n" ] && [ "$method" != "-c" ] && exit 1
 tail "$method" "+$1" | head "$method" "$(($2 - $1 + 1))"

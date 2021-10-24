@@ -2,6 +2,8 @@
 # Usage: mvloc location file1 ... fileN
 # Equivalent to: mv file1 ... fileN "$(getpath -ds -- location)"
 
+eval "$(evalverbose)"
+
 dir="$(getpath -ds -- "$1")" || {
     printf "[ERROR]: getpath -ds -- failed, aborting.\n"
     exit 1

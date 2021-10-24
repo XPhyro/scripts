@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Overwrite a file.
 
+eval "$(evalverbose)"
+
 cp "$@" || {
     printf "%s\n" "Could not overwrite:" "$@"
     exit 1

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 [ $# -eq 0 ] && exec "$EDITOR"
 
 for i; do

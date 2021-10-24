@@ -2,6 +2,8 @@
 # Show weather forecast.
 # Designed to be used with $PAD.
 
+eval "$(evalverbose)"
+
 v1="$(mktemp)"
 v2="$(mktemp)"
 

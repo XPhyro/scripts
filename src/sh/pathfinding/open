@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Open executable files.
 
+eval "$(evalverbose)"
+
 paths="$(whereis -b "$@" | cut -d' ' -f2 | grep '^/')"
 
 if [ -n "$paths" ]; then

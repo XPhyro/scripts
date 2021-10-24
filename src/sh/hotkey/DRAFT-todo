@@ -3,6 +3,8 @@
 # TODO: Add support for recurring todos.
 # TODO: Add support for notifications at set delta times until due.
 
+eval "$(evalverbose)"
+
 fl="$(getpath -f -- todo)" || {
     printf "[ERROR]: getpath -f -- failed, aborting."
     exit 1

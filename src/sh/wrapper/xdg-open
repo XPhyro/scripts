@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 unset XDG_CURRENT_DESKTOP
 
 [ "$#" -eq 1 ] && {

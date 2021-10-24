@@ -2,6 +2,8 @@
 # This might be the dumbest code I have ever written in my life, but it works!
 # Use zscroll instead of this. I have written this as zscroll's output was not correct on my system.
 
+eval "$(evalverbose)"
+
 scrolloutput() {
     IFS= read -r str < "$fifo"
 

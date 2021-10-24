@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 unset optstatus
 while getopts "hsv:" OPT; do
     case "$OPT" in

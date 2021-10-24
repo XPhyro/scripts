@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 preargs="${NSXIV_ARGS_PRE:-"-a"}"
 postargs="$NSXIV_ARGS_POST"
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Adjust displays with xrandr.
 
+eval "$(evalverbose)"
+
 xr="$(xrandr)"
 hdmic="$(printf "%s" "$xr" | grep -o "HDMI-0 connected")"
 dvic="$(printf "%s" "$xr" | grep -o "DVI-I-2-1 connected")"

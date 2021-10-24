@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Choose a manual, generate its PDF and open it with zathura.
 
+eval "$(evalverbose)"
+
 apropos '' \
     | MENUARGS="-m prefix -l 20" execmenu \
     | head -n 1 \

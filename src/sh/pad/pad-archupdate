@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 "$PAD" -- '
     update > /dev/null 2>&1 &
     time yay -Syu || color red "ERROR(s) encountered."

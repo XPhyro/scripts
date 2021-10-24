@@ -10,6 +10,8 @@
 #
 # bspwm is not required for operation, but the script was designed with it in mind.
 
+eval "$(evalverbose)"
+
 execname="${0##*/}"
 
 printhelp() {

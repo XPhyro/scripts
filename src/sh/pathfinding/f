@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Select a file using fzf and open them in "$EDITOR".
 
+eval "$(evalverbose)"
+
 main() {
     fl="$(
         find . -type f -not -path "*/.git/*" -printf "%P\n" \

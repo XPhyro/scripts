@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Cycle touchpad status.
 
+eval "$(evalverbose)"
+
 tpid="$(xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//')"
 xinput "$(
     xinput --list-props "$tpid" \

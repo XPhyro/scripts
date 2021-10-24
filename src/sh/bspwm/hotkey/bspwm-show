@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 bspc query -N -n .hidden.window | while IFS= read -r i; do
     printf "%s: %s\n" "$i" "$(xprop -id "$i" WM_NAME | cut -d\" -f2- | head -c -2)"
 done | xins -Rs -- execmenu | while IFS=: read -r i _; do

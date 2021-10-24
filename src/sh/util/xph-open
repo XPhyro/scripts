@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # xdg-open wrapper.
 
+eval "$(evalverbose)"
+
 open() {
     if [ "$(grep -E -m 1 "^Terminal=.*" -- "$2" | sed 's/^Terminal=//')" = "true" ]; then
         exec xdg-open "$1"

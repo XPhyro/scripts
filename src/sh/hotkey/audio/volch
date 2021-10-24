@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 # Change the volume of the default pulseaudio sink.
 
+eval "$(evalverbose)"
+
 pactl set-sink-volume "$(voldefsink)" "$@"

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 name="${1%.*}"
 rest="${1##*.}"
 while [ -e "$name.$rest" ]; do

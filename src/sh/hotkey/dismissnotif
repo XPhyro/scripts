@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 # shellcheck disable=SC2046
 xdotool mousemove $(
     xrandr --listactivemonitors \

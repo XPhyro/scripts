@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Mark directory.
 
+eval "$(evalverbose)"
+
 logerrq() {
     printf "[ERROR]: %s\n" "$*"
     exit 1
@@ -20,7 +22,7 @@ else
     val="$PWD"
 fi
 
-grep -Eq "^$mark\s" -- "$markfl" && { 
+grep -Eq "^$mark\s" -- "$markfl" && {
     cm "$mark" "$val"
     exit 0
 }

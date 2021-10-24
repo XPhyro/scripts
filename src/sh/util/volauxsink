@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 pactl list sources \
     | grep '	Monitor of Sink: ' \
     | grep -vF "$(voldefsink)" \

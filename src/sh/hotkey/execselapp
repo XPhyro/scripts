@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 sel="$(
     fd -e .desktop -uu '.' \
                        "${XDG_DATA_HOME:-"$HOME/.local/share"}/applications" \

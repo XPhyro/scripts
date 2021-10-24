@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 IFS= read -r str || exit 1
 printf "%s" "$str"

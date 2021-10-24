@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 case "$1" in
     c|clean) rm -f -- main.c program;;
     *      ) gcc main.c -Wall -o program && ./program "$@";;

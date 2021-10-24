@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # xph-open assignments.
 
+eval "$(evalverbose)"
+
 loc="$(getpath -d -- ass)" || {
     printf "[ERROR]: getpath -d -- failed, aborting.\n"
     exit 1

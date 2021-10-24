@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
-
 # $1: path to image file
 # $2: image width
 # $3: image height
+
+eval "$(evalverbose)"
 
 printf "%s  %s  %s\n" \
     "$(du -Hh -- "$1" | cut -f1)" \

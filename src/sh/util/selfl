@@ -3,6 +3,8 @@
 # TODO: Make -d respect -g.
 # TODO: Add support for multiple -e.
 
+eval "$(evalverbose)"
+
 execname="${0##*/}"
 
 printhelp() {
@@ -107,7 +109,7 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                
+
                 case "$opt" in
                     absolute       ) absolute="1";;
                     directory      ) directory="1";;
@@ -177,7 +179,7 @@ main() {
                     }
 
                     fls="$(
-                        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do 
+                        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do
                             cdsafe "$i"
 
                             if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] && [ "$(git rev-parse HEAD)" = "$initgithash" ]; then
@@ -200,7 +202,7 @@ main() {
                     }
 
                     fls="$(
-                        find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do 
+                        find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do
                             cdsafe "$i"
 
                             if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] && [ "$(git rev-parse HEAD)" = "$initgithash" ]; then

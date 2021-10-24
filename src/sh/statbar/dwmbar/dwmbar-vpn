@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Query VPN status.
 
+eval "$(evalverbose)"
+
 {
     [ "$("$VPN" s | grep Status: | awk '{print $2}')" = "Connected" ] && printf "%s\n" "🌐"
 } > "$(getpath -du -- statbar)/6_statbarvpn"

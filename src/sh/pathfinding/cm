@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Change directory of mark.
 
+eval "$(evalverbose)"
+
 mark="$1"
 [ -z "$mark" ] && exit 1
 val="$2"

@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 pactl set-sink-volume "$1" "$(volgetsink "$1")"

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Get the directories of files with given codes.
 
+eval "$(evalverbose)"
+
 for i; do
     dirname -- "$(getpath -fu -- "$i")"
 done

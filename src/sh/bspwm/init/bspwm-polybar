@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 killall -u "$USER" polybar
 
 mons="$(bspc query -M --names)"

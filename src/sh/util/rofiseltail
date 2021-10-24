@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 stdinfl="$(mktemp)"
 [ ! -t 0 ] && cp -- /dev/stdin "$stdinfl"
 

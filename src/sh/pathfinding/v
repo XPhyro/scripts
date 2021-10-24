@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 [ $# -eq 0 ] && exec "$EDITOR"
 
 printf -- "%s\0" "$@" | awk -F '\0' '

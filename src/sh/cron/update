@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Pull updates from git and compile programs. Used list file is the file coded upabl.
 
+eval "$(evalverbose)"
+
 cleanexit() {
     rm -rf -- "$lckdir" 2> /dev/null
     exit 0

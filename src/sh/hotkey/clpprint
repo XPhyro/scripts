@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 tglapp -sk clpprint && {
     tglapp -kT clpprint off
     exit 0

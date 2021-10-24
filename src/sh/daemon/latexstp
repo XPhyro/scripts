@@ -10,6 +10,8 @@
 #       and the rest just be opened along with the source file with the editor?
 #       Currently multiple are accepted, but only the first one is considered.
 
+eval "$(evalverbose)"
+
 execname="${0##*/}"
 
 printhelp() {
@@ -110,7 +112,7 @@ processargs() {
                 rm -rf "$i"
                 break
             }
-            
+
             i="${i%/*}"
             [ "$i" = "$cachedir" ] && logerrq "Could not resolve cache, exiting."
         done
@@ -134,7 +136,7 @@ printcompile() {
     printf "%s\n" "
     srchash=\"\$(sha512sum -- '$srcfl.tex' | awk '{print \$1}')\"
     [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat -- '$srchashfl' 2> /dev/null)\" ] && return 0
-    
+
     # Adapted from https://tex.stackexchange.com/a/8792/199300
     xelatex $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl' || {
         cleanaux
@@ -146,7 +148,7 @@ printcompile() {
     # makeindex -s style.gls ...
     xelatex $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
     xelatex $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
-    
+
     printf '%s\n' \"\$srchash\" > '$srchashfl'
     "
 }

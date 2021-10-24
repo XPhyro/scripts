@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Duplicate given files and print the duplicate's paths in the format the originals were input.
 
+eval "$(evalverbose)"
+
 for i; do
     newpath="$(getnewpath "$i")"
     cp -r -- "$i" "$newpath"

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Get directories or the directories of files with given codes.
 
+eval "$(evalverbose)"
+
 for i; do
     loc="$(getpath -du -- "$i")" || {
         loc="$(getpath -fu -- "$i")" || continue

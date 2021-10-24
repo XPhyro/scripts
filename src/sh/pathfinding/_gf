@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-[ "$#" -gt 1 ] && { 
+eval "$(evalverbose)"
+
+[ "$#" -gt 1 ] && {
     printf "Less than 2 arguments are accepted.\n" >&2
     exit 1
 }

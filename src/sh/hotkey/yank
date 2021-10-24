@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 lckget clplog
 execmenu < "$(getpath -f -- ynk)" | awk -F ";" '{print $2}' | sed 's/^ //' | tr -d '\n' | xclip -se c

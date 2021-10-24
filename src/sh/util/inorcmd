@@ -2,6 +2,8 @@
 # Pipe stdin to stdout if present and non-empty, else
 # evaluate the given arguments and output its stdout.
 
+eval "$(evalverbose)"
+
 if [ ! -t 0 ]; then
     stdinfl="$(mktemp)"
     cp -f -- /dev/stdin "$stdinfl"

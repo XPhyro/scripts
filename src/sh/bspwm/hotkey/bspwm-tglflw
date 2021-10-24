@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 state="$(bspc config pointer_follows_focus | END= fmaps false=true true=false)"
 bspc config pointer_follows_focus "$state"
 bspc config pointer_follows_monitor "$state"

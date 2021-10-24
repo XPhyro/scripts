@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 for i; do
     printf "%s\n" "${i%.*}"
 done

@@ -2,6 +2,8 @@
 # Launch two st windows with given X geometry to adjust Unity's layout with.
 # Unity Editor sucks on Linux, especially when you use dwm, this is why this script exists.
 
+eval "$(evalverbose)"
+
 #st -g "100x1+2591+794" &
 #st -g "100x1+1920+495" &
 st -g "100x1+671+794" &

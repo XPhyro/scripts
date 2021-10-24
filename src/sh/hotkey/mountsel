@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Gives a dmenu prompt to automatically mount drives.
 
+eval "$(evalverbose)"
+
 assertroot || exit 1
 
 chosen="$(

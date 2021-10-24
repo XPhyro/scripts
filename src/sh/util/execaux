@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 name="$1"
 shift || exit 1
 exec "$(

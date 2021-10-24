@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 ec=0
 for i; do
     rm -r -- "$i" || {

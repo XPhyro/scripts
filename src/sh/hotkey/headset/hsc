@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 headsetcontrol > /dev/null || {
     readstr
     exit 1

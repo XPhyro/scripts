@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Sync mail and notify if new mail exists.
 
+eval "$(evalverbose)"
+
 timefile="$HOME/.config/mutt/.syncmailtime"
 maildir="$HOME/.local/share/mail"
 accdir="$HOME/.config/mutt/accounts"

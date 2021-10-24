@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 loc="$(getpath -d -- dic)" || {
     printf "[ERROR]: getpath -d -- failed, aborting.\n"
     exit 1

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Sync mails as a daemon (though it does not fork out).
 
+eval "$(evalverbose)"
+
 interval="${*:-"180s"}"
 
 sleep 15s

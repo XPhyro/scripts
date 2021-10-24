@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Change the volume of the secondary pulseaudio sink.
 
+eval "$(evalverbose)"
+
 lckdir="/tmp/${0##*/}-lckdir"
 lck "$lckdir"
 

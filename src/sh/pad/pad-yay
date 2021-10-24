@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 "$PAD" -- '
     if yay -Syu; then
         color green "All done."

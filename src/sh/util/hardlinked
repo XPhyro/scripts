@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 [ "$#" -lt 2 ] && exit 0
 
 f="$(stat -c "%i %d" -- "$1" 2> /dev/null)"

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Kill all processes named the selected string.
 
+eval "$(evalverbose)"
+
 ps -A --sort=-pcpu \
     | awk '{print $4}' \
     | uniqs \

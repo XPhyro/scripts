@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 [ "$BSPWMPADINIT_VERBOSE" = 1 ] && set -x
 
 lckdir="$1"

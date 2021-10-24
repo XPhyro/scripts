@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Swap two files.
 
+eval "$(evalverbose)"
+
 fl="$1"
 other="$2"
 tmp="$(getnewpath "$fl")"

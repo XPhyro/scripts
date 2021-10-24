@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Set X keyboard properties.
 
+eval "$(evalverbose)"
+
 km="${1:-"$(xkb-switch)"}"
 
 # caps_lock -> escape

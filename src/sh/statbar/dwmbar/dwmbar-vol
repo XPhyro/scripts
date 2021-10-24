@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Query volume of default pulseaudio sink.
 
+eval "$(evalverbose)"
+
 stat="$(pacmd list-sinks | grep -A 30 "name: <$(voldefsink)>")"
 
 # TODO: If the line indices are not constant, use grep.

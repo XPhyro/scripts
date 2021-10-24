@@ -2,6 +2,8 @@
 # Adapted from:
 # https://www.reddit.com/r/commandline/comments/4wmvjf/change_the_current_focused_windows_volume_in/.
 
+eval "$(evalverbose)"
+
 cpid="$(
     xprop -notype -id "$(xprop -root _NET_ACTIVE_WINDOW | cut -d\  -f5)" _NET_WM_PID | cut -d\  -f3
 )"

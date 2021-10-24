@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 # Query date.
 
+eval "$(evalverbose)"
+
 date +"%a %F %R" > "$(getpath -du -- statbar)/11_statbardate"

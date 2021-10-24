@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 fl="$(mktemp --suffix ".png")"
 
 if import "$fl"; then

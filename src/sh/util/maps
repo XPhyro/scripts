@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 SEP="${SEP:-"="}"
 END="${END-"
 "}"
@@ -11,7 +13,7 @@ while IFS= read -r i; do
         from="${j%%"$SEP"*}"
         to="${j#*"$SEP"}"
         case "$i" in
-            $from) 
+            $from)
                 printf "%s%s" "$to" "$END"
                 continue 2
                 ;;

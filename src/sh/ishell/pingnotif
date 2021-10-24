@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Pings specified addresses and notifies the user when all succeeded once.
 
+eval "$(evalverbose)"
+
 t="5s"
 
 for i; do

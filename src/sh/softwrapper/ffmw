@@ -3,6 +3,8 @@
 # TODO: Add rm (inverse of crop).
 # TODO: ffmw might fail to work with symlink infiles for the concat and split subcommands, test and if so fix.
 
+eval "$(evalverbose)"
+
 subcommands="concat crop decat help optimise optimize split trim reverse"
 execname="${0##*/}"
 
@@ -252,7 +254,7 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                
+
                 case "$opt" in
                     help                 ) printhelp; exit 0;;
                     loud                 ) loud="${loud}1";;
@@ -305,7 +307,7 @@ parseargs() {
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             constant-rate-factor )
                                 shift
@@ -386,7 +388,7 @@ $1"
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             filter        )
                                 shift
@@ -464,7 +466,7 @@ $1"
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             accurate         ) accurate="1";;
                             force            ) overwrite="-y";;
@@ -551,7 +553,7 @@ $1"
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             force         ) overwrite="-y";;
                             help          ) printhelp "decat"; exit 0;;
@@ -627,7 +629,7 @@ $1"
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             force         ) overwrite="-y";;
                             help          ) printhelp "split"; exit 0;;
@@ -692,7 +694,7 @@ $1"
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             force            ) overwrite="-y";;
                             help             ) printhelp "trim"; exit 0;;
@@ -759,7 +761,7 @@ $1"
                         done
                     else
                         opt="${1#??}"
-                        
+
                         case "$opt" in
                             force            ) overwrite="-y";;
                             help             ) printhelp "reverse"; exit 0;;

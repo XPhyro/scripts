@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Like xargs but for standard input.
 
+eval "$(evalverbose)"
+
 execname=${0##*/}
 
 printhelp() {
@@ -62,7 +64,7 @@ parseargs() {
                 done
             else
                 opt="${1#??}"
-                
+
                 case "$opt" in
                     async                ) optasync="&";;
                     no-async             ) optasync="";;

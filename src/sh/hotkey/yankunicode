@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Choose a unicode character and copy it.
 
+eval "$(evalverbose)"
+
 fl="${XDG_DATA_HOME:-"$HOME"}/code/rsrc/unicode/unicode-characters"
 chosen="$(
     cut -d ';' -f1 -- "$fl" \

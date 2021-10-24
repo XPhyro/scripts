@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 path="$1"
 while [ -e "$path" ]; do
     path="$path"_

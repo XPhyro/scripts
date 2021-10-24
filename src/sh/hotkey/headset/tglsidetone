@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 cfgdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/headsetcontrol"
 mkdir -p -- "$cfgdir"
 fl="$cfgdir/sidetone"

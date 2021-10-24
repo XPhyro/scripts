@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Like tail, but for words.
 
+eval "$(evalverbose)"
+
 if [ "$#" = 0 ]; then
     end=3
 else

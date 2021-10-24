@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 stopiffl() {
     [ -f "$stopfl" ] && {
         rm -f "$stopfl"
@@ -33,20 +35,20 @@ cmd="$1"
 shift
 
 case "$cmd" in
-    lmb) 
+    lmb)
         sleep 2
         while stopiffl; do
             xdotool click 1
             sleep 0.1
         done
         ;;
-    var) 
+    var)
         while stopiffl; do
             xdotool type "$*"
             sleep 0.1
         done
         ;;
-    dmenu) 
+    dmenu)
         text="$(execmenu -p "key sequence:")"
         while stopiffl; do
             xdotool type "$text"

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Query caps lock status.
 
+eval "$(evalverbose)"
+
 {
     [ "$(xset q | head -n 4 | tail -n 1 | awk '{print $4}')" = 'on' ] && printf "%s\n" "Caps"
 } > "$(getpath -du -- statbar)/0_statbarcaps"

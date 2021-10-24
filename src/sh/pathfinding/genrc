@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Generate rc files.
 
+eval "$(evalverbose)"
+
 confdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding"
 locations="$confdir/directories"
 files="$confdir/files"

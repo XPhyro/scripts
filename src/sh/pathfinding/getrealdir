@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 loc="$(getpath -d -- "$1")" || exit $?
 exec realpath -P -- "${loc:?}"

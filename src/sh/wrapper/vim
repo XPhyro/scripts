@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 [ -f "__init__.py" ] && cd "$HOME"
 exec execaux "$0" "$@"

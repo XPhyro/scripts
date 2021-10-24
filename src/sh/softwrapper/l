@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 if [ "$#" -eq 0 ]; then
     less -R
 elif [ -e "$1" ]; then

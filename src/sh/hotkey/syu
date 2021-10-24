@@ -1,11 +1,13 @@
 #!/usr/bin/env sh
 # Update packages using dmenu.
 
+eval "$(evalverbose)"
+
 ans="$(printf "yes\n%s\nyes" "$(yay -Qu)" | execmenu -i -p "Proceed with installation?")"
 [ "$ans" = "yes" ] || exit 0
 
 if yay -Syu --noconfirm; then
-    notify-send -t 1000 "✔ Syu" "Update succeeded" 
+    notify-send -t 1000 "✔ Syu" "Update succeeded"
 else
     notify-send -t 1000 "❌ Syu" "Update failed"
 fi

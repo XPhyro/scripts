@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 loc="$(getpath -ds -- popupnote)" || {
     printf "[ERROR]: getpath -ds -- failed, aborting.\n"
     exit 1

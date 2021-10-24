@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Print logged results of speedtestlog.
 
+eval "$(evalverbose)"
+
 fl="$(getpath -f -- stl)" || {
     printf "[ERROR]: getpath -f -- failed, aborting.\n"
     exit 1

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 assertroot || exit 1
 
 devs="$(lsblk -nrpo "name,label,mountpoint")"

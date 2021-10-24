@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 menu="$(getmenu)"
 se="$($menu -i -l 20 -p "search engine:" < "$(getpath -f -- search)" | awk -F, '{print $NF}')"
 [ -n "$se" ] && printf "%s\n" "$se" | sed "s/%s/$(

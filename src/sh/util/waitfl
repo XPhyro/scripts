@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 while true; do
     for i; do
         [ -e "$i" ] || {

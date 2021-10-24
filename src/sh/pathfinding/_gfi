@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 fl="$(
-    fzf --preview "printf '%s\n' {} 
+    fzf --preview "printf '%s\n' {}
                        | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}'
                        | expandpath
                        | xargs -d '\n' ls --color=always

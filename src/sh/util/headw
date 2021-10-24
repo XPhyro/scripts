@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Like head, but for words.
 
+eval "$(evalverbose)"
+
 if [ "$#" = 0 ]; then
     end=3
 else

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 logerr() {
     printf "%s: %s\n" "${0##*/}" "$i" >&2
 }

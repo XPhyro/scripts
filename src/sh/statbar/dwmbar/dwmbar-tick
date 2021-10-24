@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Redraw status bar every minute.
 
+eval "$(evalverbose)"
+
 statbarset
 statbaravlsyutick &
 

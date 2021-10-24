@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 dirname -- "$(fd --type f | fzf --preview "stpv {}")"

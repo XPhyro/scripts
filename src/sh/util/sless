@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 tmp="$(mktemp)"
 cp -f -- /dev/stdin "$tmp"
 stdl="$(wc -l < "$tmp")"

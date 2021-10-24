@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Same as sort -utk but does not sort.
 
+eval "$(evalverbose)"
+
 f="$1"
 c="$2"
 shift 2

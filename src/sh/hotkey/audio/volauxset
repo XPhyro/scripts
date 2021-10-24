@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Set the volume of the default pulseaudio sink.
 
+eval "$(evalverbose)"
+
 sink="$(volauxsink)"
 execmenu -p "Enter aux volume $(volgetsink "$sink"):" < /dev/null \
     | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' \
