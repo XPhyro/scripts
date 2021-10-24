@@ -7,14 +7,24 @@ logerr() {
 set -- "${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files" "${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories"
 
 for i; do
+    chmod -R -- 700 "$i-container"
     rm -rf -- "$i-container"
     mkdir -p -- "$i-container"
+    chmod -- 700 "$i-container"
 
     cd "$i-container" || {
         logerr "could not cd into container: $i-container"
         exit 1
     }
-    grep -vE -- "^(\s*#|$)" "$i" | while IFS=" " read -r key val; do
+    grep -vE -- "^(\s*#|$)" "$i" | while IFS="" read -r key val; do
+        [ -z "$key" ] && {
+            logerr "key is empty: $val"
+            continue
+        }
+        [ -z "$val" ] && {
+            logerr "value is empty: $key"
+            continue
+        }
         suffixes "$key" / && {
             logerr "key ends with /: $key"
             continue
@@ -25,5 +35,7 @@ for i; do
         }
         mkparent "$key"
         printf "%s\n" "$val" | wordexp | perl -p -e 'chomp if eof' > "$key"
+        chmod -- 400 "$key"
     done
+    chmod -- 500 "$i-container"
 done
