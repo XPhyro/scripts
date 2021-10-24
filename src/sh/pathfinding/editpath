@@ -50,6 +50,7 @@ By default, mode -p is selected. Either -d or -f must be passed.
         p) optmod="p";;
         R) optmod="R";;
         r) optmod="r";;
+        *) logerrq "see \`$execname -h\`";;
     esac
 done
 shift "$((OPTIND - 1))"
