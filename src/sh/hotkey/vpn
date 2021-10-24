@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
 unset optstatus
-while getopts "hsv:" OPT
-do
+while getopts "hsv:" OPT; do
     case "$OPT" in
         h)
             printf "%s" \
