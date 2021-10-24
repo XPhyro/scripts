@@ -21,7 +21,7 @@ validate() {
 
 optmod="p"
 unset dbfl optreal
-while getopts "adfhPpr" OPT; do
+while getopts "adfhPpRr" OPT; do
     case "$OPT" in
         a) optmod="a";;
         d) dbfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/directories";;
@@ -29,30 +29,33 @@ while getopts "adfhPpr" OPT; do
         h)
             printf "%s" \
 "Usage: $execname [OPTION]... [[KEYCODE] [PATH]]...
+Usage: $execname -R [OPTION]... [PATH]...
 Usage: $execname -r [OPTION]... [KEYCODE]...
 Edit the pathfinding database.
 
-By default, -p is selected. Either -d or -f must be passed.
+By default, mode -p is selected. Either -d or -f must be passed.
 
-  -a        select append mode, override -pr
-  -d        select directory mode, override -f
-  -f        select file mode, override -d
+  -a        select append mode, override -pRr
+  -d        edit directory database, override -f
+  -f        edit file database, override -d
   -h        display this help and exit
   -P        pass PATHs through \`realpath -mP\`
-  -p        select prepend mode, override -ar
-  -r        select remove mode, override -ap
+  -p        select prepend mode, override -aRr
+  -R        select path remove mode, override -apr
+  -r        select keycode remove mode, override -apR
 "
             exit 0
             ;;
         P) optreal=1;;
         p) optmod="p";;
+        R) optmod="R";;
         r) optmod="r";;
     esac
 done
 shift "$((OPTIND - 1))"
 
 [ -z "$dbfl" ] && logerrq "either -d or -f must be passed, see \`$execname -h\`"
-[ "$optmod" != "r" ] && [ "$(($# % 2))" -ne 0 ] && logerrq "every KEYCODE must be paired with a PATH"
+[ "$optmod" != "r" ] && [ "$optmod" != "R" ] && [ "$(($# % 2))" -ne 0 ] && logerrq "every KEYCODE must be paired with a PATH"
 
 case "$optmod" in
     a)
@@ -72,6 +75,12 @@ case "$optmod" in
                 cat -- "$dbfl"
             } | sponge -- "$dbfl"
             return 2
+        }
+        ;;
+    R)
+        edit() {
+            grep -vF -- "$1" "$dbfl" | sponge -- "$dbfl"
+            return 1
         }
         ;;
     r)
