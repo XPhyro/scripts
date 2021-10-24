@@ -49,6 +49,7 @@
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and replacing it. This function should require a valid and non-zero `-n` to be passed.
 - In C `get*`, add diagnostic error messages.
+- In `getpath`, have a mode where it takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output is to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.
@@ -68,7 +69,6 @@
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
 - Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
-- Write a `getfl`/`getdir` alternative that takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output of the scripts are to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
 - Write tests (especially for `c/*`).
 - Write a manager for *suckless*-like software that handles updating to upstream, applying patches to the fresh copy and building & installing.
 
@@ -87,6 +87,7 @@
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
+- Use `inotifywait` in `waitfl`.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
@@ -101,7 +102,6 @@
 - In all scripts that parse arguments, ensure that help printing and other actions are done after validating the arguments. If the arguments could not be validated, exit with a non-zero code (after printing help if it is given). This way, the scripts can be integrated more easily with or within other scripts by allowing the arguments to be immediately validated without executing the script (like kdialog, which wraps the real kdialog, validating the arguments without doing the action).
 - Scripts that require untrivial root access should not use `sudo`, but force the user to run the script as root. Scripts that require trivial root access should use `sudo` or `sudo -A` depending on whether they are graphical (for instance, if they use `dmenu`) or not.
 - Use `cut` instead of `awk` where applicable. For instance, replace `awk '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
-- For easy debugging, in every shell script, add `eval "$(setverbose)"`. `setverbose` should check for the value of an environmental variable, say `SHELL_VERBOSE`, and print `set -x` if it is 1. This way, debugging nested scripts will be easier. Be sure not to include this in stderr-sensitive scripts (which there is none?).
 - Register a tray icon using `yad` in applicable scripts.
   - Daemons could benefit well from this.
   - `tglapp` could benefit from this. A single tray icon when right clicked should show all `tglapp` applications. For this, a subscription and a server (like `lf`'s) system should be implemented.
@@ -112,5 +112,4 @@
 - Use `getopt` if available. Use `getopts` otherwise. Be sure to check the `parseargs()` of individual scripts to see quirky parsing. Some scripts have non-standard parsing.
 - Use `ulck` in `ulckget`.
 - Use `ulck` instead of manually releasing locks.
-- `eval` the output of `eval-verbose` in every shell script.
-- Do not print error messages in case `get*` fails in scripts as those already print errors to stderr.
+- Do not print error messages when `get*` fails in scripts as those already print errors to stderr.
