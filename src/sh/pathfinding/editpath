@@ -13,10 +13,10 @@ logerrq() {
 
 validate() {
     contains "$1" "
-" "" && logerrq "key cannot contain \n or \r: $1"
+" "" && logerrq "keycode cannot contain \n or \r: $1"
     contains "$2" "
 " "" && logerrq "value cannot contain \n or \r: $2"
-    grep -m 1 -F -- "$1" "$dbfl" > /dev/null && logerrq "duplicate key: $1"
+    grep -m 1 -F -- "$1" "$dbfl" > /dev/null && logerrq "duplicate keycode: $1"
 }
 
 optmod="p"
@@ -28,8 +28,8 @@ while getopts "adfhPpr" OPT; do
         f) dbfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding/files";;
         h)
             printf "%s" \
-"Usage: $execname [OPTION]... [[KEY] [PATH]]...
-Usage: $execname -r [OPTION]... [KEY]...
+"Usage: $execname [OPTION]... [[KEYCODE] [PATH]]...
+Usage: $execname -r [OPTION]... [KEYCODE]...
 Edit the pathfinding database.
 
 By default, -p is selected. Either -d or -f must be passed.
@@ -52,7 +52,7 @@ done
 shift "$((OPTIND - 1))"
 
 [ -z "$dbfl" ] && logerrq "either -d or -f must be passed, see \`$execname -h\`"
-[ "$optmod" != "r" ] && [ "$(($# % 2))" -ne 0 ] && logerrq "every KEY must be paired with a PATH"
+[ "$optmod" != "r" ] && [ "$(($# % 2))" -ne 0 ] && logerrq "every KEYCODE must be paired with a PATH"
 
 case "$optmod" in
     a)
