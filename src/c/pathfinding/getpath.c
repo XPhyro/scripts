@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
     const char *const flcont = "/scripts/pathfinding/files-container/";
     const char *const dircont = "/scripts/pathfinding/directories-container/";
     const char *confdir;
-    bool b, optboth = false;
+    bool dirturn, optboth = false;
     int i;
     char delim = '\n';
-    char *s, *prefix, *path, *line = NULL;
+    char *s, *prefix, *path = NULL, *line = NULL;
     size_t st, size, contmargin, kcmargin, linesize = 0;
     ssize_t linelen;
     FILE *fl;
@@ -101,8 +101,7 @@ int main(int argc, char *argv[])
     }
 
     contmargin = strlen(prefix) + MAX(strlen(flcont), strlen(dircont));
-    path = NULL; /* suppress -Wmaybe-uninitialized */
-    size = 0;    /* suppress -Wmaybe-uninitialized */
+    size = 0; /* suppress -Wmaybe-uninitialized */
 
     for (i = kcmargin = 0; i < argc; i++) {
         if (!*argv[i])
@@ -111,8 +110,8 @@ int main(int argc, char *argv[])
         if ((st = strlen(argv[i])) > kcmargin)
             path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char));
 
-        for (b = false; ; b = !b) {
-            if (!b) {
+        for (dirturn = false; ; dirturn = !dirturn) {
+            if (!dirturn) {
                 if (!(filemodes & FILEMODE_FILE))
                     continue;
                 confdir = flcont;
@@ -139,13 +138,13 @@ int main(int argc, char *argv[])
                     rmkparent(line, 0755);
                     break;
                 case SAFETYMODE_SAFE:
-                    (b ? rmkdir : rmkfile)(line, 0755);
+                    (dirturn ? rmkdir : rmkfile)(line, 0755);
                     break;
             }
 
             printf("%s%c", line, delim);
 
-            if (b || !optboth)
+            if (dirturn || !optboth)
                 break;
         }
     }
