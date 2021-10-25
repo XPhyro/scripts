@@ -16,17 +16,21 @@ long double parsenum(const char *s)
     errno = 0;
     x = strtold(s, &endptr);
 
-    if (!optignore) {
-        if (errno) {
-            perror("strtod");
-            exit(EXIT_FAILURE);
-        }
-        if (s == endptr) {
-            fputs("sum: invalid number given", stderr);
-        }
+    if (errno) {
+        perror("strtod");
+        goto numerr;
+    }
+    if (s == endptr) {
+        fputs("sum: invalid number given", stderr);
+        goto numerr;
     }
 
     return x;
+
+numerr:
+    if (!optignore)
+        exit(EXIT_FAILURE);
+    return 0;
 }
 
 int main(int argc, char *argv[])
