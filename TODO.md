@@ -49,7 +49,6 @@
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and replacing it. This function should require a valid and non-zero `-n` to be passed.
 - In C `get*`, add diagnostic error messages.
-- In `getpath`, have a mode where it takes four positional arguments: `keycode`, `varname`, `errmsg` and `exitcode` where the last two are optional. The output is to be `eval`ed in a POSIX compatible shell. If the keycode exists, it prints `varname='valueofkeycode'` where the `'`s in `valueofkeycode` are substituted with `'\''`; else, it prints `printf "%s\n" "errmsg"; exit exitcode`.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.

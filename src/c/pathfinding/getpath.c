@@ -12,6 +12,18 @@
 
 #define DIE(...) { fputs("getpath: ", stderr); \
                    fprintf(stderr, __VA_ARGS__); \
+                   if (shellinit) { \
+                       switch (argc) { \
+                           case 4: \
+                               fprintf(stderr, "%s\n", argv[3]); \
+                           case 3: \
+                               printf("exit %s;\n", argv[2]); \
+                               break; \
+                           default: \
+                               puts("exit 1;\n"); \
+                               break; \
+                       } \
+                   } \
                    exit(EXIT_FAILURE); }
 
 typedef enum {
@@ -31,7 +43,7 @@ int main(int argc, char *argv[])
     const char *const flcont = "/scripts/pathfinding/files-container/";
     const char *const dircont = "/scripts/pathfinding/directories-container/";
     const char *confdir;
-    bool dirturn, optboth = false;
+    bool dirturn, optboth = false, optshell = false, shellinit = false;
     int i;
     char delim = '\n';
     char *s, *prefix, *path = NULL, *line = NULL;
@@ -41,7 +53,7 @@ int main(int argc, char *argv[])
     FILEMODES filemodes = FILEMODE_NONE;
     SAFETYMODE safetymode = SAFETYMODE_NORMAL;
 
-    while ((i = getopt(argc, argv, "bdfhsuz0")) != -1) {
+    while ((i = getopt(argc, argv, "bdefhnsuz0")) != -1) {
         switch (i) {
             case 'b':
                 optboth = true;
@@ -49,26 +61,36 @@ int main(int argc, char *argv[])
             case 'd':
                 filemodes |= FILEMODE_DIR;
                 break;
+            case 'e':
+                optshell = true;
+                break;
             case 'f':
                 filemodes |= FILEMODE_FILE;
                 break;
             case 'h':
                 puts("Usage: getpath [OPTION]... [KEYCODE]...\n"
+                     "  or:  getpath -e [OPTION]... [KEYCODE] [VARNAME] [EXITCODE]? [ERRMSG]?\n"
                      "Get paths based on keycodes.\n"
                      "\n"
-                     "By default, all parents of the path are created, but the last element is left as-is.\n"
+                     "By default, all parents of the path are created, but the last element is not.\n"
+                     "EXITCODE and ERRMSG are optional and respectively default to 1 and NULL.\n"
                      "\n"
                      "At least one of -df must be passed.\n"
                      "\n"
                      "  -b        if -d and -f are given, output the results of both\n"
-                     "  -d        enable directory mode\n"
-                     "  -f        enable file mode\n"
+                     "  -d        search directory database\n"
+                     "  -e        make output `eval`able by a POSIX-compatible shell\n"
+                     "  -f        search file database\n"
                      "  -h        display this help and exit\n"
+                     "  -n        enable normal mode: create parent elements of the path\n"
                      "  -s        enable safe mode: create all elements of the path\n"
                      "  -u        enable unsafe mode: create none of the elements of the path\n"
                      "  -z        line delimiter is NUL, not newline\n"
                      "  -0        line delimiter is NUL, not newline");
                 exit(EXIT_SUCCESS);
+                break;
+            case 'n':
+                safetymode = SAFETYMODE_NORMAL;
                 break;
             case 's':
                 safetymode = SAFETYMODE_SAFE;
@@ -88,10 +110,16 @@ int main(int argc, char *argv[])
     }
 
     if (filemodes == FILEMODE_NONE)
-        DIE("at least one of -df must be passed");
+        DIE("at least one of -df must be passed\n");
 
     argv += optind;
     argc -= optind;
+
+    if (optshell) {
+        if (argc < 2 || argc > 4)
+            DIE("exactly 2, 3 or 4 positional arguments need to be given when -e is given\n");
+        shellinit = true;
+    }
 
     if (!(prefix = getenv("XDG_CONFIG_HOME"))) {
         if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
@@ -103,9 +131,9 @@ int main(int argc, char *argv[])
     contmargin = strlen(prefix) + MAX(strlen(flcont), strlen(dircont));
     size = 0; /* suppress -Wmaybe-uninitialized */
 
-    for (i = kcmargin = 0; i < argc; i++) {
+    for (i = kcmargin = 0; i < (optshell ? 1 : argc); i++) {
         if (!*argv[i])
-            DIE("keycode is empty");
+            DIE("keycode is empty\n");
 
         if ((st = strlen(argv[i])) > kcmargin)
             path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char));
@@ -123,10 +151,8 @@ int main(int argc, char *argv[])
 
             snprintf(path, size, "%s%s%s", prefix, confdir, argv[i]);
 
-            if (!(fl = fopen(path, "rb"))) {
-                perror("fopen");
-                return 1;
-            }
+            if (!(fl = fopen(path, "rb")))
+                DIE("keycode is invalid: %s\n", argv[i]);
 
             if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
                 DIE("directory database is corrupted, generate a fresh copy\n");
@@ -142,7 +168,18 @@ int main(int argc, char *argv[])
                     break;
             }
 
-            printf("%s%c", line, delim);
+            if (!optshell) {
+                printf("%s%c", line, delim);
+            } else {
+                printf("%s='", argv[1]);
+                for (s = line; *s; s++) {
+                    if (*s != '\'')
+                        putchar(*s);
+                    else
+                        fputs("'\\''", stdout);
+                }
+                fputs("';\n", stdout);
+            }
 
             if (dirturn || !optboth)
                 break;
