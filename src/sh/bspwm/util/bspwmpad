@@ -163,10 +163,7 @@ handlenode() {
 }
 
 main() {
-    lckdir="$(getpath -ds -- bspwmpadlck)" || {
-        printf "[ERROR]: getpath -ds -- failed, aborting.\n"
-        exit 1
-    }
+    eval "$(getpath -dse -- bspwmpadlck lckdir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
     [ -n "$optnumber" ] && {
         if [ -f "$lckdir/$optnumber/ids" ]; then

@@ -28,10 +28,7 @@ if ynq "Use a simulation template?"; then
 
     simcargs="'$tfl'"
 else
-    simloc="$(getpath -ds -- wowsimt)" || {
-        printf "[ERROR]: getpath -ds -- failed, aborting.\n"
-        exit 1
-    }
+    eval "$(getpath -dse -- wowsim simloc 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
     region="$(cat "$simloc/.region")"
     realm="$(cat "$simloc/.realm")"

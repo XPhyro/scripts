@@ -2,10 +2,7 @@
 
 eval "$(evalverbose)"
 
-logfl="$(getpath -f -- xdgopenlog)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -fe -- xdgopenlog logfl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
 sel="$(
     awk -F ';' '{$1=strftime("%a %Y-%m-%d %H:%M:%S;", $1); print $0}' "$logfl" \

@@ -2,10 +2,7 @@
 
 eval "$(evalverbose)"
 
-fl="$(getpath -f -- sptkeys)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -fe -- sptkeys fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
 data="$(cat -- "$fl")"
 long1="$(

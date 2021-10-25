@@ -274,9 +274,9 @@ stopcmd() {
 }
 
 main() {
-     # `getpath -ds -- tglapp` is recommended to be a subdirectory of a directory mounted
-     # on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
-    flsdir="$(getpath -ds -- tglapp)" || logerrq "No $execname location is set."
+    # `getpath -ds -- tglapp` is recommended to be a subdirectory of a directory mounted
+    # on volatile memory, such as /tmp/somedir as /tmp is volatile on most systems.
+    eval "$(getpath -dse -- tglapp flsdir 1 "No $execname location is set.")"
 
     keydir="$flsdir/$keycode"
 

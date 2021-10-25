@@ -3,10 +3,7 @@
 
 eval "$(evalverbose)"
 
-fl="$(getpath -f -- stl)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -fe -- stl fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 pingav="0.0"
 dowav="0.0"
 upav="0.0"

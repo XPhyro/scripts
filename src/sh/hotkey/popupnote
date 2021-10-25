@@ -2,11 +2,8 @@
 
 eval "$(evalverbose)"
 
-loc="$(getpath -ds -- popupnote)" || {
-    printf "[ERROR]: getpath -ds -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -dse -- popupnote dir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
-find "$loc" -mindepth 1 -maxdepth 1 -printf "%P\n" \
+find "$dir" -mindepth 1 -maxdepth 1 -printf "%P\n" \
     | execmenu -i -l 20 -p "popupnote:" \
-    | xargs -d '\n' -rI '{}' xph-open "$loc/{}"
+    | xargs -d '\n' -rI '{}' xph-open "$dir/{}"

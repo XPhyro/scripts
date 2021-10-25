@@ -9,10 +9,7 @@ stopiffl() {
     }
 }
 
-stopfl="$(getpath -f -- stopwowmacro)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -fe -- stopwowmacro stopfl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
 [ "$1" = toggle ] && {
     touch "$stopfl"

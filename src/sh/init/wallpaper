@@ -44,9 +44,7 @@ do
 done
 shift "$((OPTIND - 1))"
 
-[ -z "$optdir" ] && {
-    optdir="$(getpath -ds -- wa)" || logerrq "getpath -ds -- failed."
-}
+[ -z "$optdir" ] && eval "$(getpath -dse -- wa optdir 1 "getpath -ds -- failed.")"
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
 [ -z "$optexec" ] && optexec="$(fmapsb bgs=bgs hsetroot=hsetroot)"

@@ -12,15 +12,8 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-lckdir="$(getpath -du -- upabllck)" || {
-    printf "[ERROR]: getpath -du -- failed, aborting.\n"
-    exit 1
-}
-
-lst="$(getpath -f -- upabl)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -due -- upabllck lckdir 1 "[ERROR]: getpath -du -- failed, aborting.")"
+eval "$(getpath -fe  -- upabl    lst    1 "[ERROR]: getpath -f -- failed, aborting." )"
 
 for i; do
     if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]; then

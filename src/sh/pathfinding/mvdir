@@ -4,10 +4,7 @@
 
 eval "$(evalverbose)"
 
-dir="$(getpath -ds -- "$1")" || {
-    printf "[ERROR]: getpath -ds -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -dse -- "$1" dir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
 shift
 set -- "$@" "$dir"

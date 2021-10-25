@@ -5,10 +5,7 @@
 
 eval "$(evalverbose)"
 
-fl="$(getpath -f -- todo)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting."
-    exit 1
-}
+eval "$(getpath -fe -- todo fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
 menu="$(getmenu)"
 mode="$(printf "new\nmark\nremove\nlist" | $menu -i -p "todo:")"

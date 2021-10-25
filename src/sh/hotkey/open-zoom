@@ -2,10 +2,7 @@
 
 eval "$(evalverbose)"
 
-fl="$(getpath -f -- zoom)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -fe -- zoom fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
 n=1
 while IFS= read -r i; do

@@ -2,18 +2,15 @@
 
 eval "$(evalverbose)"
 
-loc="$(getpath -d -- dic)" || {
-    printf "[ERROR]: getpath -d -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -de -- dic dir 1 "[ERROR]: getpath -d -- failed, aborting.")"
 
 menu="$(getmenu)"
 
-lang="$(find "$loc" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | $menu -i)"
+lang="$(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | $menu -i)"
 [ -n "$lang" ] || exit 1
 ft="$(printf "dictionary\nthesaurus\n" | $menu -i)"
 [ -n "$ft" ] || exit 1
 
 # TODO: Force $menu to be non-fuzzy if it is rofi.
 # TODO: Should the output be copied to the system clipboard?
-$menu -i -snp -l 20 < "$loc/$lang/$ft" > /dev/null 2>&1
+$menu -i -snp -l 20 < "$dir/$lang/$ft" > /dev/null 2>&1

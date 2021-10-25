@@ -10,10 +10,7 @@ eval "$(evalverbose)"
 
 logfl="$(readlink -m -- "$(getpath -f -- clplog)")"
 bakdir="$(readlink -m -- "$(getpath -ds -- clplogbak)")"
-lckdir="$(getpath -du -- clploglck)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -du -- clploglck lckdir 1 "[ERROR]: getpath -f -- failed, aborting.")"
 lastclp="$(xclip -o -se c)"
 oldclp="$lastclp"
 

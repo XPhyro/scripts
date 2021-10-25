@@ -9,10 +9,7 @@
 
 eval "$(evalverbose)"
 
-dir="$(getpath -du -- mu)" || {
-    printf "[ERROR]: getpath -du -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -due -- mu dir 1 "[ERROR]: getpath -du -- failed, aborting.")"
 
 menu="$(getmenu)"
 fl="$(

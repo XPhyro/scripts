@@ -4,10 +4,7 @@
 
 eval "$(evalverbose)"
 
-fl="$(getpath -f -- brtcch)" || {
-    printf "[ERROR]: getpath -f -- failed, aborting.\n"
-    exit 1
-}
+eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 val="$(cat -- "$fl")"
 
 if [ "$val" = "0" ]; then
