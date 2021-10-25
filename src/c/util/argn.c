@@ -2,37 +2,23 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define DIE(ERRMSG) { fputs("argn: "ERRMSG"\n", stderr); \
+#include "../include/stdutil.h"
+
+#define EXECNAME "argn"
+#define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \
                       exit(EXIT_FAILURE); }
-
-int parsenum(char *s)
-{
-    int n;
-    char *endptr;
-
-    errno = 0;
-    n = strtol(s, &endptr, 10);
-
-    if (errno) {
-        perror("strtol");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr)
-        DIE("invalid number given");
-
-    return n;
-}
 
 int main(int argc, char *argv[])
 {
     int beg, end, inc, i;
+    const char *const numerr = EXECNAME": invalid number given\n";
 
     if (argc < 4)
         DIE("at least 3 arguments are required");
 
-    beg = parsenum(argv[1]);
-    end = parsenum(argv[2]);
-    inc = parsenum(argv[3]);
+    beg = astrtol(argv[1], numerr);
+    end = astrtol(argv[2], numerr);
+    inc = astrtol(argv[3], numerr);
 
     if (end < 0)
         end = argc;

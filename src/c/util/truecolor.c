@@ -1,40 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <errno.h>
 
-#define DIE(ERRMSG) { fputs("truecolor: "ERRMSG"\n", stderr); \
+#include "../include/stdutil.h"
+
+#define EXECNAME "truecolor"
+#define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \
                       exit(EXIT_FAILURE); }
 
 #define BUFSIZE 1024
-
-unsigned short parsecolor(char *s)
-{
-    unsigned int n;
-    char *endptr;
-
-    errno = 0;
-    n = strtoul(s, &endptr, 10);
-    if (errno) {
-        perror("strtoul");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr || n > 255)
-        DIE("invalid color given");
-
-    return n;
-}
 
 int main(int argc, char *argv[])
 {
     int i;
     long nread;
     unsigned char buf[BUFSIZE];
+    const char *const numerr = EXECNAME": invalid color given";
 
     if (argc < 4)
         DIE("not enough arguments given");
 
-    printf("[38;2;%hd;%hd;%hdm", parsecolor(argv[1]), parsecolor(argv[2]), parsecolor(argv[3]));
+    printf("[38;2;%hu;%hu;%hum",
+           astrtohu(argv[1], numerr),
+           astrtohu(argv[2], numerr),
+           astrtohu(argv[3], numerr));
     fflush(stdout);
 
     if (argc == 4) {

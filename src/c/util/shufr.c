@@ -6,9 +6,11 @@
 #include <memory.h>
 #include <time.h>
 #include <unistd.h>
-#include <errno.h>
 
-#define DIE(...) { fputs("shufr: ", stderr); \
+#include "../include/stdutil.h"
+
+#define EXECNAME "shufr"
+#define DIE(...) { fputs(EXECNAME": ", stderr); \
                    fprintf(stderr, __VA_ARGS__); \
                    fputc('\n', stderr); \
                    exit(EXIT_FAILURE); }
@@ -59,25 +61,11 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'l':
-                errno = 0;
-                lprint = strtoul(optarg, &tmpstr, 10);
-                if (errno) {
-                    perror("strtoul");
-                    exit(EXIT_FAILURE);
-                }
-                if (optarg == tmpstr)
-                    DIE("invalid number given to option -l");
+                lprint = astrtoul(optarg, EXECNAME": invalid number given to option -l\n");
                 optlimit = true;
                 break;
             case 'n':
-                errno = 0;
-                nsame = strtoul(optarg, &tmpstr, 10);
-                if (errno) {
-                    perror("strtoul");
-                    exit(EXIT_FAILURE);
-                }
-                if (optarg == tmpstr)
-                    DIE("invalid number given to option -n");
+                nsame = astrtoul(optarg, EXECNAME": invalid number given to option -n\n");
                 break;
             case 'r':
                 /* ignored */
