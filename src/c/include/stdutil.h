@@ -1,6 +1,35 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define ASTRTOGENPRE(TYPE, FUNC)          TYPE a##FUNC(char *s, const char *const err) \
+                                          { \
+                                              TYPE n; \
+                                              int olderrno; \
+                                              char *endptr; \
+                                              \
+                                              olderrno = errno; \
+                                              errno = 0;
+
+#define ASTROGEN(TYPE, FUNC, NFUNC)           ASTRTOGENPRE(TYPE, FUNC) \
+                                              NFUNC \
+                                              ASTRTOGENPOST(TYPE, FUNC)
+
+#define ASTRTOGENNOBASE(TYPE, FUNC)           ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr);)
+#define ASTRTOGENBASE(TYPE, FUNC)             ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr, 10);)
+
+#define ASTRTOGENPOST(TYPE, FUNC)             if (errno) { \
+                                                  perror(#FUNC); \
+                                                  exit(EXIT_FAILURE); \
+                                              } \
+                                              if (s == endptr) { \
+                                                  fputs(err, stderr); \
+                                                  exit(EXIT_FAILURE); \
+                                              } \
+                                              \
+                                              errno = olderrno; \
+                                              return n; \
+                                          }
+
 unsigned short astrtohu(char *s, const char *const err)
 {
     unsigned long n;
@@ -24,117 +53,8 @@ unsigned short astrtohu(char *s, const char *const err)
     return (unsigned short)n;
 }
 
-long astrtol(char *s, const char *const err)
-{
-    long n;
-    int olderrno;
-    char *endptr;
-
-    olderrno = errno;
-    errno = 0;
-    n = strtol(s, &endptr, 10);
-
-    if (errno) {
-        perror("strtol");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr) {
-        fputs(err, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    errno = olderrno;
-    return n;
-}
-
-unsigned long astrtoul(char *s, const char *const err)
-{
-    unsigned long n;
-    int olderrno;
-    char *endptr;
-
-    olderrno = errno;
-    errno = 0;
-    n = strtoul(s, &endptr, 10);
-
-    if (errno) {
-        perror("strtoul");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr) {
-        fputs(err, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    errno = olderrno;
-    return n;
-}
-
-unsigned long long astrtoull(char *s, const char *const err)
-{
-    unsigned long long n;
-    int olderrno;
-    char *endptr;
-
-    olderrno = errno;
-    errno = 0;
-    n = strtoull(s, &endptr, 10);
-
-    if (errno) {
-        perror("strtoull");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr) {
-        fputs(err, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    errno = olderrno;
-    return n;
-}
-
-double astrtod(char *s, const char *const err)
-{
-    double n;
-    int olderrno;
-    char *endptr;
-
-    olderrno = errno;
-    errno = 0;
-    n = strtod(s, &endptr);
-
-    if (errno) {
-        perror("strtod");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr) {
-        fputs(err, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    errno = olderrno;
-    return n;
-}
-
-long double astrtold(char *s, const char *const err)
-{
-    long double n;
-    int olderrno;
-    char *endptr;
-
-    olderrno = errno;
-    errno = 0;
-    n = strtold(s, &endptr);
-
-    if (errno) {
-        perror("strtold");
-        exit(EXIT_FAILURE);
-    }
-    if (s == endptr) {
-        fputs(err, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    errno = olderrno;
-    return n;
-}
+ASTRTOGENBASE(long, strtol)
+ASTRTOGENBASE(unsigned long, strtoul)
+ASTRTOGENBASE(unsigned long long, strtoull)
+ASTRTOGENNOBASE(double, strtod)
+ASTRTOGENNOBASE(long double, strtold)
