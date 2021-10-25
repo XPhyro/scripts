@@ -34,7 +34,7 @@ uninstall() {
     rm -f .installed
 }
 
-set -e
+set -ex
 
 if [ -n "$PREFIX" ]; then
     prefix="$PREFIX/bin"
