@@ -22,6 +22,7 @@ typedef struct {
 char delim = '\n';
 size_t nusers = NUSERSINIT;
 user *users;
+struct passwd *epasswd = NULL;
 
 void unexpand(const char *path)
 {
@@ -48,7 +49,8 @@ void unexpand(const char *path)
         if (!strneq(users[i].home, s, users[i].homelen))
             continue;
         putchar('~');
-        fputs(users[i].name, stdout);
+        if (!epasswd || !streq(epasswd->pw_name, users[i].name))
+            fputs(users[i].name, stdout);
         if (s[users[i].homelen]) {
             s[users[i].homelen - 1] = '\0';
             fputs(s + users[i].homelen, stdout);
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
     struct passwd *pw = NULL;
     user u;
 
-    while ((i = getopt(argc, argv, "hz0")) != -1) {
+    while ((i = getopt(argc, argv, "hsz0")) != -1) {
         switch (i) {
             case 'h':
                 puts("Usage: unexpandpath [OPTION]... [PATH]...\n"
@@ -79,9 +81,13 @@ int main(int argc, char *argv[])
                      "With no PATH, read standard input.\n"
                      "\n"
                      "  -h        display this help and exit\n"
+                     "  -s        output '~' instead of '~currentuser'\n"
                      "  -z        line delimiter is NUL, not newline\n"
                      "  -0        line delimiter is NUL, not newline");
                 exit(EXIT_SUCCESS);
+                break;
+            case 's':
+                epasswd = getpwuid(getuid());
                 break;
             case 'z':
             case '0':
