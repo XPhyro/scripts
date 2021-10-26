@@ -87,6 +87,7 @@
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
 - In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 - Use `inotifywait` in `waitfl`.
+- In `genpath` and `editpath`, use `\0` as the line and keycode/path separator.
 
 # Other
 - Should [README.md](README.md) be rewritten to not include first person language?
