@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdbool.h>
+#include <string.h>
 
 char *strend(const char *s)
 {
@@ -126,4 +127,36 @@ bool strnsfx(const char *s, const char *sfx, size_t n)
     }
 
     return true;
+}
+
+/* BEGIN COMMENT FROM ORIGINAL AUTHOR */
+/* Strrstr.c, included for those computers that do not have it. */
+/* Written by Kent Irwin, irwin@leland.stanford.edu.  I am
+   responsible for bugs */
+/* END COMMENT FROM ORIGINAL AUTHOR */
+/* the following is not strictly author's code, but
+ * rather is a refactored and formatted version of it
+ * source:
+ * https://stuff.mit.edu/afs/sipb/user/cordelia/Diplomacy/mapit/strrstr.c */
+char *strrstr(const char *haystack, const char *needle)
+{
+    const char *scn, *psch, *psh;
+
+    if (!*needle)
+        return (char *)haystack;
+
+    psh = strend(haystack);
+
+    while (psh != haystack) {
+        psch = --psh;
+        scn = needle;
+        for (;;) {
+            if (*psch++ != *scn++)
+                break;
+            if (!*scn)
+                return (char *)psh;
+        }
+    }
+
+    return NULL;
 }
