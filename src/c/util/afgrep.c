@@ -35,7 +35,7 @@ bool hasmatch = false, optinvert = false, optcase = false, optonly = false, optq
 
 void searchline(const char *line)
 {
-    char *s, *e;
+    const char *s, *p;
     bool match;
 
     if (!fixedstrlen) {
@@ -48,13 +48,13 @@ void searchline(const char *line)
 
     match = (searchmodes == SEARCHMODE_ANY)
          || (searchmodes & SEARCHMODE_WHOLE
-                 && strlen(s) == fixedstrlen)
+                 && (strlen(s) == fixedstrlen))
          || (searchmodes & SEARCHMODE_BEGIN
-                 && (s = (optcase ? strcasestr : strstr)(line + offset, fixedstr))
-                 && s == line + offset)
+                 && (s = (optcase ? strcasestr : strstr)(p = line + offset, fixedstr))
+                 && (s == p))
          || (searchmodes & SEARCHMODE_END
-                 && (s = (optcase ? strcaserstre : strrstre)(line, fixedstr, e = strend(line) - offset))
-                 && s == e - 1);
+                 && (s = (optcase ? strcaserstre : strrstre)(line, fixedstr, p = strend(line) - offset))
+                 && (s == p - 1));
 
     if (optinvert ? match : !match)
         return;
