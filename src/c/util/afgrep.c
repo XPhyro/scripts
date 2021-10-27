@@ -50,13 +50,13 @@ void searchline(const char *line)
     linelen = strlen(line);
     match = (searchmodes == SEARCHMODE_ANY)
          || (searchmodes & SEARCHMODE_WHOLE
-                 && (linelen == fixedstrlen))
-         || (searchmodes & SEARCHMODE_BEGIN
-                 && (s = (optcase ? strcasestr : strstr)(p = line + offset, fixedstr))
-                 && (s == p))
-         || (searchmodes & SEARCHMODE_END
-                 && (s = (optcase ? strcaserstre : strrstre)(line, fixedstr, p = line + linelen - offset))
-                 && (s == p - 1));
+             && (linelen == fixedstrlen))
+         || (offset <= linelen && ((searchmodes & SEARCHMODE_BEGIN
+                                    && (s = (optcase ? strcasestr : strstr)(p = line + offset, fixedstr))
+                                    && (s == p))
+                                || (searchmodes & SEARCHMODE_END
+                                    && (s = (optcase ? strcaserstre : strrstre)(line, fixedstr, p = line + linelen - offset))
+                                    && (s == p - 1))));
 
     if (optinvert ? match : !match)
         return;
