@@ -18,7 +18,7 @@ validate() {
 " "" && logerrq "keycode cannot contain \n or \r: $1"
     contains "$2" "
 " "" && logerrq "value cannot contain \n or \r: $2"
-    grep -m 1 -F -- "$1" "$dbfl" > /dev/null && logerrq "duplicate keycode: $1"
+    afgrep -a -m 1 -- "$1" "$dbfl" > /dev/null && logerrq "duplicate keycode: $1"
 }
 
 optmod="p"
@@ -91,13 +91,13 @@ case "$optmod" in
         ;;
     R)
         edit() {
-            grep -vF -- "$(unexpandpath -s -- "$1")" "$dbfl" | sponge -- "$dbfl"
+            afgrep -av -- "$(unexpandpath -s -- "$1")" "$dbfl" | sponge -- "$dbfl"
             return 1
         }
         ;;
     r)
         edit() {
-            grep -vF -- "$1" "$dbfl" | sponge -- "$dbfl"
+            afgrep -av -- "$1" "$dbfl" | sponge -- "$dbfl"
             return 1
         }
         ;;
