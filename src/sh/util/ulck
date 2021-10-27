@@ -5,7 +5,7 @@ eval "$(evalverbose)"
 ec=0
 for i; do
     rm -r -- "$i" || {
-        printf "Lock [%s] was forcefully released during execution.\n" "$i"
+        printf "Lock [%s] was forcefully released during execution, or an error occurred.\n" "$i"
         ec=1
     }
 done
