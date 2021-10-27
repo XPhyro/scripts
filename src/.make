@@ -44,6 +44,8 @@ else
     prefix="/usr/local/bin"
 fi
 
+[ ! -d "$prefix" ] && mkdir -p -- "$prefix"
+
 case "$*" in
     install) install;;
     uninstall) uninstall;;
