@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 char *strend(const char *s)
 {
@@ -152,6 +153,75 @@ char *strrstr(const char *haystack, const char *needle)
         scn = needle;
         for (;;) {
             if (*psch++ != *scn++)
+                break;
+            if (!*scn)
+                return (char *)psh;
+        }
+    }
+
+    return NULL;
+}
+
+char *strrstre(const char *haystack, const char *needle, const char *haystackend)
+{
+    const char *scn, *psch, *psh;
+
+    if (!*needle)
+        return (char *)haystack;
+
+    psh = haystackend;
+
+    while (psh != haystack) {
+        psch = --psh;
+        scn = needle;
+        for (;;) {
+            if (*psch++ != *scn++)
+                break;
+            if (!*scn)
+                return (char *)psh;
+        }
+    }
+
+    return NULL;
+}
+
+char *strcaserstr(const char *haystack, const char *needle)
+{
+    const char *scn, *psch, *psh;
+
+    if (!*needle)
+        return (char *)haystack;
+
+    psh = strend(haystack);
+
+    while (psh != haystack) {
+        psch = --psh;
+        scn = needle;
+        for (;;) {
+            if (tolower(*psch++) != tolower(*scn++))
+                break;
+            if (!*scn)
+                return (char *)psh;
+        }
+    }
+
+    return NULL;
+}
+
+char *strcaserstre(const char *haystack, const char *needle, const char *haystackend)
+{
+    const char *scn, *psch, *psh;
+
+    if (!*needle)
+        return (char *)haystack;
+
+    psh = haystackend;
+
+    while (psh != haystack) {
+        psch = --psh;
+        scn = needle;
+        for (;;) {
+            if (tolower(*psch++) != tolower(*scn++))
                 break;
             if (!*scn)
                 return (char *)psh;
