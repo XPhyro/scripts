@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 
 eval "$(evalverbose)"
-
-lckdir="$(getpath -du -- "$1lck")" && exec rm -rf -- "$lckdir" 2> /dev/null
+exec ulck "$(getpath -du -- "$1lck")"
