@@ -1,44 +1,70 @@
 # scripts
-This repository is a collection of my scripts. Most of them are written in POSIX Shell, i.e. `sh`, but this is not an sh-specific repository. Some are everyday scripts, whereas others were written for very specific purposes.
+This repository is a collection of my scripts. Most of them are written in POSIX Shell, i.e. `sh`, but this is not an sh-specific repository.
+
+Some are general utility scripts, whereas others are written for very specific purposes.
 
 ## Installation
+
+To install for your user:
+
+```sh
+make install
+```
+
+To install system-wide:
 
 ```sh
 sudo make install
 ```
 
-### Wrapper Scripts
-If you would like to use the provided wrapper scripts, add `/usr/local/bin/wrapper` to your `$PATH` with higher priority than the wrapped scripts' locations.
+If you would like to use the provided wrapper scripts, add `/usr/local/bin/wrapper` to your `$PATH` with higher priority than the locations of the wrapped scripts.
 
 ## Uninstallation
+
+If you installed for your user:
+
+```sh
+make uninstall
+```
+
+If you installed system-wide:
 
 ```sh
 sudo make uninstall
 ```
 
 ## Environment Variables
-Some scripts use optional or mandatory environment variables for programs. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective program will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`. Some scripts will not respect these as they use program-specific options, such as `rofi -font` or `st -d`.
+Some scripts use optional or mandatory environment variables for applications. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective application will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`. Some scripts will not respect these as they use application-specific options, such as `rofi -font` or `st -d`.
+
+In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is executed and all executed commands are printed to stderr.
 
 ## Notable Scripts
-- [bspwmpad](src/sh/bspwm/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind.
+- [afgrep](src/c/util/afgrep.c): Like `grep -F`, but supports alignment and offset. See `afgrep -h`.
+- [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind. Also see [dwmpad](src/sh/.archived/dwm/util/dwmpad).
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language.
-- [dwmpad](src/sh/dwm/dwmpad): Dynamic scratchpads for [dwm](https://dwm.suckless.org). For optimum operation, patch the source: see my complementary dwm [here](https://github.com/XPhyro/dwm-xphyro). dwm is not required for operation, but the script was designed with it in mind.
 - [eln](src/sh/ishell/eln): Batch edit or create symlinks.
-- [ffmw](src/sh/wrapper/ffmw): `ffmpeg` wrapper for common actions.
+- [expandpath](src/c/util/expandpath.c): Like `wordexp`, but only expands `~`. See `expandpath -h`.
+- [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions.
+- [fmaps](src/c/util/fmaps.c): Map stdin per given key-value pairs. See `fmaps -h`.
 - [kdialog](src/sh/wrapper/kdialog): `kdialog` wrapper to not use awful file dialogues.
 - [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is more minimal.
-- [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch) but adhering to the Unix philosophy, more versatile and (in my opinion) better.
-- [neomuttpick](src/sh/integration/neomuttpick): Use [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to use.
+- [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but more versatile and (in my opinion) better.
+- [mkparent](src/c/util/mkparent.c): Create the parent directories of a path.
+- [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to use.
 - [notiflog](src/py/daemon/notiflog): Log notifications on the dbus interface `org.freedesktop.Notifications`. Supports locking logging: after initiating the lock, the next notification is not logged. Then it unlocks itself automatically.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `dmenu`.
-- [tglapp](src/sh/hotkey/tglapp): Toggle an application on/off based on hashcodes. Originally written for toggling applications with the same hotkey via `sxhkd`.
+- [stest](src/c/util/stest.c): Filter a list of files by properties. This is different from the `stest` included with suckless `dmenu`. See `stest -h`.
+- [sumsize](src/py/util/sumsize): Sum human readable sizes. See `sumsize -h`.
+- [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on hashcodes. Originally written for toggling applications with the same hotkey via `sxhkd`.
+- [unexpandpath](src/c/util/unexpandpath.c): Undo `expandpath`. See `unexpandpath -h`.
+- [wordexp](src/c/util/wordexp.c): Perform word expansion like a POSIX shell. See `man 3 wordexp`.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input.
 
 ## Notice
 - Some of these scripts assume that some of the other scripts are in your `$PATH`.
 - None of the scripts pre-check for the availability of their dependencies.
-- In some scripts, GNU-specific options are used (for instance, `sed -i`).
+- In some scripts, GNU-specific extensions are used (for instance, `sed -i` or `strcasestr`).
 - All scripts were written with only Linux in mind. Although they will often be compatible with all Unix-like and Unix-derived systems, they might not always be portable to non-Linux systems.
 - For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
