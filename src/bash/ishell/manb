@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+eval "$(evalverbose)"
+
 if [ "$#" -eq 0 ]; then
     man bash | less +/^SHELL\ BUILTIN\ COMMANDS$
 elif [ "$#" -eq 1 ]; then
