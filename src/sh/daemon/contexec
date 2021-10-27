@@ -63,29 +63,24 @@ parseargs() {
                 esac
             fi
         else
-            assertfl "$1"
-            fls="$1
-$fls"
+            argv="$argv $1"
         fi
 
         shift
     done
 
     for i; do
-        assertfl "$i"
-        fls="$fls$i
-"
+        argv="$argv $i"
     done
 }
 
 processargs() {
-    [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
-    execfl="$(printf "%s\n" "$fls" | head -n 1)"
-    execpath="$(realpath -- "$execfl")"
+    [ -z "$argv" ] && logerrq "No arguments to execute given."
+    execpath="$(printf "%s\n" "$argv" | headw 1)"
 }
 
 execute() {
-    inotifywait -e move_self -- "$execfl" > /dev/null 2>&1
+    inotifywait -e move_self -- "$execpath" > /dev/null 2>&1
     pid="$(cat -- "$pidfl")"
     kill -s 0 "$pid" 2> /dev/null && {
         env kill -s INT --timeout 1000 TERM --timeout 1000 KILL "$pid" 2> /dev/null \
@@ -95,13 +90,13 @@ execute() {
     while kill -s 0 "$pid" 2> /dev/null; do
         sleep 0.1
     done
-    "$execpath" &
+    eval "$argv" &
     printf "%s" "$!" > "$pidfl"
 }
 
 main() {
     [ "$optonce" = "1" ] && {
-        inotifywait -e move_self -- "$execfl" > /dev/null 2>&1
+        inotifywait -e move_self -- "$execpath" > /dev/null 2>&1
         eval "$execpath"
         exit 0
     }
