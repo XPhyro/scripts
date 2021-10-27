@@ -90,7 +90,8 @@ execute() {
     while kill -s 0 "$pid" 2> /dev/null; do
         sleep 0.1
     done
-    eval "$argv" &
+    kill %% 2> /dev/null
+    $argv &
     printf "%s" "$!" > "$pidfl"
 }
 
