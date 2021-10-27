@@ -113,3 +113,4 @@
 - Use `ulck` in `ulckget`.
 - Use `ulck` instead of manually releasing locks.
 - Do not print error messages when `get*` fails in scripts as those already print errors to stderr.
+- At this point perhaps rename the repository from `scripts` to `utils`?
