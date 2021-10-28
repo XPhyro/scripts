@@ -69,10 +69,10 @@ assertarg() {
     }
 }
 
-setdefargs(){
+setdefargs() {
     linecount="0"
     root="/"
-    menu="$(getmenu)
+    menu="$(getmenu)"
 }
 
 parseargs() {
@@ -237,8 +237,8 @@ main() {
                 [ -n "$sel" ] && sel="$(expandpath "$sel")"
             }
 
+    done
             [ -n "$sel" ] || return
-        done
 
         [ -n "$printinitpwd" ] && printinitpwd="$initpwd: "
 
