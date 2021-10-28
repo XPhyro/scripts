@@ -1,9 +1,10 @@
 # Bugs
-- `ffmw decat` does not work as expected, fix. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
+- `ffmw decat` does not work as expected. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
-- In `tglapp`, `--list=compact` prints stdout and stderr, fix.
+- In `tglapp`, `--list=compact` prints stdout and stderr.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
 - In `shufr`, if `nsame` is not trivially small compared to `n`, the execution becomes extremely intensive and slow. Fix this by having an array of indices and removing the index from the array once it is used, allowing the random choice to be unique. The other checks should still be in place.
+- When `tglapp -aTk off wallpaper` executed, the X server gets killed or crashes.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
@@ -49,6 +50,8 @@
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and replacing it. This function should require a valid and non-zero `-n` to be passed.
 - In C `get*`, add diagnostic error messages.
+- In `fmaps`, implement options similar to that of `afgrep`'s `-aexbi`.
+  - **Maybe** make these options specific to each given mapping? If so, also have the ability to globally define these options.
 
 # New scripts
 - Create software-level alternatives to the `bright*` scripts.
