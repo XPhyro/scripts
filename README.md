@@ -40,31 +40,31 @@ In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is
 
 ## Notable Scripts
 - [afgrep](src/c/util/afgrep.c): Like `grep -F`, but supports alignment and offset. See `afgrep -h`.
-- [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind. Also see [dwmpad](src/sh/.archived/dwm/util/dwmpad).
-- [contexec](src/sh/daemon/contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language.
+- [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but the script was designed with it in mind. See `bspwmpad -h`. There is also [dwmpad](src/sh/.archived/dwm/util/dwmpad).
+- [contexec](src/sh/daemon/contexec): Continuously execute a file every time it is modified. This is especially useful if you are iteratively processing data using an interpreted or hot-compiled language. See `contexec -h`.
 - [eln](src/sh/ishell/eln): Batch edit or create symlinks.
 - [expandpath](src/c/util/expandpath.c): Like `wordexp`, but only expands `~`. See `expandpath -h`.
-- [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions.
+- [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions. See `ffmw -h`.
 - [fmaps](src/c/util/fmaps.c): Map stdin per given key-value pairs. See `fmaps -h`.
 - [kdialog](src/sh/wrapper/kdialog): `kdialog` wrapper to not use awful file dialogues.
-- [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is more minimal.
-- [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but more versatile and (in my opinion) better.
+- [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is more minimal. See `latexstp -h`.
+- [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands against all, modified, unmodified or wiped lines synchronously or asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but more versatile. See `mapexec -h`.
 - [mkparent](src/c/util/mkparent.c): Create the parent directories of a path.
 - [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to use.
-- [notiflog](src/py/daemon/notiflog): Log notifications on the dbus interface `org.freedesktop.Notifications`. Supports locking logging: after initiating the lock, the next notification is not logged. Then it unlocks itself automatically.
+- [notiflog](src/py/daemon/notiflog): Log notifications on the dbus interface `org.freedesktop.Notifications`. Supports locking logging: after initiating the lock, the next notification is not logged. Then it unlocks itself automatically. Supports blacklisting: certain notifications can be blacklisted and logged to a different file.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
-- [selfl](src/sh/util/selfl): Select a file or directory with `dmenu`.
+- [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
 - [stest](src/c/util/stest.c): Filter a list of files by properties. This is different from the `stest` included with suckless `dmenu`. See `stest -h`.
 - [sumsize](src/py/util/sumsize): Sum human readable sizes. See `sumsize -h`.
-- [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on hashcodes. Originally written for toggling applications with the same hotkey via `sxhkd`.
+- [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on hashcodes. Originally written for toggling applications with the same hotkey via `sxhkd`. See `tglapp -h`.
 - [unexpandpath](src/c/util/unexpandpath.c): Undo `expandpath`. See `unexpandpath -h`.
 - [wordexp](src/c/util/wordexp.c): Perform word expansion like a POSIX shell. See `man 3 wordexp`.
-- [xins](src/sh/util/xins): Like `xargs` but for standard input.
+- [xins](src/sh/util/xins): Like `xargs` but for standard input. See `xins -h`.
 
 ## Notice
 - Some of these scripts assume that some of the other scripts are in your `$PATH`.
 - None of the scripts pre-check for the availability of their dependencies.
-- In some scripts, GNU-specific extensions are used (for instance, `sed -i` or `strcasestr`).
+- In some scripts, GNU extensions are used (for instance, `sed -i` or `strcasestr`).
 - All scripts were written with only Linux in mind. Although they will often be compatible with all Unix-like and Unix-derived systems, they might not always be portable to non-Linux systems.
 - For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
