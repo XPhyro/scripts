@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+SEP="${SEP:-"="}"
+END="${END-"
+"}"
+
+for j; do
+    fl="${j%%"$SEP"*}"
+    out="${j#*"$SEP"}"
+    [ "$fl" = "*" ] || [ -e "$fl" ] && {
+        printf "%s%s" "$out" "$END"
+        exit 0
+    }
+done
+
+exit 1
