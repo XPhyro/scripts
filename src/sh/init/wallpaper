@@ -49,8 +49,6 @@ shift "$((OPTIND - 1))"
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
 [ -z "$optexec" ] && optexec="$(fmapsb bgs=bgs hsetroot=hsetroot)"
 
-trap 'kill 0' INT TERM
-
 case "$optexec" in
     hsetroot)
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
