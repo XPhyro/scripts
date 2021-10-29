@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+getchildren() {
+    children="$(pgrep -P "$1")"
+    [ -z "$children" ] && return
+    printf "%s\n" "$children"
+    printf "%s\n" "$children" | while IFS= read -r i; do
+        getchildren "$i"
+    done
+}
+
+for i; do
+    getchildren "$1"
+done | uniqs
