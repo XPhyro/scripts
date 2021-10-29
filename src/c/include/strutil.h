@@ -5,6 +5,8 @@
 
 char *strend(const char *s)
 {
+    if (!s)
+        return NULL;
     for (; *s; s++);
     return (char *)s;
 }
@@ -15,6 +17,8 @@ bool streq(const char *s1, const char *s2)
 
     if (!s1)
         return !s2;
+    if (!s2)
+        return false;
 
     for (;;) {
         c1 = *s1++;
@@ -33,6 +37,8 @@ bool strneq(const char *s1, const char *s2, size_t n)
 
     if (!s1)
         return s2;
+    if (!s2)
+        return true;
 
     for (i = 0; i < n; i++) {
         c1 = *s1++;
@@ -52,6 +58,8 @@ bool strpfx(const char *s, const char *pfx)
 
     if (!s)
         return !pfx;
+    if (!pfx)
+        return false;
 
     for (;;) {
         cs = *s++;
@@ -72,6 +80,8 @@ bool strnpfx(const char *s, const char *pfx, size_t n)
 
     if (!s)
         return !pfx;
+    if (!pfx)
+        return false;
 
     for (i = 0; i < n; i++) {
         cs = *s++;
@@ -93,6 +103,8 @@ bool strsfx(const char *s, const char *sfx)
 
     if (!s)
         return !sfx;
+    if (!sfx)
+        return false;
 
     send = strend(s);
     sfxend = strend(sfx);
@@ -114,6 +126,8 @@ bool strnsfx(const char *s, const char *sfx, size_t n)
 
     if (!s)
         return !sfx;
+    if (!sfx)
+        return false;
 
     send = strend(s);
     sfxend = strend(sfx);
@@ -143,6 +157,8 @@ char *strrstr(const char *haystack, const char *needle)
 {
     const char *scn, *psch, *psh;
 
+    if (!haystack || !needle)
+        return NULL;
     if (!*needle)
         return (char *)haystack;
 
@@ -166,6 +182,8 @@ char *strrstre(const char *haystack, const char *needle, const char *haystackend
 {
     const char *scn, *psch, *psh;
 
+    if (!haystack || !needle)
+        return NULL;
     if (!*needle)
         return (char *)haystack;
 
@@ -189,6 +207,8 @@ char *strcaserstr(const char *haystack, const char *needle)
 {
     const char *scn, *psch, *psh;
 
+    if (!haystack || !needle)
+        return NULL;
     if (!*needle)
         return (char *)haystack;
 
@@ -212,6 +232,8 @@ char *strcaserstre(const char *haystack, const char *needle, const char *haystac
 {
     const char *scn, *psch, *psh;
 
+    if (!haystack || !needle)
+        return NULL;
     if (!*needle)
         return (char *)haystack;
 
