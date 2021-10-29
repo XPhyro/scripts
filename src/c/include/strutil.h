@@ -252,3 +252,14 @@ char *strcaserstre(const char *haystack, const char *needle, const char *haystac
 
     return NULL;
 }
+
+bool strisfilter(const char *s, int (*func)(int))
+{
+    int c;
+
+    for (; (c = *s); s++)
+        if (!func(c))
+            return false;
+
+    return true;
+}
