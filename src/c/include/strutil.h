@@ -32,7 +32,7 @@ bool strneq(const char *s1, const char *s2, size_t n)
     char c1, c2;
 
     if (!s1)
-        return !s2;
+        return s2;
 
     for (i = 0; i < n; i++) {
         c1 = *s1++;
