@@ -66,7 +66,6 @@ In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is
 - None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU extensions are used (for instance, `sed -i` or `strcasestr`).
 - All scripts were written with only Linux in mind. Although they will often be compatible with all Unix-like and Unix-derived systems, they might not always be portable to non-Linux systems.
-- For some of the scripts to work correctly, you need my custom build of [dmenu](https://github.com/XPhyro/dmenu-xphyro). This build introduces the -sel, -pc and -snp options.
 
 ## Related
 - You can find my gpup management scripts [here](https://github.com/XPhyro/gpupmanager).
