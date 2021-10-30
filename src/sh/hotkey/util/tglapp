@@ -265,8 +265,7 @@ runcmd() {
 }
 
 stopcmd() {
-    {
-        printf "%s\n" "$pid"
+    {   printf "%s\n" "$pid"
         [ "$recursive" = 1 ] && getchildren "$pid"
     } | sponge | xargs -d '\n' -rn 1 $sudo kill $killargs -- 2> /dev/null
 
