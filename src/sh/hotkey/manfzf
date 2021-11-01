@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Choose a manual, generate its PDF and open it with zathura.
+
+eval "$(evalverbose)"
+
+apropos '' \
+    | fzf \
+    | head -n 1 \
+    | awk '{print $1$2}' \
+    | xargs -d '\n' -rn 1 man
