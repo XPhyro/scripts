@@ -6,6 +6,6 @@ eval "$(evalverbose)"
 apropos '' \
     | MENUARGS="-m prefix -l 20" execmenu \
     | head -n 1 \
-    | awk '{print $1$2}' \
-    | xargs -d '\n' -rn 1 man -Tpdf \
+    | sed -E 's/^(.* )\((.*)\)(\s+-\s+.*)?$/\2 \1/' \
+    | xargs -d ' ' -rn 2 man -Tpdf \
     | xins -Rs -- zathura -
