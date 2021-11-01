@@ -26,6 +26,16 @@ logerrq() {
     exit 1
 }
 
+capturestdin() {
+    [ -t 0 ] && {
+        unset stdinfl stdinsep
+        return
+    }
+    stdinfl="$(mktemp)"
+    cp -- /dev/stdin "$stdinfl"
+    stdinsep="$(getsep "$stdinfl")"
+}
+
 assertarg() {
     [ -z "$3" ] && logerrq "Expected $2 argument to $1, exiting."
 }
@@ -76,17 +86,21 @@ parseargs() {
 
 processargs() {
     [ -z "$argv" ] && logerrq "No arguments to execute given."
-    execpath="$(printf "%s\n" "$argv" | headw 1)"
+    [ -z "$stdinfl" ] && {
+        stdinfl="$(mktemp)"
+        stdinsep="\n"
+        printf "%s\n" "$argv" | headw 1 > "$stdinfl"
+    }
 }
 
 execute() {
-    inotifywait -e move_self -- "$execpath" > /dev/null 2>&1
+    xargs -d "$stdinsep" inotifywait -qq -e move_self -- < "$stdinfl"
     pid="$(cat -- "$pidfl")"
     kill -s 0 "$pid" 2> /dev/null && {
         env kill -s INT --timeout 1000 TERM --timeout 1000 KILL "$pid" 2> /dev/null \
             || logerrq "Could not kill PID $pid, exiting."
     }
-    waitfl "$execpath" && sleep 0.5
+    xargs -d "$stdinsep" waitfl < "$stdinfl" && sleep 0.5
     while kill -s 0 "$pid" 2> /dev/null; do
         sleep 0.1
     done
@@ -110,7 +124,8 @@ main() {
     done
 }
 
+capturestdin
 parseargs "$@"
 processargs
-trap 'kill 0 2>&1' INT TERM EXIT
+trap 'kill 0' INT TERM EXIT
 main
