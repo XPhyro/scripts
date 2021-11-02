@@ -2,5 +2,11 @@
 
 eval "$(evalverbose)"
 
-lckget clplog
+lck="$(getpath -d -- clploglck)"
+lck "$lck"
+
 execmenu < "$(getpath -f -- ynk)" | awk -F ";" '{print $2}' | sed 's/^ //' | tr -d '\n' | xclip -se c
+
+# in case clplog is not running
+sleep 5
+ulck "$lck"
