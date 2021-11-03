@@ -19,9 +19,9 @@ def setfilepaths():
     global logfile
     global blacklogfile
 
-    logfilepath = run(["getpath", "-fu", "--", "notiflog"], capture_output=True).stdout.decode(
-        "utf-8"
-    )
+    logfilepath = run(
+        ["getpath", "-fu", "--", "notiflog"], capture_output=True
+    ).stdout.decode("utf-8")
     print("Found log file: %s" % logfilepath)
 
     if not logfilepath:
