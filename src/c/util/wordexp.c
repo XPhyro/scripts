@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     ssize_t len;
     wordexp_t result;
 
-    if (argc < 2) {
+    if (argc == 1) {
         for (i = 1; i < argc; i++)
             safewordexp(argv[i], &result, 0);
     } else {
