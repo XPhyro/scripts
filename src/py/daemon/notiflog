@@ -22,7 +22,7 @@ def setfilepaths():
     logfilepath = run(["getpath", "-fu", "--", "notiflog"], capture_output=True).stdout.decode(
         "utf-8"
     )
-    print("Found log file path: %s" % logfilepath)
+    print("Found log file: %s" % logfilepath)
 
     if not logfilepath:
         print("`getpath -fu -- notiflog` failed, exiting.", file=stderr)
@@ -31,7 +31,7 @@ def setfilepaths():
     blacklogfilepath = run(
         ["getpath", "-fu", "--", "notiflogblack"], capture_output=True
     ).stdout.decode("utf-8")
-    print("Found blacklisted log file path: %s" % blacklogfilepath)
+    print("Found blacklisted log file: %s" % blacklogfilepath)
 
     if not blacklogfilepath:
         print("`getpath -fu -- notiflogblack` failed, exiting.", file=stderr)
@@ -40,7 +40,7 @@ def setfilepaths():
     lockdirpath = run(
         ["getpath", "-du", "--", "notifloglck"], capture_output=True
     ).stdout.decode("utf-8")
-    print("Found lock file path: %s" % lockdirpath)
+    print("Found lock directory: %s" % lockdirpath)
 
     if not lockdirpath:
         print("`getpath -du -- notifloglck` failed, exiting.", file=stderr)
