@@ -10,7 +10,7 @@ int safewordexp(const char *restrict s, wordexp_t *restrict result, int flags)
     int r;
 
     r = wordexp(s, result, flags);
-    if (r) {
+    if (!r) {
         printf("%s\n", result->we_wordv[0]);
         wordfree(result);
     }
@@ -27,15 +27,13 @@ int main(int argc, char *argv[])
     wordexp_t result;
 
     if (argc == 1) {
-        for (i = 1; i < argc; i++)
-            safewordexp(argv[i], &result, 0);
-    } else {
         while ((len = getline(&line, &size, stdin)) != -1) {
             if (line[len - 1] == '\n')
                 line[len - 1] = '\0';
             safewordexp(line, &result, 0);
         }
-    }
+    } else for (i = 1; i < argc; i++)
+        safewordexp(argv[i], &result, 0);
 
     return 0;
 }
