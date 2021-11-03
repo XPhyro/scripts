@@ -131,7 +131,9 @@ int main(int argc, char *argv[])
     contmargin = strlen(prefix) + MAX(strlen(flcont), strlen(dircont));
     size = 0; /* suppress -Wmaybe-uninitialized */
 
-    for (i = kcmargin = 0; i < (optshell ? 1 : argc); i++) {
+    if (optshell)
+        argc = 1;
+    for (i = kcmargin = 0; i < argc; i++) {
         if (!*argv[i])
             DIE("keycode is empty\n");
 
@@ -169,7 +171,10 @@ int main(int argc, char *argv[])
             }
 
             if (!optshell) {
-                printf("%s%c", line, delim);
+                if (argc == 1 && !optboth && !isatty(STDOUT_FILENO))
+                    fputs(line, stdout);
+                else
+                    printf("%s%c", line, delim);
             } else {
                 printf("%s='", argv[1]);
                 for (s = line; *s; s++) {
