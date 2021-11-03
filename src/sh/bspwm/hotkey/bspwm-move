@@ -15,9 +15,7 @@ setn() {
 }
 
 setn || {
-    direction="$(
-        printf "%s\n" "$direction" | END= fmaps west=east east=west south=north north=south
-    )"
+    direction="$(printf "%s\n" "$direction" | END= fmaps west=east east=west south=north north=south)"
     setn || exit 1
 }
 
