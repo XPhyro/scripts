@@ -16,8 +16,7 @@ if [ "$#" -ne 0 ] && [ -n "$*" ]; then
     )"
 else
     fls="$(
-        {
-            {   git diff --name-status
+        {   {   git diff --name-status
                 git diff --cached --name-status
             } | cut -d'	' -f2-
             git ls-files -o --exclude-standard --directory | stest -d | sed 's|$|/*|'

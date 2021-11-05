@@ -82,8 +82,7 @@ case "$optmod" in
         edit() {
             [ "$optreal" = 1 ] && set -- "$1" "$(realpath -mPq -- "$2" | unexpandpath -s)"
             validate "$1" "$2"
-            {
-                printf "%s\r%s\n" "$1" "$2"
+            {   printf "%s\r%s\n" "$1" "$2"
                 cat -- "$dbfl"
             } | sponge -- "$dbfl"
             return 2

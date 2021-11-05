@@ -2,6 +2,5 @@
 
 eval "$(evalverbose)"
 
-{
-    [ "$(dunstctl is-paused)" = "true" ] && printf "%s\n" "📮"
+{   [ "$(dunstctl is-paused)" = "true" ] && printf "%s\n" "📮"
 } > "$(getpath -du -- statbar)/7.7_statbarnotif"

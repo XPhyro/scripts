@@ -33,8 +33,7 @@ esac
 case "$(file --mime-type --brief -- "$fl")" in
     text/*|*/xml)
         tmp="$(mktemp)"
-        {
-            [ "${fl%.*}" = "$fl" ] \
+        {   [ "${fl%.*}" = "$fl" ] \
                 || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq -- "${fl##*.}"
         } && timeout 5s bat --color=always --style=plain --pager=never --decorations=never -- "$fl" > "$tmp" \
           && sed -i -E -- 's/\[38;5;231m(.*)\[0m$/\1/' "$tmp" \

@@ -6,6 +6,5 @@ eval "$(evalverbose)"
 bat="/sys/class/power_supply/BAT0"
 cap="$(cat "$bat/capacity")"
 
-{
-    [ "$cap" != "100" ] && [ "$(cat "$bat/current_now")" != "0" ] && printf "%s\n" "$cap 🔋"
+{   [ "$cap" != "100" ] && [ "$(cat "$bat/current_now")" != "0" ] && printf "%s\n" "$cap 🔋"
 } > "$(getpath -du -- statbar)/7_statbarbat"
