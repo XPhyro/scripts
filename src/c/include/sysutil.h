@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 /* path is modified in the process, but restored to original */
 void rmkparent(char *path, mode_t mode)
@@ -25,8 +27,11 @@ void rmkparent(char *path, mode_t mode)
 /* path is modified in the process, but restored to original */
 void rmkfile(char *path, mode_t mode)
 {
+    int fd;
+
     rmkparent(path, mode);
-    fopen(path, "a");
+    if ((fd = open(path, O_CREAT)) != -1)
+        close(fd);
 }
 
 /* path is modified in the process, but restored to original */
