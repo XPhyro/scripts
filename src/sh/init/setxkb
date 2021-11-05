@@ -11,17 +11,20 @@ setxkbmap -option "caps:escape"
 # escape -> caps_lock
 # return -> backspace
 # backspace -> tab
+# control_r -> hyper_r
 # tab -> return
 # xmodmap -e "keycode 108 = Super_R" \
 #         -e "keycode 9 = Caps_Lock" \
 #         -e "keycode 36 = BackSpace" \
 #         -e "keycode 22 = Tab" \
+#         -e 'keycode 105 = Hyper_R' \
 #         -e "keycode 23 = Return"
 # TODO: Chromium (and Brave) does not respect the changes to Tab/BackSpace/Return.
 #       See https://bugs.chromium.org/p/chromium/issues/detail?id=394552.
 eval "
     xmodmap -e 'keycode 108 = Super_R' \
         -e 'keycode 9 = Caps_Lock' \
+        -e 'keycode 105 = Hyper_R' \
         $(
             printf "%s\n" "$km" | END= fmaps \
                 gb="-e 'keycode 135 = Menu'" \
