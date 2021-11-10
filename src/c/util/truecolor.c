@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     int i;
     long nread;
     unsigned char buf[BUFSIZE];
-    const char *const numerr = EXECNAME": invalid color given";
+    const char *const numerr = EXECNAME": invalid color given\n";
 
     if (argc < 4)
         DIE("not enough arguments given");
