@@ -24,6 +24,7 @@ install() {
     find '.' -mindepth 1 -type f -not -path "./.*" -not -path "*/include/*" -printf "%P\n" | while IFS= read -r i; do
         out="${i%.c}"
         out="${out##*/}"
+        contains "$i" "/wrapper/" && out="wrapper/$out"
         gcc -O3 -std=c99 -pedantic -Wall "$i" -o "$prefix/$out" &
         printf "\0%s\0" "$prefix/$out" >> ../.installed
     done
