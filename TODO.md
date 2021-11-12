@@ -4,7 +4,6 @@
 - In `tglapp`, `--list=compact` prints stdout and stderr.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
 - In `shufr`, if `nsame` is not trivially small compared to `n`, the execution becomes extremely intensive and slow. Fix this by having an array of indices and removing the index from the array once it is used, allowing the random choice to be unique. The other checks should still be in place.
-- `truecolor 0 255 0a-++a0 asdf` does not exit with error, fix. Similar issues exist with `evalverbose` and scripts using`stdutil.h`.
 
 # Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.

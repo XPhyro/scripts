@@ -21,7 +21,7 @@
                                                   perror(#FUNC); \
                                                   exit(EXIT_FAILURE); \
                                               } \
-                                              if (s == endptr) { \
+                                              if (*endptr != '\0') { \
                                                   fputs(err, stderr); \
                                                   exit(EXIT_FAILURE); \
                                               } \
@@ -44,7 +44,7 @@ unsigned short astrtohu(char *s, const char *const err)
         perror("strtoul");
         exit(EXIT_FAILURE);
     }
-    if (s == endptr || n > 255) {
+    if (*endptr != '\0' || n > 255) {
         fputs(err, stderr);
         exit(EXIT_FAILURE);
     }
