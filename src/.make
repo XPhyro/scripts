@@ -25,7 +25,7 @@ install() {
         out="${i%.c}"
         out="${out##*/}"
         gcc -O3 -std=c99 -pedantic -Wall "$i" -o "$prefix/$out" &
-        printf "\0%s\0" "$out" >> ../.installed
+        printf "\0%s\0" "$prefix/$out" >> ../.installed
     done
 }
 
