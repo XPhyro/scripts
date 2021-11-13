@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     if (geteuid()) {
-        fputs("This script needs to be run as root.\n", stderr);
+        fputs("This script must be run as root.\n", stderr);
         return 1;
     }
 
