@@ -3,10 +3,15 @@
 
 int main(int argc, char *argv[])
 {
-    if (geteuid()) {
-        fputs("This script must be run as root.\n", stderr);
-        return 1;
-    }
+    int i;
 
-    return 0;
+    if (!geteuid())
+        return 0;
+
+    if (argc == 1)
+        fputs("This script must be run as root.\n", stderr);
+    else for (i = 1; i < argc; i++)
+        fputs(argv[i], stderr);
+
+    return 1;
 }
