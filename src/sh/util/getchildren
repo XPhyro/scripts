@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 getchildren() {
     children="$(pgrep -P "$1")"
     [ -z "$children" ] && return
