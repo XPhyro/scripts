@@ -13,8 +13,6 @@
 
 #define _POSIX_C_SOURCE 200809L
 
-#define S_ISVTX 01000
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +20,10 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
+
+#ifndef S_ISVTX
+#define S_ISVTX 01000
+#endif /* S_ISVTX */
 
 #define LOG(...) if (optverbose) \
                      fprintf(stderr, __VA_ARGS__)
