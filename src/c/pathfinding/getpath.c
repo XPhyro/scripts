@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
-                fputs("Try 'getpath -d -h' for more information.\n", stderr);
+                fputs("Try 'getpath -h' for more information.\n", stderr);
                 exit(EXIT_FAILURE);
                 break;
         }
