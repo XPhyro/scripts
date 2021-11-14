@@ -9,11 +9,11 @@ headsetcontrol > /dev/null || {
 
 while true; do
     case "$(readchar)" in
-        s) printf "Value (s): " >&2; tglsidetone "$(readstr)";;
         b) headsetcontrol -b;;
         i) printf "Value (i): " >&2; headsetcontrol -i "$(readstr)";;
         m) headsetcontrol -m;;
         q) exit 0;;
-        *) printf "Only s, b, i, m and q are supported.\n";;
+        s) printf "Value (s): " >&2; tglsidetone "$(readstr)";;
+        *) printf "b: battery\ni: inactive time\nm: mix level\nq: quit\ns: sidetone level\n";;
     esac
 done | grep -vE --line-buffered "^(Found |$)"
