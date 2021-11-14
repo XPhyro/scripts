@@ -51,7 +51,7 @@ int main(const int argc, const char *argv[])
 
         for (auto it = keys.begin(); it < keys.end() - 1; it++)
             std::cout << *it << ", ";
-        std::cout << keys.back() << std::endl;
+        std::cout << keys.back() << '.' << std::endl;
 
         return 1;
     }
