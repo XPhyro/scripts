@@ -5,6 +5,13 @@ logerrq() {
     exit 1
 }
 
+contains() {
+    case "$1" in
+        *"$2"*) return 0;;
+    esac
+    return 1
+}
+
 install() {
     mkdir "$prefix/wrapper" 2> /dev/null \
         && printf "There was no $prefix/wrapper directory, so it was created for you. Be sure to add it to your PATH with high priority.\n" >&2
