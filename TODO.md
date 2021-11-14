@@ -72,6 +72,7 @@
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
 - Write tests (especially for `c/*`).
 - Write a manager for *suckless*-like software that handles updating to upstream, applying patches to the fresh copy and building & installing.
+- `fillcol`: Like `fillline` and `fillterm`, but for columns. Take a column number as input. Do not scroll lines, rather overwrite the screen.
 
 # Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
