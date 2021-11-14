@@ -7,24 +7,15 @@
 #define EXECNAME "color"
 
 const std::unordered_map<std::string, std::string> colors = {
-    {"black",   "\x1b[0;30m"},
-    {"red",     "\x1b[0;31m"},
-    {"green",   "\x1b[0;32m"},
-    {"orange",  "\x1b[0;33m"},
-    {"blue",    "\x1b[0;34m"},
-    {"purple",  "\x1b[0;35m"},
-    {"cyan",    "\x1b[0;36m"},
-    {"lgray",   "\x1b[0;37m"},
-    {"lgrey",   "\x1b[0;37m"},
-    {"dgray",   "\x1b[1;30m"},
-    {"dgrey",   "\x1b[1;30m"},
-    {"lred",    "\x1b[1;31m"},
-    {"lgreen",  "\x1b[1;32m"},
-    {"yellow",  "\x1b[1;33m"},
-    {"lblue",   "\x1b[1;34m"},
-    {"lpurple", "\x1b[1;35m"},
-    {"lcyan",   "\x1b[1;36m"},
-    {"white",   "\x1b[1;37m"},
+    {"black",   "\x1b[0;30m"}, {"red",     "\x1b[0;31m"},
+    {"green",   "\x1b[0;32m"}, {"orange",  "\x1b[0;33m"},
+    {"blue",    "\x1b[0;34m"}, {"purple",  "\x1b[0;35m"},
+    {"cyan",    "\x1b[0;36m"}, {"lgray",   "\x1b[0;37m"},
+    {"lgrey",   "\x1b[0;37m"}, {"dgray",   "\x1b[1;30m"},
+    {"dgrey",   "\x1b[1;30m"}, {"lred",    "\x1b[1;31m"},
+    {"lgreen",  "\x1b[1;32m"}, {"yellow",  "\x1b[1;33m"},
+    {"lblue",   "\x1b[1;34m"}, {"lpurple", "\x1b[1;35m"},
+    {"lcyan",   "\x1b[1;36m"}, {"white",   "\x1b[1;37m"},
 };
 
 const std::string clearcolor = "\x1b[0m";
@@ -43,7 +34,6 @@ int main(const int argc, const char *argv[])
 
         std::vector<std::string> keys;
         keys.reserve(colors.size());
-
         for (const auto& [key, val] : colors)
             keys.push_back(key);
 
