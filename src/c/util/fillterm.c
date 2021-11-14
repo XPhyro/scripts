@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
                     putchar('\n');
                     return 0;
                 }
-                if (!putchar(c))
+                if (putchar(c) == EOF)
                     return 1;
             }
         }
