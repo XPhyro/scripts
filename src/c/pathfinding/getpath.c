@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
                     if (*s != '\'')
                         putchar(*s);
                     else
-                        fputs("'\\''", stdout);
+                        fputs("'\"'\"'", stdout);
                 }
                 fputs("';\n", stdout);
             }
