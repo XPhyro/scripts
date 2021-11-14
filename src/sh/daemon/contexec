@@ -105,7 +105,7 @@ execute() {
         sleep 0.1
     done
     kill %% 2> /dev/null
-    fputsn "―" "$(tput cols)"
+    fillline "―"
     printf "\n"
     $argv &
     printf "%s" "$!" > "$pidfl"
