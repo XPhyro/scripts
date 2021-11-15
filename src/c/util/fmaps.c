@@ -13,11 +13,9 @@
 
 int main(int argc, char *argv[])
 {
-    char delim = '\n';
-    char *sep = NULL, *end = NULL, *def = NULL, *line = NULL, *eol, *s;
+    char delim = '\n', *sep = NULL, *end = NULL, *def = NULL, *line = NULL, *eol, *s;
     int i, offset;
-    size_t linelen = 0;
-    size_t *maplens;
+    size_t linelen = 0, *maplens;
     ssize_t nread = 0;
 
     while ((i = getopt(argc, argv, "d:e:hs:z0")) != -1) {

@@ -199,9 +199,8 @@ inline void printhelp()
 int main(int argc, char *argv[])
 {
     int i;
-    char delim = '\n';
     bool hasnomatch = false, hasmatch = false;
-    char *line = NULL;
+    char delim = '\n', *line = NULL;
     size_t size;
     ssize_t len;
 

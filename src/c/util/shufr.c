@@ -34,12 +34,9 @@
 int main(int argc, char *argv[])
 {
     bool optlimit = false;
-    int n = 100, i, j, r;
-    int *ihist, *iarr;
+    int n = 100, i, j, r, *ihist, *iarr;
     unsigned int lprint = 0, nprint = 0, nsame = 2, nsbuf;
-    char delim = '\n';
-    char *line = NULL, *tmpstr = NULL;
-    char **lines = malloc(n * sizeof(char *));
+    char delim = '\n', *line = NULL, *tmpstr = NULL, **lines = malloc(n * sizeof(char *));
     size_t size;
     ssize_t len;
     FILE *file;

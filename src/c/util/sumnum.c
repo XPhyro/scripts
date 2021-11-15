@@ -38,8 +38,7 @@ int main(int argc, char *argv[])
     bool optnodelim = false;
     int i;
     long double sum = 0;
-    char delim = '\n';
-    char *line = NULL;
+    char delim = '\n', *line = NULL;
     size_t size, len;
 
     while ((i = getopt(argc, argv, "dhiz0")) != -1) {

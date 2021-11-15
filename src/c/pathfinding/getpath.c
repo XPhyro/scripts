@@ -45,8 +45,7 @@ int main(int argc, char *argv[])
     const char *confdir;
     bool dirturn, optboth = false, optshell = false, shellinit = false;
     int i;
-    char delim = '\n';
-    char *s, *prefix, *path = NULL, *line = NULL;
+    char delim = '\n', *s, *prefix, *path = NULL, *line = NULL;
     size_t st, size, contmargin, kcmargin, linesize = 0;
     ssize_t linelen;
     FILE *fl;
