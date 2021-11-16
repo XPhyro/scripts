@@ -26,10 +26,10 @@
                                  lines = realloc(lines, (n *= 2) * sizeof(char *)); \
                          }
 
-#define PRINT(LINE) fputs(LINE, stdout); \
-                    putchar(delim); \
-                    if (optlimit && ++nprint == lprint) \
-                        exit(EXIT_SUCCESS)
+#define PRINT(LINE) { fputs(LINE, stdout); \
+                      putchar(delim); \
+                      if (optlimit && ++nprint == lprint) \
+                          exit(EXIT_SUCCESS); }
 
 int main(int argc, char *argv[])
 {
@@ -99,32 +99,28 @@ int main(int argc, char *argv[])
 
     lines = realloc(lines, n * sizeof(char *));
     srand(time(NULL));
-    for (i = 0; i < n; i++)
-    {
+    for (i = 0; i < n; i++) {
         tmpstr = lines[r = rand() % n];
         lines[r] = lines[i];
         lines[i] = tmpstr;
     }
 
     if (n < nsame) {
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; i++)
             PRINT(lines[i]);
-        }
         DIE("input line count (%u) is less than nsame (%u)", n, nsame);
     }
 
     if (nsame < 2) {
-        for (;;) {
+        for (;;)
             PRINT(lines[rand() % n]);
-        }
     }
 
     iarr  = malloc(nsame * sizeof(int));
     if (nsame == n) {
         for (;;) {
-            for (i = 0; i < n; i++) {
+            for (i = 0; i < n; i++)
                 PRINT(lines[i]);
-            }
         }
     }
 
@@ -141,9 +137,8 @@ newcycle:
             }
             ihist[nsame + i] = iarr[i] = r;
         }
-        for (i = 0; i < nsame; i++) {
+        for (i = 0; i < nsame; i++)
             PRINT(lines[ihist[i] = iarr[i]]);
-        }
         for (i = nsame; i < nsbuf; ihist[i++] = -1);
         for (i = 0; i < nsame; ihist[i] = ihist[i + 1], i++);
     }
