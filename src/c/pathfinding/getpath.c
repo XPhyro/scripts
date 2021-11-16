@@ -40,9 +40,9 @@ typedef enum {
 
 int main(int argc, char *argv[])
 {
-    const char *const flcont = "/scripts/pathfinding/files-container/";
-    const char *const dircont = "/scripts/pathfinding/directories-container/";
-    const char *confdir;
+    const char *confdir,
+               *const flcont = "/scripts/pathfinding/files-container/",
+               *const dircont = "/scripts/pathfinding/directories-container/";
     bool dirturn, optboth = false, optshell = false, shellinit = false;
     int i;
     char delim = '\n', *s, *prefix, *path = NULL, *line = NULL;
