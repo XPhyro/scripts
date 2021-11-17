@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
@@ -10,21 +11,9 @@
 
 #include "../include/sysutil.h"
 
-#define DIE(...) { fputs("getpath: ", stderr); \
-                   fprintf(stderr, __VA_ARGS__); \
-                   if (shellinit) { \
-                       switch (argc) { \
-                           case 4: \
-                               fprintf(stderr, "%s\n", argv[3]); \
-                           case 3: \
-                               printf("exit %s;\n", argv[2]); \
-                               break; \
-                           default: \
-                               puts("exit 1;\n"); \
-                               break; \
-                       } \
-                   } \
-                   exit(EXIT_FAILURE); }
+#define EXECNAME "getpath"
+
+#define DIE(...) die(shellinit, argc, argv, __VA_ARGS__)
 
 typedef enum {
     SAFETYMODE_UNSAFE = 0,
@@ -37,6 +26,32 @@ typedef enum {
     FILEMODE_DIR = 1,
     FILEMODE_FILE = 2,
 } FILEMODES;
+
+
+void die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
+{
+    va_list ap;
+
+    fputs(EXECNAME": ", stderr);
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+
+   if (shellinit) {
+       switch (argc) {
+           case 4:
+               fprintf(stderr, "%s\n", argv[3]);
+           case 3:
+               printf("exit %s;\n", argv[2]);
+               break;
+           default:
+               puts("exit 1;\n");
+               break;
+       }
+   }
+
+    exit(EXIT_FAILURE);
+}
 
 int main(int argc, char *argv[])
 {
