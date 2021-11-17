@@ -1,27 +1,26 @@
-# Bugs
+# Normal Priority
+
+## Bugs
 - `ffmw decat` does not work as expected. When the time is in format `HH:MM:SS`, it seems to work. Maybe it requires this format? If so, add it in the help menu.
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the current desktop, even if it's in another monitor's focused desktop.
 - In `shufr`, if `nsame` is not trivially small compared to `n`, the execution becomes extremely intensive and slow. Fix this by having an array of indices and removing the index from the array once it is used, allowing the random choice to be unique. The other checks should still be in place.
 
-# Features
+## Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the initialised terminal.
 - Allow `m` to take input files. If an input file is given, mark the file; if not, mark the current working directory. Similarly, support those files in `@` for editing.
-- In `contexec`, wrap each execution between printed headers. Also show the execution count.
+- In `contexec`, show the execution count in the header.
 - In `bspwmpad`, allow setting the font size (not the whole font). This would be useful in scripts/programs like `weather`, `neomutt`, etc.
 - Add options in `latexstp` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed, open the editor in the current terminal and execute the file in a `$PAD`.
 - Add an option in `bspwmpad` that would skip the acquisition of a lock if all locks are occupied. This could have two behaviours: open up a normal st session or execute the command without st. This could be made into two more options that would determine the behaviour.
 - When setting a mark, ensure that the mark name does not contain %20 (i.e. space). Tabs, etc. are ok with the current setup. Alternatively, refactor the current setup to not use whitespace delimiters. A mechanism like in `getdir` and `getfl` could be implemented.
 - Add support for regular files in mark scripts. A possible way could be to also add support for passed arguments for files in the marking process and check the file type; if it is a regular file, then the file could be marked in a different mark set. While using marks, first check if a directory mark exists. If there exists a directory mark, `cd` into it; else, open up the regular file for the given mark in `$EDITOR` if there is such a mark.
-- Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
 - In `steammgr`, keep a database of application IDs scraped from [steamdb](https://steamdb.info/apps) and present the user with relevant options. This could be done in two ways: either show the relevant options by being command-aware, or first show a meta prompt for all, installed and in-library games, and then show the IDs (or show the meta options in the installed prompt, and show another prompt with the selected if all or in-library is selected).
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
 - Integrate *synctex* in `latexstp`. See [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html) and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 - Implement a no-quoting option in `tglapp` like the inverse of the one that exists in `mapexec`.
-- In `bright*`, fade the brightness.
-- In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
 - `ffmpeg` fails to parse the filename (why does it even parse it?) if it contains one of the following characters `:,`. Make `ffmw` create a symlink pointing to the input file(s) to mitigate the issue.
 - In `tglapp`, add support for different commands depending on whether the application is open or not. This would be useful in many scenarios, including toggling an application wrapped with `screen`.
 - Add an option to start applications in a `screen` named `"$keycode"` in `tglapp`. Also add an option to overwrite the `screen` name.
@@ -52,7 +51,7 @@
 - In `fmaps`, implement options similar to that of `afgrep`'s `-aexbi`.
   - **Maybe** make these options specific to each given mapping? If so, also have the ability to globally define these options.
 
-# New scripts
+## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
 - Finish `todo`.
 - Write a variant of `volappch` that toggles mute status.
@@ -60,7 +59,6 @@
 - Write `getfls` and `getdirs` that support multiple arguments unlike `getfl` and `getdir`. This might also be integrated in `getfl` and `getdir` in a lightweight manner.
 - Write scripts that would: print the value for a mark, print the mark for a given value (if marks are always in expanded form, also expand the given value; else, ensure that the equivalent values are considered).
 - Write a helper script that would make it easy for a script to implement hashmaps. Currently `getdir`, `getfl` and other scripts use directory/file structures as a workaround. This script would need to perform at least as well as the workaround, if not better, and be convenient to use.
-- Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
 - Write a library-ish thing to make it easy for scripts, especially those in terminal file managers, to implement short-term smart thrash functionality that is considerate of the disk usage of the thrash.
 - Timer, chronometer, alarm.
 - Implement a crop subcommand in `ffmw`.
@@ -68,13 +66,11 @@
 - Write a script similar to `bspwmpad` that would register/deregister the focused node if the key (1-9) is empty, else it will deregister that key; then, write a script that would hide/show these nodes per key. Key 0 should be similar to the key 0 of `bspwmpad`.
 - Write a script to check an sxhkdrc file (by default `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not* assuming the modifiers are in a particular order, and print the hotkeys along with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through `stat --printf=` if the line starts with ``.
-- Write a `rofi` wrapper that dynamically sets the width as in the following excerpt from `yankunicode`: `rofi -dmenu -font 'JetBrainsMono 16' -width -"$(($(wc -L -- "$fl" | cut -d' ' -f1) + 2))"`.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
-- Write tests (especially for `c/*`).
-- Write a manager for *suckless*-like software that handles updating to upstream, applying patches to the fresh copy and building & installing.
+- Write a manager for *suckless*-like software that handles updating to upstream, applying patches to the fresh copy and building & installing. (or just update master and execute `git rebase --rebase-merges --force-rebase master`)
 - `fillcol`: Like `fillline` and `fillterm`, but for columns. Take a column number as input. Do not scroll lines, rather overwrite the screen.
 
-# Refactoring / Rewriting / Reworking
+## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the commits that are made by these scripts.
@@ -88,16 +84,15 @@
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's `--backup=numbered`.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary (except containing a newline).
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
-- In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
 - Use `inotifywait` in `waitfl`.
 - In `genpath` and `editpath`, use `\0` as the line and keycode/path separator.
 - Merge `repeat{line,null,str}` into `repeatstr`.
 
-# Other
+## Other
 - Should [README.md](README.md) be rewritten to not include first person language?
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is interrupted, killed, etc.
-- Add `exit 0` at the end of all scripts.
+- Add `exit 0` at the end of all applicable scripts.
 - Add explanations under shebangs.
 - Add a file that explains every script. Mention this file in [README.md](README.md).
 - Use `basename` and `dirname` instead of parameter expansions as they correctly deal with edge cases. If these edge cases are known not to be present, do use parameter expansions.
@@ -117,3 +112,17 @@
 - Use `ulck` instead of manually releasing locks.
 - Do not print error messages when `get*` fails in scripts as those already print errors to stderr.
 - At this point perhaps rename the repository from `scripts` to `utils`?
+
+# Low Priority
+
+## Features
+- Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
+- In `pathfinding/v`, if the file is not found, try finding the file in *a few* depths.
+- In `bright*`, fade the brightness.
+
+## New Scripts
+- Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some sort of window showing (icon-ic) previews of the different available layouts. When one is selected, it would change the wm to that layout. You may want to use `rofi` or a `dialog` menu.
+- Write tests (especially for `c/*`).
+
+## Refactoring / Rewriting / Reworking
+- In `weather`, pad the first and last lines to prevent the clashes of the two versions. If the whole output is padded, the lines do not look nice. See [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html) for easy padding.
