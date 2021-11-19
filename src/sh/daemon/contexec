@@ -89,7 +89,7 @@ processargs() {
     [ -z "$stdinfl" ] && {
         stdinfl="$(mktemp)"
         stdinsep="\n"
-        printf "%s\n" "$argv" | headw 1 > "$stdinfl"
+        printf "%s\n" "$argv" | headw 1 | tail -c +2 > "$stdinfl"
     }
 }
 
@@ -127,5 +127,5 @@ main() {
 capturestdin
 parseargs "$@"
 processargs
-trap 'kill 0' INT TERM EXIT
+trap 'kill -9 0' INT TERM EXIT
 main
