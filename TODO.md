@@ -87,6 +87,7 @@
 - Use `inotifywait` in `waitfl`.
 - In `genpath` and `editpath`, use `\0` as the line and keycode/path separator.
 - Merge `repeat{line,null,str}` into `repeatstr`.
+- Use `calloc`.
 
 ## Other
 - Should [README.md](README.md) be rewritten to not include first person language?
