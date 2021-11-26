@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     long long n;
 
     errno = 0;
-    if ((s = getenv("SHELL_VERBOSE")) && (n = strtoll(s, &endptr, 10)) > 0 && !errno && s != endptr)
+    if ((s = getenv("SHELL_VERBOSE")) && (n = strtoll(s, &endptr, 10)) > 0 && !errno && !*endptr)
         puts("set -x");
 
     return 0;
