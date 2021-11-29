@@ -4,8 +4,6 @@ eval "$(evalverbose)"
 
 assertroot || exit 1
 
-[ "$#" -gt 0 ] && export XDG_CONFIG_HOME="$1"
-
 devs="$(lsblk -nrpo "name,label,mountpoint")"
 
 while IFS='' read -r label mp _; do
