@@ -70,6 +70,9 @@
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master status.
 - Write a manager for *suckless*-like software that handles updating to upstream, applying patches to the fresh copy and building & installing. (or just update master and execute `git rebase --rebase-merges --force-rebase master`)
 - `fillcol`: Like `fillline` and `fillterm`, but for columns. Take a column number as input. Do not scroll lines, rather overwrite the screen.
+- `volauxdefset`
+- `volauxsetarr`: like `volauxset`, but moves in predefined volume levels (given via arguments).
+- `volauxdefsetarr`: like `volauxdefset`, but moves in predefined volume levels (given via arguments).
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
