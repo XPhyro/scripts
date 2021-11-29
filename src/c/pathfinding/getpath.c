@@ -135,7 +135,8 @@ int main(int argc, char *argv[])
         shellinit = true;
     }
 
-    if (!(prefix = getenv("XDG_CONFIG_HOME"))) {
+    if (!((prefix = getenv("GETPATH_CONFIG_HOME"))
+       || (prefix = getenv("XDG_CONFIG_HOME")))) {
         if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             DIE("could not determine config directory\n");
         prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)));
