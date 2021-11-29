@@ -14,15 +14,12 @@ eval "$(getpath -du -- clploglck lckdir 1 "[ERROR]: getpath -f -- failed, aborti
 lastclp="$(xclip -o -se c)"
 oldclp="$lastclp"
 
-[ -d "$lckdir" ] && rm -rf -- "$lckdir"
+rm -rf -- "$lckdir"
 
 while true; do
     clipnotify
 
-    [ -d "$lckdir" ] && {
-        rm -rf -- "$lckdir"
-        continue
-    }
+    rm -r -- "$lckdir" 2> /dev/null && continue
 
     clp="$(xclip -o -se c)"
     [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue
