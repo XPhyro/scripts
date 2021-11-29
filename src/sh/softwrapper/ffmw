@@ -186,6 +186,8 @@ printhelp() {
             printf "%s\n" \
 "$execname [OPTION]... SUBCOMMAND [OPTION]... [FILE]... -- [FILE]...
 
+FFMW_FFMPEG_ARGS is passed to ffmpeg relative early in the argument vector. You may use it to enable hardware acceleration or do other operations.
+
 Global options:
     -h, --help
         Print help message.
@@ -894,7 +896,7 @@ optimize() {
             printf 'No such file [%s], exiting.\n' \"\$i\"
             exit 1
         }
-        $pperf ffmpeg -hide_banner $threads $overwrite -i \"\$i\" -c:v libx265 -c:a copy -q:v 0 '$outfl' || {
+        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -c:v libx265 -c:a copy -q:v 0 '$outfl' || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
@@ -906,7 +908,7 @@ compress() {
     printf "%s\n" "$infls"
     # printf "%s\n" "$infls" | while IFS= read -r i; do
     #     [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
-    #     $pperf ffmpeg -hide_banner $threads $overwrite -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
+    #     $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
     #     mv -f -- "$outfl" "${i%.*}.${outfl##*.}"
     # done
     # TODO: For some reason the upper while loop does not continue after the first iteration, fix.
@@ -916,7 +918,7 @@ compress() {
             printf 'No such file [%s], exiting.\n' \"\$i\"
             exit 1
         }
-        $pperf ffmpeg -hide_banner $threads $overwrite -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 -c:a copy '$outfl' || {
+        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 -c:a copy '$outfl' || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
@@ -946,7 +948,7 @@ concat() {
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
         printferr "ffmpeg failed, exiting.\n"
         [ -f "$lstfl" ] && rm -- "$lstfl"
         exit 1
@@ -966,7 +968,7 @@ crop() {
         codec="copy"
     fi
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v "$codec" -c:a copy "$outfl" \
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v "$codec" -c:a copy "$outfl" \
         || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
@@ -974,7 +976,7 @@ crop() {
 }
 
 decat() {
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -to "$(
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -to "$(
         printf "%s\n" "$marks" | head -n 1
     )" -safe 0 -c copy "$(
         printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\11/g'
@@ -984,7 +986,7 @@ decat() {
     [ "$(printf "%s\n" "$marks" | wc -l)" -ne 1 ] \
         && while IFS= read -r ss <&3 && IFS= read -r to <&4
     do
-        $pperf ffmpeg -hide_banner $threads $overwrite -ss "$ss" -i "$infl" -to "$to" -safe 0 -c copy "$(
+        $pperf ffmpeg -hide_banner $threads $FFMW_FFMPEG_ARGS $overwrite -ss "$ss" -i "$infl" -to "$to" -safe 0 -c copy "$(
             printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g'
         )" || printferrq "ffmpeg failed, exiting.\n"
         : $((n += 1))
@@ -994,7 +996,7 @@ EOF1
 $(printf "%s\n" "$marks" | tail -n +2)
 EOF2
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -ss "$(
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -ss "$(
         printf "%s\n" "$marks" | tail -n 1
     )" -i "$infl" -safe 0 -c copy "$(
         printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g'
@@ -1009,7 +1011,7 @@ help() {
 
 split() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" \
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -f segment -safe 0 -c copy -map 0 -segment_time "$period" -reset_timestamps 1 "$outpat" \
         || printferrq "ffmpeg failed, exiting.\n"
     [ "$remove" = "1" ] && rm -- "$infl"
 }
@@ -1017,7 +1019,7 @@ split() {
 trim() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -vf "$(
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -vf "$(
         ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 \
             | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" \
             | awk '{print $NF}' \
@@ -1036,7 +1038,7 @@ trim() {
 reverse() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite -i "$infl" -vf reverse -af areverse "$outfl"
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -vf reverse -af areverse "$outfl"
 
     [ "$remove" = "1" ] && rm -- "$infl"
 
