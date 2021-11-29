@@ -30,4 +30,7 @@ mp="/mnt/${label:-"${chosen##*/}"}"
 [ -z "$mp" ] && exit 1
 [ -d "$mp" ] || mkdir -p -- "$mp"
 
-mount -- "$chosen" "$mp"
+mount -o gid=users,fmask=113,dmask=002 -- "$chosen" "$mp" && {
+    chown :wheel -- "$mp"
+    chmod 770 -- "$mp"
+}
