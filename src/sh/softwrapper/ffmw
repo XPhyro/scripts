@@ -5,7 +5,7 @@
 
 eval "$(evalverbose)"
 
-subcommands="concat crop decat help optimise optimize split trim reverse"
+subcommands="compress concat crop decat help optimise optimize split trim reverse"
 execname="${0##*/}"
 
 printhelp() {
@@ -19,6 +19,22 @@ printhelp() {
             printf "%s\n" \
 "  optimize [INFILE]... [TEMPOUTFILE]
    Optimize INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
+
+    -f, --force
+        Overwrite the output file if it exists.
+    -h, --help
+        Print help message.
+    -i, --interactive
+        Prompt before overwriting the output file if it exists.
+    -n, --no-clobber
+        Do nothing if the output file exists.
+    -r, --remove
+        Remove INFILE if operation succeeded."
+            ;;
+        compress)
+            printf "%s\n" \
+"  compress [INFILE]... [TEMPOUTFILE]
+   Compress INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
 
     -c FACTOR, --constant-rate-factor FACTOR
         Set the constant rate factor to FACTOR. If not given, 23 is used.
@@ -293,14 +309,71 @@ parseargs() {
                             opt="${sopt%"${sopt#?}"}"
 
                             case "$opt" in
-                                c) shift; assertarg "-c" "FACTOR" "$1"; factor="$1";;
                                 f) overwrite="-y";;
                                 h) printhelp "optimize"; exit 0;;
                                 i) overwrite="";;
                                 n) overwrite="-n";;
-                                p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
                                 r) remove="1";;
                                 *) printusage "-$opt" "optimize";;
+                            esac
+
+                            sopt="${sopt#?}"
+                        done
+                    else
+                        opt="${1#??}"
+
+                        case "$opt" in
+                            force                ) overwrite="-y";;
+                            help                 ) printhelp "optimize"; exit 0;;
+                            interactive          ) overwrite="";;
+                            no-clobber           ) overwrite="-n";;
+                            remove               ) remove="1";;
+                            ""                   ) shift; break;;
+                            *                    ) printusage "--$opt" "optimize";;
+                        esac
+                    fi
+                else
+                    argv="$argv
+$1"
+                fi
+
+                shift
+            done
+
+            for i; do
+                argv="$argv
+$1"
+            done
+
+            argv="$(printf "%s" "$argv" | tail -n +2)"
+
+            infls="$(printf "%s" "$argv" | head -n -1)"
+            outfl="$(printf "%s" "$argv" | tail -n 1)"
+
+            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
+                && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+
+            printf "%s" "$infls" | grep -Fxq -- "$outfl" \
+                && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+            ;;
+        compress)
+            while [ -n "$1" ]; do
+                if [ "${1%"${1#?}"}" = "-" ]; then
+                    if ! [ "${1%"${1#??}"}" = "--" ]; then
+                        sopt="${1#?}"
+
+                        while [ -n "$sopt" ]; do
+                            opt="${sopt%"${sopt#?}"}"
+
+                            case "$opt" in
+                                c) shift; assertarg "-c" "FACTOR" "$1"; factor="$1";;
+                                f) overwrite="-y";;
+                                h) printhelp "compress"; exit 0;;
+                                i) overwrite="";;
+                                n) overwrite="-n";;
+                                p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
+                                r) remove="1";;
+                                *) printusage "-$opt" "compress";;
                             esac
 
                             sopt="${sopt#?}"
@@ -315,7 +388,7 @@ parseargs() {
                                 factor="$1"
                                 ;;
                             force                ) overwrite="-y";;
-                            help                 ) printhelp "optimize"; exit 0;;
+                            help                 ) printhelp "compress"; exit 0;;
                             interactive          ) overwrite="";;
                             no-clobber           ) overwrite="-n";;
                             preset               ) shift
@@ -324,7 +397,7 @@ parseargs() {
                                 ;;
                             remove               ) remove="1";;
                             ""                   ) shift; break;;
-                            *                    ) printusage "--$opt" "optimize";;
+                            *                    ) printusage "--$opt" "compress";;
                         esac
                     fi
                 else
@@ -815,6 +888,21 @@ optimise() {
 }
 
 optimize() {
+    printf "%s\n" "$infls" | xargs -d '\n' -n 1 sh -c "
+        i=\"\$1\"
+        [ -f \"\$i\" ] || {
+            printf 'No such file [%s], exiting.\n' \"\$i\"
+            exit 1
+        }
+        $pperf ffmpeg -hide_banner $threads $overwrite -i \"\$i\" -c:v libx265 -c:a copy -q:v 0 '$outfl' || {
+            printf 'ffmpeg failed, exiting.\n'
+            exit 1
+        }
+        mv -f -- '$outfl' \"\${i%.*}.${outfl##*.}\"
+    " --
+}
+
+compress() {
     printf "%s\n" "$infls"
     # printf "%s\n" "$infls" | while IFS= read -r i; do
     #     [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
