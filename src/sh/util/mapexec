@@ -231,7 +231,7 @@ clean() {
 }
 
 edit() {
-    "$EDITOR" -- "$1" < /dev/tty
+    "$EDITOR" -- "$1" < /dev/tty > /dev/tty
 }
 
 main() {
