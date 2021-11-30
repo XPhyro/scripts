@@ -147,6 +147,8 @@ printhelp() {
 "  trim [INFILE] [OUTFILE]
    Trim the black bars of INFILE and write the resultant to OUTFILE.
 
+    -c COUNT, --count COUNT
+        Count of frames to consider.
     -f, --force
         Overwrite the output file if it exists.
     -h, --help
@@ -160,7 +162,9 @@ printhelp() {
     -n, --no-clobber
         Do nothing if the output file exists.
     -r, --remove
-        Remove INFILE if the operation succeeded."
+        Remove INFILE if the operation succeeded.
+    -s TIME, --seek TIME
+        Seek to TIME before analysing frames."
             ;;
         reverse)
             printf "%s\n" \
@@ -755,6 +759,7 @@ $1"
                             opt="${sopt%"${sopt#?}"}"
 
                             case "$opt" in
+                                c) shift; assertarg "-c" "COUNT" "$1"; framecount="$1";;
                                 f) overwrite="-y";;
                                 h) printhelp "trim"; exit 0;;
                                 i) overwrite="";;
@@ -762,6 +767,7 @@ $1"
                                 m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
                                 n) overwrite="-n";;
                                 r) remove="1";;
+                                s) shift; assertarg "-s" "TIME" "$1"; seekto="$1";;
                                 *) printusage "-$opt" "trim";;
                             esac
 
@@ -771,6 +777,11 @@ $1"
                         opt="${1#??}"
 
                         case "$opt" in
+                            count            )
+                                shift
+                                assertarg "--count" "COUNT" "$1"
+                                framecount="$1"
+                                ;;
                             force            ) overwrite="-y";;
                             help             ) printhelp "trim"; exit 0;;
                             interactive      ) overwrite="";;
@@ -782,6 +793,11 @@ $1"
                                 ;;
                             no-clobber       ) overwrite="-n";;
                             remove           ) remove="1";;
+                            seek             )
+                                shift
+                                assertarg "--seek" "TIME" "$1"
+                                seekto="$1"
+                                ;;
                             ""               ) shift; break;;
                             *                ) printusage "--$opt" "trim";;
                         esac
@@ -811,6 +827,8 @@ $1"
             [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
 
             [ "$moveorig" = "1" ] && movefile="$infl"
+            [ -z "$framecount" ] && framecount=100
+            [ -z "$seekto" ] && seek=100
             ;;
         reverse)
             while [ -n "$1" ]; do
@@ -1020,7 +1038,7 @@ trim() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
 
     $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -vf "$(
-        ffmpeg -hide_banner -ss 100 -i "$infl" -vframes 100 -vf cropdetect -f null - 2>&1 \
+        ffmpeg -hide_banner -ss "$seekto" -i "$infl" -vframes "$framecount" -vf cropdetect -f null - 2>&1 \
             | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" \
             | awk '{print $NF}' \
             | LC_ALL=C sort \
