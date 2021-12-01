@@ -26,6 +26,8 @@ printhelp() {
         Print help message.
     -i, --interactive
         Prompt before overwriting the output file if it exists.
+    -M, --move-to-original
+        Move TEMPOUTFILE to respective INFILE after the operation succeeds.
     -n, --no-clobber
         Do nothing if the output file exists.
     -r, --remove
@@ -36,7 +38,7 @@ printhelp() {
 "  compress [INFILE]... [TEMPOUTFILE]
    Compress INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
 
-    -c FACTOR, --constant-rate-factor FACTOR
+    -c FACTOR, --crf FACTOR
         Set the constant rate factor to FACTOR. If not given, 23 is used.
     -f, --force
         Overwrite the output file if it exists.
@@ -278,19 +280,15 @@ parseargs() {
                 opt="${1#??}"
 
                 case "$opt" in
-                    help                 ) printhelp; exit 0;;
-                    loud                 ) loud="${loud}1";;
-                    print-performance    ) pperf="perf stat";;
-                    no-print-performance ) pperf="";;
-                    quiet                ) quiet="${quiet}1";;
-                    threads              )
-                        shift
-                        assertarg "--threads" "COUNT" "$1"
-                        threads="-threads $1"
-                        ;;
-                    verbose              ) set -x;;
-                    no-verbose           ) set +x;;
-                    *                    ) printusage "--$opt";;
+                    help) printhelp; exit 0;;
+                    loud) loud="${loud}1";;
+                    print-performance) pperf="perf stat";;
+                    no-print-performance) pperf="";;
+                    quiet) quiet="${quiet}1";;
+                    threads) shift; assertarg "--threads" "COUNT" "$1"; threads="-threads $1";;
+                    verbose) set -x;;
+                    no-verbose) set +x;;
+                    *) printusage "--$opt";;
                 esac
             fi
         else
@@ -304,603 +302,582 @@ parseargs() {
     assertcmd "$cmd"
     shift
 
-    case "$cmd" in
-        optimise|optimize)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                f) overwrite="-y";;
-                                h) printhelp "optimize"; exit 0;;
-                                i) overwrite="";;
-                                n) overwrite="-n";;
-                                r) remove="1";;
-                                *) printusage "-$opt" "optimize";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            force                ) overwrite="-y";;
-                            help                 ) printhelp "optimize"; exit 0;;
-                            interactive          ) overwrite="";;
-                            no-clobber           ) overwrite="-n";;
-                            remove               ) remove="1";;
-                            ""                   ) shift; break;;
-                            *                    ) printusage "--$opt" "optimize";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-
-            infls="$(printf "%s" "$argv" | head -n -1)"
-            outfl="$(printf "%s" "$argv" | tail -n 1)"
-
-            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
-                && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
-
-            printf "%s" "$infls" | grep -Fxq -- "$outfl" \
-                && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
-            ;;
-        compress)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                c) shift; assertarg "-c" "FACTOR" "$1"; factor="$1";;
-                                f) overwrite="-y";;
-                                h) printhelp "compress"; exit 0;;
-                                i) overwrite="";;
-                                n) overwrite="-n";;
-                                p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
-                                r) remove="1";;
-                                *) printusage "-$opt" "compress";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            constant-rate-factor )
-                                shift
-                                assertarg "--constant-rate-factor" "FACTOR" "$1"
-                                factor="$1"
-                                ;;
-                            force                ) overwrite="-y";;
-                            help                 ) printhelp "compress"; exit 0;;
-                            interactive          ) overwrite="";;
-                            no-clobber           ) overwrite="-n";;
-                            preset               ) shift
-                                assertarg "--preset" "PRESET" "$1"
-                                preset="$1"
-                                ;;
-                            remove               ) remove="1";;
-                            ""                   ) shift; break;;
-                            *                    ) printusage "--$opt" "compress";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-
-            infls="$(printf "%s" "$argv" | head -n -1)"
-            outfl="$(printf "%s" "$argv" | tail -n 1)"
-
-            [ -z "$factor" ] && factor=23
-            [ "$(printf "%s\n" "$factor" | tr -c -d '[:digit:]')" = "$factor" ] \
-                || printferrq "FACTOR must be an integer.\n"
-
-            [ -z "$preset" ] && preset=medium
-            [ "$factor" -gt -1 ] && [ "$factor" -lt 52 ] \
-                || printferrq "FACTOR must be in the range 0-51."
-            equals "$preset" ultrafast superfast veryfast faster fast \
-                             medium slow slower veryslow placebo \
-                || printferrq "PRESET must be one of these: ultrafast superfast veryfast faster fast medium slow slower veryslow placebo\n"
-
-            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
-                && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
-
-            printf "%s" "$infls" | grep -Fxq -- "$outfl" \
-                && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
-            ;;
-        concat)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
-                                f) overwrite="-y";;
-                                h) printhelp "concat"; exit 0;;
-                                i) overwrite="";;
-                                M) movefirst="1";;
-                                m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
-                                n) overwrite="-n";;
-                                r) remove="1";;
-                                s) stdin="1";;
-                                *) printusage "-$opt" "concat";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            filter        )
-                                shift
-                                assertarg "--filter" "COMMAND" "$1"
-                                filter="$1"
-                                ;;
-                            force         ) overwrite="-y";;
-                            help          ) printhelp "concat"; exit 0;;
-                            interactive   ) overwrite="";;
-                            move-to-first ) movefirst="1";;
-                            move-to       )
-                                shift
-                                assertarg "--move-to" "MOVEFILE" "$1"
-                                movefile="$1"
-                                ;;
-                            no-clobber    ) overwrite="-n";;
-                            remove        ) remove="1";;
-                            stdin         ) stdin="1";;
-                            ""            ) shift; break;;
-                            *             ) printusage "--$opt" "concat";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-
-            infls="$(printf "%s" "$argv" | head -n -1)"
-            outfl="$(printf "%s" "$argv" | tail -n 1)"
-
-            [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] \
-                && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
-
-            printf "%s" "$infls" | grep -Fxq -- "$outfl" \
-                && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
-            ;;
-        crop)
-            while [ -n "$1" ]; do
-                [ "$1" = "-" ] && [ "$(printf "%s\n" "$argv" | wc -l)" -lt 5 ] && {
-                    argv="$argv
-$1"
-                    shift
-                    continue
-                }
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                a ) accurate="1";;
-                                f ) overwrite="-y";;
-                                h ) printhelp "crop"; exit 0;;
-                                i ) overwrite="";;
-                                M ) moveorig="1";;
-                                m ) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
-                                n ) overwrite="-n";;
-                                r ) remove="1";;
-                                * ) printusage "-$opt" "crop";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            accurate         ) accurate="1";;
-                            force            ) overwrite="-y";;
-                            help             ) printhelp "crop"; exit 0;;
-                            interactive      ) overwrite="";;
-                            move-to-original ) moveorig="1";;
-                            move-to          )
-                                shift
-                                assertarg "--move-to" "MOVEFILE" "$1"
-                                movefile="$1"
-                                ;;
-                            no-clobber       ) overwrite="-n";;
-                            remove           ) remove="1";;
-                            ""               ) shift; break;;
-                            *                ) printusage "--$opt" "crop";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-
-            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 4 ] \
-                && printferrq "Exactly 4 positional arguments are required and accepted, exiting.\n"
-
-            infl="$(printf "%s\n" "$argv" | head -n 1)"
-            outfl="$(printf "%s\n" "$argv" | tail -n 3 | head -n 1)"
-            beginmark="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
-            endmark="$(printf "%s\n" "$argv" | tail -n 1)"
-
-            [ "$outfl" = "$infl" ] \
-                && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
-            [ "$beginmark" = "-" ] && beginmark="0"
-
-            if [ "$endmark" = "-" ]; then
-                endmark=""
-            else
-                endmarkts="$(
-                    printf "%s\n" "$marks" | sed -E '/^([0-9]+:)?[0-9]{2}:[0-9]{2}(.[0-9]{3})?$/d'
-                )"
-                endmarkdur="$(printf "%s\n" "$marks" | sed -E '/^[0-9]+(\.[0-9]+)?$/d')"
-
-                if [ -n "$endmarkts" ]; then
-                    [ -n "$endmarkdur" ] \
-                        && printferrq "ENDMARK must either be a timestamp or a duration.\n"
-                    endmark="-t $endmark"
-                else
-                    endmark="-to $endmark"
-                fi
-            fi
-
-            [ "$moveorig" = "1" ] && movefile="$infl"
-            ;;
-        decat)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                f) overwrite="-y";;
-                                h) printhelp "decat"; exit 0;;
-                                i) overwrite="";;
-                                n) overwrite="-n";;
-                                p) partname="1";;
-                                r) remove="1";;
-                                *) printusage "-$opt" "decat";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            force         ) overwrite="-y";;
-                            help          ) printhelp "decat"; exit 0;;
-                            interactive   ) overwrite="";;
-                            no-clobber    ) overwrite="-n";;
-                            part-name     ) partname="1";;
-                            no-part-name  ) partname="0";;
-                            remove        ) remove="1";;
-                            ""            ) shift; break;;
-                            *             ) printusage "--$opt" "decat";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-            infl="$(printf "%s\n" "$argv" | head -n 1)"
-
-            if [ "$partname" = "1" ]; then
-                [ "$(printf "%s\n" "$argv" | wc -l)" -lt 2 ] \
-                    && printferrq "--part-name is given. At least 2 positional arguments are expected, exiting.\n"
-                outpat="%s Part %d.mkv"
-                marks="$(printf "%s\n" "$argv" | tail -n +2)"
-            else
-                [ "$(printf "%s\n" "$argv" | wc -l)" -lt 3 ] \
-                    && printferrq "At least 3 positional arguments are expected, exiting.\n"
-                outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
-                marks="$(printf "%s\n" "$argv" | tail -n +3)"
-            fi
-
-            outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"${infl%.*}"'/g')"
-            ;;
-        help)
-            for i; do
-                if [ "$i" = "-h" ] || [ "$i" = "--help" ]; then
-                    printhelp "help"
-                    exit 0
-                else
-                    printusage "$i" "help"
-                fi
-            done
-            ;;
-        split)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                f) overwrite="-y";;
-                                h) printhelp "split"; exit 0;;
-                                i) overwrite="";;
-                                n) overwrite="-n";;
-                                p) partname="1";;
-                                r) remove="1";;
-                                *) printusage "-$opt" "split";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            force         ) overwrite="-y";;
-                            help          ) printhelp "split"; exit 0;;
-                            interactive   ) overwrite="";;
-                            no-clobber    ) overwrite="-n";;
-                            part-name     ) partname="1";;
-                            no-part-name  ) partname="0";;
-                            remove        ) remove="1";;
-                            ""            ) shift; break;;
-                            *             ) printusage "--$opt" "split";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-            infl="$(printf "%s\n" "$argv" | head -n 1)"
-
-            if [ "$partname" = "1" ]; then
-                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
-                    && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
-                outpat="${infl%.*} Part %d.mkv"
-            else
-                [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] \
-                    && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
-                outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
-            fi
-
-            period="$(printf "%s\n" "$argv" | tail -n 1)"
-            ;;
-        trim)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                c) shift; assertarg "-c" "COUNT" "$1"; framecount="$1";;
-                                f) overwrite="-y";;
-                                h) printhelp "trim"; exit 0;;
-                                i) overwrite="";;
-                                M) movefirst="1";;
-                                m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
-                                n) overwrite="-n";;
-                                r) remove="1";;
-                                s) shift; assertarg "-s" "TIME" "$1"; seekto="$1";;
-                                *) printusage "-$opt" "trim";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            count            )
-                                shift
-                                assertarg "--count" "COUNT" "$1"
-                                framecount="$1"
-                                ;;
-                            force            ) overwrite="-y";;
-                            help             ) printhelp "trim"; exit 0;;
-                            interactive      ) overwrite="";;
-                            move-to-original ) moveorig="1";;
-                            move-to          )
-                                shift
-                                assertarg "--move-to" "MOVEFILE" "$1"
-                                movefile="$1"
-                                ;;
-                            no-clobber       ) overwrite="-n";;
-                            remove           ) remove="1";;
-                            seek             )
-                                shift
-                                assertarg "--seek" "TIME" "$1"
-                                seekto="$1"
-                                ;;
-                            ""               ) shift; break;;
-                            *                ) printusage "--$opt" "trim";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-
-            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
-                && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
-
-            infl="$(printf "%s\n" "$argv" | head -n 1)"
-            outfl="$(printf "%s\n" "$argv" | tail -n 1)"
-
-
-            [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
-
-            [ "$moveorig" = "1" ] && movefile="$infl"
-            [ -z "$framecount" ] && framecount=100
-            [ -z "$seekto" ] && seek=100
-            ;;
-        reverse)
-            while [ -n "$1" ]; do
-                if [ "${1%"${1#?}"}" = "-" ]; then
-                    if ! [ "${1%"${1#??}"}" = "--" ]; then
-                        sopt="${1#?}"
-
-                        while [ -n "$sopt" ]; do
-                            opt="${sopt%"${sopt#?}"}"
-
-                            case "$opt" in
-                                f) overwrite="-y";;
-                                h) printhelp "reverse"; exit 0;;
-                                i) overwrite="";;
-                                M) movefirst="1";;
-                                m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
-                                n) overwrite="-n";;
-                                r) remove="1";;
-                                *) printusage "-$opt" "reverse";;
-                            esac
-
-                            sopt="${sopt#?}"
-                        done
-                    else
-                        opt="${1#??}"
-
-                        case "$opt" in
-                            force            ) overwrite="-y";;
-                            help             ) printhelp "reverse"; exit 0;;
-                            interactive      ) overwrite="";;
-                            move-to-original ) moveorig="1";;
-                            move-to          )
-                                shift
-                                assertarg "--move-to" "MOVEFILE" "$1"
-                                movefile="$1"
-                                ;;
-                            no-clobber       ) overwrite="-n";;
-                            remove           ) remove="1";;
-                            ""               ) shift; break;;
-                            *                ) printusage "--$opt" "reverse";;
-                        esac
-                    fi
-                else
-                    argv="$argv
-$1"
-                fi
-
-                shift
-            done
-
-            for i; do
-                argv="$argv
-$1"
-            done
-
-            argv="$(printf "%s" "$argv" | tail -n +2)"
-
-            [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
-                && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
-
-            infl="$(printf "%s\n" "$argv" | head -n 1)"
-            outfl="$(printf "%s\n" "$argv" | tail -n 1)"
-
-
-            [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
-
-            [ "$moveorig" = "1" ] && movefile="$infl"
-            ;;
-    esac
+    "parseargs_$cmd" "$@"
 
     mvoverwrite="${overwrite:-"-i"}"
     [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
+}
+
+parseargs_optimise() {
+    parseargs_optimize "$@"
+}
+
+parseargs_optimize() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        f) overwrite="-y";;
+                        h) printhelp "optimize"; exit 0;;
+                        i) overwrite="";;
+                        M) moveorig="1";;
+                        n) overwrite="-n";;
+                        r) remove="1";;
+                        *) printusage "-$opt" "optimize";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    force) overwrite="-y";;
+                    help) printhelp "optimize"; exit 0;;
+                    interactive) overwrite="";;
+                    move-to-original) moveorig="1";;
+                    no-clobber) overwrite="-n";;
+                    remove) remove="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "optimize";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+
+    infls="$(printf "%s" "$argv" | head -n -1)"
+    outfl="$(printf "%s" "$argv" | tail -n 1)"
+
+    [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
+        && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+
+    printf "%s" "$infls" | grep -Fxq -- "$outfl" \
+        && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+}
+
+parseargs_compress() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        c) shift; assertarg "-c" "FACTOR" "$1"; factor="$1";;
+                        f) overwrite="-y";;
+                        h) printhelp "compress"; exit 0;;
+                        i) overwrite="";;
+                        n) overwrite="-n";;
+                        p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
+                        r) remove="1";;
+                        *) printusage "-$opt" "compress";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    crf) shift; assertarg "--crf" "FACTOR" "$1"; factor="$1";;
+                    force) overwrite="-y";;
+                    help) printhelp "compress"; exit 0;;
+                    interactive) overwrite="";;
+                    no-clobber) overwrite="-n";;
+                    preset) shift; assertarg "--preset" "PRESET" "$1"; preset="$1";;
+                    remove) remove="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "compress";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+
+    infls="$(printf "%s" "$argv" | head -n -1)"
+    outfl="$(printf "%s" "$argv" | tail -n 1)"
+
+    [ -z "$factor" ] && factor=23
+    [ "$(printf "%s\n" "$factor" | tr -c -d '[:digit:]')" = "$factor" ] \
+        || printferrq "FACTOR must be an integer.\n"
+
+    [ -z "$preset" ] && preset=medium
+    [ "$factor" -gt -1 ] && [ "$factor" -lt 52 ] \
+        || printferrq "FACTOR must be in the range 0-51."
+    equals "$preset" ultrafast superfast veryfast faster fast \
+                     medium slow slower veryslow placebo \
+        || printferrq "PRESET must be one of these: ultrafast superfast veryfast faster fast medium slow slower veryslow placebo\n"
+
+    [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
+        && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+
+    printf "%s" "$infls" | grep -Fxq -- "$outfl" \
+        && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+}
+
+parseargs_concat() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        F) shift; assertarg "-F" "COMMAND" "$1"; filter="$1";;
+                        f) overwrite="-y";;
+                        h) printhelp "concat"; exit 0;;
+                        i) overwrite="";;
+                        M) moveorig="1";;
+                        m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
+                        n) overwrite="-n";;
+                        r) remove="1";;
+                        s) stdin="1";;
+                        *) printusage "-$opt" "concat";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    filter) shift; assertarg "--filter" "COMMAND" "$1"; filter="$1";;
+                    force) overwrite="-y";;
+                    help) printhelp "concat"; exit 0;;
+                    interactive) overwrite="";;
+                    move-to-first) moveorig="1";;
+                    move-to) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                    no-clobber) overwrite="-n";;
+                    remove) remove="1";;
+                    stdin) stdin="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "concat";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+
+    infls="$(printf "%s" "$argv" | head -n -1)"
+    outfl="$(printf "%s" "$argv" | tail -n 1)"
+
+    [ "$(printf "%s\n" "$infls" | wc -l)" -lt 2 ] \
+        && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
+
+    printf "%s" "$infls" | grep -Fxq -- "$outfl" \
+        && printferrq "OUTFILE cannot be included in INFILEs, exiting.\n"
+}
+
+parseargs_crop() {
+    while [ -n "$1" ]; do
+        [ "$1" = "-" ] && [ "$(printf "%s\n" "$argv" | wc -l)" -lt 5 ] && {
+            argv="$argv
+$1"
+            shift
+            continue
+        }
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        a) accurate="1";;
+                        f) overwrite="-y";;
+                        h) printhelp "crop"; exit 0;;
+                        i) overwrite="";;
+                        M) moveorig="1";;
+                        m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
+                        n) overwrite="-n";;
+                        r) remove="1";;
+                        *) printusage "-$opt" "crop";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    accurate) accurate="1";;
+                    force) overwrite="-y";;
+                    help) printhelp "crop"; exit 0;;
+                    interactive) overwrite="";;
+                    move-to-original) moveorig="1";;
+                    move-to) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                    no-clobber) overwrite="-n";;
+                    remove) remove="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "crop";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+
+    [ "$(printf "%s\n" "$argv" | wc -l)" -ne 4 ] \
+        && printferrq "Exactly 4 positional arguments are required and accepted, exiting.\n"
+
+    infl="$(printf "%s\n" "$argv" | head -n 1)"
+    outfl="$(printf "%s\n" "$argv" | tail -n 3 | head -n 1)"
+    beginmark="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
+    endmark="$(printf "%s\n" "$argv" | tail -n 1)"
+
+    [ "$outfl" = "$infl" ] \
+        && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
+    [ "$beginmark" = "-" ] && beginmark="0"
+
+    if [ "$endmark" = "-" ]; then
+        endmark=""
+    else
+        endmarkts="$(
+            printf "%s\n" "$marks" | sed -E '/^([0-9]+:)?[0-9]{2}:[0-9]{2}(.[0-9]{3})?$/d'
+        )"
+        endmarkdur="$(printf "%s\n" "$marks" | sed -E '/^[0-9]+(\.[0-9]+)?$/d')"
+
+        if [ -n "$endmarkts" ]; then
+            [ -n "$endmarkdur" ] \
+                && printferrq "ENDMARK must either be a timestamp or a duration.\n"
+            endmark="-t $endmark"
+        else
+            endmark="-to $endmark"
+        fi
+    fi
+
+    [ "$moveorig" = "1" ] && movefile="$infl"
+}
+
+parseargs_decat() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        f) overwrite="-y";;
+                        h) printhelp "decat"; exit 0;;
+                        i) overwrite="";;
+                        n) overwrite="-n";;
+                        p) partname="1";;
+                        r) remove="1";;
+                        *) printusage "-$opt" "decat";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    force) overwrite="-y";;
+                    help) printhelp "decat"; exit 0;;
+                    interactive) overwrite="";;
+                    no-clobber) overwrite="-n";;
+                    part-name) partname="1";;
+                    no-part-name) partname="0";;
+                    remove) remove="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "decat";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+    infl="$(printf "%s\n" "$argv" | head -n 1)"
+
+    if [ "$partname" = "1" ]; then
+        [ "$(printf "%s\n" "$argv" | wc -l)" -lt 2 ] \
+            && printferrq "--part-name is given. At least 2 positional arguments are expected, exiting.\n"
+        outpat="%s Part %d.mkv"
+        marks="$(printf "%s\n" "$argv" | tail -n +2)"
+    else
+        [ "$(printf "%s\n" "$argv" | wc -l)" -lt 3 ] \
+            && printferrq "At least 3 positional arguments are expected, exiting.\n"
+        outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
+        marks="$(printf "%s\n" "$argv" | tail -n +3)"
+    fi
+
+    outpat="$(printf "%s" "$outpat" | sed 's/\([^%\\]*\)%s/\1'"${infl%.*}"'/g')"
+}
+
+parseargs_help() {
+    for i; do
+        if [ "$i" = "-h" ] || [ "$i" = "--help" ]; then
+            printhelp "help"
+            exit 0
+        else
+            printusage "$i" "help"
+        fi
+    done
+}
+
+parseargs_split() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        f) overwrite="-y";;
+                        h) printhelp "split"; exit 0;;
+                        i) overwrite="";;
+                        n) overwrite="-n";;
+                        p) partname="1";;
+                        r) remove="1";;
+                        *) printusage "-$opt" "split";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    force) overwrite="-y";;
+                    help) printhelp "split"; exit 0;;
+                    interactive) overwrite="";;
+                    no-clobber) overwrite="-n";;
+                    part-name) partname="1";;
+                    no-part-name) partname="0";;
+                    remove) remove="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "split";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+    infl="$(printf "%s\n" "$argv" | head -n 1)"
+
+    if [ "$partname" = "1" ]; then
+        [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
+            && printferrq "--part-name is given. Exactly 2 positional arguments are required and accepted, exiting.\n"
+        outpat="${infl%.*} Part %d.mkv"
+    else
+        [ "$(printf "%s\n" "$argv" | wc -l)" -ne 3 ] \
+            && printferrq "Exactly 3 positional arguments are required and accepted, exiting.\n"
+        outpat="$(printf "%s\n" "$argv" | tail -n 2 | head -n 1)"
+    fi
+
+    period="$(printf "%s\n" "$argv" | tail -n 1)"
+}
+
+parseargs_trim() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        c) shift; assertarg "-c" "COUNT" "$1"; framecount="$1";;
+                        f) overwrite="-y";;
+                        h) printhelp "trim"; exit 0;;
+                        i) overwrite="";;
+                        M) moveorig="1";;
+                        m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
+                        n) overwrite="-n";;
+                        r) remove="1";;
+                        s) shift; assertarg "-s" "TIME" "$1"; seekto="$1";;
+                        *) printusage "-$opt" "trim";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    count) shift; assertarg "--count" "COUNT" "$1"; framecount="$1";;
+                    force) overwrite="-y";;
+                    help) printhelp "trim"; exit 0;;
+                    interactive) overwrite="";;
+                    move-to-original) moveorig="1";;
+                    move-to) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                    no-clobber) overwrite="-n";;
+                    remove) remove="1";;
+                    seek) shift; assertarg "--seek" "TIME" "$1"; seekto="$1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "trim";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+
+    [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
+        && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
+
+    infl="$(printf "%s\n" "$argv" | head -n 1)"
+    outfl="$(printf "%s\n" "$argv" | tail -n 1)"
+
+
+    [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
+
+    [ "$moveorig" = "1" ] && movefile="$infl"
+    [ -z "$framecount" ] && framecount=100
+    [ -z "$seekto" ] && seek=100
+}
+
+parseargs_reverse() {
+    while [ -n "$1" ]; do
+        if [ "${1%"${1#?}"}" = "-" ]; then
+            if ! [ "${1%"${1#??}"}" = "--" ]; then
+                sopt="${1#?}"
+
+                while [ -n "$sopt" ]; do
+                    opt="${sopt%"${sopt#?}"}"
+
+                    case "$opt" in
+                        f) overwrite="-y";;
+                        h) printhelp "reverse"; exit 0;;
+                        i) overwrite="";;
+                        M) moveorig="1";;
+                        m) shift; assertarg "-m" "MOVEFILE" "$1"; movefile="$1";;
+                        n) overwrite="-n";;
+                        r) remove="1";;
+                        *) printusage "-$opt" "reverse";;
+                    esac
+
+                    sopt="${sopt#?}"
+                done
+            else
+                opt="${1#??}"
+
+                case "$opt" in
+                    force) overwrite="-y";;
+                    help) printhelp "reverse"; exit 0;;
+                    interactive) overwrite="";;
+                    move-to-original) moveorig="1";;
+                    move-to) shift; assertarg "--move-to" "MOVEFILE" "$1"; movefile="$1";;
+                    no-clobber) overwrite="-n";;
+                    remove) remove="1";;
+                    "") shift; break;;
+                    *) printusage "--$opt" "reverse";;
+                esac
+            fi
+        else
+            argv="$argv
+$1"
+        fi
+
+        shift
+    done
+
+    for i; do
+        argv="$argv
+$1"
+    done
+
+    argv="$(printf "%s" "$argv" | tail -n +2)"
+
+    [ "$(printf "%s\n" "$argv" | wc -l)" -ne 2 ] \
+        && printferrq "Exactly 2 positional arguments are required and accepted, exiting.\n"
+
+    infl="$(printf "%s\n" "$argv" | head -n 1)"
+    outfl="$(printf "%s\n" "$argv" | tail -n 1)"
+
+
+    [ "$outfl" = "$infl" ] && printferrq "OUTFILE cannot be the same as INFILE, exiting.\n"
+
+    [ "$moveorig" = "1" ] && movefile="$infl"
 }
 
 optimise() {
@@ -918,7 +895,7 @@ optimize() {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
-        mv -f -- '$outfl' \"\${i%.*}.${outfl##*.}\"
+        [ \"\$moveorig\" = '1' ] && mv '$mvoverwrite' -- '$outfl' \"\${i%.*}.${outfl##*.}\"
     " --
 }
 
@@ -962,7 +939,7 @@ concat() {
         fi
     }
 
-    [ "$movefirst" = "1" ] && movefile="$(head -n 1 "$lstfl")"
+    [ "$moveorig" = "1" ] && movefile="$(head -n 1 "$lstfl")"
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
