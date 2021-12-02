@@ -27,7 +27,7 @@ printhelp() {
     -i, --interactive
         Prompt before overwriting the output file if it exists.
     -M, --move-to-original
-        Move TEMPOUTFILE to respective INFILE after the operation succeeds.
+        Move TEMPOUTFILE to respective INFILE after the operation succeeds. If the extensions of the respective INFILE and TEMPOUTFILE differ, TEMPOUTFILE is moved to INFILE with its extension changed to TEMPOUTFILE's.
     -n, --no-clobber
         Do nothing if the output file exists.
     -r, --remove
@@ -895,7 +895,7 @@ optimize() {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
-        [ \"\$moveorig\" = '1' ] && mv '$mvoverwrite' -- '$outfl' \"\${i%.*}.${outfl##*.}\"
+        [ '$moveorig' = '1' ] && mv '$mvoverwrite' -- '$outfl' \"\${i%.*}.${outfl##*.}\"
     " --
 }
 
