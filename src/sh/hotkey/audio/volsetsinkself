@@ -2,4 +2,4 @@
 
 eval "$(evalverbose)"
 
-pactl set-sink-volume "$1" "$(volgetsink "$1")"
+pactl set-sink-volume "$1" "$(volgetsinkraw "$1")"
