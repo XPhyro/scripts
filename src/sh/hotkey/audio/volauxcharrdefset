@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+# Change the volume of the secondary pulseaudio sink according to the given array.
+# Arguments:
+#     $1: direction, either (- or 0) or (+ or 1)
+#     $2: fallback increment
+#     ${@:3}: vector of key-value pairs of volume and increment
+# Example:
+#     volauxcharrdefset + 1 5=95 100=10
+#     volauxcharrdefset - 10 5=1 100=95
+
+eval "$(evalverbose)"
+
+lckdir="/tmp/${0##*/}-lckdir"
+lck "$lckdir"
+
+dir="$1"
+fallback="$2"
+shift 2
+
+defsink="$(voldefsink)"
+auxsink="$(volauxsink)"
+defvol="$(volgetsinkraw "$defsink")"
+auxvol="$(volgetsink "$auxsink")"
+
+unset inc
+case "$dir" in
+    -)
+        for arg; do
+            eval [ "$auxvol" -le "${arg%%=*}" ] && {
+                inc="${arg##*=}"
+                break
+            }
+        done
+        ;;
+    +)
+        i="$#"
+        while [ "$i" -gt 0 ]; do
+            eval "arg=\"\$$i\""
+            eval [ "$auxvol" -ge "${arg%%=*}" ] && {
+                inc="${arg##*=}"
+                break
+            }
+            : "$((i -= 1))"
+        done
+        ;;
+    *) exit 1;;
+esac
+
+[ -z "$inc" ] && [ -n "$fallback" ] && inc="$fallback"
+[ -n "$inc" ] && {
+    pactl set-sink-volume "$auxsink" "$dir$inc%"
+    pactl set-sink-volume "$defsink" "$defvol"
+}
+
+ulck "$lckdir"
