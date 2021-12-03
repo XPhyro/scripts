@@ -73,14 +73,16 @@ parseargs() {
                 esac
             fi
         else
-            argv="$argv $1"
+            argv="$argv
+$1"
         fi
 
         shift
     done
 
     for i; do
-        argv="$argv $i"
+        argv="$argv
+$i"
     done
 }
 
@@ -89,7 +91,8 @@ processargs() {
     [ -z "$stdinfl" ] && {
         stdinfl="$(mktemp)"
         stdinsep="\n"
-        printf "%s\n" "$argv" | headw 1 | tail -c +2 > "$stdinfl"
+        printf "%s\n" "$argv" | head -n 1 | tr -d '\n' > "$stdinfl"
+        cat "$stdinfl"
     }
 }
 
