@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+while IFS= read -r i; do
+    printf "%s\n" "$i" | tr '[:upper:]' '[:lower:]' | sed 's/ /   /g;s/\([a-z0-9]\)/:regional_indicator_\1: /g;'
+done | xclip -se c
