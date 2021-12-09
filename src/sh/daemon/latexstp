@@ -125,7 +125,7 @@ clean() {
 }
 
 printcleanaux() {
-    printf "%s\n" "rm -- '$srcfl.aux' '$srcfl.bbl' '$srcfl.blg' '$srcfl.lof' '$srcfl.log' '$srcfl.lot' '$srcfl.out' '$srcfl.toc' '$srcfl.bcf' '$srcfl.run.xml' '$srcfl.py' '$srcfl.py.err' '$srcfl.py.out' 'latex.py' 'texput.log' '$srcfl.nav' '$srcfl.snm' > /dev/null 2>&1"
+    printf "%s\n" "rm -- '$srcfl.aux' '$srcfl.bbl' '$srcfl.blg' '$srcfl.lof' '$srcfl.log' '$srcfl.lot' '$srcfl.out' '$srcfl.toc' '$srcfl.bcf' '$srcfl.run.xml' '$srcfl.py' '$srcfl.py.err' '$srcfl.py.out' 'latex.py' 'texput.log' '$srcfl.nav' '$srcfl.snm' *.1 *.2 *.log *.mp > /dev/null 2>&1"
 }
 
 cleanaux() {
