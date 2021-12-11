@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <dirent.h>
 
 #ifndef S_ISVTX
 #define S_ISVTX 01000
@@ -106,7 +107,21 @@ TESTFUNCDEF(testeuid)
 TESTFUNC( testolder,    st->st_mtime < older.st_mtime )
 TESTFUNC( testfifo,     S_ISFIFO(st->st_mode)         )
 TESTFUNC( testread,     !access(path, R_OK)           )
-TESTFUNC( testnonempty, st->st_size > 0               )
+TESTFUNCDEF(testnonempty)
+{
+    DIR *dir;
+
+    if (!postests['d' - 'A'])
+        return st->st_size > 0;
+
+    errno = 0;
+    if (!(dir = opendir(path)) || !(readdir(dir) && readdir(dir) && readdir(dir)) || errno)
+        return false;
+
+    closedir(dir);
+
+    return true;
+}
 TESTFUNC( testsocket,   S_ISSOCK(st->st_mode)         )
 TESTFUNC( testuid,      st->st_mode & S_ISUID         )
 TESTFUNC( testwrite,    !access(path, W_OK)           )
