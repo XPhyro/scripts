@@ -2,13 +2,42 @@
 
 eval "$(evalverbose)"
 
+rules="$(bspc rule -l)"
+nofocus="$(
+    printf "%s\n" "$rules" | grep -F " focus=false"
+    printf "%s\n" "$rules" | grep -F " follow=false"
+)"
+nofocusclasses="$(printf "%s\n" "$nofocus" | cut -d: -f1)"
+nofocusinstances="$(printf "%s\n" "$nofocus" | cut -d: -f2)"
+nofocusnames="$(printf "%s\n" "$nofocus" | cut -d: -f3- | sed 's/ => .*$//')"
+
 {   bspc subscribe node_swap node_transfer node_remove &
     bspc subscribe node_flag | grep --line-buffered -F "hidden off" &
     bspc subscribe node_state \
         | xargs -d "\n" -n 2 printf "%s %s\n" \
         | grep --line-buffered -vE "^node_state .* fullscreen (on|off)" &
     bspc subscribe node_add | while IFS=" " read -r _ _ _ _ i; do
-        [ "$(bspc query -D -d .focused)" = "$(bspc query -D -n "$i")" ] && printf "%s\n" "$i"
+        [ "$(bspc query -D -d .focused)" = "$(bspc query -D -n "$i")" ] || continue
+
+        eval "$(xprop -id "$i" 0s '\n$0\n$1\n' WM_CLASS 0s '\n$0\n' WM_NAME \
+                    | sed -n -e 's/'\''/'\'\"\'\"\''/g' \
+                             -e 's/^"\(.*\)"$/'\''\1'\''/' \
+                             -e '2s/^/CLASS=/' \
+                             -e '3s/^/INSTANCE=/' \
+                             -e '5s/^/NAME=/' \
+                             -e '2,3p' \
+                             -e '5,$p'
+        )"
+
+        printf "%s\n" "$nofocusclasses" | grep -Fxq "$CLASS" \
+            || printf "%s\n" "$nofocusinstances" | grep -Fxq "$INSTANCE" \
+            || printf "%s\n" "$nofocusnames" | grep -Fxq "$NAME" \
+            && {
+                bspc query -N -n .focused
+                continue
+            }
+
+        printf "%s\n" "$i"
     done
 } | while IFS= read -r _; do
     [ -e "$XDG_CACHE_HOME/bspwm/.follows.lck" ] \
