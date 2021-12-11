@@ -91,14 +91,16 @@ main() {
 
         "${PAD:-bspwmpad}" -g 160x50 -t "${argtitle}Save File [$argsavefilter] [Single Only]" -- lfrun -- "$dir" &
 
-        sleep 0.1
+        sleep 0.3
         lfid="$(pgrep lf | sort -n | tail -n 1)"
-        sleep 0.2
         lf -remote "send $lfid select '$dir/$fl'"
 
         wait
 
-        tail -n +2 -- "$lffiles" | head -n 1
+        selfl="$(tail -n +2 -- "$lffiles" | head -n 1)"
+        printf "%s\n" "$selfl"
+
+        printf "%s\n" "$selfl" | grep -Fxq "$savefl" || rm -f -- "$savefl"
 
         mv -f -- "$tmplffiles" "$lffiles"
         lf -remote 'send sync'
