@@ -93,7 +93,7 @@ main() {
 
         sleep 0.3
         lfid="$(pgrep lf | sort -n | tail -n 1)"
-        lf -remote "send $lfid select '$dir/$fl'"
+        lf -remote "send $lfid select '$dir/$fl'" > /dev/null 2>&1
 
         wait
 
