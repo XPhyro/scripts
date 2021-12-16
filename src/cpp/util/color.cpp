@@ -46,9 +46,9 @@ int main(const int argc, const char *argv[])
         return 1;
     }
 
-    if (argc == 2) {
+    if (argc == 2)
         std::cout << std::cin.rdbuf();
-    } else for (auto const arg : std::views::counted(argv + 2, argc - 2))
+    else for (auto const arg : std::views::counted(argv + 2, argc - 2))
         std::cout << arg << '\n';
 
     std::cout << clearcolor;
