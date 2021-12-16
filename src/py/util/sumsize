@@ -9,7 +9,7 @@ import re
 def argtypecol(val):
     ival = int(val)
     if ival <= 0:
-        raise argparse.ArgumentTypeError(f"{ val } is not a valid column value.")
+        raise argparse.ArgumentTypeError(f"{val} is not a valid column value.")
     return ival
 
 
