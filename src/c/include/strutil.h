@@ -150,7 +150,8 @@ bool strnsfx(const char *s, const char *sfx, size_t n)
    responsible for bugs */
 /* END COMMENT FROM ORIGINAL AUTHOR */
 /* the following is not strictly author's code, but
- * rather is a refactored and formatted version of it
+ * rather is a refactored and formatted version of it.
+ * there might be bugs that do not exist in the original.
  * source:
  * https://stuff.mit.edu/afs/sipb/user/cordelia/Diplomacy/mapit/strrstr.c */
 char *strrstr(const char *haystack, const char *needle)
