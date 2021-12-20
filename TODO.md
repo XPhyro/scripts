@@ -1,3 +1,11 @@
+# High Priority
+
+## Bugs
+- `eval`ing `getpath`, `xdotool` and other programs can lead to security
+  problems if the scripts are run with elevated permissions. Warn the user and,
+  for programs local to this repository, always install the `eval`ed programs as
+  root to prevent tinkering.
+
 # Normal Priority
 
 ## Bugs
@@ -14,6 +22,8 @@
   and removing the index from the array once it is used, allowing the random
   choice to be unique. The other checks should still be in place.
 - `clplog` sometimes does not release the lock, fix.
+- `wallpaper -x xwallpaper` assumes `-n 2` and that there are two output
+  displays.
 
 ## Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the
