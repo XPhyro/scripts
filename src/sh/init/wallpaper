@@ -24,7 +24,7 @@ do
    -h         Print help message and exit.
    -n COUNT   Print detailed status before initialisation. Default is your display count as of initialisation. Ignored if -m is not 'bgs'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
-   -x EXEC    Executable to use. Can be 'hsetroot' or 'bgs'.
+   -x EXEC    Executable to use. Can be one of 'bgs', 'hsetroot' or 'xwallpaper'.
 "
             exit 0
             ;;
@@ -35,8 +35,8 @@ do
         t) opttime="$OPTARG";;
         x)
             case "$OPTARG" in
-                hsetroot|bgs) ;;
-                *           ) logerrq "EXEC must be 'hsetroot' or 'bgs'.";;
+                bgs|hsetroot|xwallpaper) :;;
+                *) logerrq "EXEC must be one of 'bgs', 'hsetroot' or 'xwallpaper'.";;
             esac
             optexec="$OPTARG"
             ;;
@@ -47,9 +47,20 @@ shift "$((OPTIND - 1))"
 [ -z "$optdir" ] && eval "$(getpath -dse -- wa optdir 1 "getpath -ds -- failed.")"
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
-[ -z "$optexec" ] && optexec="$(fmapsb bgs=bgs hsetroot=hsetroot)"
+[ -z "$optexec" ] && optexec="$(fmapsb bgs=bgs hsetroot=hsetroot xwallpaper=xwallpaper)"
 
 case "$optexec" in
+    bgs)
+        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+            | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
+            | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
+            | shufr -0  -n "$((optcount * 3))" \
+            | xargs -r0 -n "$optcount" sh -c '
+                bgs -z "$@"
+                printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
+                sleep '"$opttime"'
+            ' --
+        ;;
     hsetroot)
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
@@ -61,13 +72,16 @@ case "$optexec" in
                 sleep '"$opttime"'
             ' --
         ;;
-    bgs)
+    xwallpaper)
+        printf "%s\n" "Warning: 'xwallpaper' is only supported with '-n 1' for now." >&2
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -0  -n "$((optcount * 3))" \
             | xargs -r0 -n "$optcount" sh -c '
-                bgs -z "$@"
+                mons="$(xrandr | grep -Fw "connected" | cut -d" " -f1)"
+                xwallpaper --output "$(printf "%s\n" "$mons" | head -n 1)" --zoom "$(printf "%s\0" "$@" | head -z -n 1)" &
+                xwallpaper --output "$(printf "%s\n" "$mons" | tail -n 1)" --zoom "$(printf "%s\0" "$@" | tail -z -n 1)" &
                 printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
