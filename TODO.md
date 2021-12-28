@@ -6,6 +6,10 @@
   for programs local to this repository, always install the `eval`ed programs as
   root to prevent tinkering.
 
+## New Scripts
+- Write a daemon that enables having different keyboard layouts for each X
+  client.
+
 # Normal Priority
 
 ## Bugs
