@@ -17,7 +17,7 @@ To install system-wide:
 sudo make install
 ```
 
-If you would like to use the provided wrapper scripts, add `/usr/local/bin/wrapper` to your `$PATH` with higher priority than the locations of the wrapped scripts.
+If you would like to use the provided wrapper scripts, add `$PREFIX/bin/wrapper` to your `$PATH` with higher priority than the locations of the wrapped scripts.
 
 ## Uninstallation
 
@@ -32,11 +32,6 @@ If you installed system-wide:
 ```sh
 sudo make uninstall
 ```
-
-## Environment Variables
-Some scripts use optional or mandatory environment variables for applications. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective application will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`. Some scripts will not respect these as they use application-specific options, such as `rofi -font` or `st -d`.
-
-In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is executed and all executed commands are printed to stderr.
 
 ## Notable Scripts
 - [afgrep](src/c/util/afgrep.c): Like `grep -F`, but supports alignment and offset. See `afgrep -h`.
@@ -62,6 +57,11 @@ In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is
 - [unexpandpath](src/c/util/unexpandpath.c): Undo `expandpath`. See `unexpandpath -h`.
 - [wordexp](src/c/util/wordexp.c): Perform word expansion like a POSIX shell. See `man 3 wordexp`.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input. See `xins -h`.
+
+## Environment Variables
+Some scripts use optional or mandatory environment variables for applications. Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to `$MENU`, and the respective application will be used. Other used variables include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`, `$VPN`, `$_BROWSER`. Some scripts will not respect these as they use application-specific options, such as `rofi -font` or `st -d`.
+
+In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is executed and all executed commands are printed to stderr.
 
 ## Notice
 - Some of these scripts assume that some of the other scripts are in your `$PATH`.
