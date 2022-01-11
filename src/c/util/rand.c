@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 
 #include "../include/stdutil.h"
 
@@ -10,6 +10,7 @@
 
 int main(int argc, char *argv[])
 {
+    struct timeval tv;
     int i, max = RAND_MAX, n = 1;
 
     switch (argc) {
@@ -29,7 +30,8 @@ int main(int argc, char *argv[])
             break;
     }
 
-    srand(time(NULL));
+    gettimeofday(&tv, NULL);
+    srand(tv.tv_usec * tv.tv_sec);
 
     for (i = 0; i < n; i++)
         printf("%d\n", rand() % max);
