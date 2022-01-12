@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#define EXECNAME "sumnum"
+
 bool optignore = false;
 
 long double parsenum(const char *s)
@@ -21,7 +23,7 @@ long double parsenum(const char *s)
         goto numerr;
     }
     if (s == endptr) {
-        fputs("sum: invalid number given", stderr);
+        fputs(EXECNAME": invalid number given", stderr);
         goto numerr;
     }
 
@@ -47,7 +49,7 @@ int main(int argc, char *argv[])
                 optnodelim = true;
                 break;
             case 'h':
-                puts("Usage: sum [OPTION]... [NUMBER]...\n"
+                puts("Usage: "EXECNAME" [OPTION]... [NUMBER]...\n"
                      "Sum numbers.\n"
                      "\n"
                      "With no NUMBER, read standard input.\n"
@@ -67,7 +69,7 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
-                fputs("Try 'sum -h' for more information.\n", stderr);
+                fputs("Try '"EXECNAME" -h' for more information.\n", stderr);
                 exit(EXIT_FAILURE);
                 break;
         }
