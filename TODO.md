@@ -271,3 +271,6 @@
   versions. If the whole output is padded, the lines do not look nice. See
   [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html)
   for easy padding.
+- In all C files, move variable declarations as close as possible to the first
+  usage, i.e. reduce their scope as much as possible. Still use C89 style
+  declarations.
