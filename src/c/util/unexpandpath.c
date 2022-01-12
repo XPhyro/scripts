@@ -68,7 +68,8 @@ int main(int argc, char *argv[])
 {
     int i;
     char *line = NULL, *tmpstr;
-    size_t size, len;
+    size_t size;
+    ssize_t len;
     struct passwd *pw = NULL;
     user u;
 

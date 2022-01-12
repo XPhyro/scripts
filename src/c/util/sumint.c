@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
     int i;
     long long int sum = 0;
     char delim = '\n', *line = NULL;
-    size_t size, len;
+    size_t size;
+    ssize_t len;
 
     while ((i = getopt(argc, argv, "dhiz0")) != -1) {
         switch (i) {
