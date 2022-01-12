@@ -139,7 +139,8 @@ int main(int argc, char *argv[])
        || (prefix = getenv("XDG_CONFIG_HOME")))) {
         if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             DIE("could not determine config directory\n");
-        prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)));
+        if (!(prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)))))
+            DIE("out of memory\n");
         snprintf(prefix, size, "%s/.config", s);
     }
 
@@ -152,8 +153,9 @@ int main(int argc, char *argv[])
         if (!*argv[i])
             DIE("keycode is empty\n");
 
-        if ((st = strlen(argv[i])) > kcmargin)
-            path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char));
+        if ((st = strlen(argv[i])) > kcmargin
+        && !(path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char))))
+            DIE("out of memory\n");
 
         for (dirturn = false; ; dirturn = !dirturn) {
             if (!dirturn) {
