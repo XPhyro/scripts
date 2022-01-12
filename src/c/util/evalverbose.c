@@ -5,10 +5,9 @@
 int main(int argc, char *argv[])
 {
     char *s, *endptr;
-    long long n;
 
     errno = 0;
-    if ((s = getenv("SHELL_VERBOSE")) && (n = strtoll(s, &endptr, 10)) > 0 && !errno && !*endptr)
+    if ((s = getenv("SHELL_VERBOSE")) && strtoll(s, &endptr, 10) > 0 && !errno && !*endptr)
         puts("set -x");
 
     return 0;
