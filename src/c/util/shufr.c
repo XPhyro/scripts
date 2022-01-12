@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     if (n < nsame) {
         for (i = 0; i < n; i++)
             PRINT(lines[i]);
-        DIE("input line count (%u) is less than nsame (%u)", n, nsame);
+        DIE("input line count (%d) is less than nsame (%u)", n, nsame);
     }
 
     if (nsame < 2) {
