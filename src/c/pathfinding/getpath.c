@@ -27,7 +27,6 @@ typedef enum {
     FILEMODE_FILE = 2,
 } FILEMODES;
 
-
 void die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
 {
     va_list ap;
