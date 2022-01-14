@@ -11,6 +11,11 @@ execname="${0##*/}"
 printhelp() {
     printf "%s" \
 "$execname [OPTION...] COMMAND -- COMMAND
+Toggle an application on/off based on hashcodes and states.
+
+$execname was originally written for toggling applications with the same hotkey via \`sxhkd\`.
+
+Options:
    -a, --actual
        Use the actual status of applications to do work instead of the registered status. As an example, if an application is registered with a PID but is actually dead, the application will be cleaned and started if -P is passed. Inhibited by a following -p. See -p for more details. If -l or --list are also given, -c is implied.
    --no-actual
@@ -43,8 +48,16 @@ printhelp() {
        The given command's state is set to STATE instead of being flipped. If the current state is already STATE, nothing will be done unless -f is passed. STATE can be {on, off}.
    -t TIMEOUT SIGNAL, --timeout TIMEOUT SIGNAL
        Wait TIMEOUT milliseconds and send SIGNAL to the process if not terminated yet. TIMEOUT must be a non-negative integer in milliseconds and SIGNAL must be valid as in kill -L. Note that RT signals are not supported. If multiple -t options are passed, they will be executed in order. If no -t option is passed, a single TERM (i.e. 15) signal will be used without a timeout.
-    -v, --verbose
+   -v, --verbose
         Print execution information to stderr.
+
+Examples:
+   Toggle screenkey.
+      $ tglapp screenkey
+   Toggle picom with experimental backends enabled.
+      $ tglapp -- picom --experimetal-backends
+   Toggle polybar on (-T on). If already on, restart it (-f). Use actual status of the process (-a), use 'polybar' as the keycode (-k polybar) and be verbose in logging (-v).
+      $ tglapp -avfTk on polybar -- polybar
 "
 }
 
