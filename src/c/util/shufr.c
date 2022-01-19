@@ -10,10 +10,6 @@
 #include "../include/stdutil.h"
 
 #define EXECNAME "shufr"
-#define DIE(...) { fputs(EXECNAME": ", stderr); \
-                   fprintf(stderr, __VA_ARGS__); \
-                   fputc('\n', stderr); \
-                   exit(EXIT_FAILURE); }
 
 #define SETLINES(STREAM) while ((len = getdelim(&line, &size, delim, STREAM)) != -1) { \
                              if (len && line[len - 1] != delim) \
@@ -30,6 +26,18 @@
                       putchar(delim); \
                       if (optlimit && ++nprint == lprint) \
                           exit(EXIT_SUCCESS); }
+
+void die(const char *fmt, ...)
+{
+    va_list ap;
+
+    fputs(EXECNAME": ", stderr);
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+
+    exit(EXIT_FAILURE);
+}
 
 int main(int argc, char *argv[])
 {
@@ -95,7 +103,7 @@ int main(int argc, char *argv[])
     n = i;
 
     if (n == 0)
-        DIE("no lines to repeat");
+        die("no lines to repeat\n");
 
     lines = realloc(lines, n * sizeof(char *));
     srand(time(NULL));
@@ -108,7 +116,7 @@ int main(int argc, char *argv[])
     if (n < nsame) {
         for (i = 0; i < n; i++)
             PRINT(lines[i]);
-        DIE("input line count (%d) is less than nsame (%u)", n, nsame);
+        die("input line count (%d) is less than nsame (%u)\n", n, nsame);
     }
 
     if (nsame < 2) {
