@@ -27,10 +27,15 @@ int main(int argc, char *argv[])
             case 'f':
                 if (NULL) /* for macro */
                     func = NULL;
+                IFSETFUNC(acos);
+                IFSETFUNC(asin);
+                IFSETFUNC(atan);
+                IFSETFUNC(atan);
                 IFSETFUNC(ceil);
                 IFSETFUNC(cos);
                 IFSETFUNC(cosh);
                 IFSETFUNC(exp);
+                IFSETFUNC(fabs);
                 IFSETFUNC(floor);
                 IFSETFUNC(log);
                 IFSETFUNC(log10);
