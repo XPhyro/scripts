@@ -37,7 +37,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            gcc -O3 -std=c99 -pedantic -Wall "$1" -o "$prefix/$out" \
+            gcc -O3 -std=c99 -pedantic -lm -Wall "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
         
