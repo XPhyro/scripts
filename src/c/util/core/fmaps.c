@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../include/strutil.h"
+#include "../../include/strutil.h"
 
 #define DIE(ERRMSG) { fputs("fmaps: "ERRMSG"\n", stderr); \
                       exit(EXIT_FAILURE); }

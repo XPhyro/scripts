@@ -5,8 +5,8 @@
 #include <unistd.h>
 #include <math.h>
 
-#include "../include/stdutil.h"
-#include "../include/strutil.h"
+#include "../../include/stdutil.h"
+#include "../../include/strutil.h"
 
 #define EXECNAME "cmath"
 #define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \

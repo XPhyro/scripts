@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/stdutil.h"
+#include "../../include/stdutil.h"
 
 #define EXECNAME "putsn"
 #define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \

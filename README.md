@@ -31,7 +31,7 @@ If you installed system-wide:
     sudo make uninstall
 
 ## Notable Scripts
-- [afgrep](src/c/util/afgrep.c): Like `grep -F`, but supports alignment and
+- [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset. See `afgrep -h`.
 - [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for
   [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include
@@ -42,18 +42,18 @@ If you installed system-wide:
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
-- [cmath](src/c/util/cmath.c): A NumPy-like interface for the `math.h` C
+- [cmath](src/c/util/math/cmath.c): A NumPy-like interface for the `math.h` C
   standard header, enabling fast mathematical computations of an array of
   numbers in the shell. See `cmath -h`.
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it
   is modified. This is especially useful if you are iteratively processing data
   using an interpreted or hot-compiled language. See `contexec -h`.
 - [eln](src/sh/ishell/eln): Batch edit or create symlinks.
-- [expandpath](src/c/util/expandpath.c): Like `wordexp`, but only expands `~`.
+- [expandpath](src/c/util/core/expandpath.c): Like `wordexp`, but only expands `~`.
   See `expandpath -h`.
 - [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions. See
   `ffmw -h`.
-- [fmaps](src/c/util/fmaps.c): Map stdin per given key-value pairs. See `fmaps
+- [fmaps](src/c/util/core/fmaps.c): Map stdin per given key-value pairs. See `fmaps
   -h`.
 - [kdialog](src/sh/wrapper/kdialog): `kdialog` wrapper to not use awful file
   dialogues.
@@ -63,7 +63,7 @@ If you installed system-wide:
   against all, modified, unmodified or wiped lines synchronously or
   asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
   more versatile. See `mapexec -h`.
-- [mkparent](src/c/util/mkparent.c): Create the parent directories of a path.
+- [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a path.
 - [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use
   [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro
   compose A "<shell-escape>neomuttpick<enter><enter-command>source
@@ -77,15 +77,15 @@ If you installed system-wide:
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
-- [stest](src/c/util/stest.c): Filter a list of files by properties. This is
+- [stest](src/c/util/core/stest.c): Filter a list of files by properties. This is
   different from the `stest` included with suckless `dmenu`. See `stest -h`.
 - [sumsize](src/py/util/sumsize): Sum human readable sizes. See `sumsize -h`.
 - [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on
   hashcodes. Originally written for toggling applications with the same hotkey
   via `sxhkd`. See `tglapp -h`.
-- [unexpandpath](src/c/util/unexpandpath.c): Undo `expandpath`. See
+- [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`. See
   `unexpandpath -h`.
-- [wordexp](src/c/util/wordexp.c): Perform word expansion like a POSIX shell.
+- [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX shell.
   See `man 3 wordexp`.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input. See `xins -h`.
 

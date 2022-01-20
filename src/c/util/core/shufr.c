@@ -8,7 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "../include/stdutil.h"
+#include "../../include/stdutil.h"
 
 #define EXECNAME "shufr"
 

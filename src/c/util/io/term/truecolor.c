@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../include/stdutil.h"
+#include "../../../include/stdutil.h"
 
 #define EXECNAME "truecolor"
 #define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \

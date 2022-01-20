@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#include "../include/strutil.h"
+#include "../../include/strutil.h"
 
 #define NUSERSINIT 10
 

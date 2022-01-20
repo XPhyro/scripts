@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "../include/stdutil.h"
+#include "../../include/stdutil.h"
 
 #define EXECNAME "sumbase"
 

@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "../include/stdutil.h"
-#include "../include/strutil.h"
+#include "../../include/stdutil.h"
+#include "../../include/strutil.h"
 
 #define EXECNAME "afgrep"
 #define DIE(...) { fputs(EXECNAME": ", stderr); \

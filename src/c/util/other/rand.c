@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#include "../include/stdutil.h"
+#include "../../include/stdutil.h"
 
 #define EXECNAME "rand"
 #define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \
