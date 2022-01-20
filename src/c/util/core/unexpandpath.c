@@ -26,12 +26,16 @@ struct passwd *epasswd = NULL;
 
 void unexpand(const char *path)
 {
-    char *s;
+    static size_t slen = 0;
+    static char *s = NULL;
     size_t i, j, len;
     bool dupe = false;
 
-    len = strlen(path);
-    s = malloc((len + 1) * sizeof(char));
+    if (!(len = strlen(path)))
+        goto endline;
+
+    if (len > slen)
+        s = realloc(s, (len + 1) * sizeof(char));
 
     for (i = 0, j = 0; i < len; i++) {
         if (path[i] == '/') {
