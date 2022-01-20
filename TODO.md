@@ -12,6 +12,10 @@
 - Generalise `cmath`, `max` and `min` into `numsh`: like NumPy, but for the
   shell.
 
+## Refactoring / Rewriting / Reworking
+- Use `arc4random_buf` or `getrandom` in `rand`.
+
+
 # Normal Priority
 
 ## Bugs
@@ -252,6 +256,7 @@
 - Do not print error messages when `get*` fails in scripts as those already
   print errors to stderr.
 - At this point perhaps rename the repository from `scripts` to `utils`?
+
 
 # Low Priority
 
