@@ -9,11 +9,13 @@ purposes.
 
 To install for your user:
 
-    sh make install
+    make install
 
 To install system-wide:
 
-    sh sudo make install
+    sudo make install
+
+You may change the installation directory by setting `$PREFIX`.
 
 If you would like to use the provided wrapper scripts, add `$PREFIX/bin/wrapper`
 to your `$PATH` with higher priority than the locations of the wrapped scripts.
@@ -22,11 +24,11 @@ to your `$PATH` with higher priority than the locations of the wrapped scripts.
 
 If you installed for your user:
 
-    sh make uninstall
+    make uninstall
 
 If you installed system-wide:
 
-    sh sudo make uninstall
+    sudo make uninstall
 
 ## Notable Scripts
 - [afgrep](src/c/util/afgrep.c): Like `grep -F`, but supports alignment and
