@@ -9,6 +9,8 @@
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
   client.
+- Generalise `cmath`, `max` and `min` into `numsh`: like NumPy, but for the
+  shell.
 
 # Normal Priority
 
