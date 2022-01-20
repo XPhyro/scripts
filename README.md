@@ -40,6 +40,9 @@ If you installed system-wide:
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
+- [cmath](src/c/util/cmath.c): A NumPy-like interface for the `math.h` C
+  standard header, enabling fast mathematical computations of an array of
+  numbers in the shell. See `cmath -h`.
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it
   is modified. This is especially useful if you are iteratively processing data
   using an interpreted or hot-compiled language. See `contexec -h`.
