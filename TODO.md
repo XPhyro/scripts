@@ -15,6 +15,10 @@
 ## Refactoring / Rewriting / Reworking
 - Use `arc4random_buf` or `getrandom` in `rand`.
 
+## Other
+- Add automatic unit tests into [.make](src/.make) (or as a separate
+  executable?).
+
 
 # Normal Priority
 
