@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # List clipped text logged by clplog and copy a selected one using dmenu.
-# This script and clplog assume that the copied string does not contain the character .
+# This script and clplog assume that the copied string does not contain the character \r.
 
 eval "$(evalverbose)"
 
@@ -13,5 +13,5 @@ sel="$(
 
 [ -n "$sel" ] && {
     lckget clplog
-    printf "%s\n" "$sel" | tr '' '\n' | xclip -se c
+    printf "%s\n" "$sel" | tr '\r' '\n' | xclip -se c
 }

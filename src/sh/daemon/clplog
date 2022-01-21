@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Log clipped text as a daemon (though it does not fork out).
 # clplogynk be used to list and copy these with rofi.
-# This script and clplogynk assume that the copied string does not contain the character .
+# This script and clplogynk assume that the copied string does not contain the character \r.
 # TODO: Only log if the string is not a special file when invoked with 'file' (after being
 #       dumped into a file), or check for non-printable characters and do not log if it has
 #       non-printable characters.
@@ -26,7 +26,7 @@ while true; do
 
     [ "$clp" != "$lastclp" ] && [ "$clp" != "$oldclp" ] && {
         printf ": %s;\n### BEGIN CLIP ###\n%s\n### END CLIP ###\n" "$(date +%s)" "$(
-            printf "%s\n" "$clp" | tr '\n' ''
+            printf "%s\n" "$clp" | tr '\n' '\r'
         )" >> "$logfl"
         lastclp="$clp"
         oldclp=""
