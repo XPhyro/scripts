@@ -16,6 +16,7 @@ while getopts "hsv:" OPT; do
             ;;
         s) optstatus=1;;
         v) VPN="$OPTARG";;
+        *) printf "Invalid option given: %s\n" "$OPT"; exit 1;;
     esac
 done
 shift "$((OPTIND - 1))"
