@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 
 
-from dbus import SessionBus
-from dbus.mainloop.glib import DBusGMainLoop
-from gi.repository.GLib import MainLoop
 from math import floor
 from os import rmdir
 from os.path import isdir
 from subprocess import run
 from sys import stderr
 from time import time
+
+from dbus import SessionBus
+from dbus.mainloop.glib import DBusGMainLoop
+from gi.repository.GLib import MainLoop
 
 
 def setfilepaths():
