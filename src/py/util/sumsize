@@ -67,8 +67,8 @@ def main():
     for i in args.files:
         with open(i, "r") as f:
             ds = 0
-            for i in [re.split("\s", i)[args.column - 1] for i in f.readlines()]:
-                sizes = ps.findall(i)
+            for s in [re.split("\s", l)[args.column - 1] for l in f.readlines()]:
+                sizes = ps.findall(s)
                 size = (
                     float(sizes[0]) if isinstance(sizes, list) and len(sizes) else 0.0
                 )
@@ -76,7 +76,7 @@ def main():
                 if size == 0:
                     continue
 
-                factors = pf.findall(i)
+                factors = pf.findall(s)
                 factor = (
                     factors[0].lower()
                     if isinstance(factors, list) and len(factors)
