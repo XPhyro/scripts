@@ -99,8 +99,10 @@ def main():
 
     try:
         rmdir(lockdirpath)
-    except:
+    except FileNotFoundError:
         pass
+    except Exception as e:
+        print("Caught exception: " + repr(e))
 
     DBusGMainLoop(set_as_default=True)
 
