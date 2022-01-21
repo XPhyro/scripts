@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge)](https://www.codefactor.io/repository/github/xphyro/scripts)
+
 # scripts
 This repository is a collection of my scripts. Most of them are written in POSIX
 Shell, i.e. `sh`, but this is not an sh-specific repository.
