@@ -12,9 +12,6 @@
 - Generalise `cmath`, `max` and `min` into `numsh`: like NumPy, but for the
   shell.
 
-## Refactoring / Rewriting / Reworking
-- Use `arc4random_buf` or `getrandom` in `rand`.
-
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
   executable?).
@@ -187,6 +184,7 @@
   via arguments).
 - `volauxdefsetarr`: like `volauxdefset`, but moves in predefined volume levels
   (given via arguments).
+- Write a portable version of `rand` using `arc4random_buf`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
