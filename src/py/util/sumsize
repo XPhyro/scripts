@@ -60,7 +60,7 @@ def main():
     UNITS = ["k", "m", "g", "t", "p"]
 
     totalsize = 0
-    pf = re.compile(r"[k|M|G|T|P]?i?B", re.IGNORECASE)
+    pf = re.compile(r"[kMGTP]?i?B", re.IGNORECASE)
     ps = re.compile(r"[0-9]+\.?[0-9]*")
     if (not len(args.files) or args.double_input) and not stdin.isatty():
         args.files.append(0)
