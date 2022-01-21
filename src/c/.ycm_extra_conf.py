@@ -1,7 +1,3 @@
-import os
-import ycm_core
-
-
 flags = [
     "-O3",
     "-std=c99",
