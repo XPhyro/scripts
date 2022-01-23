@@ -68,6 +68,8 @@ void expand(const char *path)
     }
 
     putchar(delim);
+
+    free(s);
 }
 
 int main(int argc, char *argv[])
