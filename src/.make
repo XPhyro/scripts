@@ -37,7 +37,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            scan-build gcc -O3 -std=c99 -pedantic -lm -Wall "$1" -o "$prefix/$out" \
+            '"$csa"' gcc -O3 -std=c99 -pedantic -lm -Wall "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
         
@@ -79,8 +79,24 @@ export prefix
 
 [ ! -d "$prefix" ] && mkdir -p -- "$prefix"
 
-case "$*" in
-    install) install;;
+case "$1" in
+    install)
+        shift
+        for i; do
+            case "$i" in
+                csa=*)
+                    val="${i#csa=}"
+                    case "$val" in
+                        true|1) csa="scan-build";;
+                        *) csa="";;
+                    esac
+                    ;;
+                *) logerrq "Unrecognised argument [%s]." "$i";;
+            esac
+        done
+
+        install
+        ;;
     uninstall) uninstall;;
-    *) logerrq "Arguments must be 'install' or 'uninstall', not [%s]." "$*";;
+    *) logerrq "Target must be 'install' or 'uninstall', not [%s]." "$1";;
 esac
