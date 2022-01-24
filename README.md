@@ -1,5 +1,4 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge)](https://www.codefactor.io/repository/github/xphyro/scripts)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/XPhyro/image-entropy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/XPhyro/image-entropy/context:python)
 
 # scripts
 This repository is a collection of my scripts. Most of them are written in POSIX
