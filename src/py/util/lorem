@@ -4,12 +4,11 @@
 
 from sys import argv
 
-from lorem import paragraph
+from lorem import paragraph as lipsum
 
 
 def main():
-    for i in argv[1:]:
-        print(*[paragraph() for _ in range(int(i))])
+    print("\n\n".join([" ".join([lipsum() for _ in range(int(i))]) for i in argv[1:]]))
 
 
 if __name__ == "__main__":
