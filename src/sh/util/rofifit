@@ -28,14 +28,14 @@ done
     res="$(resmoncur)"
     exec "$@" -theme-str "
         window {
-            width:  $(min \
-                        "$(max \
+            width:  $(numsh -f min -- \
+                        "$(numsh -f max \
                             "$((50 + 12 * $(wc -L < "$stdinfl")))" \
                             "$((200 + 12 * ${#prompt}))"
                         )" \
                         "$((${res%%x*} / 2))"
                     );
-            height: $(min \
+            height: $(numsh -f min -- \
                         "$((37 + 23 * $(wc -l < "$stdinfl")))" \
                         "$((${res##*x} / 2 + 3))"
                     );

@@ -24,7 +24,7 @@ curl v2.wttr.in/"$WTTR_LOCATION" 2> /dev/null | head -n -2 > "$v2"
 # maxl="$(wc -L < "$v1")"
 # while IFS= read -r i; do
 #     printf "%s" "$i"
-#     fputsn " " "$(max 0 "$((maxl - ${#i}))")"
+#     fputsn " " "$(numsh -f max -- 0 "$((maxl - ${#i}))")"
 #     printf "\n"
 # done < "$v1" | sponge "$v1"
 
