@@ -22,6 +22,8 @@
 #include <errno.h>
 #include <dirent.h>
 
+#include "../../include/strutil.h"
+
 #ifndef S_ISVTX
 #define S_ISVTX 01000
 #endif /* S_ISVTX */
@@ -219,7 +221,16 @@ int main(int argc, char *argv[])
     size_t size;
     ssize_t len;
 
-    while ((i = getopt(argc, argv, "AabcdefGgHhkLlNn:Oo:pqrSsuVvwxz0")) != -1) {
+    for (i = 1; i < argc; i++) {
+        if (streq(argv[i], "--"))
+            break;
+        if (streq(argv[i], "--help")) {
+            printhelp();
+            return 0;
+        }
+    }
+
+    while ((i = getopt(argc, argv, "AabcdefGghkLlNn:Oo:pqrSsuVvwxz0")) != -1) {
         switch (i) {
             OPTCASE('A', optall);
             TESTCASE('a', testhidden);
@@ -231,9 +242,6 @@ int main(int argc, char *argv[])
             TESTCASE('G', testegid);
             TESTCASE('g', testgid);
             TESTCASE('h', testlink);
-            case 'H':
-                printhelp();
-                return 0;
             TESTCASE('k', teststicky);
             TESTCASE('L', testlink);
             TESTCASE('N', testmodif);
@@ -259,7 +267,7 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
-                fputs("Try 'stest -H' for more information.\n", stderr);
+                fputs("Try 'stest --help' for more information.\n", stderr);
                 return 127;
         }
     }
