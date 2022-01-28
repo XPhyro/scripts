@@ -1,11 +1,9 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge)](https://www.codefactor.io/repository/github/xphyro/scripts)
 
 # scripts
-This repository is a collection of my scripts. Most of them are written in POSIX
-Shell, i.e. `sh`, but this is not an sh-specific repository.
-
-Some are general utility scripts, whereas others are written for very specific
-purposes.
+This repository is a collection of general or specific scripts and utiltiies for
+Unix-like operating systems. Most scripts are written in POSIX Shell, i.e. `sh`;
+and most non-script utilities are written in C.
 
 ## Installation
 
@@ -32,7 +30,7 @@ If you installed system-wide:
 
     sudo make uninstall
 
-## Notable Scripts
+## Notable Scripts and Utilities
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset. See `afgrep -h`.
 - [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for
