@@ -5,8 +5,8 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <memory.h>
-#include <time.h>
 #include <unistd.h>
+#include <sys/random.h>
 
 #include "../../include/stdutil.h"
 
@@ -107,7 +107,13 @@ int main(int argc, char *argv[])
         die("no lines to repeat\n");
 
     lines = realloc(lines, n * sizeof(char *));
-    srand(time(NULL));
+
+    {
+        long tmp;
+        getrandom(&tmp, sizeof(tmp), 0);
+        srand(tmp);
+    }
+
     for (i = 0; i < n; i++) {
         tmpstr = lines[r = rand() % n];
         lines[r] = lines[i];

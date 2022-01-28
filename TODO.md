@@ -19,6 +19,9 @@
 
 # Normal Priority
 
+## Security
+- Eliminate the modulo bias in `shufr`.
+
 ## Bugs
 - `ffmw decat` does not work as expected. When the time is in format `HH:MM:SS`,
   it seems to work. Maybe it requires this format? If so, add it in the help
