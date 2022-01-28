@@ -6,11 +6,12 @@
   for programs local to this repository, always install the `eval`ed programs as
   root to prevent tinkering.
 
+## Features
+- Add stdin support to `numsh`.
+
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
   client.
-- Generalise `cmath`, `max` and `min` into `numsh`: like NumPy, but for the
-  shell.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
