@@ -7,8 +7,8 @@
  *  - Ability to pass files as arguments
  *  - Ability to have partial inverse tests
  *
- *  The implementation uses code in small chunks from the BSDCoreUtils/GNU test,
- *  as well as the suckless stest.
+ *  The implementation shares code with the suckless stest. Options are mostly
+ *  compatible with the POSIX test, and to some degree with GNU extensions.
  */
 
 #define _POSIX_C_SOURCE 200809L
