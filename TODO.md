@@ -1,6 +1,6 @@
 # High Priority
 
-## Bugs
+## Security
 - `eval`ing `getpath`, `xdotool` and other programs can lead to security
   problems if the scripts are run with elevated permissions. Warn the user and,
   for programs local to this repository, always install the `eval`ed programs as
@@ -16,6 +16,13 @@
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
   executable?).
+- Documentation:
+  - Online documentation via `github.io`.
+  - Offline documentation via man pages.
+  - `-h` and/or `--help` flags.
+  - For interpreted stuff and config files, brief explanation as comment at the
+    beginning of the file.
+
 
 
 # Normal Priority
@@ -189,6 +196,8 @@
 - `volauxdefsetarr`: like `volauxdefset`, but moves in predefined volume levels
   (given via arguments).
 - Write a portable version of `rand` using `arc4random_buf`.
+- Write a wrapper script for `xargs` and `xins`: If arguments fit into a single
+  invocation, use `xargs`; else, use `xins`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
