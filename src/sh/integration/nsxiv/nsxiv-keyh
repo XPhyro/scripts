@@ -5,5 +5,6 @@ eval "$(evalverbose)"
 printf "%s\n" "$1" >&2
 
 case "$1" in
-    C-p|p) cat <&0;;
+    C-p|p) xargs -0 printf "%s\n";;
+    C-k|k) xargs -0 "${IMAGE_EDITOR:-krita}" --;;
 esac

@@ -2,7 +2,7 @@
 
 eval "$(evalverbose)"
 
-preargs="${NSXIV_ARGS_PRE:-"-a"}"
+preargs="${NSXIV_ARGS_PRE:-"-a0"}"
 postargs="$NSXIV_ARGS_POST"
 
 {   printf "%s\0" $preargs
