@@ -52,8 +52,8 @@ DECLMAP(tan);
 DECLMAP(tanh);
 DECLMAP(trunc);
 
-DECLREDUCE(min);
 DECLREDUCE(max);
+DECLREDUCE(min);
 DECLREDUCE(sum);
 
 function functions[] = {
@@ -309,40 +309,38 @@ double map_trunc(int argc, double *argv, double *kwargv)
     return trunc(argv[0]);
 }
 
-double reduce_min(int argc, double *argv, double *kwargv)
-{
-    int i;
-    double m = INFINITY;
-
-    for (i = 0; i < argc; i++) {
-        if (argv[i] < m)
-            m = argv[i];
-    }
-
-    return m;
-}
-
 double reduce_max(int argc, double *argv, double *kwargv)
 {
     int i;
-    double m = -INFINITY;
+    double max = -INFINITY;
 
     for (i = 0; i < argc; i++) {
-        if (argv[i] > m)
-            m = argv[i];
+        if (argv[i] > max)
+            max = argv[i];
     }
 
-    return m;
+    return max;
+}
+
+double reduce_min(int argc, double *argv, double *kwargv)
+{
+    int i;
+    double min = INFINITY;
+
+    for (i = 0; i < argc; i++) {
+        if (argv[i] < min)
+            min = argv[i];
+    }
+
+    return min;
 }
 
 double reduce_sum(int argc, double *argv, double *kwargv)
 {
     int i;
-    double s = 0;
+    double sum = 0;
 
-    for (i = 0; i < argc; i++) {
-        s += argv[i];
-    }
+    for (i = 0; i < argc; sum += argv[i++]);
 
-    return s;
+    return sum;
 }
