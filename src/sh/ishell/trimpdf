@@ -2,6 +2,23 @@
 
 eval "$(evalverbose)"
 
+unset optremovetmp
+while getopts "hr" OPT; do
+    case "$OPT" in
+        h)
+            printf "%s" \
+"$0 [OPTION]...
+   -h   display this help and exit
+   -r   remove temporary files before exiting
+"
+            exit 0
+            ;;
+        r) optremovetmp=1;;
+        *) printf "Invalid option given: %s\n" "$OPT"; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
 if [ "$#" -eq 0 ]; then
     if [ -t 0 ]; then
         yesno "No file given, trim all PDFs in the current directory? [y/N]\n" || exit 0
@@ -32,6 +49,6 @@ else
 
         cp -f -- "$tmp1" "$i"
 
-        # not removing the temp file is intentional
+        [ "$optremovetmp" = 1 ] && rm -f -- "$tmp" "$tmp1" "$tmp2"
     done
 fi
