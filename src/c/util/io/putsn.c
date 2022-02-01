@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         argv--;
         argv[1] = "";
     } else if (argc != 3)
-        DIE("exactly 2 or 3 arguments are accepted");
+        DIE("exactly 1 or 2 arguments are accepted");
 
     for (i = 0, n = astrtoull(argv[2], EXECNAME": invalid number given\n");
          i < n;
