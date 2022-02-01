@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     int i;
     unsigned char buf[BUFSIZE];
 
-    if (argc == 1) {
+    if (argc < 2) {
         checkfl(STDIN_FILENO, buf);
     } else for (i = 1; i < argc; checkfl(open(argv[i++], O_RDONLY), buf));
 

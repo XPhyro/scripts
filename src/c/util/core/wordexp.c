@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     ssize_t len;
     wordexp_t result;
 
-    if (argc == 1) {
+    if (argc < 2) {
         while ((len = getline(&line, &size, stdin)) != -1) {
             if (line[len - 1] == '\n')
                 line[len - 1] = '\0';
