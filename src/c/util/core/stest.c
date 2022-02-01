@@ -158,7 +158,7 @@ bool stest(const char *path)
     return !optinvert;
 }
 
-inline void printhelp()
+void printhelp()
 {
     fputs("Usage: stest [OPTION]... [PATH]...\n"
           "Filter a list of files by properties.\n"

@@ -37,7 +37,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            '"$csa"' gcc -O3 -std=c99 -pedantic -lm -Wall "$1" -o "$prefix/$out" \
+            '"$csa"' gcc -O'"${o:-3}"' -std=c99 -pedantic -lm -Wall "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
         
@@ -53,7 +53,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            g++ -O3 -std=c++23 -Wall "$1" -o "$prefix/$out" \
+            g++ -O'"${o:-3}"' -std=c++23 -Wall "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
 
@@ -79,6 +79,7 @@ export prefix
 
 [ ! -d "$prefix" ] && mkdir -p -- "$prefix"
 
+unset csa o
 case "$1" in
     install)
         shift
@@ -88,7 +89,14 @@ case "$1" in
                     val="${i#csa=}"
                     case "$val" in
                         true|1) csa="scan-build";;
-                        *) csa="";;
+                        *) unset csa;;
+                    esac
+                    ;;
+                o=*)
+                    val="${i#o=}"
+                    case "$val" in
+                        ""|0|1|2|3|g|s|fast) o="$val";;
+                        *) unset o;;
                     esac
                     ;;
                 *) logerrq "Unrecognised argument [%s]." "$i";;
