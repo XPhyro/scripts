@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# Choose a manual, generate its PDF and open it with zathura.
 
 eval "$(evalverbose)"
 
