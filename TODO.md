@@ -6,6 +6,9 @@
   for programs local to this repository, always install the `eval`ed programs as
   root to prevent tinkering.
 
+## Bugs
+- `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
+
 ## Features
 - Add stdin support to `numsh`.
 
