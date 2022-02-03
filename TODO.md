@@ -12,6 +12,7 @@
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
   client.
+- Finish `registernotif`.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate

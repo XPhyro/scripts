@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# $1: $0
+# $2: $*
+# $3: type = {INFO, WARNING, ERROR}
+# $4: title
+# $5: description
+
+# TODO:
+echo Not yet implemented
