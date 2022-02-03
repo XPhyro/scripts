@@ -7,7 +7,11 @@ timefile="$HOME/.config/mutt/.syncmailtime"
 maildir="$HOME/.local/share/mail"
 accdir="$HOME/.config/mutt/accounts"
 
-mbsync -a || color red "could not sync mails"
+mbsync -a || {
+    color red "could not sync mails"
+    logerrnotif "$0" "$*" "ERROR" 'Could not sync mails' 'Run `mbsync -a -Dsmnd` to debug.'
+    exit 1
+}
 
 find "$maildir" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r i; do
     acc="$(printf "%s" "$i" | sed "s/.*\///")"
