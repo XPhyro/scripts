@@ -13,6 +13,8 @@
 - Write a daemon that enables having different keyboard layouts for each X
   client.
 - Finish `registernotif`.
+- `loginfo`, `logwarn` and `logerr`; similar to `registernotif`.
+- `logTYPEnotif`: wrapper for `logTYPE "$@"; registernotif "$@"`.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
