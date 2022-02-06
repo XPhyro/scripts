@@ -9,4 +9,6 @@ install: uninstall
 uninstall:
 	sh -c 'cd src && ./.make uninstall'
 
-.PHONY: install uninstall
+clean:
+
+.PHONY: install uninstall clean
