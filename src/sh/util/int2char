@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+while IFS= read -r i; do
+    printf "\\$(printf "%03o" "$i")\n"
+done
