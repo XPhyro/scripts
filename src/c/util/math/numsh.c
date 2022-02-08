@@ -101,12 +101,12 @@ void die(const char *fmt, ...)
 
 int main(int argc, char *argv[])
 {
-    int i, j;
+    int i, j, n, funcargc;
     char *line = NULL;
     size_t size, funckwargc = 0;
     ssize_t len;
     function *func = NULL;
-    double *funcargv, *funckwargv = NULL;
+    double *funcargv = NULL, *funckwargv = NULL;
 
     while ((i = getopt(argc, argv, "f:hLo:")) != -1) {
         switch (i) {
@@ -176,28 +176,31 @@ funcavail:
     argc -= optind;
 
     if (!argc) {
-        die("stdin is not yet supported");
-        while ((len = getline(&line, &size, stdin)) != -1) {
+        for (i = 0, n = 1; (len = getline(&line, &size, stdin)) != -1;) {
             if (!len)
                 continue;
             if (line[len - 1] == '\n')
                 line[len - 1] = '\0';
-            /* TODO: build `args` */
+            if (++i == n)
+                funcargv = realloc(funcargv, (n *= 2) * sizeof(double));
+            funcargv[i - 1] = astrtod(line, EXECNAME": invalid number given\n");
         }
+        funcargv = realloc(funcargv, (funcargc = i) * sizeof(double));
     } else {
         funcargv = malloc(sizeof(double) * argc);
         for (i = 0; i < argc; i++)
             funcargv[i] = astrtod(argv[i], EXECNAME": invalid number given\n");
+        funcargc = argc;
     }
 
     switch (func->type) {
         case FUNCTYPE_MAP:
-            for (i = 0; i < argc; i++) {
+            for (i = 0; i < funcargc; i++) {
                 printf("%.16g\n", func->func(1, funcargv + i, funckwargv));
             }
             break;
         case FUNCTYPE_REDUCE:
-            printf("%.16g\n", func->func(argc, funcargv, funckwargv));
+            printf("%.16g\n", func->func(funcargc, funcargv, funckwargv));
             break;
     }
 

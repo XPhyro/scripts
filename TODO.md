@@ -9,9 +9,6 @@
 ## Bugs
 - `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
 
-## Features
-- Add stdin support to `numsh`.
-
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
   client.
