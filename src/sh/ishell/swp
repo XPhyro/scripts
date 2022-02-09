@@ -3,8 +3,8 @@
 
 eval "$(evalverbose)"
 
-fl="$1"
-other="$2"
+fl="$(printf "%s\n" "$1" | sed 's,/*$,,')"
+other="$(printf "%s\n" "$2" | sed 's,/*$,,')"
 tmp="$(getnewpath "$fl")"
 mv -n -- "$fl" "$tmp"
 mv -n -- "$other" "$fl"
