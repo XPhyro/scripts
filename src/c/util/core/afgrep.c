@@ -2,26 +2,29 @@
 /* need strcasestr */
 #define _GNU_SOURCE
 
+#include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "../../include/stdutil.h"
 #include "../../include/strutil.h"
 
 #define EXECNAME "afgrep"
-#define DIE(...) { fputs(EXECNAME": ", stderr); \
-                   fprintf(stderr, __VA_ARGS__); \
-                   fputc('\n', stderr); \
-                   exit(EXIT_FAILURE); }
+#define DIE(...)                      \
+    {                                 \
+        fputs(EXECNAME ": ", stderr); \
+        fprintf(stderr, __VA_ARGS__); \
+        fputc('\n', stderr);          \
+        exit(EXIT_FAILURE);           \
+    }
 
 typedef enum {
-    SEARCHMODE_ANY   = 0,
+    SEARCHMODE_ANY = 0,
     SEARCHMODE_BEGIN = 1,
-    SEARCHMODE_END   = 2,
+    SEARCHMODE_END = 2,
     SEARCHMODE_WHOLE = 4,
 } SEARCHMODES;
 
@@ -48,15 +51,15 @@ void searchline(const char *line)
         return;
 
     linelen = strlen(line);
-    match = (searchmodes == SEARCHMODE_ANY)
-         || (searchmodes & SEARCHMODE_WHOLE
-             && (linelen == fixedstrlen))
-         || (offset <= linelen && ((searchmodes & SEARCHMODE_BEGIN
-                                    && (s = (optcase ? strcasestr : strstr)(p = line + offset, fixedstr))
-                                    && (s == p))
-                                || (searchmodes & SEARCHMODE_END
-                                    && (s = (optcase ? strcaserstre : strrstre)(line, fixedstr, p = line + linelen - offset))
-                                    && (s == p - 1))));
+    match =
+        (searchmodes == SEARCHMODE_ANY) ||
+        (searchmodes & SEARCHMODE_WHOLE && (linelen == fixedstrlen)) ||
+        (offset <= linelen &&
+         ((searchmodes & SEARCHMODE_BEGIN &&
+           (s = (optcase ? strcasestr : strstr)(p = line + offset, fixedstr)) && (s == p)) ||
+          (searchmodes & SEARCHMODE_END &&
+           (s = (optcase ? strcaserstre : strrstre)(line, fixedstr, p = line + linelen - offset)) &&
+           (s == p - 1))));
 
     if (optinvert ? match : !match)
         return;
@@ -101,13 +104,13 @@ int main(int argc, char *argv[])
                 searchmodes |= SEARCHMODE_BEGIN;
                 break;
             case 'b':
-                offset = astrtoul(optarg, EXECNAME": invalid number given to option -o\n");
+                offset = astrtoul(optarg, EXECNAME ": invalid number given to option -o\n");
                 break;
             case 'e':
                 searchmodes |= SEARCHMODE_END;
                 break;
             case 'h':
-                fputs("Usage: "EXECNAME" [OPTION]... [FIXEDSTR] [FILE]...\n"
+                fputs("Usage: " EXECNAME " [OPTION]... [FIXEDSTR] [FILE]...\n"
                       "Search for FIXEDSTR with given alignment in each FILE.\n"
                       "\n"
                       "With no FILE, read standard input.\n"
@@ -129,14 +132,14 @@ int main(int argc, char *argv[])
                       "  -v         invert matches\n"
                       "  -x         FIXEDSTR must be the whole line\n"
                       "  -z         line delimiter is NUL, not newline\n"
-                      "  -0         line delimiter is NUL, not newline\n"
-                , stdout);
+                      "  -0         line delimiter is NUL, not newline\n",
+                      stdout);
                 return 0;
             case 'i':
                 optcase = true;
                 break;
             case 'm':
-                optlmatch = astrtoul(optarg, EXECNAME": invalid number given to option -m\n");
+                optlmatch = astrtoul(optarg, EXECNAME ": invalid number given to option -m\n");
                 break;
             case 'o':
                 optonly = true;
@@ -170,19 +173,20 @@ int main(int argc, char *argv[])
 
     if (!--argc) {
         searchfile(&line, &size, stdin);
-    } else for (i = 0; i < argc; i++) {
-        errno = 0;
-        if (!(fl = fopen(argv[i], "r"))) {
-            if (errno == ENOENT)
-                fprintf(stderr, EXECNAME": %s: No such file or directory\n", argv[i]);
-            else {
-                fprintf(stderr, EXECNAME": %s: Could not open file: ", argv[i]);
-                perror("fopen");
+    } else
+        for (i = 0; i < argc; i++) {
+            errno = 0;
+            if (!(fl = fopen(argv[i], "r"))) {
+                if (errno == ENOENT)
+                    fprintf(stderr, EXECNAME ": %s: No such file or directory\n", argv[i]);
+                else {
+                    fprintf(stderr, EXECNAME ": %s: Could not open file: ", argv[i]);
+                    perror("fopen");
+                }
+                continue;
             }
-            continue;
+            searchfile(&line, &size, fl);
         }
-        searchfile(&line, &size, fl);
-    }
 
     return hasmatch ? 0 : 1;
 }

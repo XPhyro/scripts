@@ -1,13 +1,13 @@
 #define _POSIX_C_SOURCE 200809L
 #define _XOPEN_SOURCE 500
 
+#include <pwd.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <pwd.h>
+#include <unistd.h>
 
 #include "../../include/strutil.h"
 
@@ -137,9 +137,10 @@ int main(int argc, char *argv[])
                 line[len - 1] = '\0';
             unexpand(line);
         }
-    } else for (i = 0; i < argc; i++) {
-        unexpand(argv[i]);
-    }
+    } else
+        for (i = 0; i < argc; i++) {
+            unexpand(argv[i]);
+        }
 
     return 0;
 }

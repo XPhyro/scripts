@@ -1,13 +1,13 @@
-#include <stddef.h>
-#include <stdbool.h>
-#include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
 
 char *strend(const char *s)
 {
     if (!s)
         return NULL;
-    for (; *s; s++);
+    for (; *s; s++) {}
     return (char *)s;
 }
 

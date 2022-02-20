@@ -1,35 +1,38 @@
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 
-#define ASTRTOGENPRE(TYPE, FUNC)          TYPE a##FUNC(char *s, const char *const err) \
-                                          { \
-                                              TYPE n; \
-                                              int olderrno; \
-                                              char *endptr; \
-                                              \
-                                              olderrno = errno; \
-                                              errno = 0;
+#define ASTRTOGENPRE(TYPE, FUNC)                 \
+    TYPE a##FUNC(char *s, const char *const err) \
+    {                                            \
+        TYPE n;                                  \
+        int olderrno;                            \
+        char *endptr;                            \
+                                                 \
+        olderrno = errno;                        \
+        errno = 0;
 
-#define ASTROGEN(TYPE, FUNC, NFUNC)           ASTRTOGENPRE(TYPE, FUNC) \
-                                              NFUNC \
-                                              ASTRTOGENPOST(TYPE, FUNC)
+#define ASTROGEN(TYPE, FUNC, NFUNC) \
+    ASTRTOGENPRE(TYPE, FUNC)        \
+    NFUNC                           \
+    ASTRTOGENPOST(TYPE, FUNC)
 
-#define ASTRTOGENNOBASE(TYPE, FUNC)           ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr);)
-#define ASTRTOGENBASE(TYPE, FUNC)             ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr, 10);)
+#define ASTRTOGENNOBASE(TYPE, FUNC) ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr);)
+#define ASTRTOGENBASE(TYPE, FUNC) ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr, 10);)
 
-#define ASTRTOGENPOST(TYPE, FUNC)             if (errno) { \
-                                                  perror(#FUNC); \
-                                                  exit(EXIT_FAILURE); \
-                                              } \
-                                              if (*endptr != '\0') { \
-                                                  fputs(err, stderr); \
-                                                  exit(EXIT_FAILURE); \
-                                              } \
-                                              \
-                                              errno = olderrno; \
-                                              return n; \
-                                          }
+#define ASTRTOGENPOST(TYPE, FUNC) \
+    if (errno) {                  \
+        perror(#FUNC);            \
+        exit(EXIT_FAILURE);       \
+    }                             \
+    if (*endptr != '\0') {        \
+        fputs(err, stderr);       \
+        exit(EXIT_FAILURE);       \
+    }                             \
+                                  \
+    errno = olderrno;             \
+    return n;                     \
+    }
 
 unsigned short astrtohu(char *s, const char *const err)
 {

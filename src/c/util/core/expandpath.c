@@ -1,17 +1,20 @@
 #define _POSIX_C_SOURCE 200809L
 
+#include <pwd.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <pwd.h>
+#include <unistd.h>
 
-#define DIE(...) { fputs("expandpath: ", stderr); \
-                   fprintf(stderr, __VA_ARGS__); \
-                   fputc('\n', stderr); \
-                   exit(EXIT_FAILURE); }
+#define DIE(...)                       \
+    {                                  \
+        fputs("expandpath: ", stderr); \
+        fprintf(stderr, __VA_ARGS__);  \
+        fputc('\n', stderr);           \
+        exit(EXIT_FAILURE);            \
+    }
 
 char delim = '\n';
 char *home;
@@ -115,9 +118,8 @@ int main(int argc, char *argv[])
                 line[len - 1] = '\0';
             expand(line);
         }
-    } else for (i = 0; i < argc; i++) {
-        expand(argv[i]);
-    }
+    } else
+        for (i = 0; i < argc; expand(argv[i++])) {}
 
     return 0;
 }

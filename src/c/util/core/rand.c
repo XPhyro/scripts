@@ -8,8 +8,11 @@
 #include "../../include/stdutil.h"
 
 #define EXECNAME "rand"
-#define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(ERRMSG)                               \
+    {                                             \
+        fputs(EXECNAME ": " ERRMSG "\n", stderr); \
+        exit(EXIT_FAILURE);                       \
+    }
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +22,7 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "hn:")) != -1) {
         switch (i) {
             case 'h':
-                puts("Usage: "EXECNAME" [OPTION]...\n"
+                puts("Usage: " EXECNAME " [OPTION]...\n"
                      "Generate cryptographically secure 64-bit random numbers on Linux.\n"
                      "\n"
                      "  -h         display this help and exit\n"
@@ -27,10 +30,10 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'n':
-                n = astrtol(optarg, EXECNAME": invalid number given\n");
+                n = astrtol(optarg, EXECNAME ": invalid number given\n");
                 break;
             default:
-                fputs("Try '"EXECNAME" -h' for more information.\n", stderr);
+                fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
                 exit(EXIT_FAILURE);
                 break;
         }

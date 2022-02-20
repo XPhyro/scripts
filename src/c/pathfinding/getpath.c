@@ -1,13 +1,13 @@
 #define _POSIX_C_SOURCE 200809L
 
+#include <pwd.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <stdarg.h>
 #include <string.h>
-#include <unistd.h>
-#include <pwd.h>
 #include <sys/param.h>
+#include <unistd.h>
 
 #include "../include/sysutil.h"
 
@@ -31,32 +31,31 @@ void die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
 {
     va_list ap;
 
-    fputs(EXECNAME": ", stderr);
+    fputs(EXECNAME ": ", stderr);
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
     va_end(ap);
 
-   if (shellinit) {
-       switch (argc) {
-           case 4:
-               fprintf(stderr, "%s\n", argv[3]);
-           case 3:
-               printf("exit %s;\n", argv[2]);
-               break;
-           default:
-               puts("exit 1;\n");
-               break;
-       }
-   }
+    if (shellinit) {
+        switch (argc) {
+            case 4:
+                fprintf(stderr, "%s\n", argv[3]);
+            case 3:
+                printf("exit %s;\n", argv[2]);
+                break;
+            default:
+                puts("exit 1;\n");
+                break;
+        }
+    }
 
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[])
 {
-    const char *confdir,
-               *const flcont = "/scripts/pathfinding/files-container/",
-               *const dircont = "/scripts/pathfinding/directories-container/";
+    const char *confdir, *const flcont = "/scripts/pathfinding/files-container/",
+                                *const dircont = "/scripts/pathfinding/directories-container/";
     bool dirturn, optboth = false, optshell = false, shellinit = false;
     int i;
     char delim = '\n', *s, *prefix, *path = NULL, *line = NULL;
@@ -81,25 +80,26 @@ int main(int argc, char *argv[])
                 filemodes |= FILEMODE_FILE;
                 break;
             case 'h':
-                puts("Usage: getpath [OPTION]... [KEYCODE]...\n"
-                     "  or:  getpath -e [OPTION]... [KEYCODE] [VARNAME] [EXITCODE]? [ERRMSG]?\n"
-                     "Get paths based on keycodes.\n"
-                     "\n"
-                     "EXITCODE and ERRMSG are optional and respectively default to 1 and NULL.\n"
-                     "Unless -b is given, the first match of -f and -d in that order is output.\n"
-                     "At least one of -df must be given.\n"
-                     "Only the last occurence of any of -nsu is considered. By default, -n is selected.\n"
-                     "\n"
-                     "  -b        if -d and -f are given, output both if matched\n"
-                     "  -d        search directory database\n"
-                     "  -e        make output `eval`able by a POSIX-compatible shell\n"
-                     "  -f        search file database\n"
-                     "  -h        display this help and exit\n"
-                     "  -n        select normal mode: create parent elements of the path\n"
-                     "  -s        select safe   mode: create all elements of the path\n"
-                     "  -u        select unsafe mode: create none of the elements of the path\n"
-                     "  -z        line delimiter is NUL, not newline\n"
-                     "  -0        line delimiter is NUL, not newline");
+                puts(
+                    "Usage: getpath [OPTION]... [KEYCODE]...\n"
+                    "  or:  getpath -e [OPTION]... [KEYCODE] [VARNAME] [EXITCODE]? [ERRMSG]?\n"
+                    "Get paths based on keycodes.\n"
+                    "\n"
+                    "EXITCODE and ERRMSG are optional and respectively default to 1 and NULL.\n"
+                    "Unless -b is given, the first match of -f and -d in that order is output.\n"
+                    "At least one of -df must be given.\n"
+                    "Only the last occurence of any of -nsu is considered. By default, -n is selected.\n"
+                    "\n"
+                    "  -b        if -d and -f are given, output both if matched\n"
+                    "  -d        search directory database\n"
+                    "  -e        make output `eval`able by a POSIX-compatible shell\n"
+                    "  -f        search file database\n"
+                    "  -h        display this help and exit\n"
+                    "  -n        select normal mode: create parent elements of the path\n"
+                    "  -s        select safe   mode: create all elements of the path\n"
+                    "  -u        select unsafe mode: create none of the elements of the path\n"
+                    "  -z        line delimiter is NUL, not newline\n"
+                    "  -0        line delimiter is NUL, not newline");
                 exit(EXIT_SUCCESS);
                 break;
             case 'n':
@@ -134,8 +134,7 @@ int main(int argc, char *argv[])
         shellinit = true;
     }
 
-    if (!((prefix = getenv("GETPATH_CONFIG_HOME"))
-       || (prefix = getenv("XDG_CONFIG_HOME")))) {
+    if (!((prefix = getenv("GETPATH_CONFIG_HOME")) || (prefix = getenv("XDG_CONFIG_HOME")))) {
         if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             DIE("could not determine config directory\n");
         if (!(prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)))))
@@ -152,11 +151,11 @@ int main(int argc, char *argv[])
         if (!*argv[i])
             DIE("keycode is empty\n");
 
-        if ((st = strlen(argv[i])) > kcmargin
-        && !(path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char))))
+        if ((st = strlen(argv[i])) > kcmargin &&
+            !(path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char))))
             DIE("out of memory\n");
 
-        for (dirturn = false; ; dirturn = !dirturn) {
+        for (dirturn = false;; dirturn = !dirturn) {
             if (!dirturn) {
                 if (!(filemodes & FILEMODE_FILE))
                     continue;

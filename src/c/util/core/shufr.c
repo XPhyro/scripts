@@ -1,38 +1,42 @@
 #define _POSIX_C_SOURCE 200809L
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <memory.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <memory.h>
-#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/random.h>
+#include <unistd.h>
 
 #include "../../include/stdutil.h"
 
 #define EXECNAME "shufr"
 
-#define SETLINES(STREAM) while ((len = getdelim(&line, &size, delim, STREAM)) != -1) { \
-                             if (len && line[len - 1] != delim) \
-                                 len++; \
-                             tmpstr = malloc(len * sizeof(char)); \
-                             memcpy(tmpstr, line, len); \
-                             tmpstr[len - 1] = '\0'; \
-                             lines[i++] = tmpstr; \
-                             if (i == n) \
-                                 lines = realloc(lines, (n *= 2) * sizeof(char *)); \
-                         }
+#define SETLINES(STREAM)                                          \
+    while ((len = getdelim(&line, &size, delim, STREAM)) != -1) { \
+        if (len && line[len - 1] != delim)                        \
+            len++;                                                \
+        tmpstr = malloc(len * sizeof(char));                      \
+        memcpy(tmpstr, line, len);                                \
+        tmpstr[len - 1] = '\0';                                   \
+        lines[i++] = tmpstr;                                      \
+        if (i == n)                                               \
+            lines = realloc(lines, (n *= 2) * sizeof(char *));    \
+    }
 
-#define PRINT(LINE) { fputs(LINE, stdout); \
-                      putchar(delim); \
-                      if (optlimit && ++nprint == lprint) \
-                          exit(EXIT_SUCCESS); }
+#define PRINT(LINE)                         \
+    {                                       \
+        fputs(LINE, stdout);                \
+        putchar(delim);                     \
+        if (optlimit && ++nprint == lprint) \
+            exit(EXIT_SUCCESS);             \
+    }
 
 void die(const char *fmt, ...)
 {
     va_list ap;
 
-    fputs(EXECNAME": ", stderr);
+    fputs(EXECNAME ": ", stderr);
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
     va_end(ap);
@@ -67,11 +71,11 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'l':
-                lprint = astrtoul(optarg, EXECNAME": invalid number given to option -l\n");
+                lprint = astrtoul(optarg, EXECNAME ": invalid number given to option -l\n");
                 optlimit = true;
                 break;
             case 'n':
-                nsame = astrtoul(optarg, EXECNAME": invalid number given to option -n\n");
+                nsame = astrtoul(optarg, EXECNAME ": invalid number given to option -n\n");
                 break;
             case 'r':
                 /* ignored */
@@ -96,11 +100,12 @@ int main(int argc, char *argv[])
     i = 0;
     if (argc == 0) {
         SETLINES(stdin);
-    } else for (j = 0; j < argc; j++) {
-        file = fopen(argv[j], "r");
-        SETLINES(file);
-        fclose(file);
-    }
+    } else
+        for (j = 0; j < argc; j++) {
+            file = fopen(argv[j], "r");
+            SETLINES(file);
+            fclose(file);
+        }
     n = i;
 
     if (n == 0)
@@ -131,7 +136,7 @@ int main(int argc, char *argv[])
             PRINT(lines[rand() % n]);
     }
 
-    iarr  = malloc(nsame * sizeof(int));
+    iarr = malloc(nsame * sizeof(int));
     if (nsame == n) {
         for (;;) {
             for (i = 0; i < n; i++)
@@ -140,7 +145,8 @@ int main(int argc, char *argv[])
     }
 
     ihist = malloc((nsbuf = nsame * 2) * sizeof(int));
-    for (i = 0; i < nsbuf; ihist[i++] = -1);
+    for (i = 0; i < nsbuf; ihist[i++] = -1)
+        ;
 
     for (;;) {
 newcycle:
@@ -154,8 +160,10 @@ newcycle:
         }
         for (i = 0; i < nsame; i++)
             PRINT(lines[ihist[i] = iarr[i]]);
-        for (i = nsame; i < nsbuf; ihist[i++] = -1);
-        for (i = 0; i < nsame; ihist[i] = ihist[i + 1], i++);
+        for (i = nsame; i < nsbuf; ihist[i++] = -1)
+            ;
+        for (i = 0; i < nsame; ihist[i] = ihist[i + 1], i++)
+            ;
     }
 
     return 0;

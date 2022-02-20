@@ -1,8 +1,8 @@
 #define _POSIX_C_SOURCE 200809L
 
+#include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
 #include <wordexp.h>
 
 int safewordexp(const char *restrict s, wordexp_t *restrict result, int flags)
@@ -32,8 +32,9 @@ int main(int argc, char *argv[])
                 line[len - 1] = '\0';
             safewordexp(line, &result, 0);
         }
-    } else for (i = 1; i < argc; i++)
-        safewordexp(argv[i], &result, 0);
+    } else
+        for (i = 1; i < argc; i++)
+            safewordexp(argv[i], &result, 0);
 
     return 0;
 }

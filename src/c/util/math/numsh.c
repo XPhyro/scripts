@@ -1,10 +1,10 @@
 #define _POSIX_C_SOURCE 200809L
 
+#include <math.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <unistd.h>
-#include <math.h>
 
 #include "../../include/stdutil.h"
 #include "../../include/strutil.h"
@@ -16,8 +16,14 @@
 #define DECLMAP(FUNC) double map_##FUNC(int, double *, double *)
 #define DECLREDUCE(FUNC) double reduce_##FUNC(int, double *, double *)
 
-#define FUNCMAP(FUNC) { #FUNC, map_##FUNC, FUNCTYPE_MAP }
-#define FUNCREDUCE(FUNC) { #FUNC, reduce_##FUNC, FUNCTYPE_REDUCE }
+#define FUNCMAP(FUNC)                   \
+    {                                   \
+#FUNC, map_##FUNC, FUNCTYPE_MAP \
+    }
+#define FUNCREDUCE(FUNC)                      \
+    {                                         \
+#FUNC, reduce_##FUNC, FUNCTYPE_REDUCE \
+    }
 
 typedef enum {
     FUNCTYPE_MAP = 0,
@@ -57,38 +63,22 @@ DECLREDUCE(min);
 DECLREDUCE(sum);
 
 function functions[] = {
-    FUNCMAP(acos),
-    FUNCMAP(asin),
-    FUNCMAP(atan),
-    FUNCMAP(cbrt),
-    FUNCMAP(ceil),
-    FUNCMAP(cos),
-    FUNCMAP(cosh),
-    FUNCMAP(exp),
-    { "abs", map_fabs, FUNCTYPE_MAP },
-    FUNCMAP(floor),
-    FUNCMAP(log),
-    FUNCMAP(log10),
-    FUNCMAP(log2),
-    FUNCMAP(pow),
-    FUNCMAP(round),
-    FUNCMAP(sin),
-    FUNCMAP(sinh),
-    FUNCMAP(sqrt),
-    FUNCMAP(tan),
-    FUNCMAP(tanh),
-    FUNCMAP(trunc),
+    FUNCMAP(acos),   FUNCMAP(asin),   FUNCMAP(atan),
+    FUNCMAP(cbrt),   FUNCMAP(ceil),   FUNCMAP(cos),
+    FUNCMAP(cosh),   FUNCMAP(exp),    { "abs", map_fabs, FUNCTYPE_MAP },
+    FUNCMAP(floor),  FUNCMAP(log),    FUNCMAP(log10),
+    FUNCMAP(log2),   FUNCMAP(pow),    FUNCMAP(round),
+    FUNCMAP(sin),    FUNCMAP(sinh),   FUNCMAP(sqrt),
+    FUNCMAP(tan),    FUNCMAP(tanh),   FUNCMAP(trunc),
 
-    FUNCREDUCE(max),
-    FUNCREDUCE(min),
-    FUNCREDUCE(sum),
+    FUNCREDUCE(max), FUNCREDUCE(min), FUNCREDUCE(sum),
 };
 
 void die(const char *fmt, ...)
 {
     va_list ap;
 
-    fputs(EXECNAME": ", stderr);
+    fputs(EXECNAME ": ", stderr);
 
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
@@ -121,21 +111,22 @@ int main(int argc, char *argv[])
 funcavail:
                 break;
             case 'h':
-                fputs("Usage: "EXECNAME" [OPTION]... [NUMBER]...\n"
-                     "Do mathematical calculations on all given numbers.\n"
-                     "\n"
-                     "With no NUMBER, read standard input. Empty lines are ignored\n"
-                     "when reading standard input.\n"
-                     "\n"
-                     "Option -f must be given. If FUNC requires additional arguments,\n"
-                     "option -o must be given exactly as many times as required.\n" /* TODO: enforce this */
-                     "\n"
-                     "  -f  FUNC  function to pass numbers through. pass -L to see the list.\n"
-                     "  -h        display this help and exit\n"
-                     "  -L        list all supported functions and exit\n"
-                     "  -o  ARG   pass additional arguments to FUNC. this option can be\n"
-                     "            given multiple times, and has to be given after -f.\n"
-                , stdout);
+                fputs(
+                    "Usage: " EXECNAME " [OPTION]... [NUMBER]...\n"
+                    "Do mathematical calculations on all given numbers.\n"
+                    "\n"
+                    "With no NUMBER, read standard input. Empty lines are ignored\n"
+                    "when reading standard input.\n"
+                    "\n"
+                    "Option -f must be given. If FUNC requires additional arguments,\n"
+                    "option -o must be given exactly as many times as required.\n" /* TODO: enforce this */
+                    "\n"
+                    "  -f  FUNC  function to pass numbers through. pass -L to see the list.\n"
+                    "  -h        display this help and exit\n"
+                    "  -L        list all supported functions and exit\n"
+                    "  -o  ARG   pass additional arguments to FUNC. this option can be\n"
+                    "            given multiple times, and has to be given after -f.\n",
+                    stdout);
                 exit(EXIT_SUCCESS);
                 break;
             case 'L':
@@ -160,10 +151,10 @@ funcavail:
             case 'o':
                 if (!(funckwargv = realloc(funckwargv, ++funckwargc * sizeof(double))))
                     die("could not allocate memory");
-                funckwargv[funckwargc - 1] = astrtod(optarg, EXECNAME": invalid number given\n");
+                funckwargv[funckwargc - 1] = astrtod(optarg, EXECNAME ": invalid number given\n");
                 break;
             default:
-                fputs("Try '"EXECNAME" -h' for more information.\n", stderr);
+                fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
                 exit(EXIT_FAILURE);
                 break;
         }
@@ -183,13 +174,13 @@ funcavail:
                 line[len - 1] = '\0';
             if (++i == n)
                 funcargv = realloc(funcargv, (n *= 2) * sizeof(double));
-            funcargv[i - 1] = astrtod(line, EXECNAME": invalid number given\n");
+            funcargv[i - 1] = astrtod(line, EXECNAME ": invalid number given\n");
         }
         funcargv = realloc(funcargv, (funcargc = i) * sizeof(double));
     } else {
         funcargv = malloc(sizeof(double) * argc);
         for (i = 0; i < argc; i++)
-            funcargv[i] = astrtod(argv[i], EXECNAME": invalid number given\n");
+            funcargv[i] = astrtod(argv[i], EXECNAME ": invalid number given\n");
         funcargc = argc;
     }
 
@@ -343,7 +334,8 @@ double reduce_sum(int argc, double *argv, double *kwargv)
     int i;
     double sum = 0;
 
-    for (i = 0; i < argc; sum += argv[i++]);
+    for (i = 0; i < argc; sum += argv[i++])
+        ;
 
     return sum;
 }

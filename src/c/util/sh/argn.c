@@ -4,13 +4,16 @@
 #include "../../include/stdutil.h"
 
 #define EXECNAME "argn"
-#define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(ERRMSG)                               \
+    {                                             \
+        fputs(EXECNAME ": " ERRMSG "\n", stderr); \
+        exit(EXIT_FAILURE);                       \
+    }
 
 int main(int argc, char *argv[])
 {
     int beg, end, inc, i;
-    const char *const numerr = EXECNAME": invalid number given\n";
+    const char *const numerr = EXECNAME ": invalid number given\n";
 
     if (argc < 4)
         DIE("at least 3 arguments are required");

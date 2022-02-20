@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {

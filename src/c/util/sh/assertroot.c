@@ -10,8 +10,9 @@ int main(int argc, char *argv[])
 
     if (argc < 2)
         fputs("This script must be run as root.\n", stderr);
-    else for (i = 1; i < argc; i++)
-        fputs(argv[i], stderr);
+    else
+        for (i = 1; i < argc; i++)
+            fputs(argv[i], stderr);
 
     return 1;
 }

@@ -1,8 +1,8 @@
+#include <fcntl.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 #define BUFSIZE 4096
 
@@ -35,7 +35,9 @@ int main(int argc, char *argv[])
 
     if (argc < 2) {
         checkfl(STDIN_FILENO, buf);
-    } else for (i = 1; i < argc; checkfl(argv[i++], buf));
+    } else
+        for (i = 1; i < argc; checkfl(argv[i++], buf))
+            ;
 
     return 0;
 }

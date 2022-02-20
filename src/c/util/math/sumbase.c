@@ -1,10 +1,10 @@
 #define _POSIX_C_SOURCE 200809L
 
+#include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "../../include/stdutil.h"
 
@@ -26,7 +26,7 @@ long long int parsenum(const char *s)
         goto numerr;
     }
     if (s == endptr) {
-        fputs(EXECNAME": invalid number given", stderr);
+        fputs(EXECNAME ": invalid number given", stderr);
         goto numerr;
     }
 
@@ -50,13 +50,13 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "dhiz0")) != -1) {
         switch (i) {
             case 'b':
-                optbase = astrtod(argv[i], EXECNAME": invalid base given\n");
+                optbase = astrtod(argv[i], EXECNAME ": invalid base given\n");
                 break;
             case 'd':
                 optnodelim = true;
                 break;
             case 'h':
-                puts("Usage: "EXECNAME" [OPTION]... [NUMBER]...\n"
+                puts("Usage: " EXECNAME " [OPTION]... [NUMBER]...\n"
                      "Sum integers in the given base.\n"
                      "\n"
                      "With no NUMBER, read standard input.\n"
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
-                fputs("Try '"EXECNAME" -h' for more information.\n", stderr);
+                fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
                 exit(EXIT_FAILURE);
                 break;
         }
@@ -92,9 +92,10 @@ int main(int argc, char *argv[])
                 line[len - 1] = '\0';
             sum += parsenum(line);
         }
-    } else for (i = 0; i < argc; i++) {
-        sum += parsenum(argv[i]);
-    }
+    } else
+        for (i = 0; i < argc; i++) {
+            sum += parsenum(argv[i]);
+        }
 
     if (!optnodelim)
         printf("%lld%c", sum, isatty(1) ? '\n' : delim);

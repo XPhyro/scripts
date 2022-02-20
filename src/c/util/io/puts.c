@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DIE(ERRMSG) { fputs("puts: "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(ERRMSG)                          \
+    {                                        \
+        fputs("puts: " ERRMSG "\n", stderr); \
+        exit(EXIT_FAILURE);                  \
+    }
 
 int main(int argc, char *argv[])
 {

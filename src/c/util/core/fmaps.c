@@ -8,8 +8,11 @@
 
 #include "../../include/strutil.h"
 
-#define DIE(ERRMSG) { fputs("fmaps: "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(ERRMSG)                           \
+    {                                         \
+        fputs("fmaps: " ERRMSG "\n", stderr); \
+        exit(EXIT_FAILURE);                   \
+    }
 
 int main(int argc, char *argv[])
 {
@@ -27,17 +30,18 @@ int main(int argc, char *argv[])
                 end = optarg;
                 break;
             case 'h':
-                puts("Usage: fmaps [OPTION]... [MAPPING]...\n"
-                     "Map standard input according to the given mappings. A MAPPING is in the form [KEY][SEP][VAL].\n"
-                     "\n"
-                     "If -d, -e or -s are not given, read the respective environment variables DEF, END and SEP.\n"
-                     "\n"
-                     "  -d DEF    set the default output to DEF\n"
-                     "  -e END    set the end-of-line string to END. default is \\n\n"
-                     "  -h        display this help and exit\n"
-                     "  -s SEP    set the mapping separator to SEP. default is =\n"
-                     "  -z        line delimiter is NUL, not newline\n"
-                     "  -0        line delimiter is NUL, not newline");
+                puts(
+                    "Usage: fmaps [OPTION]... [MAPPING]...\n"
+                    "Map standard input according to the given mappings. A MAPPING is in the form [KEY][SEP][VAL].\n"
+                    "\n"
+                    "If -d, -e or -s are not given, read the respective environment variables DEF, END and SEP.\n"
+                    "\n"
+                    "  -d DEF    set the default output to DEF\n"
+                    "  -e END    set the end-of-line string to END. default is \\n\n"
+                    "  -h        display this help and exit\n"
+                    "  -s SEP    set the mapping separator to SEP. default is =\n"
+                    "  -z        line delimiter is NUL, not newline\n"
+                    "  -0        line delimiter is NUL, not newline");
                 exit(EXIT_SUCCESS);
                 break;
             case 's':
@@ -91,7 +95,7 @@ int main(int argc, char *argv[])
             printf("%s%s", line, end);
         else
             printf("%s%s", def, end);
-newline: ;
+newline:;
     }
 
     return 0;

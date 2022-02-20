@@ -4,8 +4,11 @@
 #include "../../include/stdutil.h"
 
 #define EXECNAME "putsn"
-#define DIE(ERRMSG) { fputs(EXECNAME": "ERRMSG"\n", stderr); \
-                      exit(EXIT_FAILURE); }
+#define DIE(ERRMSG)                               \
+    {                                             \
+        fputs(EXECNAME ": " ERRMSG "\n", stderr); \
+        exit(EXIT_FAILURE);                       \
+    }
 
 int main(int argc, char *argv[])
 {
@@ -17,9 +20,9 @@ int main(int argc, char *argv[])
     } else if (argc != 3)
         DIE("exactly 1 or 2 arguments are accepted");
 
-    for (i = 0, n = astrtoull(argv[2], EXECNAME": invalid number given\n");
-         i < n;
-         puts(argv[1]), i++);
+    for (i = 0, n = astrtoull(argv[2], EXECNAME ": invalid number given\n"); i < n;
+         puts(argv[1]), i++)
+        ;
 
     return 0;
 }

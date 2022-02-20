@@ -1,10 +1,10 @@
 #define _POSIX_C_SOURCE 200809L
 
-#include <stdio.h>
+#include <fcntl.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <unistd.h>
 
 /* path is modified in the process, but restored to original */
