@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
         DIE("exactly 1 or 2 arguments are accepted");
 
     for (i = 0, n = astrtoull(argv[2], EXECNAME ": invalid number given\n"); i < n;
-         puts(argv[1]), i++)
-        ;
+         puts(argv[1]), i++) {}
 
     return 0;
 }

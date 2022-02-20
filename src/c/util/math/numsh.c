@@ -334,8 +334,7 @@ double reduce_sum(int argc, double *argv, double *kwargv)
     int i;
     double sum = 0;
 
-    for (i = 0; i < argc; sum += argv[i++])
-        ;
+    for (i = 0; i < argc; sum += argv[i++]) {}
 
     return sum;
 }

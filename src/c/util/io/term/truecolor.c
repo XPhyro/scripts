@@ -31,8 +31,7 @@ int main(int argc, char *argv[])
         while ((nread = read(STDIN_FILENO, buf, BUFSIZE)))
             write(STDOUT_FILENO, buf, nread);
     } else
-        for (i = 4; i < argc; puts(argv[i++]))
-            ;
+        for (i = 4; i < argc; puts(argv[i++])) {}
 
     fputs("[0m", stdout);
 

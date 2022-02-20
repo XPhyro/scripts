@@ -36,8 +36,7 @@ int main(int argc, char *argv[])
     if (argc < 2) {
         checkfl(STDIN_FILENO, buf);
     } else
-        for (i = 1; i < argc; checkfl(argv[i++], buf))
-            ;
+        for (i = 1; i < argc; checkfl(argv[i++], buf)) {}
 
     return 0;
 }

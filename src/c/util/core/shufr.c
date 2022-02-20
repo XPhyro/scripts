@@ -145,8 +145,7 @@ int main(int argc, char *argv[])
     }
 
     ihist = malloc((nsbuf = nsame * 2) * sizeof(int));
-    for (i = 0; i < nsbuf; ihist[i++] = -1)
-        ;
+    for (i = 0; i < nsbuf; ihist[i++] = -1) {}
 
     for (;;) {
 newcycle:
@@ -160,10 +159,8 @@ newcycle:
         }
         for (i = 0; i < nsame; i++)
             PRINT(lines[ihist[i] = iarr[i]]);
-        for (i = nsame; i < nsbuf; ihist[i++] = -1)
-            ;
-        for (i = 0; i < nsame; ihist[i] = ihist[i + 1], i++)
-            ;
+        for (i = nsame; i < nsbuf; ihist[i++] = -1) {}
+        for (i = 0; i < nsame; ihist[i] = ihist[i + 1], i++) {}
     }
 
     return 0;
