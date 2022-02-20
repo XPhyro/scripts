@@ -7,6 +7,7 @@ flags = [
 
 SOURCE_EXTENSIONS = [
     ".c",
+    ".h",
 ]
 
 

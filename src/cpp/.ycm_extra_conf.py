@@ -6,6 +6,7 @@ flags = [
 
 SOURCE_EXTENSIONS = [
     ".cpp",
+    ".hpp",
 ]
 
 
