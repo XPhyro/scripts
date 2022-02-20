@@ -8,8 +8,8 @@ main() {
         find . -type f -not -path "*/.git/*" -printf "%P\n" \
             | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
                   --preview-window 'right,60%,wrap'
-    )" || exit 0
-    [ -n "$fl" ] && (cd -- "$(dirname -- "$fl")" && "$EDITOR" -- "$(basename "$fl")")
+    )" && [ -n "$fl" ] || exit 0
+    (cd -- "$(dirname -- "$fl")" && "$EDITOR" -- "$(basename "$fl")")
 }
 
 [ "$#" -eq 0 ] && while true; do
@@ -25,6 +25,8 @@ done
 
 while true; do
     for i; do
-        (cd "$i" && main) || exit 1
+        cd "$i" || exit 1
+        main
+        cd -
     done
 done
