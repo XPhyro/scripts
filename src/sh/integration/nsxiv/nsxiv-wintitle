@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+#
+# All modes:
+#   $1: resolved absolute path of the current file
+#   $2: current file number
+#   $3: total file number
+#
+# Image mode only:
+#   $4: image width
+#   $5: image height
+#   $6: current zoom
+
+exec 2>/dev/null
+
+filename="${1##*/}"
+
+if [ -n "$4" ]; then # image mode
+    printf "%s" "$filename [$2/$3] [$4x$5 $6%] - nsxiv"
+else
+    printf "%s" "$filename [$2/$3] - nsxiv"
+fi
