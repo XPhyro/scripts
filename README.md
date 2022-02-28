@@ -42,9 +42,6 @@ If you installed system-wide:
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
-- [cmath](src/c/util/math/cmath.c): A NumPy-like interface for the `math.h` C
-  standard header, enabling fast mathematical computations of an array of
-  numbers in the shell. See `cmath -h`.
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it
   is modified. This is especially useful if you are iteratively processing data
   using an interpreted or hot-compiled language. See `contexec -h`.
@@ -74,6 +71,9 @@ If you installed system-wide:
   the lock, the next notification is not logged. Then it unlocks itself
   automatically. Supports blacklisting: certain notifications can be blacklisted
   and logged to a different file.
+- [numsh](src/c/util/math/numsh.c): A NumPy-like interface for the `math.h` C
+  standard header, enabling fast mathematical computations of an array of
+  numbers in the shell. See `cmath -h`.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
