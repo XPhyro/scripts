@@ -8,6 +8,7 @@ eval "$(evalverbose)"
 }
 
 name="${1%.*}"
+name="${name##*/}"
 case "$format" in
     zip ) zip -r  "$name.zip"    "$@";;
     7z  ) 7z a    "$name.7z"     "$@";;
