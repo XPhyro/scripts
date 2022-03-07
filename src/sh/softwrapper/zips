@@ -9,6 +9,7 @@ eval "$(evalverbose)"
 
 name="${1%.*}"
 case "$format" in
-    zip ) zip -r "$name.zip" "$@";;
+    zip ) zip -r  "$name.zip"    "$@";;
+    7z  ) 7z a    "$name.7z"     "$@";;
     *   ) tar czf "$name.tar.gz" "$@";;
 esac
