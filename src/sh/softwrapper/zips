@@ -7,8 +7,7 @@ eval "$(evalverbose)"
     shift
 }
 
-name="${1%.*}"
-name="${name##*/}"
+name="$(printf "%s\0" "$1" | sed -z 's|/*$||;s|^.*/||')"
 case "$format" in
     zip ) zip -r  "$name.zip"    "$@";;
     7z  ) 7z a    "$name.7z"     "$@";;
