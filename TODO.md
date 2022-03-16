@@ -15,6 +15,7 @@
 - Finish `registernotif`.
 - `loginfo`, `logwarn` and `logerr`; similar to `registernotif`.
 - `logTYPEnotif`: wrapper for `logTYPE "$@"; registernotif "$@"`.
+- Gesture-like daemon for built-in mixer states via `headsetcontrol`.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
