@@ -20,6 +20,8 @@
 - `loginfo`, `logwarn` and `logerr`; similar to `registernotif`.
 - `logTYPEnotif`: wrapper for `logTYPE "$@"; registernotif "$@"`.
 - Gesture-like daemon for built-in mixer states via `headsetcontrol`.
+- Write an `xsetwacom` wrapper. See
+  [this](https://wiki.archlinux.org/title/wacom_tablet#Configuration).
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
