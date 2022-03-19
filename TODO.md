@@ -9,6 +9,10 @@
 ## Bugs
 - `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
 
+## Features
+- Add a logging option in `tglapp` to log the start/stop times of applications
+  (keycodes?).
+
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
   client.
