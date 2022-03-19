@@ -26,8 +26,7 @@ eval "
         -e 'keycode 9 = Caps_Lock' \
         -e 'keycode 105 = Hyper_R' \
         $(
-            printf "%s\n" "$km" | END= fmaps \
-                gb="-e 'keycode 135 = Menu'" \
+            printf "%s\n" "$km" | END= DEF="-e 'keycode 135 = Menu'" fmaps \
                 tr="-e 'keycode 135 = ISO_Level3_Shift'"
         )
 "
