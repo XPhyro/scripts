@@ -30,6 +30,8 @@ Options:
        Print help message and exit.
    -k KEYCODE, --keycode KEYCODE
        Use KEYCODE to identify the given command instead of using an auto-computed hash. KEYCODE cannot include /.
+   -L, --log
+       Log operation, current time and argv to \`getpath -f tglapplog\`. Output is obtained at the time of logging, currently set to \"$(getpath -f tglapplog)\".
    -l, --list STYLE
        List all applications started with $execname. STYLE can be one of: compact, normal. compact is recommended for scripting/grepping. -l uses the normal STYLE. If -a is also given, -c is implied. If -c is given or implied, listing will be done after cleaning.
    -Q, --quote
@@ -81,7 +83,7 @@ assertarg() {
 }
 
 unsetvars() {
-    unset actual willclean forcestate keycode liststyle quote quiet recursive sudo status verbose
+    unset actual willclean forcestate keycode willlog liststyle quote quiet recursive sudo status verbose
 }
 
 parseargs() {
@@ -99,6 +101,7 @@ parseargs() {
                         f) parseargs --force-state;;
                         h) parseargs --help;;
                         k) shift; parseargs --keycode "$1";;
+                        L) parseargs --log;;
                         l) parseargs --list normal;;
                         Q) parseargs --quote;;
                         q) parseargs --quiet;;
@@ -128,6 +131,7 @@ parseargs() {
                         keycode="${opt#*=}"
                         assertarg "--keycode" "KEYCODE" "$keycode"
                         ;;
+                    log            ) willlog=1;;
                     list           ) shift; assertarg "--list" "STYLE" "$1"; liststyle="$1";;
                     list=*         )
                         liststyle="${opt#*=}"
@@ -235,6 +239,19 @@ $(printf "%s" "$signals" | head -c -1)
 EOF2
     fi
 
+    if [ "$willlog" = 1 ]; then
+        logcmd() {
+            printf "%s\n%s\n%s\n\0" \
+                "$1" \
+                "$(date --iso-8601=seconds)" \
+                "$argv" >> "$(getpath -f tglapplog)"
+        }
+    else
+        logcmd() {
+            :
+        }
+    fi
+
     [ -n "$liststyle" ] && [ "$actual" = 1 ] && willclean=1
 
     case "${#quiet}" in
@@ -264,6 +281,8 @@ runcmd() {
         eval "( $cmd ) < '$stdinfl' $quiet &" 1> "$keydir/stdout" 2> "$keydir/stderr"
     fi
 
+    logcmd "runcmd"
+
     printf "%s\n" "$!" > "$keydir/pid"
     printf "%s\n" "$$" > "$keydir/selfpid"
     printf "%s\n" "$cmd" > "$keydir/cmd"
@@ -281,6 +300,8 @@ stopcmd() {
     {   printf "%s\n" "$pid"
         [ "$recursive" = 1 ] && getchildren "$pid"
     } | sponge | xargs -d '\n' -rn 1 $sudo kill $killargs -- 2> /dev/null
+
+    logcmd "stopcmd"
 
     kill -s 0 "$pid" 2> /dev/null && {
         logwarn "Signals sent but process is still alive, not removing key directory."
@@ -368,6 +389,7 @@ main() {
                 runcmd
                 loginfo "Process started."
                 wait
+                logcmd "exit"
             fi
         else
             loginfo "Process is dead."
@@ -379,12 +401,14 @@ main() {
                     runcmd
                     loginfo "Process started."
                     wait
+                    logcmd "exit"
                 }
             elif [ "$state" = "on" ]; then
                 loginfo "Starting process."
                 runcmd
                 loginfo "Process started."
                 wait
+                logcmd "exit"
             fi
         fi
     else
@@ -394,6 +418,7 @@ main() {
             runcmd
             loginfo "Started process."
             wait
+            logcmd "exit"
         elif [ "$forcestate" = "1" ]; then
             loginfo "Starting process."
             runcmd

@@ -10,8 +10,8 @@
 - `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
 
 ## Features
-- Add a logging option in `tglapp` to log the start/stop times of applications
-  (keycodes?).
+- Add the ability to have default arguments via environment variables in
+  `tglapp`.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -22,6 +22,9 @@
 - Gesture-like daemon for built-in mixer states via `headsetcontrol`.
 - Write an `xsetwacom` wrapper. See
   [this](https://wiki.archlinux.org/title/wacom_tablet#Configuration).
+- Write a C program that takes in argv through argv and parsing configuration
+  through stdin and outputs shell `eval`able code, then replace all applicable
+  existing argument parsing in shell scripts with this program.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
