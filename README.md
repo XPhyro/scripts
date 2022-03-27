@@ -106,9 +106,8 @@ executed and all executed commands are printed to stderr.
 - None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU extensions are used (for instance, `sed -i` or
   `strcasestr`).
-- All scripts were written with only Linux in mind. Although they will often be
-  compatible with all Unix-like and Unix-derived systems, they might not always
-  be portable to non-Linux systems.
+- Some scripts were written with only Linux in mind, although they may be
+  compatible with other Unixes and Unix-likes.
 
 ## Related
 - You can find my gpup management scripts
