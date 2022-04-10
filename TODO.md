@@ -25,6 +25,8 @@
 - Write a C program that takes in argv through argv and parsing configuration
   through stdin and outputs shell `eval`able code, then replace all applicable
   existing argument parsing in shell scripts with this program.
+- Write a script that uses `mpv` to show animated/video wallpapers. Integrate
+  this script in `wallpaper`.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
