@@ -1,3 +1,3 @@
 #!/usr/bin/env -S execlineb -s0
 
-youtube-dl --add-metadata --mark-watched --geo-bypass --retries 25 --fragment-retries 25 --download-archive ~/.config/scripts/youtube-dl-download-archive -o %(uploader)s_%(upload_date)s_%(id)s_%(title)s_%(timestamp)s.%(ext)s --prefer-free-formats -i $@
+youtube-dl --add-metadata --mark-watched --geo-bypass --retries 25 --fragment-retries 25 --download-archive ~/.config/scripts/youtube-dl-download-archive -o %(uploader)s_%(upload_date)s_%(id)s_%(title)s_%(timestamp)s.%(ext)s --prefer-free-formats --no-part -i $@
