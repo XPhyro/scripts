@@ -157,6 +157,7 @@
 - In `fmaps`, implement options similar to that of `afgrep`'s `-aexbi`.
   - **Maybe** make these options specific to each given mapping? If so, also
     have the ability to globally define these options.
+- Maybe merge `_@` and `_g`?
 
 ## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
