@@ -29,16 +29,16 @@ int main(const int argc, const char* argv[])
     } catch (const std::out_of_range& e) {
         std::cout << EXECNAME ": incorrect color given. color must be one of: ";
 
-        std::vector<std::string> keys;
-        keys.reserve(colors.size());
-        for (const auto& [key, val] : colors)
-            keys.push_back(key);
+        std::vector<std::string> colorNames;
+        colorNames.reserve(colors.size());
+        for (const auto& [colorName, color] : colors)
+            colorNames.push_back(colorName);
 
-        std::sort(keys.begin(), keys.end());
+        std::sort(colorNames.begin(), colorNames.end());
 
-        for (auto it = keys.begin(); it < keys.end() - 1; it++)
+        for (auto it = colorNames.begin(); it < colorNames.end() - 1; it++)
             std::cout << *it << ", ";
-        std::cout << keys.back() << '.' << std::endl;
+        std::cout << colorNames.back() << '.' << std::endl;
 
         return 1;
     }
