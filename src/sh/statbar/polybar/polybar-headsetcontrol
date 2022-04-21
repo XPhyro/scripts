@@ -14,14 +14,14 @@ eval "$(
 
 printf "🎧 🔋 %s 🎮 %s%% 🎤 %s%%" \
     "$(
-        if [ "$Battery" -ne "-1" ]; then
+        if [ "$Battery" != "Charging" ] && [ "$Battery" != "-1" ]; then
             printf "scale = 15; (%s - 7) * 1.075268817\n" "$Battery" \
                 | bc \
                 | cut -d'.' -f1 \
                 | tr -d '\n'
             printf "%%"
         else
-            printf "Charging $Battery"
+            printf "Charging"
         fi
     )" \
     "$(
