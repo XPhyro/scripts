@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+set -e
+
+eval "$(
+    headsetcontrol -b -m 2> /dev/null \
+        | tail -n 2 \
+        | tr -d ' -' \
+        | tr ':' '=' \
+        | tr -d '%'
+)" && [ -n "$Battery" ] && [ -n "$ChatMix" ]
+
+printf "🎧 🔋 %s 🎮 %s%% 🎤 %s%%" \
+    "$(
+        if [ "$Battery" -ne "-1" ]; then
+            printf "scale = 15; (%s - 7) * 1.075268817\n" "$Battery" \
+                | bc \
+                | cut -d'.' -f1 \
+                | tr -d '\n'
+            printf "%%"
+        else
+            printf "Charging $Battery"
+        fi
+    )" \
+    "$(
+        printf "scale = 15; (128 - %s) * 0.78125\n" "$ChatMix" \
+            | bc \
+            | cut -d'.' -f1
+    )" \
+    "$(
+        printf "scale = 15; %s * 0.78125\n" "$(tglsidetone)" \
+            | bc \
+            | cut -d'.' -f1
+    )"
