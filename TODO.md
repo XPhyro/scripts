@@ -158,6 +158,11 @@
   - **Maybe** make these options specific to each given mapping? If so, also
     have the ability to globally define these options.
 - Maybe merge `_@` and `_g`?
+- In `polybar-headsetcontrol`, keep track of the last known battery percentage.
+  If battery is charging, show that it is charging, but also estimate a battery
+  percentage.
+- In `polybar-headsetcontrol`, make the battery icon's fill follow the
+  percentage.
 
 ## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
