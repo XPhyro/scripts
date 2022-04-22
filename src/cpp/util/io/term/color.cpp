@@ -15,7 +15,7 @@ const std::unordered_map<std::string, std::string> colors = {
     { "lpurple", "\x1b[1;35m" }, { "lcyan", "\x1b[1;36m" },  { "white", "\x1b[1;37m" },
 };
 
-const std::string clearcolor = "\x1b[0m";
+const std::string clear_color = "\x1b[0m";
 
 int main(const int argc, const char* argv[])
 {
@@ -29,16 +29,16 @@ int main(const int argc, const char* argv[])
     } catch (const std::out_of_range& e) {
         std::cout << EXECNAME ": incorrect color given. color must be one of: ";
 
-        std::vector<std::string> colorNames;
-        colorNames.reserve(colors.size());
+        std::vector<std::string> color_names;
+        color_names.reserve(colors.size());
         for (const auto& [colorName, color] : colors)
-            colorNames.push_back(colorName);
+            color_names.push_back(colorName);
 
-        std::sort(colorNames.begin(), colorNames.end());
+        std::sort(color_names.begin(), color_names.end());
 
-        for (auto it = colorNames.begin(); it < colorNames.end() - 1; it++)
+        for (auto it = color_names.begin(); it < color_names.end() - 1; it++)
             std::cout << *it << ", ";
-        std::cout << colorNames.back() << '.' << std::endl;
+        std::cout << color_names.back() << '.' << std::endl;
 
         return 1;
     }
@@ -49,7 +49,7 @@ int main(const int argc, const char* argv[])
         for (auto const arg : std::views::counted(argv + 2, argc - 2))
             std::cout << arg << '\n';
 
-    std::cout << clearcolor;
+    std::cout << clear_color;
 
     return 0;
 }
