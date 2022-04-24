@@ -7,5 +7,5 @@ if [ "$#" -eq 0 ]; then
 elif [ -e "$1" ]; then
     previewtext "$@" | less -R
 else
-    eval "$*" | less -R
+    unbuffer "$@" | less -R
 fi
