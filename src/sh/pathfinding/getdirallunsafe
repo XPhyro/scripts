@@ -4,8 +4,8 @@
 eval "$(evalverbose)"
 
 for i; do
-    loc="$(getpath -du -- "$i")" || {
-        loc="$(getpath -fu -- "$i")" || continue
+    loc="$(getpath -du -- "$i" 2> /dev/null)" || {
+        loc="$(getpath -fu -- "$i" 2> /dev/null)" || continue
         loc="${loc%/*}"
     }
     printf "%s\n" "$loc"
