@@ -1,10 +1,7 @@
 #!/usr/bin/env sh
 
-execifhas() {
-    cmd="$1"
-    shift
-    command -v -- "$cmd" && exec "$cmd" "$@"
-}
+printf "%s\n" yt-dlp youtube-dl | while IFS= read -r i; do
+    command -v -- "$i" && exec "$i" "$@"
+done
 
-execifhas yt-dlp "$@"
-execifhas youtube-dl "$@"
+exit 1
