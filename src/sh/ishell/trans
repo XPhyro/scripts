@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+set -e
+
+from="$1"
+to="$2"
+shift 2
+
+[ "$#" -ne 0 ]
+
+got -o -f "$from" -t "$to" -- "$*"
