@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+headsetcontrol -c > /dev/null 2>&1 && date +%s >> "$(getpath -f -- headsetlog)"
