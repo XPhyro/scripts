@@ -27,7 +27,6 @@
   existing argument parsing in shell scripts with this program.
 - Write a script that uses `mpv` to show animated/video wallpapers. Integrate
   this script in `wallpaper`.
-- Create alias scripts for `getpath -f` and `getpath -d`: `getfl` and `getdir`.
 
 ## Other
 - Add automatic unit tests into [.make](src/.make) (or as a separate
