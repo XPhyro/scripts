@@ -5,6 +5,9 @@
   problems if the scripts are run with elevated permissions. Warn the user and,
   for programs local to this repository, always install the `eval`ed programs as
   root to prevent tinkering.
+- Do not `eval` the output of `headsetcontrol` in `polybar-headsetcontrol` in
+  case the interface changes.
+  - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
 
 ## Bugs
 - `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
