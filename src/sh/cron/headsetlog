@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+set -e
+exec 2> /dev/null
+
 eval "$(evalverbose)"
 
-headsetcontrol -c > /dev/null 2>&1 && date +%s >> "$(getpath -f -- headsetlog)"
+battery="$(headsetcontrol -cb)"
+printf "%s;%s\n" "$(date +%s)" "$battery" >> "$(getpath -f -- headsetlog)"
