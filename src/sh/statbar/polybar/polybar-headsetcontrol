@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
-
 set -e
+exec 2> /dev/null
+
+eval "$(evalverbose)"
 
 eval "$(
     headsetcontrol -b -m 2> /dev/null \
