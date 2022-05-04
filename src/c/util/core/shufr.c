@@ -1,3 +1,5 @@
+/* This program is not suitable for cryptographic use. */
+
 #define _POSIX_C_SOURCE 200809L
 
 #include <memory.h>
@@ -61,6 +63,8 @@ int main(int argc, char *argv[])
                      "Repeat a random permutation of the input lines to standard output.\n"
                      "\n"
                      "With no FILE, read standard input.\n"
+                     "\n"
+                     "This program is not suitable for cryptographic use.\n"
                      "\n"
                      "  -h        display this help and exit\n"
                      "  -l COUNT  output at most COUNT lines\n"
