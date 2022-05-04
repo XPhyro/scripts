@@ -18,7 +18,7 @@
     ASTRTOGENPOST(TYPE, FUNC)
 
 #define ASTRTOGENNOBASE(TYPE, FUNC) ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr);)
-#define ASTRTOGENBASE(TYPE, FUNC) ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr, 10);)
+#define ASTRTOGENBASE(TYPE, FUNC) ASTROGEN(TYPE, FUNC, n = FUNC(s, &endptr, 0);)
 
 #define ASTRTOGENPOST(TYPE, FUNC) \
     if (errno) {                  \
@@ -42,7 +42,7 @@ unsigned short astrtohu(char *s, const char *const err)
 
     olderrno = errno;
     errno = 0;
-    n = strtoul(s, &endptr, 10);
+    n = strtoul(s, &endptr, 0);
 
     if (errno) {
         perror("strtoul");
