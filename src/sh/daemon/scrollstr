@@ -8,7 +8,7 @@ scrolloutput() {
     IFS= read -r str < "$fifo"
 
     i=1
-    wl="$(printf "%s\n" "$str" | tr -d '\n' | wc -c)"
+    wl="$(printf "%s\n" "$str" | tr -d '\n' | wc -m)"
 
     while [ -p "$fifo" ]; do
         printf "%s%s%s\n" "$str" "$sep" "$(printf "%s\n" "$str" | head -c "$((i - 1))")" \
