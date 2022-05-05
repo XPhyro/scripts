@@ -7,7 +7,19 @@ char *strend(const char *s)
 {
     if (!s)
         return NULL;
+
     for (; *s; s++) {}
+    return (char *)s;
+}
+
+char *strnend(const char *s, size_t n)
+{
+    size_t i;
+
+    if (!s)
+        return NULL;
+
+    for (i = 0; i < n && *s; i++, s++) {}
     return (char *)s;
 }
 
@@ -229,6 +241,39 @@ bool strisfilter(const char *s, int (*func)(int))
 
     for (; (c = *s); s++)
         if (!func(c))
+            return false;
+
+    return true;
+}
+
+bool strnisfilter(const char *s, int (*func)(int), size_t n)
+{
+    size_t i;
+
+    for (i = 0; i < n; i++)
+        if (!func(s[i]))
+            return false;
+
+    return true;
+}
+
+bool intisfilter(const int *s, int (*func)(int))
+{
+    int c;
+
+    for (; (c = *s); s++)
+        if (!func(c))
+            return false;
+
+    return true;
+}
+
+bool intnisfilter(const int *s, int (*func)(int), size_t n)
+{
+    size_t i;
+
+    for (i = 0; i < n; i++)
+        if (!func(s[i]))
             return false;
 
     return true;
