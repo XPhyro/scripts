@@ -1,1 +1,0 @@
-#!/usr/bin/env -S python3 -c "import sys, termios; termios.tcflush(sys.stdin, termios.TCIOFLUSH)"
