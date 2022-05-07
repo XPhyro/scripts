@@ -22,7 +22,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "../../include/strutil.h"
+#include <strutil.h>
 
 #ifndef S_ISVTX
 #define S_ISVTX 01000

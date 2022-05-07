@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../../include/strutil.h"
+#include <strutil.h>
 
 #define NUSERSINIT 10
 

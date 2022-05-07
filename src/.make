@@ -37,7 +37,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            '"$csa"' gcc -O'"${o:-3}"' -std=c99 -pedantic -lm -Wall "$1" -o "$prefix/$out" \
+            '"$csa"' gcc -O'"${o:-3}"' -std=c99 -pedantic -Iinclude -lm -Wall "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
         
@@ -53,7 +53,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            g++ -O'"${o:-3}"' -std=c++23 -Wall "$1" -o "$prefix/$out" \
+            g++ -O'"${o:-3}"' -std=c++23 -Iinclude -Wall "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
 

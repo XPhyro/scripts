@@ -1,4 +1,4 @@
-#include "../../include/sysutil.h"
+#include <sysutil.h>
 
 int main(int argc, char *argv[])
 {

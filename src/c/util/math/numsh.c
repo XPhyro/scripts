@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../../include/stdutil.h"
-#include "../../include/strutil.h"
+#include <stdutil.h>
+#include <strutil.h>
 
 #define EXECNAME "numsh"
 

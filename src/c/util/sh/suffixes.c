@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "../../include/strutil.h"
+#include <strutil.h>
 
 int main(int argc, char *argv[])
 {

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../../include/stdutil.h"
+#include <stdutil.h>
 
 #define EXECNAME "sumbase"
 

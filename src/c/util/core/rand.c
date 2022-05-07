@@ -5,7 +5,7 @@
 #include <sys/random.h>
 #include <unistd.h>
 
-#include "../../include/stdutil.h"
+#include <stdutil.h>
 
 #define EXECNAME "rand"
 #define DIE(ERRMSG)                               \

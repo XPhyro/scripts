@@ -9,7 +9,7 @@
 #include <sys/param.h>
 #include <unistd.h>
 
-#include "../include/sysutil.h"
+#include <sysutil.h>
 
 #define EXECNAME "getpath"
 
