@@ -41,7 +41,9 @@ void expand(const char *path)
     }
     s[len = j] = '\0';
 
-    if (s[0] == '~') {
+    if (s[0] != '~') {
+        fputs(s, stdout);
+    } else {
         if (len == 1)
             fputs(home, stdout);
         else if (s[1] == '/') {
@@ -66,8 +68,6 @@ void expand(const char *path)
                 fputs(s, stdout);
             }
         }
-    } else {
-        fputs(s, stdout);
     }
 
     putchar(delim);
