@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <stdutil.h>
+
 #define DIE(...)                       \
     {                                  \
         fputs("expandpath: ", stderr); \
@@ -27,7 +29,7 @@ void expand(const char *path)
     struct passwd *pw = NULL;
 
     len = strlen(path);
-    s = malloc((len + 1) * sizeof(char));
+    s = amalloc((len + 1) * sizeof(char));
 
     for (i = 0, j = 0; i < len; i++) {
         if (path[i] == '/') {

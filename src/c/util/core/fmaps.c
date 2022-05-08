@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <stdutil.h>
 #include <strutil.h>
 
 #define DIE(ERRMSG)                           \
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
         sep = "=";
     offset = strlen(sep);
 
-    maplens = malloc(argc * sizeof(size_t));
+    maplens = amalloc(argc * sizeof(size_t));
     for (i = 0; i < argc; i++) {
         s = strstr(argv[i], sep);
         if (!s)

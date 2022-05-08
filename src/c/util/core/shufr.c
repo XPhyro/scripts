@@ -18,12 +18,12 @@
     while ((len = getdelim(&line, &size, delim, STREAM)) != -1) { \
         if (len && line[len - 1] != delim)                        \
             len++;                                                \
-        tmpstr = malloc(len * sizeof(char));                      \
+        tmpstr = amalloc(len * sizeof(char));                     \
         memcpy(tmpstr, line, len);                                \
         tmpstr[len - 1] = '\0';                                   \
         lines[i++] = tmpstr;                                      \
         if (i == n)                                               \
-            lines = realloc(lines, (n *= 2) * sizeof(char *));    \
+            lines = arealloc(lines, (n *= 2) * sizeof(char *));   \
     }
 
 #define PRINT(LINE)                         \
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     bool optlimit = false;
     int n = 100, i, j, r, *ihist, *iarr;
     unsigned int lprint = 0, nprint = 0, nsame = 2, nsbuf;
-    char delim = '\n', *line = NULL, *tmpstr = NULL, **lines = malloc(n * sizeof(char *));
+    char delim = '\n', *line = NULL, *tmpstr = NULL, **lines = amalloc(n * sizeof(char *));
     size_t size;
     ssize_t len;
     FILE *file;
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     if (n == 0)
         die("no lines to repeat\n");
 
-    lines = realloc(lines, n * sizeof(char *));
+    lines = arealloc(lines, n * sizeof(char *));
 
     {
         long tmp;
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
             PRINT(lines[rand() % n]);
     }
 
-    iarr = malloc(nsame * sizeof(int));
+    iarr = amalloc(nsame * sizeof(int));
     if (nsame == n) {
         for (;;) {
             for (i = 0; i < n; i++)
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    ihist = malloc((nsbuf = nsame * 2) * sizeof(int));
+    ihist = amalloc((nsbuf = nsame * 2) * sizeof(int));
     for (i = 0; i < nsbuf; ihist[i++] = -1) {}
 
     for (;;) {

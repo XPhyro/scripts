@@ -9,6 +9,7 @@
 #include <sys/param.h>
 #include <unistd.h>
 
+#include <stdutil.h>
 #include <sysutil.h>
 
 #define EXECNAME "getpath"
@@ -137,7 +138,7 @@ int main(int argc, char *argv[])
     if (!((prefix = getenv("GETPATH_CONFIG_HOME")) || (prefix = getenv("XDG_CONFIG_HOME")))) {
         if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             DIE("could not determine config directory\n");
-        if (!(prefix = malloc(size = ((strlen(s) + 9) * sizeof(char)))))
+        if (!(prefix = amalloc(size = ((strlen(s) + 9) * sizeof(char)))))
             DIE("out of memory\n");
         snprintf(prefix, size, "%s/.config", s);
     }
@@ -152,7 +153,7 @@ int main(int argc, char *argv[])
             DIE("keycode is empty\n");
 
         if ((st = strlen(argv[i])) > kcmargin &&
-            !(path = realloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char))))
+            !(path = arealloc(path, (size = (contmargin + (kcmargin = st) + 1)) * sizeof(char))))
             DIE("out of memory\n");
 
         for (dirturn = false;; dirturn = !dirturn) {

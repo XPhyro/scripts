@@ -1,3 +1,6 @@
+#ifndef _HEADER_STDUTIL
+#define _HEADER_STDUTIL
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,3 +65,42 @@ ASTRTOGENBASE(unsigned long, strtoul)
 ASTRTOGENBASE(unsigned long long, strtoull)
 ASTRTOGENNOBASE(double, strtod)
 ASTRTOGENNOBASE(long double, strtold)
+
+void *amalloc(size_t size)
+{
+    int olderrno;
+    void *ptr;
+
+    olderrno = errno;
+    errno = 0;
+    ptr = malloc(size);
+
+    if (!ptr || errno) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    errno = olderrno;
+
+    return ptr;
+}
+
+void *arealloc(void *ptr, size_t size)
+{
+    int olderrno;
+
+    olderrno = errno;
+    errno = 0;
+    ptr = realloc(ptr, size);
+
+    if (!ptr || errno) {
+        perror("realloc");
+        exit(EXIT_FAILURE);
+    }
+
+    errno = olderrno;
+
+    return ptr;
+}
+
+#endif /* ifndef _HEADER_STDUTIL */

@@ -1,3 +1,6 @@
+#ifndef _HEADER_STRUTIL
+#define _HEADER_STRUTIL
+
 #include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -278,3 +281,5 @@ bool intnisfilter(const int *s, int (*func)(int), size_t n)
 
     return true;
 }
+
+#endif /* _HEADER_STRUTIL */

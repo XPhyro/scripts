@@ -149,8 +149,7 @@ funcavail:
                 exit(EXIT_SUCCESS);
                 break;
             case 'o':
-                if (!(funckwargv = realloc(funckwargv, ++funckwargc * sizeof(double))))
-                    die("could not allocate memory");
+                funckwargv = arealloc(funckwargv, ++funckwargc * sizeof(double));
                 funckwargv[funckwargc - 1] = astrtod(optarg, EXECNAME ": invalid number given\n");
                 break;
             default:
@@ -173,12 +172,12 @@ funcavail:
             if (line[len - 1] == '\n')
                 line[len - 1] = '\0';
             if (++i == n)
-                funcargv = realloc(funcargv, (n *= 2) * sizeof(double));
+                funcargv = arealloc(funcargv, (n *= 2) * sizeof(double));
             funcargv[i - 1] = astrtod(line, EXECNAME ": invalid number given\n");
         }
-        funcargv = realloc(funcargv, (funcargc = i) * sizeof(double));
+        funcargv = arealloc(funcargv, (funcargc = i) * sizeof(double));
     } else {
-        funcargv = malloc(sizeof(double) * argc);
+        funcargv = amalloc(sizeof(double) * argc);
         for (i = 0; i < argc; i++)
             funcargv[i] = astrtod(argv[i], EXECNAME ": invalid number given\n");
         funcargc = argc;

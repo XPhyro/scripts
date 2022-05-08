@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <stdutil.h>
 #include <strutil.h>
 
 #define NUSERSINIT 10
@@ -35,7 +36,7 @@ void unexpand(const char *path)
         goto endline;
 
     if (len > slen)
-        s = realloc(s, (len + 1) * sizeof(char));
+        s = arealloc(s, (len + 1) * sizeof(char));
 
     for (i = 0, j = 0; i < len; i++) {
         if (path[i] == '/') {
@@ -108,28 +109,28 @@ int main(int argc, char *argv[])
     argv += optind;
     argc -= optind;
 
-    users = malloc(NUSERSINIT * sizeof(user));
+    users = amalloc(NUSERSINIT * sizeof(user));
 
     i = 0;
     while ((pw = getpwent())) {
         if ((len = strlen(pw->pw_dir)) == 1 && *pw->pw_dir == '/')
             continue;
 
-        tmpstr = malloc(len * sizeof(char));
+        tmpstr = amalloc(len * sizeof(char));
         memcpy(tmpstr, pw->pw_dir, len);
         u.home = tmpstr;
         u.homelen = len;
 
-        tmpstr = malloc((len = strlen(pw->pw_name) + 1) * sizeof(char));
+        tmpstr = amalloc((len = strlen(pw->pw_name) + 1) * sizeof(char));
         memcpy(tmpstr, pw->pw_name, len);
         u.name = tmpstr;
 
         users[i++] = u;
 
         if (i == nusers)
-            users = realloc(users, (nusers *= 2) * sizeof(user));
+            users = arealloc(users, (nusers *= 2) * sizeof(user));
     }
-    users = realloc(users, (nusers = i) * sizeof(user));
+    users = arealloc(users, (nusers = i) * sizeof(user));
 
     if (!argc) {
         while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
