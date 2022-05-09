@@ -4,6 +4,6 @@
 # $3: empty
 # $4: fully resolved path to the image file
 
-printf "%s  %s  %s\n" \
+printf "%s  %s\n" \
     "$(du -Hh -- "$4" | cut -f1)" \
     "$(basename -- "$4")"
