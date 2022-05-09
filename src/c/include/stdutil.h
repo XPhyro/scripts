@@ -103,4 +103,26 @@ void *arealloc(void *ptr, size_t size)
     return ptr;
 }
 
+void *acalloc(size_t nmemb, size_t size)
+{
+    int olderrno;
+    void *ptr;
+
+    if (!nmemb)
+        return NULL;
+
+    olderrno = errno;
+    errno = 0;
+    ptr = calloc(nmemb, size);
+
+    if (!ptr || errno) {
+        perror("calloc");
+        exit(EXIT_FAILURE);
+    }
+
+    errno = olderrno;
+
+    return ptr;
+}
+
 #endif /* ifndef _HEADER_STDUTIL */

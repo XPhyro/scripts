@@ -6,6 +6,19 @@
 #include <stddef.h>
 #include <string.h>
 
+#include <stdutil.h>
+
+inline void __attribute__((always_inline)) * mallocset(size_t size, int c, size_t n)
+{
+    void *ptr;
+
+    ptr = amalloc(size);
+    /* it is the user's responsibility to ensure n <= size */
+    memset(ptr, c, n);
+
+    return ptr;
+}
+
 char *strend(const char *s)
 {
     if (!s)
