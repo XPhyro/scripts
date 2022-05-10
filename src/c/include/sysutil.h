@@ -1,5 +1,5 @@
-#ifndef _HEADER_SYSUTIL
-#define _HEADER_SYSUTIL
+#ifndef _HEADER_SCRIPTS_SYSUTIL
+#define _HEADER_SCRIPTS_SYSUTIL
 
 #define _POSIX_C_SOURCE 200809L
 
@@ -44,4 +44,4 @@ void rmkdir(char *path, mode_t mode)
     mkdir(path, mode);
 }
 
-#endif /* ifndef _HEADER_SYSUTIL */
+#endif /* ifndef _HEADER_SCRIPTS_SYSUTIL */

@@ -1,5 +1,5 @@
-#ifndef _HEADER_STDUTIL
-#define _HEADER_STDUTIL
+#ifndef _HEADER_SCRIPTS_STDUTIL
+#define _HEADER_SCRIPTS_STDUTIL
 
 #include <errno.h>
 #include <stdio.h>
@@ -125,4 +125,4 @@ void *acalloc(size_t nmemb, size_t size)
     return ptr;
 }
 
-#endif /* ifndef _HEADER_STDUTIL */
+#endif /* ifndef _HEADER_SCRIPTS_STDUTIL */
