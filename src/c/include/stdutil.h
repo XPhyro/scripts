@@ -2,6 +2,7 @@
 #define _HEADER_SCRIPTS_STDUTIL
 
 #include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,34 +38,53 @@
     return n;                     \
     }
 
-unsigned short astrtohu(char *s, const char *const err)
-{
-    unsigned long n;
-    int olderrno;
-    char *endptr;
-
-    olderrno = errno;
-    errno = 0;
-    n = strtoul(s, &endptr, 0);
-
-    if (errno) {
-        perror("strtoul");
-        exit(EXIT_FAILURE);
-    }
-    if (*endptr || n > 255) {
-        fputs(err, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    errno = olderrno;
-    return (unsigned short)n;
-}
-
 ASTRTOGENBASE(long, strtol)
+ASTRTOGENBASE(long long, strtoll)
 ASTRTOGENBASE(unsigned long, strtoul)
 ASTRTOGENBASE(unsigned long long, strtoull)
+ASTRTOGENNOBASE(float, strtof)
 ASTRTOGENNOBASE(double, strtod)
 ASTRTOGENNOBASE(long double, strtold)
+
+#define ASTRTOLGENPRE(TYPE, SPECIFIER)                     \
+    TYPE astrto##SPECIFIER(char *s, const char *const err) \
+    {                                                      \
+        long n;                                            \
+        int olderrno;                                      \
+        char *endptr;                                      \
+                                                           \
+        olderrno = errno;                                  \
+        errno = 0;                                         \
+        n = strtol(s, &endptr, 0);                         \
+                                                           \
+        if (errno) {                                       \
+            perror("strtol");                              \
+            exit(EXIT_FAILURE);                            \
+        }                                                  \
+    if (*endptr ||
+#define ASTRTOLGENPOST(TYPE) \
+       )                     \
+    {                        \
+        fputs(err, stderr);  \
+        exit(EXIT_FAILURE);  \
+    }                        \
+                             \
+    errno = olderrno;        \
+    return (TYPE)n;          \
+    }
+
+#define ASTRTOLGEN(TYPE, SPECIFIER, LIMIT_MIN, LIMIT_MAX) \
+    ASTRTOLGENPRE(TYPE, SPECIFIER)                        \
+    (n < LIMIT_MIN || n > LIMIT_MAX) ASTRTOLGENPOST(TYPE)
+
+#define ASTRTOULGEN(TYPE, SPECIFIER, LIMIT) \
+    ASTRTOLGENPRE(TYPE, SPECIFIER)          \
+    (n > LIMIT) ASTRTOLGENPOST(TYPE)
+
+ASTRTOLGEN(char, c, CHAR_MIN, CHAR_MAX)
+ASTRTOLGEN(short, h, SHRT_MIN, SHRT_MAX)
+ASTRTOULGEN(unsigned char, cu, UCHAR_MAX)
+ASTRTOULGEN(unsigned short, hu, USHRT_MAX)
 
 void *amalloc(size_t size)
 {
