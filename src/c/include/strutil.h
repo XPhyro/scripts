@@ -5,18 +5,24 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include <stdutil.h>
 
-inline void __attribute__((always_inline)) * mallocset(size_t size, int c, size_t n)
+inline void __attribute__((always_inline)) * mallocset(size_t size, int c)
 {
-    void *ptr;
+    return memset(amalloc(size), c, size);
+}
 
-    ptr = amalloc(size);
+inline void __attribute__((always_inline)) * mallocsetn(size_t size, int c, size_t n)
+{
     /* it is the user's responsibility to ensure n <= size */
-    memset(ptr, c, n);
+    return memset(amalloc(size), c, n);
+}
 
-    return ptr;
+inline void __attribute__((always_inline)) * mallocsetn_s(size_t size, int c, size_t n)
+{
+    return memset(amalloc(size), c, MIN(size, n));
 }
 
 char *strend(const char *s)
