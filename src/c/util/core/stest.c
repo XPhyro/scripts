@@ -26,7 +26,7 @@
 
 #ifndef S_ISVTX
 #define S_ISVTX 01000
-#endif /* S_ISVTX */
+#endif /* ifndef S_ISVTX */
 
 #define LOG(...)    \
     if (optverbose) \
