@@ -23,12 +23,21 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "hn:s")) != -1) {
         switch (i) {
             case 'h':
-                puts("Usage: " EXECNAME " [OPTION]...\n"
-                     "Generate cryptographically secure 64-bit random numbers on Linux.\n"
-                     "\n"
-                     "  -h         display this help and exit\n"
-                     "  -n COUNT   count of random numbers to generate"
-                     "  -s         generate a signed number");
+                puts(
+                    "Usage: " EXECNAME " [OPTION]...\n"
+                    "Generate cryptographically secure 64-bit random numbers on Linux 3.17 or later.\n"
+                    "\n"
+                    "On Linux 3.19 or later, " EXECNAME
+                    " might not immediately react to SIGINT depending on CPU load.\n"
+                    "\n"
+                    "  -h         display this help and exit\n"
+                    "  -n COUNT   count of random numbers to generate\n"
+                    "  -s         generate a signed number\n"
+                    "\n"
+                    "Exit Codes\n"
+                    "   0         Succeeded\n"
+                    "   1         Interrupted during random number generation\n"
+                    "   2         An error occurred");
                 exit(EXIT_SUCCESS);
                 break;
             case 'n':
@@ -50,7 +59,11 @@ int main(int argc, char *argv[])
 #define PRINTRANDOM(SPECIFIER, TYPE)                \
     {                                               \
         for (i = 0; i < n; i++) {                   \
+            errno = 0;                              \
             getrandom(r, RSIZE, 0);                 \
+            if (errno) {                            \
+                exit(errno == EINTR ? 1 : 2);       \
+            }                                       \
             printf("%" SPECIFIER "\n", *(TYPE *)r); \
         }                                           \
     }
