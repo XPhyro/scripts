@@ -248,7 +248,6 @@
 - Use `inotifywait` in `waitfl`.
 - In `genpath` and `editpath`, use `\0` as the line and keycode/path separator.
 - Merge `repeat{line,null,str}` into `repeatstr`.
-- Use `calloc`.
 - Merge `*2*`: `char2dec`, `char2hex`, `char2oct`, `int2char`.
 - Merge `factorise`, `gcd` and `sumbase` into `numsh`.
 
