@@ -1,7 +1,9 @@
+#include <limits.h>
+#include <stdint.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-    const unsigned char data[] = { 0xff };
-    for (;; write(1, data, 1)) {}
+    const uint64_t data[] = { UINT64_MAX };
+    for (;; write(1, data, sizeof(data[0]))) {}
 }
