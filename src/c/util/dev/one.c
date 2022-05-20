@@ -1,9 +1,10 @@
 #include <limits.h>
-#include <stdint.h>
 #include <unistd.h>
+
+#include <strutil.h>
 
 int main(int argc, char *argv[])
 {
-    const uint64_t data[] = { UINT64_MAX };
-    for (;; write(1, data, sizeof(data[0]))) {}
+    const void *const data = mallocset(PIPE_BUF, UCHAR_MAX);
+    for (;; write(1, data, PIPE_BUF)) {}
 }
