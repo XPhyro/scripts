@@ -5,6 +5,6 @@
 
 int main(int argc, char *argv[])
 {
-    const void *const data = mallocset(PIPE_BUF, UCHAR_MAX);
+    const void *const data = amallocset(PIPE_BUF, UCHAR_MAX);
     for (;; write(1, data, PIPE_BUF)) {}
 }

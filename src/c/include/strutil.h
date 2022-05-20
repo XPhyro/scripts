@@ -9,18 +9,18 @@
 
 #include <stdutil.h>
 
-inline void __attribute__((always_inline)) * mallocset(size_t size, int c)
+inline void __attribute__((always_inline)) * amallocset(size_t size, int c)
 {
     return memset(amalloc(size), c, size);
 }
 
-inline void __attribute__((always_inline)) * mallocsetn(size_t size, int c, size_t n)
+inline void __attribute__((always_inline)) * amallocsetn(size_t size, int c, size_t n)
 {
     /* it is the user's responsibility to ensure n <= size */
     return memset(amalloc(size), c, n);
 }
 
-inline void __attribute__((always_inline)) * mallocsetn_s(size_t size, int c, size_t n)
+inline void __attribute__((always_inline)) * amallocsetn_s(size_t size, int c, size_t n)
 {
     return memset(amalloc(size), c, MIN(size, n));
 }
