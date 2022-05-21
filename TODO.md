@@ -169,6 +169,7 @@
   percentage.
 - In `polybar-headsetcontrol`, make the battery icon's fill follow the
   percentage.
+- In `stdutil.h`, min/max/minmax clamped versions add `astrto*` functions.
 
 ## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
@@ -224,6 +225,7 @@
 - Write a portable version of `rand` using `arc4random_buf`.
 - Write a wrapper script for `xargs` and `xins`: If arguments fit into a single
   invocation, use `xargs`; else, use `xins`.
+- Write a `zscroll` alternative in `C`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
