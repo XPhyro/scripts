@@ -18,6 +18,8 @@
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
+- In `scrolls`, add an option to add padding between the ending and beginning of
+  the scrolled text.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -225,7 +227,6 @@
 - Write a portable version of `rand` using `arc4random_buf`.
 - Write a wrapper script for `xargs` and `xins`: If arguments fit into a single
   invocation, use `xargs`; else, use `xins`.
-- Write a `zscroll` alternative in `C`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
