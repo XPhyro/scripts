@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 #define DEFAULTNSEC 500000000
     struct timespec delayreq = { .tv_sec = DEFAULTSEC, .tv_nsec = DEFAULTNSEC };
 
-    while ((i = getopt(argc, argv, "hl:S:s:")) != -1) {
+    while ((i = getopt(argc, argv, "hkl:S:s:")) != -1) {
         switch (i) {
             case 'h':
                 fputs(
