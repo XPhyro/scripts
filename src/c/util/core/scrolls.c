@@ -19,7 +19,8 @@
 
 int n, idx;
 #define DEFAULTTEXTLEN 50
-unsigned int opttextlen = DEFAULTTEXTLEN, textlen = DEFAULTTEXTLEN;
+#define DEFAULTTEXTSEP 10
+unsigned int opttextlen = DEFAULTTEXTLEN, textlen = DEFAULTTEXTLEN, opttextsep = DEFAULTTEXTSEP;
 bool optkeepidx = false;
 size_t linesize;
 ssize_t linelen;
@@ -44,10 +45,11 @@ void updates()
     textlen = MIN(opttextlen, linelen);
 
     if (linesize > oldlinesize)
-        doubleline = arealloc(doubleline, linesize * 2);
+        doubleline = arealloc(doubleline, linesize * 2 + opttextsep);
 
     strcpy(doubleline, line);
-    strcpy(doubleline + linelen, line);
+    memset(doubleline + linelen, ' ', opttextsep);
+    strcpy(doubleline + linelen + opttextsep, line);
 
     if (!optkeepidx)
         idx = 0;
@@ -63,7 +65,7 @@ int main(int argc, char *argv[])
 #define DEFAULTNSEC 500000000
     struct timespec delayreq = { .tv_sec = DEFAULTSEC, .tv_nsec = DEFAULTNSEC };
 
-    while ((i = getopt(argc, argv, "hkl:S:s:")) != -1) {
+    while ((i = getopt(argc, argv, "hkl:p:S:s:")) != -1) {
         switch (i) {
             case 'h':
                 fputs(
@@ -74,10 +76,12 @@ int main(int argc, char *argv[])
                     "  -k        try to keep current index when a new line is received\n"
                     "  -l LEN    clamp line length to LEN. default is " STRINGIFY(
                         DEFAULTTEXTLEN) "\n"
-                                        "  -S NSEC   nanoseconds to wait, can be combined with -s. NSEC is clamped to 999999999. default is " STRINGIFY(
-                                            DEFAULTNSEC) "\n"
-                                                         "  -s SEC    seconds to wait, can be combined with -S. default is " STRINGIFY(
-                                                             DEFAULTSEC) "\n",
+                                        "  -p LEN    add LEN spaces of padding after the text ending. default is " STRINGIFY(
+                                            DEFAULTTEXTSEP) "\n"
+                                                            "  -S NSEC   wait NSEC nanoseconds after each scroll iteration. can be combined with -s. NSEC is clamped to 999999999. default is " STRINGIFY(
+                                                                DEFAULTNSEC) "\n"
+                                                                             "  -s SEC    wait SEC seconds after each scroll iteration. can be combined with -S. default is " STRINGIFY(
+                                                                                 DEFAULTSEC) "\n",
                     stdout);
                 exit(EXIT_SUCCESS);
                 break;
@@ -86,6 +90,9 @@ int main(int argc, char *argv[])
                 break;
             case 'l':
                 opttextlen = astrtoul(optarg, "invalid number given\n");
+                break;
+            case 'p':
+                opttextsep = astrtoul(optarg, "invalid number given\n");
                 break;
             case 'S':
                 delayreq.tv_nsec = MAX(astrtoul(optarg, "invalid number given\n"), 999999999);
@@ -114,7 +121,7 @@ int main(int argc, char *argv[])
         doubleline[idx + textlen] = '\0';
         puts(doubleline + idx);
         doubleline[idx + textlen] = c;
-        idx = (idx + 1) % linelen;
+        idx = (idx + 1) % (linelen + opttextsep);
 
         nanosleep(&delayreq, NULL); /* ignore errors */
     }
