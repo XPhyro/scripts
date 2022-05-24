@@ -37,6 +37,7 @@ void updaten()
 void updates()
 {
     size_t oldlinesize;
+    char *s;
 
     oldlinesize = linesize;
     linelen = getdelim(&line, &linesize, delim, stdin);
@@ -47,9 +48,9 @@ void updates()
     if (linesize > oldlinesize)
         doubleline = arealloc(doubleline, linesize * 2 + opttextsep);
 
-    strcpy(doubleline, line);
-    memset(doubleline + linelen, ' ', opttextsep);
-    strcpy(doubleline + linelen + opttextsep, line);
+    strcpy(s = doubleline, line);
+    memset(s += linelen, ' ', opttextsep);
+    strcpy(s += opttextsep, line);
 
     if (!optkeepidx)
         idx = 0;
