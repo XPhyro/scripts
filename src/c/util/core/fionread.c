@@ -1,25 +1,18 @@
-/* Adapted from https://unix.stackexchange.com/a/498065/401367. */
-/* Licensed under CC BY-SA 4.0 */
-
-#include <poll.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
 #ifdef __sun
-#include <sys/filio.h>
-#endif
-#include <err.h>
+#include <sys/filio.h> /* need FIONREAD */
+#endif /* ifdef __sun */
 
 int main(int argc, char *argv[])
 {
-    int r;
-    struct pollfd pd = { 0, POLLIN };
+    int n;
 
-    if (poll(&pd, 1, -1) < 0)
-        err(1, "poll");
-    if (ioctl(0, FIONREAD, &r))
-        err(1, "ioctl(FIONREAD)");
-    printf("%d\n", r);
+    if (ioctl(0, FIONREAD, &n)) {
+        puts("0");
+        return 125;
+    }
+    printf("%d\n", n);
 
-    return r == 0;
+    return n == 0;
 }
