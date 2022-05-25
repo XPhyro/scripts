@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                 opttextsep = astrtoul(optarg, "invalid number given\n");
                 break;
             case 'S':
-                delayreq.tv_nsec = MAX(astrtoul(optarg, "invalid number given\n"), 999999999);
+                delayreq.tv_nsec = MIN(astrtoul(optarg, "invalid number given\n"), 999999999);
                 break;
             case 's':
                 delayreq.tv_sec = astrtoul(optarg, "invalid number given\n");
