@@ -116,6 +116,9 @@ int main(int argc, char *argv[])
     argv += optind;
     argc -= optind;
 
+    if (setvbuf(stdout, NULL, _IONBF, 0))
+        err(EXIT_FAILURE, "setvbuf");
+
     updaten(); /* initial FIONREAD compatibility check */
     updates();
     for (;;) {
