@@ -72,7 +72,11 @@ int main(int argc, char *argv[])
                 /* the following is a mess because clang-format does not know how to format it */
                 fputs(
                     "Usage: scrolls [OPTION]...\n"
-                    "Scroll the last line of stdin in stdout.\n"
+                    "Scroll the last line of stdin on stdout.\n"
+                    "\n"
+                    "When initialised, scrolls awaits the first line to start scrolling. "
+                    "After that, it checks for input on stdin. "
+                    "If any readable input is found, it suspends scrolling until the whole line is read.\n"
                     "\n"
                     "  -h        display this help and exit\n"
                     "  -k        try to keep current index when a new line is received\n"
