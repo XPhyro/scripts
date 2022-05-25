@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "hkl:p:S:s:")) != -1) {
         switch (i) {
             case 'h':
+                /* the following is a mess because clang-format does not know how to format it */
                 fputs(
                     "Usage: scrolls [OPTION]...\n"
                     "Scroll the last line of stdin in stdout.\n"
