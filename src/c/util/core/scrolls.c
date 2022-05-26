@@ -6,6 +6,7 @@
 #include <sys/filio.h> /* need FIONREAD */
 #endif /* ifdef __sun */
 #include <err.h>
+#include <libgen.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,13 +66,13 @@ int main(int argc, char *argv[])
 #define DEFAULTSEC 0
 #define DEFAULTNSEC 500000000
     struct timespec delayreq = { .tv_sec = DEFAULTSEC, .tv_nsec = DEFAULTNSEC };
+    char *execname = basename(argv[0]);
 
     while ((i = getopt(argc, argv, "hkl:p:S:s:")) != -1) {
         switch (i) {
             case 'h':
-                /* the following is a mess because clang-format does not know how to format it */
-                fputs(
-                    "Usage: scrolls [OPTION]...\n"
+                printf(
+                    "Usage: %s [OPTION]...\n"
                     "Scroll the last line of stdin on stdout.\n"
                     "\n"
                     "When initialised, scrolls awaits the first line to start scrolling. "
@@ -80,15 +81,12 @@ int main(int argc, char *argv[])
                     "\n"
                     "  -h        display this help and exit\n"
                     "  -k        try to keep current index when a new line is received\n"
-                    "  -l LEN    clamp line length to LEN. default is " STRINGIFY(
-                        DEFAULTTEXTLEN) "\n"
-                                        "  -p LEN    add LEN spaces of padding after the text ending. default is " STRINGIFY(
-                                            DEFAULTTEXTSEP) "\n"
-                                                            "  -S NSEC   wait NSEC nanoseconds after each scroll iteration. can be combined with -s. NSEC is clamped to 999999999. default is " STRINGIFY(
-                                                                DEFAULTNSEC) "\n"
-                                                                             "  -s SEC    wait SEC seconds after each scroll iteration. can be combined with -S. default is " STRINGIFY(
-                                                                                 DEFAULTSEC) "\n",
-                    stdout);
+                    "  -l LEN    clamp line length to LEN. default is %s\n"
+                    "  -p LEN    add LEN spaces of padding after the text ending. default is %s\n"
+                    "  -S NSEC   wait NSEC nanoseconds after each scroll iteration. can be combined with -s. NSEC is clamped to 999999999. default is %s\n"
+                    "  -s SEC    wait SEC seconds after each scroll iteration. can be combined with -S. default is %s\n",
+                    execname, STRINGIFY(DEFAULTTEXTLEN), STRINGIFY(DEFAULTTEXTSEP),
+                    STRINGIFY(DEFAULTNSEC), STRINGIFY(DEFAULTSEC));
                 exit(EXIT_SUCCESS);
                 break;
             case 'k':
