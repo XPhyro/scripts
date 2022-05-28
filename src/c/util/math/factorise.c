@@ -17,7 +17,12 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        for (fac = 2, val = num; fac <= val; fac++) {
+        for (n = 0, val = num; !(val % 2); n++)
+            val /= 2;
+        if (n)
+            printf("%llu: 2 %d\n", num, n);
+
+        for (fac = 3, val = num; fac <= val; fac += 2) {
             for (n = 0; !(val % fac); n++)
                 val /= fac;
             if (n)
