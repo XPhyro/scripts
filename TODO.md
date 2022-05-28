@@ -11,6 +11,8 @@
 
 ## Bugs
 - `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
+- `yank` stops working after the first usage. The issue is probably caused by
+  `lck` and/or `ulck`.
 
 ## Features
 - Add the ability to have default arguments via environment variables in
