@@ -21,67 +21,67 @@
 char delim = '\n';
 char *home;
 
-void expand(const char *path)
+char *expand(const char *path, char *buf, size_t bufsize)
 {
-    char *s;
     size_t i, j, len;
     bool dupe = false;
     struct passwd *pw = NULL;
 
     len = strlen(path);
-    s = amalloc((len + 1) * sizeof(char));
+    if (bufsize < (i = (len + 1) * sizeof(char)))
+        buf = arealloc(buf, i);
 
     for (i = 0, j = 0; i < len; i++) {
         if (path[i] == '/') {
             if (!dupe)
-                s[j++] = '/';
+                buf[j++] = '/';
             dupe = true;
         } else {
-            s[j++] = path[i];
+            buf[j++] = path[i];
             dupe = false;
         }
     }
-    s[len = j] = '\0';
+    buf[len = j] = '\0';
 
-    if (s[0] != '~') {
-        fputs(s, stdout);
+    if (buf[0] != '~') {
+        fputs(buf, stdout);
     } else {
         if (len == 1)
             fputs(home, stdout);
-        else if (s[1] == '/') {
+        else if (buf[1] == '/') {
             fputs(home, stdout);
-            fputs(s + 1, stdout);
+            fputs(buf + 1, stdout);
         } else {
             for (i = 0, j = 0; i < len; i++) {
-                if (s[i] == '/') {
-                    s[j = i] = '\0';
+                if (buf[i] == '/') {
+                    buf[j = i] = '\0';
                     break;
                 }
             }
-            if ((pw = getpwnam(s + 1))) {
+            if ((pw = getpwnam(buf + 1))) {
                 fputs(pw->pw_dir, stdout);
                 if (j) {
-                    s[j] = '/';
-                    fputs(s + j, stdout);
+                    buf[j] = '/';
+                    fputs(buf + j, stdout);
                 }
             } else {
                 if (j)
-                    s[j] = '/';
-                fputs(s, stdout);
+                    buf[j] = '/';
+                fputs(buf, stdout);
             }
         }
     }
 
     putchar(delim);
 
-    free(s);
+    return buf;
 }
 
 int main(int argc, char *argv[])
 {
     int i;
-    char *line = NULL;
-    size_t size;
+    char *line = NULL, *buf = NULL;
+    size_t size, bufsize = 0;
     ssize_t len;
 
     while ((i = getopt(argc, argv, "hz0")) != -1) {
@@ -118,10 +118,10 @@ int main(int argc, char *argv[])
         while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
             if (len && line[len - 1] == delim)
                 line[len - 1] = '\0';
-            expand(line);
+            buf = expand(line, buf, bufsize);
         }
     } else
-        for (i = 0; i < argc; expand(argv[i++])) {}
+        for (i = 0; i < argc; expand(argv[i++], buf, bufsize)) {}
 
     return 0;
 }
