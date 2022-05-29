@@ -6,7 +6,6 @@ Unix-like operating systems. Most scripts are written in POSIX Shell, i.e. `sh`;
 and most non-script utilities are written in C.
 
 ## Installation
-
 To install for your user:
 
     make install
@@ -21,7 +20,6 @@ If you would like to use the provided wrapper scripts, add `$PREFIX/bin/wrapper`
 to your `$PATH` with higher priority than the locations of the wrapped scripts.
 
 ## Uninstallation
-
 If you installed for your user:
 
     make uninstall
@@ -101,19 +99,22 @@ In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is
 executed and all executed commands are printed to stderr.
 
 ## Notice
-- Some of these scripts assume that some of the other scripts are in your
-  `$PATH`.
+- Some scripts assume that some of the other scripts are in your `$PATH`.
 - None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU extensions are used (for instance, `sed -i` or
   `strcasestr`).
 - Some scripts were written with only Linux in mind, although they may be
   compatible with other Unixes and Unix-likes.
+- All scripts are only tested on Linux.
+- C and C++ code are only tested with GCC, but should be compatible with any
+  POSIX-complete compiler. Some scripts use widely implemented GNU extensions.
 
 ## Related
 - You can find my gpup management scripts
   [here](https://github.com/XPhyro/gpupmanager).
 - You can find the scripts I use to install an Arch Linux system (to my liking)
   [here](https://github.com/XPhyro/archinstall).
+
 
 # License
 Unless otherwise stated, all software found in this repository are
