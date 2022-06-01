@@ -16,7 +16,7 @@
 #include <unistd.h>
 
 #include <stdutil.h>
-#include <sys/paramsutil.h>
+#include <sys/paramutil.h>
 
 int n, idx;
 #define DEFAULTTEXTLEN 50
