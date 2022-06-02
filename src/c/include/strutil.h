@@ -301,25 +301,31 @@ bool intnisfilter(const int *s, int (*func)(int), size_t n)
     return true;
 }
 
-char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
+char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const size_t *sizes,
+                  size_t totsize)
 {
     size_t i, j, idx, ssize;
-    char *o;
     const char *s;
 
-    o = amalloc((totsize + 1) * sizeof(char));
+    if (!buf || bufsize < (i = (totsize + 1) * sizeof(char)))
+        buf = arealloc(buf, (totsize + 1) * sizeof(char));
 
     for (i = 0, idx = 0; i < n; i++) {
         ssize = sizes[i];
         s = sptr[i];
         for (j = 0; j < ssize; j++) {
-            o[idx++] = s[j];
+            buf[idx++] = s[j];
         }
     }
 
-    o[j] = '\0';
+    buf[j] = '\0';
 
-    return o;
+    return buf;
+}
+
+char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
+{
+    return astrncatbuf(amalloc((totsize + 1) * sizeof(char)), totsize + 1, sptr, n, sizes, totsize);
 }
 
 char *astrcat(const char **sptr, size_t n)
