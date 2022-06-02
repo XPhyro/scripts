@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <ranges>
 #include <string>
@@ -22,7 +23,7 @@ int main(const int argc, const char* argv[])
 {
     if (argc < 2) {
         std::cout << EXECNAME ": no argument given" << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 
     try {
@@ -41,7 +42,7 @@ int main(const int argc, const char* argv[])
             std::cout << *it << ", ";
         std::cout << color_names.back() << '.' << std::endl;
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     if (argc == 2)
@@ -52,5 +53,5 @@ int main(const int argc, const char* argv[])
 
     std::cout << clear_color;
 
-    return 0;
+    return EXIT_SUCCESS;
 }
