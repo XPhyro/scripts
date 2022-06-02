@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "dhiz0")) != -1) {
         switch (i) {
             case 'b':
-                optbase = astrtod(argv[i], EXECNAME ": invalid base given\n");
+                optbase = astrtol(argv[i], EXECNAME ": invalid base given\n");
                 break;
             case 'd':
                 optnodelim = true;
