@@ -314,9 +314,7 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
     for (i = 0, idx = 0; i < n; i++) {
         ssize = sizes[i];
         s = sptr[i];
-        for (j = 0; j < ssize; j++) {
-            buf[idx++] = s[j];
-        }
+        for (j = 0; j < ssize; buf[idx++] = s[j++]) {}
     }
 
     buf[totsize] = '\0';
@@ -337,9 +335,8 @@ char *astrcat(const char **sptr, size_t n)
     sizes = amalloc(n * sizeof(size_t));
     totsize = 0;
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
         totsize += (sizes[i] = strlen(sptr[i]));
-    }
 
     o = astrncat(sptr, n, sizes, totsize);
     free(sizes);
