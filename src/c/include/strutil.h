@@ -2,6 +2,7 @@
 #define _HEADER_SCRIPTS_STRUTIL
 
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
@@ -318,7 +319,7 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
         }
     }
 
-    buf[j] = '\0';
+    buf[totsize] = '\0';
 
     return buf;
 }
