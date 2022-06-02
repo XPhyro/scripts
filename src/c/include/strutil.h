@@ -301,4 +301,84 @@ bool intnisfilter(const int *s, int (*func)(int), size_t n)
     return true;
 }
 
+char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
+{
+    size_t i, j, idx, ssize;
+    char *o;
+    const char *s;
+
+    o = amalloc((totsize + 1) * sizeof(char));
+
+    for (i = 0, idx = 0; i < n; i++) {
+        ssize = sizes[i];
+        s = sptr[i];
+        for (j = 0; j < ssize; j++) {
+            o[idx++] = s[j];
+        }
+    }
+
+    o[j] = '\0';
+
+    return o;
+}
+
+char *astrcat(const char **sptr, size_t n)
+{
+    size_t i, totsize, *sizes;
+    char *o;
+
+    sizes = amalloc(n * sizeof(size_t));
+    totsize = 0;
+
+    for (i = 0; i < n; i++) {
+        totsize += (sizes[i] = strlen(sptr[i]));
+    }
+
+    o = astrncat(sptr, n, sizes, totsize);
+    free(sizes);
+
+    return o;
+}
+
+char *vstrncat(size_t n, ...)
+{
+    va_list ap;
+    const char **sptr = amalloc(n * sizeof(char *));
+    size_t i, totsize, *sizes;
+    char *o;
+
+    sizes = amalloc(n * sizeof(size_t));
+    totsize = 0;
+
+    va_start(ap, n);
+    for (i = 0; i < n; i++) {
+        sptr[i] = va_arg(ap, char *);
+        totsize += (sizes[i] = va_arg(ap, size_t));
+    }
+    va_end(ap);
+
+    o = astrncat(sptr, n, sizes, totsize);
+    free(sptr);
+    free(sizes);
+
+    return o;
+}
+
+char *vstrcat(size_t n, ...)
+{
+    va_list ap;
+    const char **sptr = amalloc(n * sizeof(char *));
+    size_t i;
+    char *o;
+
+    va_start(ap, n);
+    for (i = 0; i < n; sptr[i++] = va_arg(ap, char *)) {}
+    va_end(ap);
+
+    o = astrcat(sptr, n);
+    free(sptr);
+
+    return o;
+}
+
 #endif /* ifndef _HEADER_SCRIPTS_STRUTIL */
