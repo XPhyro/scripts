@@ -31,7 +31,7 @@ while true; do
         lastclp="$clp"
         oldclp=""
 
-        [ "$(du -b -- "$logfl" | cut -f1)" -gt "5242879" ] && {
+        [ "$(du -b -- "$logfl" | cut -f1)" -gt 5242879 ] && {
             lastnum="$(find "$bakdir" -mindepth 1 -printf "%P\n" | sort -n | tail -n 1)"
             [ -z "$lastnum" ] && lastnum="-1"
             mv -- "$logfl" "$bakdir/$((lastnum + 1))"
