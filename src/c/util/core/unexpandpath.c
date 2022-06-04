@@ -35,8 +35,7 @@ void unexpand(const char *path)
     if (!(len = strlen(path)))
         goto endline;
 
-    if (len > slen)
-        s = arealloc(s, (len + 1) * sizeof(char));
+    s = areallocfit(s, slen, (len + 1) * sizeof(char));
 
     for (i = 0, j = 0; i < len; i++) {
         if (path[i] == '/') {

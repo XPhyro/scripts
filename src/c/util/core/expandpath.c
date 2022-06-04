@@ -28,8 +28,7 @@ char *expand(const char *path, char *buf, size_t bufsize)
     struct passwd *pw = NULL;
 
     len = strlen(path);
-    if (bufsize < (i = (len + 1) * sizeof(char)))
-        buf = arealloc(buf, i);
+    buf = areallocfit(buf, bufsize, (len + 1) * sizeof(char));
 
     for (i = 0, j = 0; i < len; i++) {
         if (path[i] == '/') {

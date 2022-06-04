@@ -124,6 +124,11 @@ void *arealloc(void *ptr, size_t size)
     return ptr;
 }
 
+void *areallocfit(void *ptr, size_t oldsize, size_t size)
+{
+    return oldsize <= size ? ptr : arealloc(ptr, size);
+}
+
 void *acalloc(size_t nmemb, size_t size)
 {
     int olderrno;
