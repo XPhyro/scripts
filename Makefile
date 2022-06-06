@@ -9,6 +9,9 @@ install: uninstall
 uninstall:
 	sh -c 'cd src && ./.make uninstall'
 
+test:
+	sh -c 'cd src && ./.make test'
+
 clean:
 
-.PHONY: install uninstall clean
+.PHONY: install uninstall test clean

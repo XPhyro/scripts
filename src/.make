@@ -65,6 +65,22 @@ uninstall() {
     rm -f .installed
 }
 
+unittest() {
+    cd .tests
+    find '.' -mindepth 1 -type f -printf "%P\0" | parallel --bar -kr0 -I FILE -P 0 'sh -c '\''
+        tmp="$(mktemp)"
+        trap "rm -f \"$tmp\"" INT EXIT TERM
+        eval "$1" > "$tmp"
+        if [ "$?" -ne 0 ] || cmp -s "$tmp" "$1"; then
+            printf "%s\n" "SUCCESS: $1"
+            exit 0
+        else
+            printf "%s\n" "FAIL: $1"
+            exit 1
+        fi
+    '\'' -- FILE'
+}
+
 set -ex
 
 if [ -n "$PREFIX" ]; then
@@ -104,7 +120,9 @@ case "$1" in
         done
 
         install
+        unittest
         ;;
     uninstall) uninstall;;
+    test) unittest;;
     *) logerrq "Target must be 'install' or 'uninstall', not [%s]." "$1";;
 esac
