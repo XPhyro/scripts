@@ -71,14 +71,14 @@ unittest() {
         tmp="$(mktemp)"
         trap "rm -f \"$tmp\"" INT EXIT TERM
         eval "$1" > "$tmp"
-        if [ "$?" -ne 0 ] || cmp -s "$tmp" "$1"; then
-            printf "%s\n" "SUCCESS: $1"
+        if cmp -s "$tmp" "$1"; then
+            printf "SUCCESS: %s\n" "$1"
             exit 0
         else
-            printf "%s\n" "FAIL: $1"
+            printf "\033[0;31mFAIL:\033[0m %s\n" "$1"
             exit 1
         fi
-    '\'' -- FILE'
+    '\'' -- FILE' || printf "\033[0;31mAt least one test failed, check above results.\033[0m\n"
 }
 
 set -ex
