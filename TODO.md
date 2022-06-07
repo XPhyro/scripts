@@ -20,6 +20,7 @@
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
+- Add a target or variable for compiling C/C++ with `-g`/`-ggdb`.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
