@@ -262,6 +262,9 @@ bool strisfilter(const char *s, int (*func)(int))
 {
     int c;
 
+    if (!s)
+        return false;
+
     for (; (c = *s); s++)
         if (!func(c))
             return false;
@@ -272,6 +275,9 @@ bool strisfilter(const char *s, int (*func)(int))
 bool strnisfilter(const char *s, int (*func)(int), size_t n)
 {
     size_t i;
+
+    if (!s)
+        return false;
 
     for (i = 0; i < n; i++)
         if (!func(s[i]))
@@ -284,6 +290,9 @@ bool intisfilter(const int *s, int (*func)(int))
 {
     int c;
 
+    if (!s)
+        return false;
+
     for (; (c = *s); s++)
         if (!func(c))
             return false;
@@ -294,6 +303,9 @@ bool intisfilter(const int *s, int (*func)(int))
 bool intnisfilter(const int *s, int (*func)(int), size_t n)
 {
     size_t i;
+
+    if (!s)
+        return false;
 
     for (i = 0; i < n; i++)
         if (!func(s[i]))
@@ -308,12 +320,18 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
     size_t i, j, idx, ssize;
     const char *s;
 
+    if (!buf || !sptr || !sizes)
+        return NULL;
+
     if (!buf || bufsize < (i = (totsize + 1) * sizeof(char)))
         buf = arealloc(buf, (totsize + 1) * sizeof(char));
 
     for (i = 0, idx = 0; i < n; i++) {
         ssize = sizes[i];
-        s = sptr[i];
+        if (!(s = sptr[i])) {
+            free(buf);
+            return NULL;
+        }
         for (j = 0; j < ssize; buf[idx++] = s[j++]) {}
     }
 
@@ -331,12 +349,18 @@ char *astrcat(const char **sptr, size_t n)
 {
     size_t i, totsize, *sizes;
     char *o;
+    const char *s;
 
     sizes = amalloc(n * sizeof(size_t));
     totsize = 0;
 
-    for (i = 0; i < n; i++)
-        totsize += (sizes[i] = strlen(sptr[i]));
+    for (i = 0; i < n; i++) {
+        if (!(s = sptr[i])) {
+            free(sizes);
+            return NULL;
+        }
+        totsize += (sizes[i] = strlen(s));
+    }
 
     o = astrncat(sptr, n, sizes, totsize);
     free(sizes);
@@ -356,7 +380,12 @@ char *vstrncat(size_t n, ...)
 
     va_start(ap, n);
     for (i = 0; i < n; i++) {
-        sptr[i] = va_arg(ap, char *);
+        if (!(sptr[i] = va_arg(ap, char *))) {
+            free(sptr);
+            free(sizes);
+            va_end(ap);
+            return NULL;
+        }
         totsize += (sizes[i] = va_arg(ap, size_t));
     }
     va_end(ap);
@@ -376,7 +405,13 @@ char *vstrcat(size_t n, ...)
     char *o;
 
     va_start(ap, n);
-    for (i = 0; i < n; sptr[i++] = va_arg(ap, char *)) {}
+    for (i = 0; i < n; i++) {
+        if (!(sptr[i] = va_arg(ap, char *))) {
+            free(sptr);
+            va_end(ap);
+            return NULL;
+        }
+    }
     va_end(ap);
 
     o = astrcat(sptr, n);
