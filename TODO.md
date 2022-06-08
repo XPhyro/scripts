@@ -20,7 +20,6 @@
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
-- Add a target or variable for compiling C/C++ with `-g`/`-ggdb`.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -37,15 +36,19 @@
 - Write a script that uses `mpv` to show animated/video wallpapers. Integrate
   this script in `wallpaper`.
 
+## Refactoring / Rewriting / Reworking
+- Rewrite `lck` and other locking-related scripts to be more sturdy. The new
+  forms should prevent the lock being stuck in an acquired status if the
+  acquiree is dead.
+
 ## Other
-- Add automatic unit tests into [.make](src/.make) (or as a separate
-  executable?).
 - Documentation:
   - Online documentation via `github.io`.
   - Offline documentation via man pages.
   - `-h` and/or `--help` flags.
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
+- Add a target or variable for compiling C/C++ with `-g`/`-ggdb`.
 
 
 # Normal Priority
