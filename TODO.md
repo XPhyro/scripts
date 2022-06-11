@@ -20,6 +20,9 @@
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
+- In `stest`, add two separate tests for MIME type and subtype (i.e.
+  `type/subtype`). `libmagic(3)` should do the trick, see this [SO
+  answer](https://stackoverflow.com/a/20501284/8403070).
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
