@@ -43,10 +43,12 @@
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
   forms should prevent the lock being stuck in an acquired status if the
   acquiree is dead.
+- The current way unit tests work is extremely stupid, rewrite in a more
+  sensical manner. While at it, also support input via `stdin`.
 
 ## Other
 - Documentation:
-  - Online documentation via `github.io`.
+  - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
   - `-h` and/or `--help` flags.
   - For interpreted stuff and config files, brief explanation as comment at the
