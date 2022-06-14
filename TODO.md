@@ -43,8 +43,6 @@
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
   forms should prevent the lock being stuck in an acquired status if the
   acquiree is dead.
-- The current way unit tests work is extremely stupid, rewrite in a more
-  sensical manner. While at it, also support input via `stdin`.
 
 ## Other
 - Documentation:
@@ -325,7 +323,6 @@
   sort of window showing (icon-ic) previews of the different available layouts.
   When one is selected, it would change the wm to that layout. You may want to
   use `rofi` or a `dialog` menu.
-- Write tests (especially for `c/*`).
 
 ## Refactoring / Rewriting / Reworking
 - In `weather`, pad the first and last lines to prevent the clashes of the two

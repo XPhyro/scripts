@@ -67,25 +67,40 @@ uninstall() {
 
 unittest() {
     cd .tests
-    find '.' -mindepth 1 -type f -printf "%P\0" | parallel --bar -kr0 -I FILE -P 0 'sh -c '\''
-        tmp="$(mktemp)"
-        trap "rm -f \"$tmp\"" INT EXIT TERM
-        eval "$1" > "$tmp"
-        if cmp -s "$tmp" "$1"; then
-            printf "SUCCESS: %s\n" "$1"
-            exit 0
-        else
-            printf "\033[0;31mFAIL:\033[0m %s\n" "$1"
-            exit 1
-        fi
-    '\'' -- FILE' || printf "\033[0;31mAt least one test failed, check above results.\033[0m\n"
+
+    tmpout="$(mktemp)"
+    tmperr="$(mktemp)"
+    trap "rm -f -- '$tmpout' '$tmperr'" INT EXIT HUP TERM
+
+    find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
+        find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
+            testdir="$cmd/$testname"
+            args="$(cat "$testdir/args")"
+            eval "'$cmd' $args > '$tmpout' 2> '$tmperr' < '$testdir/in'"
+            ec="$?"
+
+            failstr=
+            cmp -s -- "$testdir/err" "$tmperr" || failstr="stderr is different. $failstr"
+            cmp -s -- "$testdir/out" "$tmpout" || failstr="stdout is different. $failstr"
+            testec="$(cat "$testdir/ec")"
+            [ "$ec" -ne "$testec" ] && failstr="Expected exit code $testec, got $ec. $failstr"
+
+            [ -n "$failstr" ] \
+                && printf "\033[0;31m%s: Test %s failed. %s\033[0m\n" \
+                    "$cmd" \
+                    "$testdir" \
+                    "$failstr"
+        done
+    done | sponge
+
+    cd ..
 }
 
 set -ex
 
 if [ -n "$PREFIX" ]; then
     prefix="$PREFIX/bin"
-elif [ "$(id -u)" != 0 ]; then
+elif [ "$(id -u)" -ne 0 ]; then
     prefix="$HOME/.local/bin"
 else
     prefix="/usr/local/bin"
