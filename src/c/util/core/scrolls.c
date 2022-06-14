@@ -29,13 +29,13 @@ char *line = NULL;
 char *doubleline = NULL;
 const char delim = '\n';
 
-void updaten()
+void updaten(void)
 {
     if (ioctl(0, FIONREAD, &n))
         err(EXIT_FAILURE, "ioctl(FIONREAD)");
 }
 
-void updates()
+void updates(void)
 {
     size_t oldlinesize;
     char *s;
