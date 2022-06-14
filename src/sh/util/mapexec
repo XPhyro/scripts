@@ -227,7 +227,7 @@ logerrq() {
 }
 
 clean() {
-    rm -f "$ogtmpfl" "$tmpfl" 2> /dev/null
+    rm -f -- "$ogtmpfl" "$tmpfl" 2> /dev/null
 }
 
 edit() {
@@ -260,6 +260,7 @@ main() {
 
     if [ "$genscript" = "1" ]; then
         scriptfl="$(mktemp --suffix ".$interpreter")"
+        trap "rm -f -- '$scriptfl'" EXIT INT HUP TERM
         printf "%s\n" \
 "#!/usr/bin/env $interpreter
 # Wipe the file to abort.
