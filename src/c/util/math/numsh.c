@@ -16,13 +16,13 @@
 #define DECLMAP(FUNC) double map_##FUNC(int, double *, double *)
 #define DECLREDUCE(FUNC) double reduce_##FUNC(int, double *, double *)
 
-#define FUNCMAP(FUNC)                   \
-    {                                   \
-#FUNC, map_##FUNC, FUNCTYPE_MAP \
+#define FUNCMAP(FUNC)                                           \
+    {                                                           \
+        .name = #FUNC, .func = map_##FUNC, .type = FUNCTYPE_MAP \
     }
-#define FUNCREDUCE(FUNC)                      \
-    {                                         \
-#FUNC, reduce_##FUNC, FUNCTYPE_REDUCE \
+#define FUNCREDUCE(FUNC)                                              \
+    {                                                                 \
+        .name = #FUNC, .func = reduce_##FUNC, .type = FUNCTYPE_REDUCE \
     }
 
 typedef enum {
@@ -34,7 +34,7 @@ typedef struct function {
     char *name;
     double (*func)(int, double *, double *);
     FUNCTYPE type;
-} function;
+} __attribute__((packed)) function;
 
 DECLMAP(acos);
 DECLMAP(asin);
@@ -65,7 +65,7 @@ DECLREDUCE(sum);
 function functions[] = {
     FUNCMAP(acos),   FUNCMAP(asin),   FUNCMAP(atan),
     FUNCMAP(cbrt),   FUNCMAP(ceil),   FUNCMAP(cos),
-    FUNCMAP(cosh),   FUNCMAP(exp),    { "abs", map_fabs, FUNCTYPE_MAP },
+    FUNCMAP(cosh),   FUNCMAP(exp),    { .name = "abs", .func = map_fabs, .type = FUNCTYPE_MAP },
     FUNCMAP(floor),  FUNCMAP(log),    FUNCMAP(log10),
     FUNCMAP(log2),   FUNCMAP(pow),    FUNCMAP(round),
     FUNCMAP(sin),    FUNCMAP(sinh),   FUNCMAP(sqrt),
