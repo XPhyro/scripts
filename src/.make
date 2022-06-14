@@ -37,7 +37,12 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            '"$csa"' gcc -O'"${o:-3}"' -std=c99 -pedantic -Iinclude -lm -Wall "$1" -o "$prefix/$out" \
+            '"$csa"' gcc -O'"${o:-3}"' -std=c99 -pedantic \
+                -Wall -Wextra -Wabi=11 \
+                -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
+                -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
+                -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
+                -Iinclude -lm "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
         
@@ -53,7 +58,11 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            g++ -O'"${o:-3}"' -std=c++23 -Iinclude -Wall "$1" -o "$prefix/$out" \
+            g++ -O'"${o:-3}"' -std=c++23 \
+                -Wall -Wextra -Wabi=11 \
+                -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
+                -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
+                -Iinclude "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
 
