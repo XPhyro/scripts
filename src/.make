@@ -75,6 +75,8 @@ uninstall() {
 }
 
 unittest() {
+    isroot && return 0
+
     cd .tests
 
     tmpout="$(mktemp)"
@@ -107,17 +109,28 @@ unittest() {
 
 set -ex
 
+if [ "$(id -u)" -eq 0 ]; then
+    isroot() {
+        true
+    }
+else
+    isroot() {
+        false
+    }
+fi
+
 if [ -n "$PREFIX" ]; then
     prefix="$PREFIX/bin"
-elif [ "$(id -u)" -ne 0 ]; then
-    prefix="$HOME/.local/bin"
-else
+elif isroot; then
     prefix="/usr/local/bin"
+else
+    prefix="$HOME/.local/bin"
 fi
 
 export prefix
 
-[ ! -d "$prefix" ] && mkdir -p -- "$prefix"
+mkdir -p -- "$prefix"
+[ -d "$prefix" ]
 
 unset csa o
 case "$1" in
