@@ -44,7 +44,6 @@
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
   forms should prevent the lock being stuck in an acquired status if the
   acquiree is dead.
-- Make `factorise`'s output compatible with GNU `factor` if `-g` is given.
 
 ## Other
 - Documentation:
