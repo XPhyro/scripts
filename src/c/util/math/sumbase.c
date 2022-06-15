@@ -98,8 +98,8 @@ int main(int argc, char *argv[])
         }
 
     if (!optnodelim)
-        printf("%lld%c", sum, isatty(1) ? '\n' : delim);
-    else if (isatty(1))
+        printf("%lld%c", sum, isatty(STDOUT_FILENO) ? '\n' : delim);
+    else if (isatty(STDOUT_FILENO))
         printf("%lld\n", sum);
     else
         printf("%lld", sum);

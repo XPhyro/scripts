@@ -1,8 +1,9 @@
 #include <termios.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-    if (tcflush(0, TCIOFLUSH))
+    if (tcflush(STDIN_FILENO, TCIOFLUSH))
         return 1;
     return 0;
 }

@@ -6,5 +6,5 @@
 int main(int argc, char *argv[])
 {
     const void *const data = amallocset(PIPE_BUF, UCHAR_MAX);
-    for (;; write(1, data, PIPE_BUF)) {}
+    for (;; write(STDOUT_FILENO, data, PIPE_BUF)) {}
 }

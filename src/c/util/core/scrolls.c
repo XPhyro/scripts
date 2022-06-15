@@ -31,7 +31,7 @@ const char delim = '\n';
 
 void updaten(void)
 {
-    if (ioctl(0, FIONREAD, &n))
+    if (ioctl(STDIN_FILENO, FIONREAD, &n))
         err(EXIT_FAILURE, "ioctl(FIONREAD)");
 }
 
