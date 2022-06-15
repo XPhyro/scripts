@@ -23,6 +23,7 @@
 - In `stest`, add two separate tests for MIME type and subtype (i.e.
   `type/subtype`). `libmagic(3)` should do the trick, see this [SO
   answer](https://stackoverflow.com/a/20501284/8403070).
+- Do not hardcode paths like `/home/xphyro` in unit tests.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
