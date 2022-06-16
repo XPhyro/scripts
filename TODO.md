@@ -53,6 +53,7 @@
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
 - Add a target or variable for compiling C/C++ with `-g`/`-ggdb`.
+- Add Codeberg/GitHub CI for compilations/tests.
 
 
 # Normal Priority
