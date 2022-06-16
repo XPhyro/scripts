@@ -22,6 +22,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <magic.h>
+
 #include <strutil.h>
 
 #ifndef S_ISVTX
@@ -69,8 +71,10 @@
 
 #define TESTCOUNTMAX ('z' - 'A')
 
-bool optquiet = false, optinvert = false, optverbose = false, optall = false;
+bool optquiet = false, optinvert = false, optverbose = false, optall = false, optmagic = false;
+const char *optmime, *optsmime;
 struct stat newer, older;
+magic_t magic;
 
 bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 bool (*negtests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
@@ -108,6 +112,26 @@ TESTFUNCDEF(testlink)
 {
     struct stat ln;
     return !lstat(path, &ln) && S_ISLNK(ln.st_mode);
+}
+TESTFUNCDEF(testmstype)
+{
+    const char *mime;
+    bool ret;
+
+    mime = magic_file(magic, path);
+    ret = streq(strchr(mime, '/') + 1, optsmime);
+
+    return ret;
+}
+TESTFUNCDEF(testmtype)
+{
+    const char *mime;
+    bool ret;
+
+    mime = magic_file(magic, path);
+    ret = strneq(mime, optmime, strchr(mime, '/') - mime);
+
+    return ret;
 }
 TESTFUNC(testmodif, st->st_mtime > st->st_atime)
 TESTFUNC(testnewer, st->st_mtime > newer.st_mtime)
@@ -190,10 +214,13 @@ inline void printhelp(void)
         "  -f       test whether files are regular files\n"
         "  -G       test whether files are owned by the effective group ID\n"
         "  -g       test whether files have their set-group-ID flag set\n"
+        "  --help   display this help and exit\n"
         "  -H       display this help and exit\n"
         "  -h       test whether files are symbolic links\n"
         "  -k       test whether files have their sticky flag set\n"
         "  -L       test whether files are symbolic links\n"
+        "  -M TYPE  test whether files' mime subtype are TYPE\n"
+        "  -m TYPE  test whether files' mime type are TYPE\n"
         "  -N       test whether files have been modified after they were last read\n"
         "  -n FILE  test whether files are newer than FILE\n"
         "  -O       test whether files are owned by the effective user ID\n"
@@ -242,7 +269,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    while ((i = getopt(argc, argv, "AabcdefGghkLlNn:Oo:pqrSsuVvwxz0")) != -1) {
+    while ((i = getopt(argc, argv, "AabcdefGghkLlM:m:Nn:Oo:pqrSsuVvwxz0")) != -1) {
         switch (i) {
             OPTCASE('A', optall);
             TESTCASE('a', testhidden);
@@ -256,6 +283,24 @@ int main(int argc, char *argv[])
             TESTCASE('h', testlink);
             TESTCASE('k', teststicky);
             TESTCASE('L', testlink);
+            TESTCASENOBREAK('M', testmstype);
+            if (!optmagic) {
+                magic = magic_open(MAGIC_MIME_TYPE);
+                magic_load(magic, NULL);
+                magic_compile(magic, NULL);
+                optmagic = true;
+            }
+            optsmime = optarg;
+            break;
+            TESTCASENOBREAK('m', testmtype);
+            if (!optmagic) {
+                magic = magic_open(MAGIC_MIME_TYPE);
+                magic_load(magic, NULL);
+                magic_compile(magic, NULL);
+                optmagic = true;
+            }
+            optmime = optarg;
+            break;
             TESTCASE('N', testmodif);
             TESTCASENOBREAK('n', testnewer);
             stat(optarg, &newer);

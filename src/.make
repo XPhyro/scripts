@@ -42,7 +42,7 @@ install() {
                 -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
                 -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
                 -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
-                -Iinclude -lm "$1" -o "$prefix/$out" \
+                -Iinclude -lm -lmagic "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
         ' --
         
