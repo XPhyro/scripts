@@ -216,8 +216,7 @@ inline void printhelp(void)
         "  -f       test whether files are regular files\n"
         "  -G       test whether files are owned by the effective group ID\n"
         "  -g       test whether files have their set-group-ID flag set\n"
-        "  --help   display this help and exit\n"
-        "  -H       display this help and exit\n"
+        "  --help   display this help and exit. this option needs to be given as the first argument\n"
         "  -h       test whether files are symbolic links\n"
         "  -k       test whether files have their sticky flag set\n"
         "  -L       test whether files are symbolic links\n"
@@ -262,13 +261,9 @@ int main(int argc, char *argv[])
     size_t size;
     ssize_t len;
 
-    for (i = 1; i < argc; i++) {
-        if (streq(argv[i], "--"))
-            break;
-        if (streq(argv[i], "--help")) {
-            printhelp();
-            return 0;
-        }
+    if (argc > 1 && streq(argv[1], "--help")) {
+        printhelp();
+        return 0;
     }
 
     while ((i = getopt(argc, argv, "AabcdefGghkLlM:m:Nn:Oo:pqrSsuVvwxz0")) != -1) {
