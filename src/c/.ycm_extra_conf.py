@@ -18,6 +18,7 @@ flags =
         "-Wpacked",
         "-Wdisabled-optimization",
         "-lm",
+        "-lmagic",
     ]
 
     SOURCE_EXTENSIONS =
