@@ -116,22 +116,24 @@ TESTFUNCDEF(testlink)
 TESTFUNCDEF(testmstype)
 {
     const char *mime;
-    bool ret;
 
-    mime = magic_file(magic, path);
-    ret = streq(strchr(mime, '/') + 1, optsmime);
+    if (!(mime = magic_file(magic, path)) && (mime = magic_error(magic))) {
+        fputs(mime, stderr);
+        return false;
+    }
 
-    return ret;
+    return streq(strchr(mime, '/') + 1, optsmime);
 }
 TESTFUNCDEF(testmtype)
 {
     const char *mime;
-    bool ret;
 
-    mime = magic_file(magic, path);
-    ret = strneq(mime, optmime, strchr(mime, '/') - mime);
+    if (!(mime = magic_file(magic, path)) && (mime = magic_error(magic))) {
+        fputs(mime, stderr);
+        return false;
+    }
 
-    return ret;
+    return strneq(mime, optmime, strchr(mime, '/') - mime);
 }
 TESTFUNC(testmodif, st->st_mtime > st->st_atime)
 TESTFUNC(testnewer, st->st_mtime > newer.st_mtime)
@@ -201,7 +203,7 @@ inline void printhelp(void)
         "\n"
         "With no PATH, read standard input.\n"
         "\n"
-        "All options are compliant with the file options of POSIX and GNU test. There are some extra options.\n"
+        "All options are compliant with the filesystem-related options of POSIX and GNU test. There are some extra options.\n"
         "\n"
         "Pass the same test option even times to invert that particular test."
         "\n"
@@ -219,8 +221,8 @@ inline void printhelp(void)
         "  -h       test whether files are symbolic links\n"
         "  -k       test whether files have their sticky flag set\n"
         "  -L       test whether files are symbolic links\n"
-        "  -M TYPE  test whether files' mime subtype are TYPE\n"
-        "  -m TYPE  test whether files' mime type are TYPE\n"
+        "  -M TYPE  test whether files' mime subtype are TYPE. requires a valid magic file installed system-wide\n"
+        "  -m TYPE  test whether files' mime type are TYPE. requires a valid magic file installed system-wide\n"
         "  -N       test whether files have been modified after they were last read\n"
         "  -n FILE  test whether files are newer than FILE\n"
         "  -O       test whether files are owned by the effective user ID\n"
