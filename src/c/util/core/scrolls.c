@@ -15,8 +15,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <paramutil.h>
 #include <stdutil.h>
-#include <sys/paramutil.h>
 
 int n, idx;
 #define DEFAULTTEXTLEN 50
