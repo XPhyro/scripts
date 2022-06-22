@@ -56,6 +56,7 @@
 - Add Codeberg/GitHub CI for compilations/tests.
 - Add `codespell` to CI and/or `.make`.
 - Add `cppcheck` and/or `clang-tidy` to CI and/or `.make`.
+- Use `festival` in applicable scripts?
 
 
 # Normal Priority
