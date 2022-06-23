@@ -2,7 +2,8 @@ flags =
     [
         "-O3",
         "-std=c++20",
-        #YCM(or some other component) does not support c++ 23 yet and c++ 2b does not work "-Wall",
+#YCM(or some other component) does not support c++ 23 yet and c++ 2b does not work
+        "-Wall",
         "-Wextra",
         "-Werror",
         "-Wno-unused-parameter",
