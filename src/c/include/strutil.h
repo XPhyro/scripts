@@ -1,5 +1,5 @@
-#ifndef _HEADER_SCRIPTS_STRUTIL
-#define _HEADER_SCRIPTS_STRUTIL
+#ifndef HEADER_SCRIPTS_STRUTIL
+#define HEADER_SCRIPTS_STRUTIL
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -420,4 +420,4 @@ char *vstrcat(size_t n, ...)
     return o;
 }
 
-#endif /* ifndef _HEADER_SCRIPTS_STRUTIL */
+#endif /* ifndef HEADER_SCRIPTS_STRUTIL */
