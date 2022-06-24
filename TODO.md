@@ -20,9 +20,6 @@
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
-- In `stest`, add two separate tests for MIME type and subtype (i.e.
-  `type/subtype`). `libmagic(3)` should do the trick, see this [SO
-  answer](https://stackoverflow.com/a/20501284/8403070).
 - Do not hardcode paths like `/home/xphyro` in unit tests.
 
 ## New Scripts
@@ -167,8 +164,6 @@
 - In `gcm`, if there is no staged files and if 2 arguments are given, assume the
   second argument is a file.
 - In `latexstp`, allow passing arguments to `bspwmpad`.
-- `getopt()` in `argn`.
-- Support NUL as delimiter in `fmaps`.
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and
   replacing it. This function should require a valid and non-zero `-n` to be
@@ -252,7 +247,6 @@
   continuous trailing underscores.
 - Make `-fin` options in `ffmw` global as they are used by every non-help
   subcommand.
-- Make `xins` use IFS= or IFS=\n.
 - Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN
   location`. `eval "$#=\"$(getdir $$#)\""` could be used to do so.
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's
@@ -295,16 +289,12 @@
   the user to run the script as root. Scripts that require trivial root access
   should use `sudo` or `sudo -A` depending on whether they are graphical (for
   instance, if they use `dmenu`) or not.
-- Use `cut` instead of `awk` where applicable. For instance, replace `awk
-  '{print $1}'` with `cut -d' ' -f1` if `-d' '` suffices.
 - Register a tray icon using `yad` in applicable scripts.
   - Daemons could benefit well from this.
   - `tglapp` could benefit from this. A single tray icon when right clicked
     should show all `tglapp` applications. For this, a subscription and a server
     (like `lf`'s) system should be implemented.
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
-- Support non-root installation in `.make`, like the `Makefile` of `sumsize`.
-- Remove `, exiting` from errors.
 - `set -e` in every script.
 - Use `getopt` if available. Use `getopts` otherwise. Be sure to check the
   `parseargs()` of individual scripts to see quirky parsing. Some scripts have
