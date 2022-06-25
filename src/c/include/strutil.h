@@ -56,6 +56,16 @@ inline bool __attribute__((always_inline)) strneq(const char *s1, const char *s2
     return !strncmp(s1, s2, n);
 }
 
+inline bool __attribute__((always_inline)) strcaseeq(const char *s1, const char *s2)
+{
+    return !strcasecmp(s1, s2);
+}
+
+inline bool __attribute__((always_inline)) strncaseeq(const char *s1, const char *s2, size_t n)
+{
+    return !strncasecmp(s1, s2, n);
+}
+
 bool strpfx(const char *s, const char *pfx)
 {
     char cs, cpfx;
