@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define ASTRTOGENPRE(TYPE, FUNC)                 \
     TYPE a##FUNC(char *s, const char *const err) \
@@ -151,10 +152,15 @@ void *acalloc(size_t nmemb, size_t size)
     return ptr;
 }
 
-void *arecalloc(void **ptrref, size_t oldnmemb, size_t nmemb, size_t size)
+void *acrealloc(void *oldptr, size_t oldnmemb, size_t nmemb, size_t size)
 {
-    void *ptr = acalloc(nmemb, size);
-    memcpy(
+    void *ptr;
+
+    ptr = acalloc(nmemb, size);
+    memcpy(ptr, oldptr, oldnmemb * size);
+    free(oldptr);
+
+    return ptr;
 }
 
 #endif /* ifndef HEADER_SCRIPTS_STDUTIL */
