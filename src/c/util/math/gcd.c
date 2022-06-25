@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     for (i = 1; i < argc - 1; i++) {
         a = astrtoull(argv[i], err);
         b = astrtoull(argv[++i], err);
-        printf("gcd(%llu, %llu) = %llu", a, b, gcd(a, b));
+        printf("gcd(%llu, %llu) = %llu\n", a, b, gcd(a, b));
     }
 
     return 0;
