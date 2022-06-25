@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 
 # git stash --keep-index
-git diff --cached --name-only | grep -E "^src/c(pp)?/.*\.[ch]" | xargs -r realpath -P -- | while IFS= read -r fl; do
-    (cd "$(dirname -- "$fl")" && clang-format -i --style=file -- "$fl" && git add -- "$fl")
-done
+git diff --cached --name-only \
+    | grep -E "^src/c(pp)?/.*\.[ch](pp)?" \
+    | xargs -r realpath -P -- \
+    | while IFS= read -r fl; do
+          (cd "$(dirname -- "$fl")" \
+               && clang-format -i --style=file -- "$fl" \
+               && git add -- "$fl"
+          )
+      done
 # git stash apply
