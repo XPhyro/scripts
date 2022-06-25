@@ -151,4 +151,10 @@ void *acalloc(size_t nmemb, size_t size)
     return ptr;
 }
 
+void *arecalloc(void **ptrref, size_t oldnmemb, size_t nmemb, size_t size)
+{
+    void *ptr = acalloc(nmemb, size);
+    memcpy(
+}
+
 #endif /* ifndef HEADER_SCRIPTS_STDUTIL */
