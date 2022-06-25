@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/param.h>
 
 #include <stdutil.h>
