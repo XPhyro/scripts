@@ -21,6 +21,7 @@
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
 - Do not hardcode paths like `/home/xphyro` in unit tests.
+- In `bspwmpad`, add an option to start in some desktop.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
