@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>
 
 #define ASTRTOGENPRE(TYPE, FUNC)                 \
     TYPE a##FUNC(char *s, const char *const err) \
@@ -157,7 +158,7 @@ void *acrealloc(void *oldptr, size_t oldnmemb, size_t nmemb, size_t size)
     void *ptr;
 
     ptr = acalloc(nmemb, size);
-    memcpy(ptr, oldptr, oldnmemb * size);
+    memcpy(ptr, oldptr, MIN(oldnmemb, nmemb) * size);
     free(oldptr);
 
     return ptr;
