@@ -2,7 +2,7 @@
 
 eval "$(evalverbose)"
 
-timeout="$1"
+interval="$1"
 shift
 
 date
@@ -11,5 +11,5 @@ dd "$@" &
 pid="$!"
 
 while kill -s USR1 "$pid"; do
-    sleep "$1"
+    sleep "$interval"
 done
