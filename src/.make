@@ -107,6 +107,12 @@ unittest() {
     cd ..
 }
 
+format() {
+    find 'c' 'cpp' -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -print0 \
+        | sort -z \
+        | xargs -r0 clang-format -i --style=file --
+}
+
 set -ex
 
 if [ "$(id -u)" -eq 0 ]; then
@@ -161,5 +167,6 @@ case "$1" in
         ;;
     uninstall) uninstall;;
     test) unittest;;
+    format) format;;
     *) logerrq "Target must be 'install' or 'uninstall', not [%s]." "$1";;
 esac

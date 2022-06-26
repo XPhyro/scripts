@@ -12,6 +12,9 @@ uninstall:
 test:
 	sh -c 'cd src && ./.make test'
 
+format:
+	sh -c 'cd src && ./.make format'
+
 clean:
 
-.PHONY: install uninstall test clean
+.PHONY: install uninstall test format clean
