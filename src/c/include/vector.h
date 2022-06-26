@@ -7,6 +7,7 @@
 #include <stdutil.h>
 
 /* if managed manually, the following functions might not work correctly. */
+/* only works for members of constant size. if using strings, allocate a constant-size buffer for them. */
 typedef struct {
     void *arr;
     size_t nmemb;
@@ -67,8 +68,6 @@ void vec_expand(vector_t *vec)
 
 void vec_shrinkto(vector_t *vec, size_t nmemb)
 {
-    if (nmemb < 0)
-        return;
     vec->arr = acrealloc(vec->arr, vec->nmemb, nmemb, vec->size);
     vec->nmemb = nmemb;
     if (vec->nptr < nmemb)
@@ -85,58 +84,58 @@ void vec_shrink(vector_t *vec)
     vec_shrinkto(vec, vec->nmemb);
 }
 
-#define VEC_AT(VEC, IDX, TYPE) (((TYPE)VEC->arr)[VEC->IDX])
+#define VEC_AT(VEC, IDX, TYPE) (((TYPE *)((VEC)->arr))[(VEC)->IDX])
 
-#define VEC_ADD(VEC, MEMB, TYPE)              \
-    {                                         \
-        if (VEC->nptr == VEC->nmemb) {        \
-            vec_expand(VEC);                  \
-        }                                     \
-        ((TYPE)VEC->arr)[VEC->nptr++] = MEMB; \
-    }
-
-/* no safety check for whether index is within range */
-#define VEC_CPY(VEC, DESTIDX, SRCIDX, TYPE)                   \
-    {                                                         \
-        ((TYPE)VEC->arr)[DESTIDX] = ((TYPE)VEC->arr)[SRCIDX]; \
-    }
-
-/* no safety check for whether index is within range */
-#define VEC_RM(VEC, IDX, TYPE)                                     \
-    {                                                              \
-        size_t VEC_I = IDX;                                        \
-        for (; VEC_I < VEC->nptr - 1; VEC_I++) {                   \
-            ((TYPE)VEC->arr)[VEC_I] = ((TYPE)VEC->arr)[VEC_I + 1]; \
-        }                                                          \
-        VEC->nptr--;                                               \
-        if (VEC->nptr * 2 > VEC->nmemb)                            \
-            vec_shrink(VEC);                                       \
-    }
-
-#define VEC_IT(VEC, FUNC, TYPE)                   \
-    {                                             \
-        size_t VEC_I = 0;                         \
-        for (; VEC_I < VEC->nptr; VEC_I++) {      \
-            FUNC(VEC_I, ((TYPE)VEC->arr)[VEC_I]); \
-        }                                         \
-    }
-
-#define VEC_ITRANGE(VEC, FUNC, BEG, END, TYPE)         \
-    {                                                  \
-        size_t VEC_I = MAX(BEG, 0);                    \
-        for (; VEC_I < MIN(END, VEC->nptr); VEC_I++) { \
-            FUNC(VEC_I, ((TYPE)VEC->arr)[VEC_I]);      \
-        }                                              \
-    }
-
-#define VEC_IT_SAFE(VEC, FUNC, TYPE)                  \
+#define VEC_ADD(VEC, MEMB, TYPE)                      \
     {                                                 \
-        vector_t VEC_DUP = vec_dup(VEC);              \
-        size_t VEC_I = 0;                             \
-        for (; VEC_I < VEC_DUP->nptr; VEC_I++) {      \
-            FUNC(VEC_I, ((TYPE)VEC_DUP->arr)[VEC_I]); \
+        if ((VEC)->nptr == (VEC)->nmemb) {            \
+            vec_expand(VEC);                          \
         }                                             \
-        vec_del(&VEC_DUP)                             \
+        ((TYPE *)((VEC)->arr))[(VEC)->nptr++] = MEMB; \
+    }
+
+/* no safety check for whether index is within range */
+#define VEC_CPY(VEC, DESTIDX, SRCIDX, TYPE)                               \
+    {                                                                     \
+        ((TYPE *)((VEC)->arr))[DESTIDX] = ((TYPE *)((VEC)->arr))[SRCIDX]; \
+    }
+
+/* no safety check for whether index is within range */
+#define VEC_RM(VEC, IDX, TYPE)                                                 \
+    {                                                                          \
+        size_t VEC_I = IDX;                                                    \
+        for (; VEC_I < (VEC)->nptr - 1; VEC_I++) {                             \
+            ((TYPE *)((VEC)->arr))[VEC_I] = ((TYPE *)((VEC)->arr))[VEC_I + 1]; \
+        }                                                                      \
+        (VEC)->nptr--;                                                         \
+        if ((VEC)->nptr * 2 > (VEC)->nmemb)                                    \
+            vec_shrink(VEC);                                                   \
+    }
+
+#define VEC_IT(VEC, FUNC, TYPE)                         \
+    {                                                   \
+        size_t VEC_I = 0;                               \
+        for (; VEC_I < (VEC)->nptr; VEC_I++) {          \
+            FUNC(VEC_I, ((TYPE *)((VEC)->arr))[VEC_I]); \
+        }                                               \
+    }
+
+#define VEC_ITRANGE(VEC, FUNC, BEG, END, TYPE)           \
+    {                                                    \
+        size_t VEC_I = MAX(BEG, 0);                      \
+        for (; VEC_I < MIN(END, (VEC)->nptr); VEC_I++) { \
+            FUNC(VEC_I, ((TYPE *)((VEC)->arr))[VEC_I]);  \
+        }                                                \
+    }
+
+#define VEC_IT_SAFE(VEC, FUNC, TYPE)                      \
+    {                                                     \
+        vector_t VEC_DUP = vec_dup(VEC);                  \
+        size_t VEC_I = 0;                                 \
+        for (; VEC_I < VEC_DUP->nptr; VEC_I++) {          \
+            FUNC(VEC_I, ((TYPE *)(VEC_DUP->arr))[VEC_I]); \
+        }                                                 \
+        vec_del(&VEC_DUP)                                 \
     }
 
 #define VEC_ITRANGE_SAFE(VEC, FUNC, BEG, END, TYPE)        \
@@ -144,7 +143,7 @@ void vec_shrink(vector_t *vec)
         vector_t VEC_DUP = vec_dup(VEC);                   \
         size_t VEC_I = MAX(BEG, 0);                        \
         for (; VEC_I < MIN(END, VEC_DUP->nptr); VEC_I++) { \
-            FUNC(VEC_I, ((TYPE)VEC_DUP->arr)[VEC_I]);      \
+            FUNC(VEC_I, ((TYPE *)(VEC_DUP->arr))[VEC_I]);  \
         }                                                  \
         vec_del(&VEC_DUP)                                  \
     }
