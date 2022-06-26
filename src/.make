@@ -148,7 +148,7 @@ case "$1" in
                     val="${i#csa=}"
                     case "$val" in
                         true|1) csa="scan-build";;
-                        false|0) unset csa;;
+                        false|0|"") unset csa;;
                         *) exit 1;;
                     esac
                     ;;
@@ -162,7 +162,8 @@ case "$1" in
                 g=*)
                     val="${i#g=}"
                     case "$val" in
-                        "") g="-g";;
+                        "") unset g;;
+                        g) g="-g";;
                         gdb) g="-ggdb";;
                         *) exit 1;;
                     esac
