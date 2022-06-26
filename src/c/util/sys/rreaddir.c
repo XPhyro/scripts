@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
     execname = argv[0];
 
-    while ((i = getopt(argc, argv, "ht:")) != -1) {
+    while ((i = getopt(argc, argv, "ht:v")) != -1) {
         switch (i) {
             case 'h':
                 printf(
