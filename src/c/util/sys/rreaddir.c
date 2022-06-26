@@ -12,6 +12,10 @@
 #include <strutil.h>
 #include <vector.h>
 
+#define LOG(FMT, ...) \
+    if (optverbose)   \
+    fprintf(stderr, FMT, __VA_ARGS__)
+
 typedef struct {
     char dirname[PATH_MAX];
     char d_name[NAME_MAX + 1];
@@ -43,10 +47,11 @@ enum {
 };
 int typeidxs[13] = { unkownidx, fifoidx, chridx, -1,     diridx, -1,     blkidx,
                      -1,        regidx,  -1,     lnkidx, -1,     sockidx };
-bool types[typecount] = { true, true, true, true, true, true, true, true };
+bool opttypes[typecount] = { true, true, true, true, true, true, true, true };
 char *execname;
 vector_t dirs;
 fl_t tmpfl;
+bool optverbose = false;
 
 fl_t strtofl(const char *dirname, const char *d_name)
 {
@@ -61,12 +66,13 @@ void handledir(size_t idx, fl_t fl)
     struct dirent *ent;
     DIR *p;
 
+    LOG("Opening directory %s/%s\n", fl.dirname, fl.d_name);
     p = opendir(fl.d_name);
 
     while ((ent = readdir(p))) {
         if (ent->d_type == DT_DIR)
             VEC_ADD(&dirs, strtofl(vstrcat(3, fl.dirname, "/", fl.d_name), ent->d_name), fl_t);
-        if (!(ent->d_type > 12 || (ent->d_type % 2 && ent->d_type != 1) || !types[ent->d_type]))
+        if (!(ent->d_type > 12 || (ent->d_type % 2 && ent->d_type != 1) || !opttypes[ent->d_type]))
             printf("%s/%s\n", fl.dirname, ent->d_name);
     }
 
@@ -87,27 +93,31 @@ int main(int argc, char *argv[])
                     "Recursively read directories in increasing depth.\n"
                     "\n"
                     "  -h        display this help and exit\n"
-                    "  -t TYPE   toggle printing files of type TYPE. all are turned on by default. valid types are (case-insensitive): UNKOWN, FIFO, CHR, DIR, BLK, REG, LNK, SOCK.",
+                    "  -t TYPE   toggle printing files of type TYPE. all are turned on by default. valid types are (case-insensitive): UNKOWN, FIFO, CHR, DIR, BLK, REG, LNK, SOCK.\n"
+                    "  -v        log debugging information\n",
                     execname);
                 exit(EXIT_SUCCESS);
                 break;
             case 't':
                 if (strcaseeq(optarg, "UNKOWN"))
-                    types[unkownidx] = !types[unkownidx];
+                    opttypes[unkownidx] = !opttypes[unkownidx];
                 else if (strcaseeq(optarg, "FIFO"))
-                    types[fifoidx] = !types[fifoidx];
+                    opttypes[fifoidx] = !opttypes[fifoidx];
                 else if (strcaseeq(optarg, "CHR"))
-                    types[chridx] = !types[chridx];
+                    opttypes[chridx] = !opttypes[chridx];
                 else if (strcaseeq(optarg, "DIR"))
-                    types[diridx] = !types[diridx];
+                    opttypes[diridx] = !opttypes[diridx];
                 else if (strcaseeq(optarg, "BLK"))
-                    types[blkidx] = !types[blkidx];
+                    opttypes[blkidx] = !opttypes[blkidx];
                 else if (strcaseeq(optarg, "REG"))
-                    types[regidx] = !types[regidx];
+                    opttypes[regidx] = !opttypes[regidx];
                 else if (strcaseeq(optarg, "LNK"))
-                    types[lnkidx] = !types[lnkidx];
+                    opttypes[lnkidx] = !opttypes[lnkidx];
                 else if (strcaseeq(optarg, "SOCK"))
-                    types[sockidx] = !types[sockidx];
+                    opttypes[sockidx] = !opttypes[sockidx];
+                break;
+            case 'v':
+                optverbose = true;
                 break;
             default:
                 fprintf(stderr, "Try '%s -h' for more information.\n", execname);
