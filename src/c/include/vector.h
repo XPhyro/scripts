@@ -129,4 +129,24 @@ void vec_shrink(vector_t *vec)
         }                                              \
     }
 
+#define VEC_IT_SAFE(VEC, FUNC, TYPE)                  \
+    {                                                 \
+        vector_t VEC_DUP = vec_dup(VEC);              \
+        size_t VEC_I = 0;                             \
+        for (; VEC_I < VEC_DUP->nptr; VEC_I++) {      \
+            FUNC(VEC_I, ((TYPE)VEC_DUP->arr)[VEC_I]); \
+        }                                             \
+        vec_del(&VEC_DUP)                             \
+    }
+
+#define VEC_ITRANGE_SAFE(VEC, FUNC, BEG, END, TYPE)        \
+    {                                                      \
+        vector_t VEC_DUP = vec_dup(VEC);                   \
+        size_t VEC_I = MAX(BEG, 0);                        \
+        for (; VEC_I < MIN(END, VEC_DUP->nptr); VEC_I++) { \
+            FUNC(VEC_I, ((TYPE)VEC_DUP->arr)[VEC_I]);      \
+        }                                                  \
+        vec_del(&VEC_DUP)                                  \
+    }
+
 #endif /* HEADER_SCRIPTS_VECTOR */
