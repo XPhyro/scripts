@@ -37,7 +37,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            '"$csa"' gcc -O'"${o:-3}"' -std=c99 -pedantic \
+            '"$csa"' gcc -O'"${o:-3}"' '"$g"' -std=c99 -pedantic \
                 -Wall -Wextra -Werror -Wabi=11 \
                 -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
                 -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
@@ -58,7 +58,7 @@ install() {
             case "$1" in
                 */wrapper/*) out="wrapper/$out";;
             esac
-            g++ -O'"${o:-3}"' -std=c++23 \
+            g++ -O'"${o:-3}"' '"$g"' -std=c++23 \
                 -Wall -Wextra -Werror -Wabi=11 \
                 -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
                 -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
@@ -148,14 +148,23 @@ case "$1" in
                     val="${i#csa=}"
                     case "$val" in
                         true|1) csa="scan-build";;
-                        *) unset csa;;
+                        false|0) unset csa;;
+                        *) exit 1;;
                     esac
                     ;;
                 o=*)
                     val="${i#o=}"
                     case "$val" in
                         ""|0|1|2|3|g|s|fast) o="$val";;
-                        *) unset o;;
+                        *) exit 1;;
+                    esac
+                    ;;
+                g=*)
+                    val="${i#g=}"
+                    case "$val" in
+                        "") g="-g";;
+                        gdb) g="-ggdb";;
+                        *) exit 1;;
                     esac
                     ;;
                 *) logerrq "Unrecognised argument [%s]." "$i";;
