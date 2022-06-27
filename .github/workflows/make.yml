@@ -9,8 +9,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
+    - name: dep
+        sudo apt -y install libmagic-dev
     - name: build
       run: |
-        sudo apt -y update
-        sudo apt -y install libmagic-dev
         make install
+    - name: test
+      run: |
+        make test
