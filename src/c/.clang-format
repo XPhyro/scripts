@@ -1,19 +1,16 @@
 ---
 
-Standard: Cpp03
+Standard: c++03
 
 ColumnLimit: 100
 
 AccessModifierOffset: -4
-ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 IndentCaseLabels: true
 IndentGotoLabels: false
 IndentPPDirectives: None
 IndentWidth: 4
 IndentWrappedFunctionNames: false
-NamespaceIndentation: None
-ObjCBlockIndentWidth: 4
 TabWidth: 4
 UseTab: Never
 
@@ -32,6 +29,7 @@ AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
+AllowShortEnumsOnASingleLine: true
 
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
@@ -41,62 +39,36 @@ AlwaysBreakTemplateDeclarations: false
 BinPackArguments: true
 BinPackParameters: true
 
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: false
+BreakStringLiterals: false
+
+BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterClass: false
   AfterControlStatement: false
   AfterEnum: false
   AfterExternBlock: false
   AfterFunction: true
-  AfterNamespace: true
-  AfterObjCDeclaration: false
   AfterStruct: false
   AfterUnion: false
-  BeforeCatch: false
   BeforeElse: false
   IndentBraces: false
   SplitEmptyFunction: true
-  SplitEmptyNamespace: true
-  SplitEmptyRecord: true
 
-BreakAfterJavaFieldAnnotations: false
-BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
-BreakBeforeInheritanceComma: false
-BreakBeforeTernaryOperators: false
-BreakConstructorInitializers: BeforeComma
-BreakConstructorInitializersBeforeComma: false
-BreakStringLiterals: false
-
-Cpp11BracedListStyle: false
+Cpp11BracedListStyle: false # adds spaces around braces
 MaxEmptyLinesToKeep: 1
-
-PenaltyBreakAssignment: 10
-PenaltyBreakBeforeFirstCallParameter: 30
-PenaltyBreakComment: 10
-PenaltyBreakFirstLessLess: 0
-PenaltyBreakString: 10
-PenaltyExcessCharacter: 100
-PenaltyReturnTypeOnItsOwnLine: 60
 
 ReflowComments: false
 
 SortIncludes: true
-SortUsingDeclarations: true
 
-ObjCSpaceAfterProperty: true
-ObjCSpaceBeforeProtocolList: true
 SpaceAfterCStyleCast: false
-SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
-SpaceBeforeCtorInitializerColon: true
-SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatements
-SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
-SpacesInContainerLiterals: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 
