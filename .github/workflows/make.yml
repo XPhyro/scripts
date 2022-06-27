@@ -11,6 +11,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: build
       run: |
-        apt -y update
-        apt -y install libmagic-dev
+        sudo apt -y update
+        sudo apt -y install libmagic-dev
         make install
