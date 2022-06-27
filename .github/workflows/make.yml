@@ -10,6 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: dep
+      run: |
         sudo apt -y install libmagic-dev
     - name: build
       run: |
