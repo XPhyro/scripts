@@ -331,7 +331,7 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
     size_t i, j, idx, ssize;
     const char *s;
 
-    if (!buf || !sptr || !sizes)
+    if (!sptr || !sizes)
         return NULL;
 
     if (!buf || bufsize < (i = (totsize + 1) * sizeof(char)))
@@ -374,6 +374,29 @@ char *astrcat(const char **sptr, size_t n)
     }
 
     o = astrncat(sptr, n, sizes, totsize);
+    free(sizes);
+
+    return o;
+}
+
+char *astrcatbuf(char *buf, size_t bufsize, const char **sptr, size_t n)
+{
+    size_t i, totsize, *sizes;
+    char *o;
+    const char *s;
+
+    sizes = amalloc(n * sizeof(size_t));
+    totsize = 0;
+
+    for (i = 0; i < n; i++) {
+        if (!(s = sptr[i])) {
+            free(sizes);
+            return NULL;
+        }
+        totsize += (sizes[i] = strlen(s));
+    }
+
+    o = astrncatbuf(buf, bufsize, sptr, n, sizes, totsize);
     free(sizes);
 
     return o;
@@ -426,6 +449,29 @@ char *vstrcat(size_t n, ...)
     va_end(ap);
 
     o = astrcat(sptr, n);
+    free(sptr);
+
+    return o;
+}
+
+char *vstrcatbuf(char *buf, size_t bufsize, size_t n, ...)
+{
+    va_list ap;
+    const char **sptr = amalloc(n * sizeof(char *));
+    size_t i;
+    char *o;
+
+    va_start(ap, n);
+    for (i = 0; i < n; i++) {
+        if (!(sptr[i] = va_arg(ap, char *))) {
+            free(sptr);
+            va_end(ap);
+            return NULL;
+        }
+    }
+    va_end(ap);
+
+    o = astrcatbuf(buf, bufsize, sptr, n);
     free(sptr);
 
     return o;
