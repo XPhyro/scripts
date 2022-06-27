@@ -182,7 +182,6 @@ case "$1" in
         done
 
         install
-        unittest
         ;;
     uninstall) uninstall;;
     test) unittest;;
