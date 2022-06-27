@@ -112,40 +112,40 @@ void vec_shrink(vector_t *vec)
             vec_shrink(VEC);                                                   \
     }
 
-#define VEC_IT(VEC, FUNC, TYPE)                         \
-    {                                                   \
-        size_t VEC_I = 0;                               \
-        for (; VEC_I < (VEC)->nptr; VEC_I++) {          \
-            FUNC(VEC_I, ((TYPE *)((VEC)->arr))[VEC_I]); \
-        }                                               \
+#define VEC_IT(VEC, FUNC, TYPE, ...)                                 \
+    {                                                                \
+        size_t VEC_I = 0;                                            \
+        for (; VEC_I < (VEC)->nptr; VEC_I++) {                       \
+            FUNC(VEC_I, ((TYPE *)((VEC)->arr))[VEC_I], __VA_ARGS__); \
+        }                                                            \
     }
 
-#define VEC_ITRANGE(VEC, FUNC, BEG, END, TYPE)           \
-    {                                                    \
-        size_t VEC_I = MAX(BEG, 0);                      \
-        for (; VEC_I < MIN(END, (VEC)->nptr); VEC_I++) { \
-            FUNC(VEC_I, ((TYPE *)((VEC)->arr))[VEC_I]);  \
-        }                                                \
+#define VEC_ITRANGE(VEC, FUNC, BEG, END, TYPE, ...)                  \
+    {                                                                \
+        size_t VEC_I = MAX(BEG, 0);                                  \
+        for (; VEC_I < MIN(END, (VEC)->nptr); VEC_I++) {             \
+            FUNC(VEC_I, ((TYPE *)((VEC)->arr))[VEC_I], __VA_ARGS__); \
+        }                                                            \
     }
 
-#define VEC_IT_SAFE(VEC, FUNC, TYPE)                      \
-    {                                                     \
-        vector_t VEC_DUP = vec_dup(VEC);                  \
-        size_t VEC_I = 0;                                 \
-        for (; VEC_I < VEC_DUP->nptr; VEC_I++) {          \
-            FUNC(VEC_I, ((TYPE *)(VEC_DUP->arr))[VEC_I]); \
-        }                                                 \
-        vec_del(&VEC_DUP)                                 \
+#define VEC_IT_SAFE(VEC, FUNC, TYPE, ...)                              \
+    {                                                                  \
+        vector_t VEC_DUP = vec_dup(VEC);                               \
+        size_t VEC_I = 0;                                              \
+        for (; VEC_I < VEC_DUP->nptr; VEC_I++) {                       \
+            FUNC(VEC_I, ((TYPE *)(VEC_DUP->arr))[VEC_I], __VA_ARGS__); \
+        }                                                              \
+        vec_del(&VEC_DUP)                                              \
     }
 
-#define VEC_ITRANGE_SAFE(VEC, FUNC, BEG, END, TYPE)        \
-    {                                                      \
-        vector_t VEC_DUP = vec_dup(VEC);                   \
-        size_t VEC_I = MAX(BEG, 0);                        \
-        for (; VEC_I < MIN(END, VEC_DUP->nptr); VEC_I++) { \
-            FUNC(VEC_I, ((TYPE *)(VEC_DUP->arr))[VEC_I]);  \
-        }                                                  \
-        vec_del(&VEC_DUP)                                  \
+#define VEC_ITRANGE_SAFE(VEC, FUNC, BEG, END, TYPE, ...)               \
+    {                                                                  \
+        vector_t VEC_DUP = vec_dup(VEC);                               \
+        size_t VEC_I = MAX(BEG, 0);                                    \
+        for (; VEC_I < MIN(END, VEC_DUP->nptr); VEC_I++) {             \
+            FUNC(VEC_I, ((TYPE *)(VEC_DUP->arr))[VEC_I], __VA_ARGS__); \
+        }                                                              \
+        vec_del(&VEC_DUP)                                              \
     }
 
 #endif /* HEADER_SCRIPTS_VECTOR */
