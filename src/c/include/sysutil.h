@@ -33,7 +33,7 @@ void rmkfile(char *path, mode_t mode)
     int fd;
 
     rmkparent(path, mode);
-    if ((fd = open(path, O_CREAT)) != -1)
+    if ((fd = open(path, O_CREAT, mode)) != -1)
         close(fd);
 }
 
