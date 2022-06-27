@@ -1,5 +1,12 @@
 #!/usr/bin/env sh
 
+if [ -t 1 ]; then
+    C_RED='\033[0;31m'
+    C_CLR='\033[0m'
+else
+    unset C_RED C_CLR
+fi
+
 logerrq() {
     printf "$@"
     exit 1
@@ -99,7 +106,7 @@ unittest() {
             [ "$ec" -ne "$testec" ] && failstr="Expected exit code $testec, got $ec. $failstr"
 
             [ -n "$failstr" ] \
-                && printf "\033[0;31m%s: Test %s failed. %s\033[0m\n" \
+                && printf "$C_RED%s: Test %s failed. %s$C_CLR\n" \
                     "$cmd" \
                     "$testdir" \
                     "$failstr"
