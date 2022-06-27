@@ -1,0 +1,7 @@
+branches: master
+
+pipeline:
+  make:
+    image: debian
+    commands: |
+      make install
