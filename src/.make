@@ -39,7 +39,8 @@ install() {
             esac
             '"$csa"' gcc -O'"${o:-3}"' '"$g"' -std=c99 -pedantic \
                 -Wall -Wextra -Werror -Wabi=11 \
-                -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
+                -Wno-unused-parameter -Wno-unused-result \
+                -Wno-implicit-fallthrough -Wno-sign-compare \
                 -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
                 -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
                 -Iinclude -lm -lmagic "$1" -o "$prefix/$out" \
@@ -60,7 +61,8 @@ install() {
             esac
             g++ -O'"${o:-3}"' '"$g"' -std=c++23 \
                 -Wall -Wextra -Werror -Wabi=11 \
-                -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-sign-compare \
+                -Wno-unused-parameter -Wno-unused-result \
+                -Wno-implicit-fallthrough -Wno-sign-compare \
                 -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
                 -Iinclude "$1" -o "$prefix/$out" \
                 && printf "\0%s\0" "$prefix/$out" >> ../.installed
