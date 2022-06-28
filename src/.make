@@ -38,13 +38,7 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                '"$csa"' gcc -O'"${o:-3}"' '"$g"' -std=c99 -pedantic \
-                    -Wall -Wextra -Werror -Wabi=11 \
-                    -Wno-unused-parameter -Wno-unused-result \
-                    -Wno-implicit-fallthrough -Wno-sign-compare \
-                    -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
-                    -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
-                    -Iinclude "$1" -lm -lmagic -o "$prefix/$out" \
+                '"$CC"' '"$CFLAGS"' "$1" '"$CLIBS"' -o "$prefix/$out" \
                     && printf "\0%s\0" "$prefix/$out" >> ../.installed
             ' --
     )
@@ -61,12 +55,7 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                g++ -O'"${o:-3}"' '"$g"' -std=c++23 \
-                    -Wall -Wextra -Werror -Wabi=11 \
-                    -Wno-unused-parameter -Wno-unused-result \
-                    -Wno-implicit-fallthrough -Wno-sign-compare \
-                    -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
-                    -Iinclude "$1" -o "$prefix/$out" \
+                '"$CPPC"' '"$CPPFLAGS"' "$1" '"$CPPLIBS"' -o "$prefix/$out" \
                     && printf "\0%s\0" "$prefix/$out" >> ../.installed
             ' --
     )
@@ -117,6 +106,13 @@ format() {
 }
 
 analyse() {
+    printf "%s\n" \
+        "" \
+        "==========" \
+        "shellcheck" \
+        "==========" \
+        ""
+
     find 'bash' 'sh' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
         | xargs -r0 $unbuffer \
@@ -131,8 +127,23 @@ analyse() {
                 -e SC2086 \
                 -e SC2088 \
                 -e SC2188 \
-                -- \
-        | less -RN
+                --
+    ec="$?"
+
+    printf "%s\n" \
+        "" \
+        "==========" \
+        "scan-build" \
+        "==========" \
+        ""
+
+    tmpout="$(mktemp)"
+    trap "rm -f -- '$tmpout'" INT EXIT TERM
+
+    find 'c' -mindepth 1 -type f -name "*.c" -print0 \
+        | xargs -r0 -I FILE \
+            scan-build -analyze-headers --status-bugs $view -no-failure-reports \
+                "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
 }
 
 set -ex
@@ -168,45 +179,65 @@ export prefix
 mkdir -p -- "$prefix"
 [ -d "$prefix" ]
 
-unset csa o
-case "$1" in
-    install)
-        shift
-        for i; do
-            case "$i" in
-                csa=*)
-                    val="${i#csa=}"
-                    case "$val" in
-                        true|1) csa="scan-build";;
-                        false|0|"") unset csa;;
-                        *) exit 1;;
-                    esac
-                    ;;
-                o=*)
-                    val="${i#o=}"
-                    case "$val" in
-                        ""|0|1|2|3|g|s|fast) o="$val";;
-                        *) exit 1;;
-                    esac
-                    ;;
-                g=*)
-                    val="${i#g=}"
-                    case "$val" in
-                        "") unset g;;
-                        g) g="-g";;
-                        gdb) g="-ggdb";;
-                        *) exit 1;;
-                    esac
-                    ;;
-                *) logerrq "Unrecognised argument [%s]." "$i";;
+cmd="$1"
+shift
+unset o g view
+for i; do
+    case "$i" in
+        o=*)
+            val="${i#o=}"
+            case "$val" in
+                ""|0|1|2|3|g|s|fast) o="$val";;
+                *) exit 1;;
             esac
-        done
+            ;;
+        g=*)
+            val="${i#g=}"
+            case "$val" in
+                "") unset g;;
+                g) g="-g";;
+                gdb) g="-ggdb";;
+                *) exit 1;;
+            esac
+            ;;
+        view=*)
+            val="${i#view=}"
+            case "$val" in
+                true|1) view="--view";;
+                false|0|"") unset view;;
+                *) exit 1;;
+            esac
+            ;;
+        *) logerrq "Unrecognised argument [%s]." "$i";;
+    esac
+done
 
-        install
-        ;;
+CC="gcc"
+CFLAGS="-O${o:-3} $g -std=c99 -pedantic \
+       -Wall -Wextra -Werror -Wabi=11 \
+       -Wno-unused-parameter -Wno-unused-result \
+       -Wno-implicit-fallthrough -Wno-sign-compare \
+       -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
+       -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
+       -Iinclude"
+CLIBS="-lm -lmagic"
+
+CPPC="g++"
+CPPFLAGS="-O${o:-3} $g -std=c++23 \
+          -Wall -Wextra -Werror -Wabi=11 \
+          -Wno-unused-parameter -Wno-unused-result \
+          -Wno-implicit-fallthrough -Wno-sign-compare \
+          -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
+          -Iinclude"
+CPPLIBS=""
+
+case "$cmd" in
+    install) install;;
     uninstall) uninstall;;
     test) unittest;;
     format) format;;
     analyse) analyse;;
-    *) logerrq "Target must be 'install' or 'uninstall', not [%s]." "$1";;
+    *) logerrq "Unkown target given: %s." "$1";;
 esac
+
+exit "${ec:-0}"

@@ -1,22 +1,21 @@
 .DEFAULT_GOAL := noop
 
 noop:
-	@echo "No operation given. Pass 'install' or 'uninstall'."
 
 install: uninstall
-	sh -c 'cd src && ./.make install csa=$(csa) o=$(o) g=$(g)'
+	sh -c 'cd src && ./.make install o=$(o) g=$(g) view=$(view)'
 
 uninstall:
-	sh -c 'cd src && ./.make uninstall'
+	sh -c 'cd src && ./.make uninstall o=$(o) g=$(g) view=$(view)'
 
 test:
-	sh -c 'cd src && ./.make test'
+	sh -c 'cd src && ./.make test o=$(o) g=$(g) view=$(view)'
 
 format:
-	sh -c 'cd src && ./.make format'
+	sh -c 'cd src && ./.make format o=$(o) g=$(g) view=$(view)'
 
 analyse:
-	sh -c 'cd src && ./.make analyse'
+	sh -c 'cd src && ./.make analyse o=$(o) g=$(g) view=$(view)'
 
 clean:
 
