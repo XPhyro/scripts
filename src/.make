@@ -132,6 +132,7 @@ analyse() {
                 -e SC1003 \
                 -e SC1007 \
                 -e SC2015 \
+                -e SC2016 \
                 -e SC2046 \
                 -e SC2059 \
                 -e SC2064 \
