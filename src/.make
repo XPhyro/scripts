@@ -7,8 +7,9 @@ logerrq() {
 
 install() {
     mkdir "$prefix/wrapper" 2> /dev/null \
-        && printf "%s %s\n" "There was no $prefix/wrapper directory, so it was created for you." \
-                            "Be sure to add it to your PATH with high priority." >&2
+        && printf "$C_RED%s %s$C_CLR\n" \
+            "There was no $prefix/wrapper directory, so it was created for you." \
+            "Be sure to add it to your PATH with high priority."
 
     for i in bash el py sh; do
         (
