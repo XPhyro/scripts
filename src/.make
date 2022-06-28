@@ -119,7 +119,7 @@ format() {
 analyse() {
     find 'bash' 'sh' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
-        | xargs -r0 "$unbuffer" \
+        | xargs -r0 $unbuffer \
             shellcheck \
                 -e SC1003 \
                 -e SC1007 \
