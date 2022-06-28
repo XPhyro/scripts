@@ -241,6 +241,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -Iinclude"
 CLIBS="-lm -lmagic"
+export C_INCLUDE_PATH="$PWD/src/c/include"
 
 CPPC="g++"
 CPPFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
@@ -250,6 +251,7 @@ CPPFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Iinclude"
 CPPLIBS=""
+export CPLUS_INCLUDE_PATH="$PWD/src/cpp/include"
 
 case "$cmd" in
     install) install;;
