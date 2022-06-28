@@ -1,7 +1,7 @@
-[![GitHub](https://img.shields.io/badge/Github-2B3137?style=for-the-badge&logo=Github&logoColor=FFFFFF)](https://github.com/XPhyro/scripts)
-[![Codeberg](https://img.shields.io/badge/Codeberg-2185D0?style=for-the-badge&logo=codeberg&logoColor=F2F8FC)](https://codeberg.org/XPhyro/scripts)
+[![GitHub](https://img.shields.io/badge/Github-2B3137?style=flat-square&logo=Github&logoColor=FFFFFF)](https://github.com/XPhyro/scripts)
+[![Codeberg](https://img.shields.io/badge/Codeberg-2185D0?style=flat-square&logo=codeberg&logoColor=F2F8FC)](https://codeberg.org/XPhyro/scripts)
 
-[![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge)](https://www.codefactor.io/repository/github/xphyro/scripts)
+[![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge?style=flat-square)](https://www.codefactor.io/repository/github/xphyro/scripts)
 [![Lines of Code](https://img.shields.io/tokei/lines/github/xphyro/scripts?color=red&style=flat-square)](src)
 [![License](https://img.shields.io/badge/license-MIT-lightgreen?style=flat-square)](LICENSE)
 
