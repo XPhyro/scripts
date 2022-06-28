@@ -129,14 +129,15 @@ analyse() {
         -not -path "*/.archived/*" -print0 \
         | xargs -r0 "$unbuffer" \
             shellcheck \
-                -e SC2188 \
+                -e SC1003 \
                 -e SC1007 \
-                -e SC2088 \
-                -e SC2086 \
                 -e SC2015 \
                 -e SC2046 \
-                -e SC1003 \
                 -e SC2059 \
+                -e SC2064 \
+                -e SC2086 \
+                -e SC2088 \
+                -e SC2188 \
                 -- \
         | less -RN
 }
