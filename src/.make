@@ -1,13 +1,5 @@
 #!/usr/bin/env sh
 
-if [ -t 1 ]; then
-    C_RED='\033[0;31m'
-    C_CLR='\033[0m'
-    unbuffer="unbuffer"
-else
-    unset C_RED C_CLR unbuffer
-fi
-
 logerrq() {
     printf "$@"
     exit 1
@@ -144,6 +136,14 @@ analyse() {
 }
 
 set -ex
+
+if [ -t 1 ]; then
+    C_RED='\033[0;31m'
+    C_CLR='\033[0m'
+    unbuffer="unbuffer"
+else
+    unset C_RED C_CLR unbuffer
+fi
 
 if [ "$(id -u)" -eq 0 ]; then
     isroot() {
