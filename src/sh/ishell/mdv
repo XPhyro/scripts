@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+for i; do
+    tmp="$(mktemp --suffix=.html)" # not cleaning after is intentional
+    cmark-gfm "$i" > "$tmp"
+    setsid --fork xdg-open "$tmp" &
+done
