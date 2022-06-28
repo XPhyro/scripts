@@ -300,7 +300,6 @@
     should show all `tglapp` applications. For this, a subscription and a server
     (like `lf`'s) system should be implemented.
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
-- `set -e` in every script.
 - Use `getopt` if available. Use `getopts` otherwise. Be sure to check the
   `parseargs()` of individual scripts to see quirky parsing. Some scripts have
   non-standard parsing.
