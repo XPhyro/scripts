@@ -116,8 +116,8 @@ execute() {
 
 main() {
     [ "$optonce" = "1" ] && {
-        inotifywait -e move_self -- "$execpath" > /dev/null 2>&1
-        eval "$execpath"
+        xargs -d "$stdinsep" inotifywait -qq -e move_self -- < "$stdinfl"
+        $argv
         exit 0
     }
 
