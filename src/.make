@@ -143,6 +143,8 @@ if [ -t 1 ]; then
     unbuffer="unbuffer"
 else
     unset C_RED C_CLR unbuffer
+    pwd
+    ls
 fi
 
 if [ "$(id -u)" -eq 0 ]; then
