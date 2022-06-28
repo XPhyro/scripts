@@ -15,6 +15,9 @@ jobs:
     - name: build
       run: |
         make install
+        make uninstall
+        sudo make install
     - name: test
       run: |
         make test
+        sudo make test
