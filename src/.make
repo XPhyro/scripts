@@ -142,7 +142,7 @@ analyse() {
 
     find 'c' -mindepth 1 -type f -name "*.c" -print0 \
         | xargs -r0 -I FILE \
-            scan-build -analyze-headers --status-bugs $v $view -no-failure-reports \
+            scan-build -analyze-headers --status-bugs $v $view -maxloop "$m" -no-failure-reports \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
 }
 
@@ -218,6 +218,14 @@ for i; do
                 4) v="-v -v -v -v";;
                 *) exit 1;;
             esac
+            ;;
+        m=*)
+            val="${i#m=}"
+            if [ -z "$val" ] || [ "$val" -le 0 ]; then
+                m=4
+            else
+                m="$val"
+            fi
             ;;
         *) logerrq "Unrecognised argument [%s]." "$i";;
     esac
