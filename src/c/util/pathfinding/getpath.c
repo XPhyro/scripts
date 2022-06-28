@@ -58,9 +58,10 @@ int main(int argc, char *argv[])
 {
     const char *confdir, *const flcont = "/scripts/pathfinding/files-container/",
                                 *const dircont = "/scripts/pathfinding/directories-container/";
-    bool dirturn, optboth = false, optshell = false, shellinit = false;
+    bool dirturn, optboth = false, optshell = false, shellinit = false, allocprefix = false;
     int i;
-    char delim = '\n', *s, *prefix, *path = NULL, *line = NULL;
+    char delim = '\n', *s, *path = NULL, *line = NULL;
+    const char *prefix;
     size_t st, size, contmargin, kcmargin, linesize = 0;
     FILE *fl;
     FILEMODES filemodes = FILEMODE_NONE;
@@ -135,12 +136,12 @@ int main(int argc, char *argv[])
         shellinit = true;
     }
 
-    if (!((prefix = getenv("GETPATH_CONFIG_HOME")) || (prefix = getenv("XDG_CONFIG_HOME")))) {
+    if (!(prefix = getenv("GETPATH_CONFIG_HOME")) && !(prefix = getenv("XDG_CONFIG_HOME"))) {
         if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             DIE("could not determine config directory\n");
-        if (!(prefix = amalloc(size = ((strlen(s) + 9) * sizeof(char)))))
-            DIE("out of memory\n");
-        snprintf(prefix, size, "%s/.config", s);
+        prefix = amalloc(size = ((strlen(s) + 9) * sizeof(char)));
+        snprintf((char *)prefix, size, "%s/.config", s);
+        allocprefix = true;
     }
 
     contmargin = strlen(prefix) + MAX(strlen(flcont), strlen(dircont));
@@ -207,8 +208,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    free(prefix);
     free(path);
+    if (allocprefix)
+        free((char *)prefix);
 
     return 0;
 }
