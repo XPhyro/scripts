@@ -7,7 +7,7 @@ bspc query -N -n .hidden.window | while IFS= read -r i; do
 done | xins -Rs -- execmenu | while IFS=: read -r i _; do
     instance="$(xprop -id "$i" WM_CLASS | cut -d\" -f2)"
     if [ "${instance%[0-9]}" = "bspwmpad" ]; then
-        bspwmpad -n "${instance#${instance%?}}"
+        bspwmpad -n "${instance#"${instance%?}"}"
     else
         bspc node "$(printf "%s\n" "$i")" --flag hidden=false -f
     fi

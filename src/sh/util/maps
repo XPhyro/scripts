@@ -12,6 +12,7 @@ while IFS= read -r i; do
     for j; do
         from="${j%%"$SEP"*}"
         to="${j#*"$SEP"}"
+        # shellcheck disable=SC2254
         case "$i" in
             $from)
                 printf "%s%s" "$to" "$END"

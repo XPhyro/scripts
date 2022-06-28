@@ -14,6 +14,7 @@ eval "$(getpath -du -- clploglck lckdir 1 "[ERROR]: getpath -f -- failed, aborti
 lastclp="$(xclip -o -se c)"
 oldclp="$lastclp"
 
+# shellcheck disable=SC2154
 rm -rf -- "$lckdir"
 
 while true; do

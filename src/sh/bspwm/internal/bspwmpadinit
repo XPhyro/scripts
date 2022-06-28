@@ -22,7 +22,7 @@ shift 2
         { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
         printf "%s\n\n" "Running command: $*"
         fillline "‾"
-        (eval "$@")
+        (eval "$*")
         exit "$?"
     fi
 }

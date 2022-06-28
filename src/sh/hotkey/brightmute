@@ -5,6 +5,8 @@
 eval "$(evalverbose)"
 
 eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
+
+# shellcheck disable=SC2154
 val="$(cat -- "$fl")"
 
 if [ "$val" = "0" ]; then

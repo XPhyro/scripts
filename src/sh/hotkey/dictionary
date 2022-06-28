@@ -6,6 +6,7 @@ eval "$(getpath -de -- dic dir 1 "[ERROR]: getpath -d -- failed, aborting.")"
 
 menu="$(getmenu)"
 
+# shellcheck disable=SC2154
 lang="$(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | $menu -i)"
 [ -n "$lang" ] || exit 1
 ft="$(printf "dictionary\nthesaurus\n" | $menu -i)"

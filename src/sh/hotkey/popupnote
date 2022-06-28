@@ -4,6 +4,7 @@ eval "$(evalverbose)"
 
 eval "$(getpath -dse -- popupnote dir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
+# shellcheck disable=SC2154
 find "$dir" -mindepth 1 -maxdepth 1 -printf "%P\n" \
     | execmenu -i -l 20 -p "popupnote:" \
     | xargs -d '\n' -rI '{}' xph-open "$dir/{}"

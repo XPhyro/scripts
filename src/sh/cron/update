@@ -4,6 +4,7 @@
 eval "$(evalverbose)"
 
 cleanexit() {
+    # shellcheck disable=SC2154
     rm -rf -- "$lckdir" 2> /dev/null
     exit 0
 }
@@ -36,6 +37,7 @@ log "Reading updateables.
 errcount=0
 cmdcount=0
 
+# shellcheck disable=SC2154
 while IFS= read -r i; do
     [ "$(printf "%s" "$i" | sed -E 's/^\s*//' | cut -c1)" = "#" ] && continue
 

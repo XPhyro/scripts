@@ -5,6 +5,7 @@ eval "$(evalverbose)"
 eval "$(getpath -fe -- zoom fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
 n=1
+# shellcheck disable=SC2154
 while IFS= read -r i; do
     [ -z "${i%%"#"*}" ] && continue
 
@@ -14,7 +15,7 @@ while IFS= read -r i; do
 $n$(printf "%s" "$i" | awk -F '' '{print $3}')"
 
     n=$((n + 1))
-done < "$fl"
+done < "$fl" 
 
 sel="$(printf "%s" "$lst" | execmenu -i -l 20)"
 

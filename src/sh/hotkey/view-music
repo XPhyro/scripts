@@ -13,6 +13,7 @@ eval "$(getpath -due -- mu dir 1 "[ERROR]: getpath -du -- failed, aborting.")"
 
 menu="$(getmenu)"
 fl="$(
+    # shellcheck disable=SC2154
     find "$dir" -mindepth 2 -regextype egrep -regex '.*/(done|in-progress|self)/.*\.pdf' -printf "%A@;%P\n" \
         | sort -nr \
         | cut -d ';' -f2- \

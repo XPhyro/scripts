@@ -2,5 +2,7 @@
 
 eval "$(evalverbose)"
 
+set -e
+
 [ -f "__init__.py" ] && cd "$HOME"
 exec execaux "$0" "$@"

@@ -7,5 +7,6 @@ eval "$(evalverbose)"
 eval "$(getpath -dse -- "$1" dir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
 shift
+# shellcheck disable=SC2154
 set -- "$@" "$dir"
 mv -n -- "$@"

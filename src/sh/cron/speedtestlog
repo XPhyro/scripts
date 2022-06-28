@@ -35,6 +35,7 @@ printf "\n\nLogging results...\n"
 
 eval "$(getpath -fe -- stl fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
+# shellcheck disable=SC2154
 printf "%s\n" "$log" >> "$fl"
 
 printf "%s\n" "Done."

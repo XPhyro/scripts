@@ -72,13 +72,13 @@ parseargs() {
                     no-case-insensitive ) unset optcase;;
                     case-sensitive      ) unset optcase;;
                     lines               ) shift; assertarg "--lines" "COUNT" "$1"; optlines="-l $1";;
-                    lines=*             ) optlines="-l ${opt#*=}"; assertarg "--lines" "COUNT" "$method";;
+                    lines=*             ) optlines="-l ${opt#*=}"; assertarg "--lines" "COUNT" "$1";;
                     multi-select        ) caseopt "optmulti" "-multi-select" "";;
                     no-multi-select     ) unset optmulti;;
                     method              ) shift; assertarg "--method" "METHOD" "$1"; optmethod="$1";;
-                    method=*            ) optmethod="${opt#*=}"; assertarg "--method" "METHOD" "$method";;
+                    method=*            ) optmethod="${opt#*=}"; assertarg "--method" "METHOD" "$1";;
                     prompt              ) shift; assertarg "--prompt" "prompt" "$1"; optprompt="$1";;
-                    prompt=*            ) optprompt="${opt#*=}"; assertarg "--prompt" "prompt" "$method";;
+                    prompt=*            ) optprompt="${opt#*=}"; assertarg "--prompt" "prompt" "$1";;
                     ""                  ) shift; break;;
                     *                   ) printusage "--$opt"; exit 0;;
                 esac
@@ -114,4 +114,5 @@ esac
 
 [ -n "$optprompt" ] && optprompt="-p $(env printf "%q" "$optprompt")"
 
+# shellcheck disable=SC2154
 printf "%s\n" "$MENU $optcase $optmethod $optmulti $optprompt $optlines"

@@ -166,6 +166,7 @@ main() {
     eval "$(getpath -dse -- bspwmpadlck lckdir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 
     [ -n "$optnumber" ] && {
+        # shellcheck disable=SC2154
         if [ -f "$lckdir/$optnumber/ids" ]; then
             fd="$(bspc query -D -d focused)"
             while IFS= read -r i; do
@@ -239,7 +240,7 @@ preprocessargs "$@"
 [ "$PAD_FORCE" -eq 0 ] && [ "$PAD_LEVEL" -gt 0 ] && {
     shift "$argcmdcount"
     export PAD_LEVEL="$((PAD_LEVEL + 1))"
-    eval "${@:-"$SHELL"}"
+    eval "${*:-"$SHELL"}"
     exit "$?"
 }
 parseargs "$@"
