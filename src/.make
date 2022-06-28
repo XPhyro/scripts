@@ -17,65 +17,66 @@ install() {
         && printf "%s %s\n" "There was no $prefix/wrapper directory, so it was created for you." \
                             "Be sure to add it to your PATH with high priority." >&2
 
-    cd sh # dummy cd to reduce number of cds in the loop
     for i in bash el py sh; do
-        cd "../$i"
-        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
-                                                 -not -path "*/wrapper/*" \
-                                                 -printf "%P\0$prefix/%f\0" \
-            | tee -a ../.installed \
-            | xargs -r0 -n 2 cp -f --
-        find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
-                                                      -path "*/wrapper/*" \
-                                                 -printf "%P\0$prefix/wrapper/%f\0" \
-            | tee -a ../.installed \
-            | xargs -r0 -n 2 cp -f --
+        (
+            cd "$i"
+            find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
+                                                     -not -path "*/wrapper/*" \
+                                                     -printf "%P\0$prefix/%f\0" \
+                | tee -a ../.installed \
+                | xargs -r0 -n 2 cp -f --
+            find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
+                                                          -path "*/wrapper/*" \
+                                                     -printf "%P\0$prefix/wrapper/%f\0" \
+                | tee -a ../.installed \
+                | xargs -r0 -n 2 cp -f --
+        )
     done
 
-    cd ../c
-
-    find '.' -mindepth 1 -type f -not -path "./.*" \
-                                 -not -path "*/include/*" \
-                                 -printf "%P\0" \
-        | xargs -r0 -n 1 -P "$(nproc)" sh -c '
-            set -e
-            out="${1%.c}"
-            out="${out##*/}"
-            case "$1" in
-                */wrapper/*) out="wrapper/$out";;
-            esac
-            '"$csa"' gcc -O'"${o:-3}"' '"$g"' -std=c99 -pedantic \
-                -Wall -Wextra -Werror -Wabi=11 \
-                -Wno-unused-parameter -Wno-unused-result \
-                -Wno-implicit-fallthrough -Wno-sign-compare \
-                -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
-                -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
-                -Iinclude "$1" -lm -lmagic -o "$prefix/$out" \
-                && printf "\0%s\0" "$prefix/$out" >> ../.installed
-        ' --
+    (
+        cd c
+        find '.' -mindepth 1 -type f -not -path "./.*" \
+                                     -not -path "*/include/*" \
+                                     -printf "%P\0" \
+            | xargs -r0 -n 1 -P "$(nproc)" sh -c '
+                set -e
+                out="${1%.c}"
+                out="${out##*/}"
+                case "$1" in
+                    */wrapper/*) out="wrapper/$out";;
+                esac
+                '"$csa"' gcc -O'"${o:-3}"' '"$g"' -std=c99 -pedantic \
+                    -Wall -Wextra -Werror -Wabi=11 \
+                    -Wno-unused-parameter -Wno-unused-result \
+                    -Wno-implicit-fallthrough -Wno-sign-compare \
+                    -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
+                    -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
+                    -Iinclude "$1" -lm -lmagic -o "$prefix/$out" \
+                    && printf "\0%s\0" "$prefix/$out" >> ../.installed
+            ' --
+    )
         
-    cd ../cpp
-
-    find '.' -mindepth 1 -type f -not -path "./.*" \
-                                 -not -path "*/include/*" \
-                                 -printf "%P\0" \
-        | xargs -r0 -n 1 -P "$(nproc)" sh -c '
-            set -e
-            out="${1%.cpp}"
-            out="${out##*/}"
-            case "$1" in
-                */wrapper/*) out="wrapper/$out";;
-            esac
-            g++ -O'"${o:-3}"' '"$g"' -std=c++23 \
-                -Wall -Wextra -Werror -Wabi=11 \
-                -Wno-unused-parameter -Wno-unused-result \
-                -Wno-implicit-fallthrough -Wno-sign-compare \
-                -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
-                -Iinclude "$1" -o "$prefix/$out" \
-                && printf "\0%s\0" "$prefix/$out" >> ../.installed
-        ' --
-
-    cd ..
+    (
+        cd cpp
+        find '.' -mindepth 1 -type f -not -path "./.*" \
+                                     -not -path "*/include/*" \
+                                     -printf "%P\0" \
+            | xargs -r0 -n 1 -P "$(nproc)" sh -c '
+                set -e
+                out="${1%.cpp}"
+                out="${out##*/}"
+                case "$1" in
+                    */wrapper/*) out="wrapper/$out";;
+                esac
+                g++ -O'"${o:-3}"' '"$g"' -std=c++23 \
+                    -Wall -Wextra -Werror -Wabi=11 \
+                    -Wno-unused-parameter -Wno-unused-result \
+                    -Wno-implicit-fallthrough -Wno-sign-compare \
+                    -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
+                    -Iinclude "$1" -o "$prefix/$out" \
+                    && printf "\0%s\0" "$prefix/$out" >> ../.installed
+            ' --
+    )
 }
 
 uninstall() {
@@ -84,36 +85,36 @@ uninstall() {
 }
 
 unittest() {
-    cd .tests
+    (
+        cd .tests
 
-    tmpin="$(mktemp)"
-    tmpout="$(mktemp)"
-    tmperr="$(mktemp)"
-    trap "rm -f -- '$tmpout' '$tmperr'" INT EXIT HUP TERM
+        tmpin="$(mktemp)"
+        tmpout="$(mktemp)"
+        tmperr="$(mktemp)"
+        trap "rm -f -- '$tmpout' '$tmperr'" INT EXIT HUP TERM
 
-    find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
-        find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
-            testdir="$cmd/$testname"
+        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
+            find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
+                testdir="$cmd/$testname"
 
-            "$testdir/in" > "$tmpin"
-            eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
-            ec="$?"
+                "$testdir/in" > "$tmpin"
+                eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
+                ec="$?"
 
-            failstr=
-            "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
-            "$testdir/out" | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
-            testec="$("$testdir/ec")"
-            [ "$ec" -ne "$testec" ] && failstr="Expected exit code $testec, got $ec. $failstr"
+                failstr=
+                "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
+                "$testdir/out" | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
+                testec="$("$testdir/ec")"
+                [ "$ec" -ne "$testec" ] && failstr="Expected exit code $testec, got $ec. $failstr"
 
-            [ -n "$failstr" ] \
-                && printf "$C_RED%s: Test %s failed. %s$C_CLR\n" \
-                    "$cmd" \
-                    "$testdir" \
-                    "$failstr"
-        done
-    done | sponge
-
-    cd ..
+                [ -n "$failstr" ] \
+                    && printf "$C_RED%s: Test %s failed. %s$C_CLR\n" \
+                        "$cmd" \
+                        "$testdir" \
+                        "$failstr"
+            done
+        done | sponge
+    )
 }
 
 format() {
