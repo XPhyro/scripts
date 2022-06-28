@@ -1,1 +1,14 @@
--s a asdf/asdf ~ ~root ~root/asdf /home/xphyro/asdf/asdfa /home/asdf/asdfasdf ~ ~/downloads/ ~/downloads///asdf/ /home///////xphyro ~mail
+#!/usr/bin/env sh
+
+printf "%s " -s \
+    'XXXXXX' \
+    'XXXXXX/YYYYYY' \
+    '~' \
+    '~/XXXXXX' \
+    '~/XXXXXX/' \
+    '~root' \
+    '~root/XXXXXX' \
+    '~/XXXXXX/YYYYYY' \
+    '~/XXXXXX//////YYYYYY' \
+    '/home/XXXXXX' \
+    '/home/XXXXXX/YYYYYY'

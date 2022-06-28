@@ -88,6 +88,7 @@ unittest() {
 
     cd .tests
 
+    tmpin="$(mktemp)"
     tmpout="$(mktemp)"
     tmperr="$(mktemp)"
     trap "rm -f -- '$tmpout' '$tmperr'" INT EXIT HUP TERM
@@ -95,14 +96,15 @@ unittest() {
     find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
         find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
             testdir="$cmd/$testname"
-            args="$(cat "$testdir/args")"
-            eval "'$cmd' $args > '$tmpout' 2> '$tmperr' < '$testdir/in'"
+
+            "$testdir/in" > "$tmpin"
+            eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
             ec="$?"
 
             failstr=
-            cmp -s -- "$testdir/err" "$tmperr" || failstr="stderr is different. $failstr"
-            cmp -s -- "$testdir/out" "$tmpout" || failstr="stdout is different. $failstr"
-            testec="$(cat "$testdir/ec")"
+            "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
+            "$testdir/out" | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
+            testec="$("$testdir/ec")"
             [ "$ec" -ne "$testec" ] && failstr="Expected exit code $testec, got $ec. $failstr"
 
             [ -n "$failstr" ] \

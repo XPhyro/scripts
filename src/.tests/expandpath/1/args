@@ -1,1 +1,14 @@
-'' '~' '~a2' '~b3/' '~xphyro' '~/5' '~/6/asdf' '~xphyro/7/sadf' '~/8' '~/' '~root' '~root/11' '12' '/13///' '~xphyro/14' '~xphyro/' '~mail'
+#!/usr/bin/env sh
+
+printf "%s " \
+    "''" \
+    "'~'" \
+    "'~/'" \
+    "'~/XXXXXX'" \
+    "'~/XXXXXX/YYYYYY'" \
+    "'~XXXXXX'" \
+    "'~XXXXXX/'" \
+    "'/root'" \
+    "'/root/XXXXXX'" \
+    "'XXXXXX'" \
+    "'/XXXXXX/'"
