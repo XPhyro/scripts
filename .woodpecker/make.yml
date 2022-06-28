@@ -1,9 +1,0 @@
-branches: master
-
-pipeline:
-  make:
-    image: debian
-    commands: |
-      apt -y update
-      apt -y install libmagic-dev
-      make install
