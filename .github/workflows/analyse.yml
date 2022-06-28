@@ -1,0 +1,17 @@
+name: make
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: dep
+      run: |
+        sudo apt -y install shellcheck
+    - name: analyse
+      run: |
+        make analyse
