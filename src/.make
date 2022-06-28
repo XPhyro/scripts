@@ -84,8 +84,6 @@ uninstall() {
 }
 
 unittest() {
-    isroot && return 0
-
     cd .tests
 
     tmpin="$(mktemp)"
