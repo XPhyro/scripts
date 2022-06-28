@@ -3,7 +3,7 @@
 eval "$(evalverbose)"
 
 if [ "$#" -eq 0 ]; then
-    less -R
+    less -RN
 elif [ -e "$1" ]; then
     previewtext "$@" | less -R
 else
