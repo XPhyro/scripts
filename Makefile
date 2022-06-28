@@ -15,6 +15,9 @@ test:
 format:
 	sh -c 'cd src && ./.make format'
 
+analyse:
+	sh -c 'cd src && ./.make analyse'
+
 clean:
 
-.PHONY: install uninstall test format clean
+.PHONY: install uninstall test format analyse clean

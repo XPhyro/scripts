@@ -3,8 +3,9 @@
 if [ -t 1 ]; then
     C_RED='\033[0;31m'
     C_CLR='\033[0m'
+    unbuffer="unbuffer"
 else
-    unset C_RED C_CLR
+    unset C_RED C_CLR unbuffer
 fi
 
 logerrq() {
@@ -123,6 +124,23 @@ format() {
         | xargs -r0 clang-format -i --style=file --
 }
 
+analyse() {
+    find 'bash' 'sh' -mindepth 1 -type f -executable \
+        -not -path "*/.archived/*" -print0 \
+        | xargs -r0 "$unbuffer" \
+            shellcheck \
+                -e SC2188 \
+                -e SC1007 \
+                -e SC2088 \
+                -e SC2086 \
+                -e SC2015 \
+                -e SC2046 \
+                -e SC1003 \
+                -e SC2059 \
+                -- \
+        | less -RN
+}
+
 set -ex
 
 if [ "$(id -u)" -eq 0 ]; then
@@ -187,5 +205,6 @@ case "$1" in
     uninstall) uninstall;;
     test) unittest;;
     format) format;;
+    analyse) analyse;;
     *) logerrq "Target must be 'install' or 'uninstall', not [%s]." "$1";;
 esac
