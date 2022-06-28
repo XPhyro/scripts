@@ -142,7 +142,7 @@ analyse() {
 
     find 'c' -mindepth 1 -type f -name "*.c" -print0 \
         | xargs -r0 -I FILE \
-            scan-build -analyze-headers --status-bugs $view -no-failure-reports \
+            scan-build -analyze-headers --status-bugs $v $view -no-failure-reports \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
 }
 
@@ -181,7 +181,7 @@ mkdir -p -- "$prefix"
 
 cmd="$1"
 shift
-unset o g view
+unset o g view v
 for i; do
     case "$i" in
         o=*)
@@ -205,6 +205,17 @@ for i; do
             case "$val" in
                 true|1) view="--view";;
                 false|0|"") unset view;;
+                *) exit 1;;
+            esac
+            ;;
+        v=*)
+            val="${i#v=}"
+            case "$val" in
+                0|"") unset v;;
+                1) v="-v";;
+                2) v="-v -v";;
+                3) v="-v -v -v";;
+                4) v="-v -v -v -v";;
                 *) exit 1;;
             esac
             ;;
