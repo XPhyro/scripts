@@ -142,7 +142,8 @@ analyse() {
 
     find 'c' -mindepth 1 -type f -name "*.c" -print0 \
         | xargs -r0 -I FILE \
-            scan-build -analyze-headers --status-bugs $v $view -maxloop "$m" -no-failure-reports \
+            scan-build -analyze-headers --status-bugs \
+                $v $view -maxloop "$m" -no-failure-reports \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
 }
 
@@ -181,7 +182,7 @@ mkdir -p -- "$prefix"
 
 cmd="$1"
 shift
-unset o g view v
+unset o g ndebug view v
 for i; do
     case "$i" in
         o=*)
@@ -194,7 +195,7 @@ for i; do
         g=*)
             val="${i#g=}"
             case "$val" in
-                "") unset g;;
+                "") ndebug="-DNDEBUG";;
                 g) g="-g";;
                 gdb) g="-ggdb";;
                 *) exit 1;;
@@ -232,7 +233,7 @@ for i; do
 done
 
 CC="gcc"
-CFLAGS="-O${o:-3} $g -std=c99 -pedantic \
+CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wall -Wextra -Werror -Wabi=11 \
        -Wno-unused-parameter -Wno-unused-result \
        -Wno-implicit-fallthrough -Wno-sign-compare \
@@ -242,7 +243,7 @@ CFLAGS="-O${o:-3} $g -std=c99 -pedantic \
 CLIBS="-lm -lmagic"
 
 CPPC="g++"
-CPPFLAGS="-O${o:-3} $g -std=c++23 \
+CPPFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
           -Wall -Wextra -Werror -Wabi=11 \
           -Wno-unused-parameter -Wno-unused-result \
           -Wno-implicit-fallthrough -Wno-sign-compare \
