@@ -23,10 +23,10 @@ int n, idx;
 #define DEFAULTTEXTSEP 10
 unsigned int opttextlen = DEFAULTTEXTLEN, textlen = DEFAULTTEXTLEN, opttextsep = DEFAULTTEXTSEP;
 bool optkeepidx = false;
-size_t linesize;
+size_t linesize = 0;
 ssize_t linelen;
 char *line = NULL;
-char *doubleline = NULL;
+char *doubleline;
 const char delim = '\n';
 
 void updaten(void)
@@ -51,7 +51,7 @@ void updates(void)
 
     strcpy(s = doubleline, line);
     memset(s += linelen, ' ', opttextsep);
-    strcpy(s += opttextsep, line);
+    strcpy(s + opttextsep, line);
 
     if (!optkeepidx)
         idx = 0;
@@ -111,8 +111,10 @@ int main(int argc, char *argv[])
         }
     }
 
+#ifndef __clang_analyzer__
     argv += optind;
     argc -= optind;
+#endif /* ifndef __clang_analyzer__ */
 
     if (setvbuf(stdout, NULL, _IONBF, 0))
         err(EXIT_FAILURE, "setvbuf");

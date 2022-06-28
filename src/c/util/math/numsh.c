@@ -74,7 +74,7 @@ function functions[] = {
     FUNCREDUCE(max), FUNCREDUCE(min), FUNCREDUCE(sum),
 };
 
-void die(const char *fmt, ...)
+void __attribute__((noreturn)) die(const char *fmt, ...)
 {
     va_list ap;
 
@@ -193,6 +193,9 @@ funcavail:
             printf("%.16g\n", func->func(funcargc, funcargv, funckwargv));
             break;
     }
+
+    free(funcargv);
+    free(funckwargv);
 
     return 0;
 }

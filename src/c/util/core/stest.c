@@ -117,8 +117,12 @@ TESTFUNCDEF(testmstype)
 {
     const char *mime;
 
-    if (!(mime = magic_file(magic, path)) && (mime = magic_error(magic))) {
-        fputs(mime, stderr);
+    if (!(mime = magic_file(magic, path))) {
+        if ((mime = magic_error(magic)))
+            fputs(mime, stderr);
+        else
+            fputs("unkown libmagic error\n", stderr);
+
         return false;
     }
 
@@ -128,8 +132,12 @@ TESTFUNCDEF(testmtype)
 {
     const char *mime;
 
-    if (!(mime = magic_file(magic, path)) && (mime = magic_error(magic))) {
-        fputs(mime, stderr);
+    if (!(mime = magic_file(magic, path))) {
+        if ((mime = magic_error(magic)))
+            fputs(mime, stderr);
+        else
+            fputs("unkown libmagic error\n", stderr);
+
         return false;
     }
 

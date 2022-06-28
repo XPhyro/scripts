@@ -29,7 +29,7 @@ typedef enum {
     FILEMODE_FILE = 2,
 } FILEMODES;
 
-void die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
+void __attribute__((noreturn)) die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
 {
     va_list ap;
 
@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
     int i;
     char delim = '\n', *s, *prefix, *path = NULL, *line = NULL;
     size_t st, size, contmargin, kcmargin, linesize = 0;
-    ssize_t linelen;
     FILE *fl;
     FILEMODES filemodes = FILEMODE_NONE;
     SAFETYMODE safetymode = SAFETYMODE_NORMAL;
@@ -173,7 +172,7 @@ int main(int argc, char *argv[])
             if (!(fl = fopen(path, "rb")))
                 DIE("keycode is invalid: %s\n", argv[i]);
 
-            if ((linelen = getdelim(&line, &linesize, '\0', fl)) <= 0)
+            if (getdelim(&line, &linesize, '\0', fl) <= 0)
                 DIE("directory database is corrupted, generate a fresh copy\n");
 
             switch (safetymode) {
@@ -207,6 +206,9 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+
+    free(prefix);
+    free(path);
 
     return 0;
 }

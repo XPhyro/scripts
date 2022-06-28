@@ -34,7 +34,7 @@
             exit(EXIT_SUCCESS);             \
     }
 
-void die(const char *fmt, ...)
+void __attribute__((noreturn)) die(const char *fmt, ...)
 {
     va_list ap;
 

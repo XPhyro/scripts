@@ -1,6 +1,7 @@
 #ifndef HEADER_SCRIPTS_STRUTIL
 #define HEADER_SCRIPTS_STRUTIL
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -19,6 +20,7 @@ inline void __attribute__((always_inline)) * amallocset(size_t size, int c)
 inline void __attribute__((always_inline)) * amallocsetn(size_t size, int c, size_t n)
 {
     /* it is the user's responsibility to ensure n <= size */
+    assert(n <= size);
     return memset(amalloc(size), c, n);
 }
 
@@ -334,7 +336,7 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
     if (!sptr || !sizes)
         return NULL;
 
-    if (!buf || bufsize < (i = (totsize + 1) * sizeof(char)))
+    if (!buf || bufsize < (totsize + 1) * sizeof(char))
         buf = arealloc(buf, (totsize + 1) * sizeof(char));
 
     for (i = 0, idx = 0; i < n; i++) {
@@ -353,7 +355,9 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
 
 char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
 {
+#ifndef __clang_analyzer__
     return astrncatbuf(amalloc((totsize + 1) * sizeof(char)), totsize + 1, sptr, n, sizes, totsize);
+#endif /* ifndef __clang_analyzer__ */
 }
 
 char *astrcat(const char **sptr, size_t n)

@@ -29,7 +29,7 @@ void unexpand(const char *path)
 {
     static size_t slen = 0;
     static char *s = NULL;
-    size_t i, j, len;
+    size_t i, len, newlen;
     bool dupe = false;
 
     if (!(len = strlen(path)))
@@ -37,17 +37,17 @@ void unexpand(const char *path)
 
     s = areallocfit(s, slen, (len + 1) * sizeof(char));
 
-    for (i = 0, j = 0; i < len; i++) {
+    for (i = 0, newlen = 0; i < len; i++) {
         if (path[i] == '/') {
             if (!dupe)
-                s[j++] = '/';
+                s[newlen++] = '/';
             dupe = true;
         } else {
-            s[j++] = path[i];
+            s[newlen++] = path[i];
             dupe = false;
         }
     }
-    s[len = j] = '\0';
+    s[newlen] = '\0';
 
     for (i = 0; i < nusers; i++) {
         if (!strneq(users[i].home, s, users[i].homelen))

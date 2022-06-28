@@ -6,13 +6,10 @@
 
 #define BUFSIZE 4096
 
-void checkfl(const char *path, unsigned char buf[BUFSIZE])
+void checkfl(int fd, unsigned char buf[BUFSIZE])
 {
     long nread, i;
-    int fd;
     const char *sep = "\\n";
-
-    fd = open(path, O_RDONLY);
 
     while ((nread = read(fd, buf, BUFSIZE))) {
         for (i = 0; i < nread; i++) {
@@ -25,18 +22,24 @@ void checkfl(const char *path, unsigned char buf[BUFSIZE])
 
 out:
     fputs(sep, stdout);
-    close(fd);
 }
 
 int main(int argc, char *argv[])
 {
-    int i;
+    int i, fd;
     unsigned char buf[BUFSIZE];
 
     if (argc < 2) {
         checkfl(STDIN_FILENO, buf);
     } else
-        for (i = 1; i < argc; checkfl(argv[i++], buf)) {}
+        for (i = 1; i < argc; i++) {
+            if ((fd = open(argv[i], O_RDONLY) == -1)) {
+                perror("open");
+                continue;
+            }
+            checkfl(fd, buf);
+            close(fd);
+        }
 
     return 0;
 }

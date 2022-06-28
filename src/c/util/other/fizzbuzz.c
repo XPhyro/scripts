@@ -80,7 +80,6 @@ int main(int argc, char *argv[])
         putchar('\n');
     }
     free(buf);
-    bufsize = 0;
     buf = NULL;
 
     return 0;

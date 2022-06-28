@@ -53,8 +53,10 @@ int main(int argc, char *argv[])
         }
     }
 
+#ifndef __clang_analyzer__
     argv += optind;
     argc -= optind;
+#endif /* ifndef __clang_analyzer__ */
 
 #define PRINTRANDOM(SPECIFIER, TYPE)                \
     {                                               \

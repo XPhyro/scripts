@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
     char delim = '\n', *sep = NULL, *end = NULL, *def = NULL, *line = NULL, *eol, *s;
     int i, offset;
     size_t linelen = 0, *maplens;
-    ssize_t nread = 0;
 
     while ((i = getopt(argc, argv, "d:e:hs:z0")) != -1) {
         switch (i) {
@@ -79,7 +78,7 @@ int main(int argc, char *argv[])
         maplens[i] = s - argv[i];
     }
 
-    while ((nread = getdelim(&line, &linelen, delim, stdin)) != -1) {
+    while (getdelim(&line, &linelen, delim, stdin) != -1) {
         if (!*line) {
             fputs(end, stdout);
             goto newline;
@@ -98,6 +97,8 @@ int main(int argc, char *argv[])
             printf("%s%s", def, end);
 newline:;
     }
+
+    free(maplens);
 
     return 0;
 }

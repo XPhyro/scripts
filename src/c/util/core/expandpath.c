@@ -120,7 +120,9 @@ int main(int argc, char *argv[])
             buf = expand(line, buf, bufsize);
         }
     } else
-        for (i = 0; i < argc; expand(argv[i++], buf, bufsize)) {}
+        for (i = 0; i < argc; buf = expand(argv[i++], buf, bufsize)) {}
+
+    free(buf);
 
     return 0;
 }
