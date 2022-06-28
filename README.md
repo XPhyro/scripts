@@ -112,7 +112,8 @@ executed and all executed commands are printed to stderr.
   compatible with other Unixes and Unix-likes.
 - All scripts are only tested on Linux.
 - C and C++ code are only tested with GCC, but should be compatible with any
-  POSIX-complete compiler. Some scripts use widely implemented GNU extensions.
+  POSIX-complete compiler. Some scripts use widely implemented GNU/LLVM
+  extensions.
 
 ## Related
 - You can find my gpup management scripts
