@@ -813,7 +813,7 @@ $1"
 
     [ "$moveorig" = "1" ] && movefile="$infl"
     [ -z "$framecount" ] && framecount=100
-    [ -z "$seekto" ] && seek=100
+    [ -z "$seekto" ] && seekto=100
 }
 
 parseargs_reverse() {
