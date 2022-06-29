@@ -17,6 +17,9 @@ format:
 analyse:
 	sh -c 'cd src && ./.make analyse o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
 
+spell:
+	sh -c 'cd src && ./.make spell o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+
 clean:
 
 .PHONY: install uninstall test format analyse clean

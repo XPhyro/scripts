@@ -148,6 +148,10 @@ analyse() {
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
 }
 
+spell() {
+    (cd .. && codespell --builtin "clear,rare,informal" -- **)
+}
+
 set -ex
 
 if [ -t 1 ]; then
@@ -260,6 +264,7 @@ case "$cmd" in
     test) unittest;;
     format) format;;
     analyse) analyse;;
+    spell) spell;;
     *) logerrq "Unkown target given: %s." "$1";;
 esac
 
