@@ -2,9 +2,21 @@ name: analyse
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - src/*/**
+      - src/.make
+      - Makefile
+      - .github/**
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - src/*/**
+      - src/.make
+      - Makefile
+      - .github/**
 
 jobs:
   build:

@@ -2,9 +2,19 @@ name: build
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - src/**
+      - Makefile
+      - .github/**
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - src/**
+      - Makefile
+      - .github/**
 
 jobs:
   build:
