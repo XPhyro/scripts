@@ -1,0 +1,21 @@
+name: spell
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: dep
+      run: |
+        sudo apt -y install codespell
+    - name: spell
+      run: |
+        make spell
