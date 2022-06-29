@@ -4,19 +4,9 @@ on:
   push:
     branches:
       - master
-    paths:
-      - src/*/**
-      - src/.make
-      - Makefile
-      - .github/**
   pull_request:
     branches:
       - master
-    paths:
-      - src/*/**
-      - src/.make
-      - Makefile
-      - .github/**
 
 jobs:
   build:
