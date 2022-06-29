@@ -54,11 +54,8 @@
   - `-h` and/or `--help` flags.
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
-- Add a target or variable for compiling C/C++ with `-g`/`-ggdb`.
-- Add Codeberg/GitHub CI for compilations/tests.
 - Add `codespell` to CI and/or `.make`.
-- Add `cppcheck` and/or `clang-tidy` to CI and/or `.make`.
-- Use `festival` in applicable scripts?
+- Add `cppcheck` to analyse target in `.make`.
 
 
 # Normal Priority
