@@ -121,7 +121,7 @@ TESTFUNCDEF(testmstype)
         if ((mime = magic_error(magic)))
             fputs(mime, stderr);
         else
-            fputs("unkown libmagic error\n", stderr);
+            fputs("unknown libmagic error\n", stderr);
 
         return false;
     }
@@ -136,7 +136,7 @@ TESTFUNCDEF(testmtype)
         if ((mime = magic_error(magic)))
             fputs(mime, stderr);
         else
-            fputs("unkown libmagic error\n", stderr);
+            fputs("unknown libmagic error\n", stderr);
 
         return false;
     }

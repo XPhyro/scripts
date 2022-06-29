@@ -14,7 +14,7 @@ printhelp() {
     printf "%s\n" \
 "$execname [OPTION...] [COMMAND...] -- [COMMAND...]
    -A CHARS, --async CHARS
-       Toggle asynchronous command execution for given cases. CHARS can include [amuw]. Toggling will be done for every occurence of [amuw].
+       Toggle asynchronous command execution for given cases. CHARS can include [amuw]. Toggling will be done for every occurrence of [amuw].
    -a, --all
        Toggle recording positional arguments as commands to run against all elements. Has no effect if -e is passed.
    --no-all

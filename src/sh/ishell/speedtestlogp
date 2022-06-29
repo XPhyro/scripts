@@ -32,7 +32,7 @@ done < "$fl"
 
 count="$(wc -l < "$fl")"
 
-# assuming the inout will be in ms and Mbit/s
+# assuming the input will be in ms and Mbit/s
 printf "%s\n" \
     "Ping average    : $(printf "%s\n" "scale = 2; $pingav / $count" | bc) ms" \
     "Download average: $(printf "%s\n" "scale = 2; $dowav / $count" | bc) Mbit/s" \

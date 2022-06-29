@@ -54,7 +54,6 @@
   - `-h` and/or `--help` flags.
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
-- Add `codespell` to CI and/or `.make`.
 - Add `cppcheck` to analyse target in `.make`.
 
 
@@ -243,7 +242,7 @@
 - In `dotfilesbak{,-sensitive}`, change the author and/or committer of the
   commits that are made by these scripts.
 - Optimise `bspwmpadinit`'s PID updating with `inotifywait`.
-- Rewrite `brightmute` in a more robust fashion that would not oftenly break.
+- Rewrite `brightmute` in a more robust fashion that would not often break.
 - Consider `scrot` in `cpscr`.
 - Make `dupe`, `getnewpath` and alike use GNU `--backup` syntax instead of
   continuous trailing underscores.

@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
                     "EXITCODE and ERRMSG are optional and respectively default to 1 and NULL.\n"
                     "Unless -b is given, the first match of -f and -d in that order is output.\n"
                     "At least one of -df must be given.\n"
-                    "Only the last occurence of any of -nsu is considered. By default, -n is selected.\n"
+                    "Only the last occurrence of any of -nsu is considered. By default, -n is selected.\n"
                     "\n"
                     "  -b        if -d and -f are given, output both if matched\n"
                     "  -d        search directory database\n"

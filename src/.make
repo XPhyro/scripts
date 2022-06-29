@@ -149,7 +149,7 @@ analyse() {
 }
 
 spell() {
-    (cd .. && codespell --builtin "clear,rare,informal" -- **)
+    (cd .. && codespell --builtin "clear,rare,informal" -L "ans,ba" -- **)
 }
 
 set -ex
