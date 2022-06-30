@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-# Take and manage notes with dmenu.
-# Designed to work as a scratchpad to dwm with st.
+# Take and manage notes.
+# Used most optimally with bspwmpad/dwmpad.
 
 eval "$(evalverbose)"
 
