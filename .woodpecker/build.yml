@@ -1,0 +1,9 @@
+branches: master
+
+pipeline:
+  build:
+    image: debian
+    commands: |
+      apt -y install libmagic-dev moreutils
+      make install
+      make test
