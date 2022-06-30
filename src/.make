@@ -101,7 +101,8 @@ unittest() {
 }
 
 format() {
-    find 'c' 'cpp' -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" \) -print0 \
+    find 'c' 'cpp' -type f \( -iname "*.c"   -o -iname "*.h" \
+                           -o -iname "*.cpp" -o -iname "*.hpp" \) -print0 \
         | sort -z \
         | xargs -r0 clang-format -i --style=file --
 }
@@ -141,7 +142,7 @@ analyse() {
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
-    find 'c' -mindepth 1 -type f -name "*.c" -print0 \
+    find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
@@ -257,6 +258,8 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
           -Iinclude"
 CXXLIBS=""
 export CPLUS_INCLUDE_PATH="$PWD/cpp/include"
+
+unset ec
 
 case "$cmd" in
     install) install;;
