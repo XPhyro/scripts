@@ -56,7 +56,7 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                '"$CPPC"' '"$CPPFLAGS"' "$1" '"$CPPLIBS"' -o "$prefix/$out" \
+                '"$CXX"' '"$CXXFLAGS"' "$1" '"$CXXLIBS"' -o "$prefix/$out" \
                     && printf "\0%s\0" "$prefix/$out" >> ../.installed
             ' --
     )
@@ -248,14 +248,14 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
 CLIBS="-lm -lmagic"
 export C_INCLUDE_PATH="$PWD/c/include"
 
-CPPC="g++"
-CPPFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
+CXX="g++"
+CXXFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
           -Wall -Wextra -Werror -Wabi=11 \
           -Wno-unused-parameter -Wno-unused-result \
           -Wno-implicit-fallthrough -Wno-sign-compare \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Iinclude"
-CPPLIBS=""
+CXXLIBS=""
 export CPLUS_INCLUDE_PATH="$PWD/cpp/include"
 
 case "$cmd" in
