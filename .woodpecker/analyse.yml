@@ -5,5 +5,5 @@ pipeline:
     image: ubuntu:22.04
     commands: |
       apt-get -y update
-      apt-get -y install make zlib1g-dev shellcheck clang clang-tidy clang-tools
+      apt-get -y install make zlib1g-dev shellcheck clang clang-tidy clang-tools perl libfindbin-libs-perl
       make analyse
