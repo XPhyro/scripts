@@ -147,6 +147,11 @@ analyse() {
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
+    find 'cpp' -mindepth 1 -type f -iname "*.cpp" -print0 \
+        | xargs -r0 -I FILE \
+            scan-build -analyze-headers --status-bugs \
+                $v $view -maxloop "$m" -no-failure-reports \
+                "$CXX" $CXXFLAGS 'FILE' $CXXLIBS -o "$tmpout" || ec="$?"
 }
 
 spell() {
@@ -250,7 +255,7 @@ CLIBS="-lm -lmagic"
 export C_INCLUDE_PATH="$PWD/c/include"
 
 CXX="g++"
-CXXFLAGS="-O${o:-3} $g $ndebug -std=c++23 \
+CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=11 \
           -Wno-unused-parameter -Wno-unused-result \
           -Wno-implicit-fallthrough -Wno-sign-compare \
