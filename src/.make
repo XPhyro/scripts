@@ -29,6 +29,9 @@ install() {
 
     (
         cd c
+
+        "$CC" --version
+
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
@@ -46,6 +49,9 @@ install() {
         
     (
         cd cpp
+
+        "$CXX" --version
+
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
@@ -115,6 +121,8 @@ analyse() {
         "==========" \
         ""
 
+    shellcheck --version
+
     find 'bash' 'sh' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
         | xargs -r0 $unbuffer \
@@ -138,6 +146,9 @@ analyse() {
         "scan-build" \
         "==========" \
         ""
+
+    clang --version
+    clang-tidy --version
 
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
