@@ -4,6 +4,7 @@ pipeline:
   build:
     image: debian
     commands: |
-      apt -y install libmagic-dev moreutils
+      apt-get -y update
+      apt-get -y install libmagic-dev moreutils
       make install
       make test

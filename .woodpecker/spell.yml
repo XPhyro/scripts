@@ -4,5 +4,6 @@ pipeline:
   spell:
     image: debian
     commands: |
-      apt -y install codespell
+      apt-get -y update
+      apt-get -y install codespell
       make spell

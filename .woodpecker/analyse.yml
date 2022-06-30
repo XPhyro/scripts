@@ -4,5 +4,6 @@ pipeline:
   analyse:
     image: debian
     commands: |
-      apt -y install shellcheck clang-tools
+      apt-get -y update
+      apt-get -y install shellcheck clang-tools
       make analyse
