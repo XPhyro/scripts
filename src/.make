@@ -259,7 +259,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wall -Wextra -Werror -Wabi=11 \
        -Wno-unused-parameter -Wno-unused-result \
        -Wno-implicit-fallthrough -Wno-sign-compare \
-       -Wfloat-equal -Wdouble-promotion -Wjump-misses-init \
+       -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -Iinclude"
 CLIBS="-lm -lmagic"
@@ -269,7 +269,7 @@ CXX="g++"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=11 \
           -Wno-unused-parameter -Wno-unused-result \
-          -Wno-implicit-fallthrough -Wno-sign-compare \
+          -Wno-implicit-fallthrough -Wno-sign-compare -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Iinclude"
 CXXLIBS=""
