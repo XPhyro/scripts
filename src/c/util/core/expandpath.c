@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <ioutil.h>
 #include <stdutil.h>
 
 #define DIE(...)                       \
@@ -80,8 +81,7 @@ int main(int argc, char *argv[])
 {
     int i;
     char *line = NULL, *buf = NULL;
-    size_t size, bufsize = 0;
-    ssize_t len;
+    size_t bufsize = 0;
 
     while ((i = getopt(argc, argv, "hz0")) != -1) {
         switch (i) {
@@ -113,14 +113,8 @@ int main(int argc, char *argv[])
     if (!(home = getenv("HOME")) && !(home = getpwuid(getuid())->pw_dir))
         DIE("could not determine home directory");
 
-    if (!argc) {
-        while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
-            if (len && line[len - 1] == delim)
-                line[len - 1] = '\0';
-            buf = expand(line, buf, bufsize);
-        }
-    } else
-        for (i = 0; i < argc; buf = expand(argv[i++], buf, bufsize)) {}
+    while ((line = getstr(argc, argv, delim)))
+        buf = expand(line, buf, bufsize);
 
     free(buf);
 

@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <ioutil.h>
 #include <stdutil.h>
 #include <strutil.h>
 
@@ -72,7 +73,6 @@ int main(int argc, char *argv[])
 {
     int i;
     char *line = NULL, *tmpstr;
-    size_t size;
     ssize_t len;
     struct passwd *pw = NULL;
     user u;
@@ -131,16 +131,8 @@ int main(int argc, char *argv[])
     }
     users = arealloc(users, (nusers = i) * sizeof(user));
 
-    if (!argc) {
-        while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
-            if (len && line[len - 1] == delim)
-                line[len - 1] = '\0';
-            unexpand(line);
-        }
-    } else
-        for (i = 0; i < argc; i++) {
-            unexpand(argv[i]);
-        }
+    while ((line = getstr(argc, argv, delim)))
+        unexpand(line);
 
     return 0;
 }

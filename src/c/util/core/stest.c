@@ -24,6 +24,7 @@
 
 #include <magic.h>
 
+#include <ioutil.h>
 #include <strutil.h>
 
 #ifndef S_ISVTX
@@ -56,17 +57,6 @@
     TESTFUNCDEF(NAME)       \
     {                       \
         return RET;         \
-    }
-
-#define STEST(PATH)              \
-    if (stest(PATH)) {           \
-        if (!optquiet) {         \
-            fputs(PATH, stdout); \
-            putchar(delim);      \
-        }                        \
-        hasmatch = true;         \
-    } else {                     \
-        hasnomatch = true;       \
     }
 
 #define TESTCOUNTMAX ('z' - 'A')
@@ -266,8 +256,6 @@ int main(int argc, char *argv[])
     int i;
     bool hasnomatch = false, hasmatch = false;
     char delim = '\n', *line = NULL;
-    size_t size;
-    ssize_t len;
 
     if (argc > 1 && streq(argv[1], "--help")) {
         printhelp();
@@ -337,16 +325,17 @@ int main(int argc, char *argv[])
     argv += optind;
     argc -= optind;
 
-    if (!argc) {
-        while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
-            if (len && line[len - 1] == delim)
-                line[len - 1] = '\0';
-            STEST(line);
+    while ((line = getstr(argc, argv, delim))) {
+        if (stest(line)) {
+            if (!optquiet) {
+                fputs(line, stdout);
+                putchar(delim);
+            }
+            hasmatch = true;
+        } else {
+            hasnomatch = true;
         }
-    } else
-        for (i = 0; i < argc; i++) {
-            STEST(argv[i]);
-        }
+    }
 
     return !hasnomatch ? 0 : hasmatch ? (!optall ? 0 : 1) : 2;
 }

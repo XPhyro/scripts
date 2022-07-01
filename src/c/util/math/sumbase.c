@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <ioutil.h>
 #include <stdutil.h>
 
 #define EXECNAME "sumbase"
@@ -44,8 +45,6 @@ int main(int argc, char *argv[])
     int i;
     long long int sum = 0;
     char delim = '\n', *line = NULL;
-    size_t size;
-    ssize_t len;
 
     while ((i = getopt(argc, argv, "dhiz0")) != -1) {
         switch (i) {
@@ -86,16 +85,8 @@ int main(int argc, char *argv[])
     argv += optind;
     argc -= optind;
 
-    if (!argc) {
-        while ((len = getdelim(&line, &size, delim, stdin)) != -1) {
-            if (len && line[len - 1] == delim)
-                line[len - 1] = '\0';
-            sum += parsenum(line);
-        }
-    } else
-        for (i = 0; i < argc; i++) {
-            sum += parsenum(argv[i]);
-        }
+    while ((line = getstr(argc, argv, delim)))
+        sum += parsenum(line);
 
     if (!optnodelim)
         printf("%lld%c", sum, isatty(STDOUT_FILENO) ? '\n' : delim);

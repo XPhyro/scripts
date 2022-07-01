@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <wordexp.h>
 
+#include <ioutil.h>
+
 int safewordexp(const char *restrict s, wordexp_t *restrict result, int flags)
 {
     int r;
@@ -20,21 +22,14 @@ int safewordexp(const char *restrict s, wordexp_t *restrict result, int flags)
 
 int main(int argc, char *argv[])
 {
-    int i;
     char *line = NULL;
-    size_t size;
-    ssize_t len;
     wordexp_t result;
 
-    if (argc < 2) {
-        while ((len = getline(&line, &size, stdin)) != -1) {
-            if (line[len - 1] == '\n')
-                line[len - 1] = '\0';
-            safewordexp(line, &result, 0);
-        }
-    } else
-        for (i = 1; i < argc; i++)
-            safewordexp(argv[i], &result, 0);
+    argc--;
+    argv++;
+
+    while ((line = getstr(argc, argv, '\n')))
+        safewordexp(line, &result, 0);
 
     return 0;
 }
