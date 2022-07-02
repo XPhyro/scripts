@@ -4,5 +4,5 @@ pipeline:
   analyse:
     image: archlinux:basedevel
     commands: |
-      pacman -Syu shellcheck clang-tidy
+      pacman -S --noconfirm shellcheck clang
       make analyse
