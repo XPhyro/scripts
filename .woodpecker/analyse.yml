@@ -2,8 +2,7 @@ branches: master
 
 pipeline:
   analyse:
-    image: ubuntu:22.04
+    image: archlinux:basedevel
     commands: |
-      apt-get -y update
-      apt-get -y install make gcc g++ zlib1g-dev shellcheck clang clang-tidy clang-tools perl libfindbin-libs-perl
+      pacman -Syu shellcheck clang-tidy
       make analyse
