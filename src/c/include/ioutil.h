@@ -1,11 +1,19 @@
 #ifndef HEADER_SCRIPTS_IOUTIL
 #define HEADER_SCRIPTS_IOUTIL
 
-#ifndef _POSIX_C_SOURCE
+#ifdef _POSIX_C_SOURCE
+#define BAK_POSIX_C_SOURCE _POSIX_C_SOURCE
+#undef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 200809L
-#endif /* ifndef _POSIX_C_SOURCE */
-
 #include <stdio.h>
+#undef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE BAK_POSIX_C_SOURCE
+#undef BAK_POSIX_C_SOURCE
+#else /* ifdef _POSIX_C_SOURCE */
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#undef _POSIX_C_SOURCE
+#endif /* ifndef _POSIX_C_SOURCE */
 
 char *getstr(int argc, char *argv[], int delim)
 {
