@@ -6,9 +6,12 @@
 #include <fcntl.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <strutil.h>
 
 /* path is modified in the process, but restored to original */
 void rmkparent(char *path, mode_t mode)
@@ -27,6 +30,13 @@ void rmkparent(char *path, mode_t mode)
         path[j] = '/';
 }
 
+void rmkparentconst(const char *path, mode_t mode)
+{
+    char *pathdup = astrdup(path);
+    rmkparent(pathdup, mode);
+    free(pathdup);
+}
+
 /* path is modified in the process, but restored to original */
 void rmkfile(char *path, mode_t mode)
 {
@@ -37,11 +47,25 @@ void rmkfile(char *path, mode_t mode)
         close(fd);
 }
 
+void rmkfileconst(const char *path, mode_t mode)
+{
+    char *pathdup = astrdup(path);
+    rmkfile(pathdup, mode);
+    free(pathdup);
+}
+
 /* path is modified in the process, but restored to original */
 void rmkdir(char *path, mode_t mode)
 {
     rmkparent(path, mode);
     mkdir(path, mode);
+}
+
+void rmkdirconst(const char *path, mode_t mode)
+{
+    char *pathdup = astrdup(path);
+    rmkdir(pathdup, mode);
+    free(pathdup);
 }
 
 #endif /* ifndef HEADER_SCRIPTS_SYSUTIL */

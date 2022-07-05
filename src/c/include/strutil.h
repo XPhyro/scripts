@@ -29,6 +29,14 @@ inline void __attribute__((always_inline)) * amallocsetn_s(size_t size, int c, s
     return memset(amalloc(size), c, MIN(size, n));
 }
 
+char *astrdup(const char *s)
+{
+    size_t size = strlen(s) * sizeof(char);
+    char *dup = amalloc(size);
+    memcpy(dup, s, size);
+    return dup;
+}
+
 char *strend(const char *s)
 {
     if (!s)
