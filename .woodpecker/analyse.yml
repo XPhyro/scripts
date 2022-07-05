@@ -1,8 +1,0 @@
-branches: master
-
-pipeline:
-  analyse:
-    image: archlinux:basedevel
-    commands: |
-      pacman -S --noconfirm shellcheck clang
-      make analyse
