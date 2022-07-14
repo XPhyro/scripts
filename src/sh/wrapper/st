@@ -2,6 +2,8 @@
 
 eval "$(evalverbose)"
 
-TABBED_XID="$(tabbed -c -d)"
-export TABBED_XID
+[ -n "$TABBED_XID" ] && [ "$REUSE_TABBED_XID" -gt 0 ] 2> /dev/null && {
+    TABBED_XID="$(tabbed -c -d)"
+    export TABBED_XID
+}
 exec execaux "$0" -w "$TABBED_XID" "$@"
