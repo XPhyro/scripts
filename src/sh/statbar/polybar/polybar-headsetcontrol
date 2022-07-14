@@ -6,7 +6,7 @@ eval "$(evalverbose)"
 { [ -z "$-" ] || [ -n "${-%%*x*}" ]; } && exec 2> /dev/null
 
 eval "$(
-    headsetcontrol -b -m 2> /dev/null \
+    (headsetcontrol -b -m || sudo headsetcontrol -b -m) 2> /dev/null \
         | tail -n 2 \
         | tr -d ' -' \
         | tr ':' '=' \
