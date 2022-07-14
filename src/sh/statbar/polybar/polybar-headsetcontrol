@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
 set -e
-exec 2> /dev/null
 
 eval "$(evalverbose)"
+{ [ -z "$-" ] || [ -n "${-%%*x*}" ]; } && exec 2> /dev/null
 
 eval "$(
     headsetcontrol -b -m 2> /dev/null \
