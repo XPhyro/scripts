@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+export TABBED_XID="$(tabbed -c -d)"
+exec execaux "$0" -w "$TABBED_XID"
