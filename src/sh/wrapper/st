@@ -2,7 +2,7 @@
 
 eval "$(evalverbose)"
 
-[ -n "$TABBED_XID" ] && [ "$REUSE_TABBED_XID" -gt 0 ] 2> /dev/null && {
+{ [ -z "$TABBED_XID" ] || [ "$REUSE_TABBED_XID" -le 0 ] 2> /dev/null; } && {
     TABBED_XID="$(tabbed -c -d)"
     export TABBED_XID
 }
