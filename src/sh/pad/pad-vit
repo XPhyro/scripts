@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+exec st -n vit -t vit -z 6 -e vit
