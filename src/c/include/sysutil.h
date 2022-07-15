@@ -1,7 +1,15 @@
 #ifndef HEADER_SCRIPTS_SYSUTIL
 #define HEADER_SCRIPTS_SYSUTIL
 
+#ifdef _POSIX_C_SOURCE
+#define BAK_POSIX_C_SOURCE _POSIX_C_SOURCE
+#undef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 200809L
+#undef _POSIX_C_SOURCE
+#else /* ifdef _POSIX_C_SOURCE */
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#endif /* ifndef _POSIX_C_SOURCE */
 
 #include <fcntl.h>
 #include <stddef.h>
@@ -12,6 +20,15 @@
 #include <unistd.h>
 
 #include <strutil.h>
+
+#ifdef _POSIX_C_SOURCE
+#undef _POSIX_C_SOURCE
+#endif /* ifdef _POSIX_C_SOURCE */
+
+#ifdef BAK_POSIX_C_SOURCE
+#define _POSIX_C_SOURCE BAK_POSIX_C_SOURCE
+#undef BAK_POSIX_C_SOURCE
+#endif /* ifdef BAK_POSIX_C_SOURCE */
 
 /* path is modified in the process, but restored to original */
 void rmkparent(char *path, mode_t mode)
