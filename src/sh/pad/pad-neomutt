@@ -2,4 +2,4 @@
 
 eval "$(evalverbose)"
 
-"$PAD" -g 160x50 -- neomutt
+"$PAD" -g 1450x900 -- neomutt
