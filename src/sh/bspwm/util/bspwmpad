@@ -207,6 +207,7 @@ main() {
 
     export PAD_LEVEL="$((PAD_LEVEL + 1))"
 
+    export TABBED_ARGS="-n bspwmpad$lck"
     # shellcheck disable=SC2086
     st $optdirectory $optgeometry -n "bspwmpad$lck" \
         -t "${opttitle:-"bspwmpad #$lck: ${*:-"$SHELL"}"}" \
@@ -220,7 +221,11 @@ main() {
     else
         bspcargs="--flag hidden -f"
     fi
-    [ "$opttiled" = 1 ] && bspcargs="--state tiled $bspcargs"
+    if [ "$opttiled" = 1 ]; then
+        bspcargs="--state tiled $bspcargs"
+    else
+        bpscargs="--state floating $bspcargs"
+    fi
 
     printf "%s\n" "$ids" | while IFS= read -r i; do
         bspc node "$i" $bspcargs

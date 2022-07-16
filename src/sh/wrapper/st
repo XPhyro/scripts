@@ -5,7 +5,7 @@ eval "$(evalverbose)"
 { [ -z "$TABBED_XID" ] \
     || [ -z "$REUSE_TABBED_XID" ] \
     || [ "$REUSE_TABBED_XID" -le 0 ] 2> /dev/null; } && {
-    TABBED_XID="$(tabbed -c -d)"
+    TABBED_XID="$(tabbed -c -d $TABBED_ARGS)"
     export TABBED_XID
 }
 exec execaux "$0" -w "$TABBED_XID" "$@"
