@@ -221,11 +221,7 @@ main() {
     else
         bspcargs="--flag hidden -f"
     fi
-    if [ "$opttiled" = 1 ]; then
-        bspcargs="--state tiled $bspcargs"
-    else
-        bpscargs="--state floating $bspcargs"
-    fi
+    [ "$opttiled" = 1 ] && bspcargs="--state tiled $bspcargs"
 
     printf "%s\n" "$ids" | while IFS= read -r i; do
         bspc node "$i" $bspcargs
