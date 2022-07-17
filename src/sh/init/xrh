@@ -4,8 +4,8 @@
 eval "$(evalverbose)"
 
 xr="$(xrandr)"
-hdmic="$(printf "%s" "$xr" | grep -o "HDMI-1-0 connected")"
-dvic="$(printf "%s" "$xr" | grep -o "DVI-I-2-1 connected")"
+hdmic="$(printf "%s" "$xr" | grep -o "$XRH_HDMI connected")"
+dvic="$(printf "%s" "$xr" | grep -o "$XRH_DVI connected")"
 
 mode="2560x1080"
 rot="normal"
@@ -26,28 +26,28 @@ done
 if ! [ "$hdmic" = "" ]; then
     if ! [ "$dvic" = "" ]; then
         if [ "$rot" = "normal" ]; then
-            xrandr --output HDMI-1-0    --mode "$mode"   --primary --rotate "$rot" --pos 1920x0 \
-                   --output eDP1        --mode 1920x1080                           --pos 1920x1080 \
-                   --output DVI-I-2-1   --mode 1920x1080                           --pos 0x1080
+            xrandr --output "$XRH_HDMI" --mode "$mode"   --primary --rotate "$rot" --pos 1920x0 \
+                   --output "$XRH_EDP"  --mode 1920x1080                           --pos 1920x1080 \
+                   --output "$XRH_DVI"  --mode 1920x1080                           --pos 0x1080
         else
-            xrandr --output HDMI-1-0    --mode "$mode"   --primary --rotate "$rot" --pos 1920x0 \
-                   --output eDP1        --mode 1920x1080                           --pos 0x1080 \
-                   --output DVI-I-2-1   --mode 1920x1080                           --pos 0x0
+            xrandr --output "$XRH_HDMI" --mode "$mode"   --primary --rotate "$rot" --pos 1920x0 \
+                   --output "$XRH_EDP"  --mode 1920x1080                           --pos 0x1080 \
+                   --output "$XRH_DVI"  --mode 1920x1080                           --pos 0x0
         fi
     else
         if [ "$rot" = "normal" ]; then
-            xrandr --output HDMI-1-0  --mode "$mode"   --primary --rotate "$rot" --pos 0x0 \
-                   --output eDP1      --mode 1920x1080                           --pos 2560x0
+            xrandr --output "$XRH_HDMI" --mode "$mode"   --primary --rotate "$rot" --pos 0x0 \
+                   --output "$XRH_EDP"  --mode 1920x1080                           --pos 2560x0
         else
-            xrandr --output HDMI-1-0  --mode "$mode"   --primary --rotate "$rot" --pos 1920x0 \
-                   --output eDP1      --mode 1920x1080                           --pos 0x0
+            xrandr --output "$XRH_HDMI" --mode "$mode"   --primary --rotate "$rot" --pos 1920x0 \
+                   --output "$XRH_EDP"  --mode 1920x1080                           --pos 0x0
         fi
     fi
 else
     if ! [ "$dvic" = "" ]; then
-        xrandr --output eDP1      --mode 1920x1080 --primary --pos 1920x0 \
-               --output DVI-I-2-1 --mode 1920x1080           --pos 0x0
+        xrandr --output "$XRH_EDP"      --mode 1920x1080 --primary                 --pos 1920x0 \
+               --output "$XRH_DVI"      --mode 1920x1080                           --pos 0x0
     else
-        xrandr --output eDP1      --mode 1920x1080 --primary --pos 0x0
+        xrandr --output "$XRH_EDP"      --mode 1920x1080 --primary                 --pos 0x0
     fi
 fi
