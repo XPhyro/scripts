@@ -6,16 +6,15 @@
 int main(int argc, char *argv[])
 {
     const int delim = '\n';
-    char *s, *dir;
+    char *line, *s;
 
     argc--;
     argv++;
-    while ((s = getstr(argc, argv, delim))) {
-        dir = dirslash(simpslash(s));
-        puts(dir);
-        free(s);
-        free(dir);
+    while ((line = getstr(argc, argv, delim))) {
+        puts(s = dirslash(simpslash(line)));
+        free(s); /* TODO: reuse */
     }
+    free(line);
 
     return 0;
 }

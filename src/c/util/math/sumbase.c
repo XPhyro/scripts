@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
 
     while ((line = getstr(argc, argv, delim)))
         sum += parsenum(line);
+    free(line);
 
     if (!optnodelim)
         printf("%lld%c", sum, isatty(STDOUT_FILENO) ? '\n' : delim);

@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
     while ((line = getstr(argc, argv, delim)))
         buf = expand(line, buf, bufsize);
 
+    free(line);
     free(buf);
 
     return 0;

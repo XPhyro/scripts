@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 
     while ((line = getstr(argc, argv, '\n')))
         safewordexp(line, &result, 0);
+    free(line);
 
     return 0;
 }

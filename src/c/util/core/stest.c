@@ -336,6 +336,7 @@ int main(int argc, char *argv[])
             hasnomatch = true;
         }
     }
+    free(line);
 
     return !hasnomatch ? 0 : hasmatch ? (!optall ? 0 : 1) : 2;
 }

@@ -133,6 +133,7 @@ int main(int argc, char *argv[])
 
     while ((line = getstr(argc, argv, delim)))
         unexpand(line);
+    free(line);
 
     return 0;
 }
