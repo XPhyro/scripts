@@ -11,6 +11,7 @@
 #include <stdio.h>
 #endif /* ifndef _POSIX_C_SOURCE */
 
+#include <assert.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -86,12 +87,14 @@ void rmkdirconst(const char *path, mode_t mode)
     free(pathdup);
 }
 
-/* no restrict intentional */
+/* no restrict is intentional. buf must be <= path. */
 char *simpslashnbuf(const char *path, char *buf, size_t bufsize)
 {
     char c;
     size_t i = 0;
     bool isslash = false;
+
+    assert(buf <= path);
 
     while ((c = *path)) {
         if (c == '/') {
@@ -116,12 +119,14 @@ char *simpslashnbuf(const char *path, char *buf, size_t bufsize)
     return buf;
 }
 
-/* no restrict intentional */
+/* no restrict is intentional. buf must be <= path. */
 char *simpslashbuf(const char *path, char *buf)
 {
     const char *bufbeg = buf;
     char c;
     bool isslash = false;
+
+    assert(buf <= path);
 
     while ((c = *path)) {
         if (c == '/') {
@@ -152,15 +157,19 @@ char *simpslash(char *path)
     return path;
 }
 
-char *dirslashbuf(char *restrict path, char *restrict buf)
+/* no restrict is intentional. buf must be <= path. */
+char *dirslashbuf(char *path, char *buf)
 {
     struct stat st;
-    size_t size = strlen(path) + 1;
-    char *s = amalloc((size + 1) * sizeof(char));
-    memcpy(s, path, size);
+    size_t size;
+
+    assert(buf <= path);
 
     if (stat(path, &st) == -1)
         return NULL;
+
+    memcpy(buf, path, (size = strlen(path) + 1) * sizeof(char));
+
     if (S_ISDIR(st.st_mode)) {
         buf[size] = '/';
         buf[size + 1] = '\0';
@@ -172,12 +181,15 @@ char *dirslashbuf(char *restrict path, char *restrict buf)
 char *dirslash(const char *path)
 {
     struct stat st;
-    size_t size = strlen(path) + 1;
-    char *s = amalloc((size + 1) * sizeof(char));
-    memcpy(s, path, size);
+    size_t size;
+    char *s;
 
     if (stat(path, &st) == -1)
         return NULL;
+
+    s = amalloc(((size = strlen(path) + 1) + 1) * sizeof(char));
+    memcpy(s, path, size);
+
     if (S_ISDIR(st.st_mode)) {
         s[size] = '/';
         s[size + 1] = '\0';
