@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+printf "%s " \
+    'XXXXXX' \
+    '/XXXXXX/YYYYYY' \
+    '////XXXXXX////' \
+    '"$HOME"///'
