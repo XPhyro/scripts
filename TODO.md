@@ -10,7 +10,6 @@
   - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
 
 ## Bugs
-- `bspwmpad -g 100x50 -- manfzf` exits after opening manual, fix.
 - `yank` stops working after the first usage. The issue is probably caused by
   `lck` and/or `ulck`.
 
