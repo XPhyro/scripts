@@ -152,4 +152,38 @@ char *simpslash(char *path)
     return path;
 }
 
+char *dirslashbuf(char *restrict path, char *restrict buf)
+{
+    struct stat st;
+    size_t size = strlen(path) + 1;
+    char *s = amalloc((size + 1) * sizeof(char));
+    memcpy(s, path, size);
+
+    if (stat(path, &st) == -1)
+        return NULL;
+    if (S_ISDIR(st.st_mode)) {
+        buf[size] = '/';
+        buf[size + 1] = '\0';
+    }
+
+    return buf;
+}
+
+char *dirslash(const char *path)
+{
+    struct stat st;
+    size_t size = strlen(path) + 1;
+    char *s = amalloc((size + 1) * sizeof(char));
+    memcpy(s, path, size);
+
+    if (stat(path, &st) == -1)
+        return NULL;
+    if (S_ISDIR(st.st_mode)) {
+        s[size] = '/';
+        s[size + 1] = '\0';
+    }
+
+    return s;
+}
+
 #endif /* ifndef HEADER_SCRIPTS_SYSUTIL */
