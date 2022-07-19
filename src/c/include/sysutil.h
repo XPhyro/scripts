@@ -12,6 +12,7 @@
 #endif /* ifndef _POSIX_C_SOURCE */
 
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,6 +84,72 @@ void rmkdirconst(const char *path, mode_t mode)
     char *pathdup = astrdup(path);
     rmkdir(pathdup, mode);
     free(pathdup);
+}
+
+/* no restrict intentional */
+char *simpslashnbuf(const char *path, char *buf, size_t bufsize)
+{
+    char c;
+    size_t i = 0;
+    bool isslash = false;
+
+    while ((c = *path)) {
+        if (c == '/') {
+            if (isslash) {
+                path++;
+                continue;
+            }
+            buf[i] = c;
+            isslash = true;
+        } else {
+            buf[i] = c;
+            isslash = false;
+        }
+        path++;
+        i++;
+    }
+    if (buf[i - 1] == '/')
+        buf[i - 1] = '\0';
+    else
+        buf[i] = '\0';
+
+    return buf;
+}
+
+/* no restrict intentional */
+char *simpslashbuf(const char *path, char *buf)
+{
+    const char *bufbeg = buf;
+    char c;
+    bool isslash = false;
+
+    while ((c = *path)) {
+        if (c == '/') {
+            if (isslash) {
+                path++;
+                continue;
+            }
+            *buf = c;
+            isslash = true;
+        } else {
+            *buf = c;
+            isslash = false;
+        }
+        path++;
+        buf++;
+    }
+    if (buf[-1] == '/')
+        buf[-1] = '\0';
+    else
+        *buf = '\0';
+
+    return (char *)bufbeg;
+}
+
+char *simpslash(char *path)
+{
+    simpslashbuf(path, path);
+    return path;
 }
 
 #endif /* ifndef HEADER_SCRIPTS_SYSUTIL */
