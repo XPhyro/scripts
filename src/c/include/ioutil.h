@@ -14,6 +14,7 @@
 #include <stdio.h>
 #undef _POSIX_C_SOURCE
 #endif /* ifndef _POSIX_C_SOURCE */
+#include <sys/types.h>
 
 char *getstr(int argc, char *argv[], int delim)
 {
