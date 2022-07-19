@@ -8,4 +8,5 @@ eval "$(evalverbose)"
     TABBED_XID="$(tabbed -c -d $TABBED_ARGS)"
     export TABBED_XID
 }
+[ -z "$TABBED_XID" ] && execaux "$0" "$@"
 exec execaux "$0" -w "$TABBED_XID" "$@"
