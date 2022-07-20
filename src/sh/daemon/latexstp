@@ -159,7 +159,7 @@ compile() {
 }
 
 dispatchcompiler() {
-    REUSE_TABBED_XID=1 bspwmpad -Hg 80x50 -- sh -c "
+    REUSE_TABBED_XID=1 bspwmpad -Hg 725x900 -- sh -c "
     compile() {
         $(printcompile | sed "/^\s*\[ '1' != '1' \] &&/d")
     }
