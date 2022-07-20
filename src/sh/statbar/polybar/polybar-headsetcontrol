@@ -11,7 +11,8 @@ eval "$(
         | tr -d ' -' \
         | tr ':' '=' \
         | tr -d '%'
-)" && [ -n "$Battery" ] && [ -n "$ChatMix" ]
+)"
+[ -n "$Battery" ] && [ -n "$ChatMix" ] || exit 1
 
 printf "🎧 🔋 %s 🎮 %s%% 🎤 %s%%" \
     "$(
