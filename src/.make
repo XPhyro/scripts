@@ -80,15 +80,15 @@ unittest() {
         tmpin="$(mktemp)"
         tmpout="$(mktemp)"
         tmperr="$(mktemp)"
-        trap "rm -f -- '$tmpout' '$tmperr'" INT EXIT HUP TERM
+        trap "rm -f -- '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
 
         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
             find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
                 testdir="$cmd/$testname"
 
                 "$testdir/in" > "$tmpin"
-                eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
-                ec="$?"
+                ec=0
+                eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'" || ec="$?"
 
                 failstr=
                 "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
@@ -103,6 +103,9 @@ unittest() {
                         "$failstr"
             done
         done | sponge
+
+        rm -f -- "$tmpout" "$tmperr"
+        trap - INT EXIT HUP TERM
     )
 }
 
