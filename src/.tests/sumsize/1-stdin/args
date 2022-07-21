@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-printf "-b -f 6"
+printf "%s " \
+    -b \
+    -f 6
