@@ -6,13 +6,19 @@
 int main(int argc, char *argv[])
 {
     const int delim = '\n';
-    char *line, *s;
+    char *line, *s, *d;
 
     argc--;
     argv++;
     while ((line = getstr(argc, argv, delim))) {
-        puts(s = dirslash(simpslash(line)));
-        free(s); /* TODO: reuse */
+        s = simpslash(line);
+        d = dirslash(s);
+        if (d) {
+            puts(d);
+            free(d); /* TODO: reuse */
+        } else {
+            puts(line);
+        }
     }
     free(line);
 
