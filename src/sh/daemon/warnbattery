@@ -20,12 +20,12 @@ eval "$(getpath -dse -- warnbattery confdir 1 "$0: getpath: config directory [wa
 
 while true; do
     ischarging && {
-        sleep 60
+        sleep "${WARNBATTERY_UPDATE_PERIOD:-60}"
         continue
     }
 
     capacity="$(getcapacity)"
     [ "$capacity" -eq "$WARNBATTERY_LOW_THRESHOLD"      ] && warn low
     [ "$capacity" -eq "$WARNBATTERY_CRITICAL_THRESHOLD" ] && warn critical
-    sleep 60
+    sleep "${WARNBATTERY_UPDATE_PERIOD:-60}"
 done
