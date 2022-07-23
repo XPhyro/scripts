@@ -2,11 +2,6 @@
 
 eval "$(evalverbose)"
 
-devs="$(xinput --list \
-            | grep -o "$MAPTOUCH_ROOT_DEVNAME\s\+.*id=[0-9]\+" \
-            | sed "s/\s\+id=[0-9]\+//" \
-            | sort)"
-
 w -oush | while IFS= read -r w; do
     user="$(printf "%s\n" "$w" | awk '{print $1}')"
     display="$(printf "%s\n" "$w" | grep -F 'X' | grep -o '\s\+:[0-9]\+\s*' | tr -d '[:blank:]')"
@@ -15,7 +10,11 @@ w -oush | while IFS= read -r w; do
     export DISPLAY="$display"
     export XAUTHORITY="/home/$user/.Xauthority"
 
-    printf "%s\n" "$devs" | xargs -r -d '\n' -P 0 -I DEV xinput map-to-output DEV "$XRH_EDP" &
+    xinput --list \
+            | grep -o "$MAPTOUCH_ROOT_DEVNAME\s\+.*id=[0-9]\+" \
+            | sed 's/\s\+id=[0-9]\+//' \
+            | sort \
+            | xargs -r -d '\n' -P 0 -I DEV xinput map-to-output DEV "$XRH_EDP" &
 done
 
 wait
