@@ -2,6 +2,7 @@
 [![Codeberg](https://img.shields.io/badge/Codeberg-2185D0?style=flat-square&logo=codeberg&logoColor=F2F8FC)](https://codeberg.org/XPhyro/scripts)
 [![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge?style=flat-square)](https://www.codefactor.io/repository/github/xphyro/scripts)
 
+
 # scripts
 This repository is a collection of general or specific scripts and utiltiies for
 Unix-like operating systems. Most scripts are written in POSIX Shell, i.e. `sh`;
@@ -12,7 +13,7 @@ To install for your user:
 
     make install
 
-To install system-wide:
+To install system-wide (recommended):
 
     sudo make install
 
@@ -109,14 +110,14 @@ executed and all executed commands are printed to stderr.
 ## Notice
 - Some scripts assume that some of the other scripts are in your `$PATH`.
 - None of the scripts pre-check for the availability of their dependencies.
-- In some scripts, GNU extensions are used (for instance, `sed -i` or
-  `strcasestr`).
+- In some scripts, GNU extensions like `sed -i` or `strcasestr` are used.
 - Some scripts were written with only Linux in mind, although they may be
-  compatible with other Unixes and Unix-likes.
-- All scripts are only tested on Linux.
-- C and C++ code are only tested with GCC, but should be compatible with any
-  POSIX-complete compiler. Some scripts use widely implemented GNU/LLVM
-  extensions.
+  compatible with other Unixes and Unix-likes, or may be ported with minimal
+  modification.
+- All scripts/programs are only tested on Linux.
+- C code are only tested with GCC & clang, and C++ code are only tested with GCC.
+  Most C/C++ programs should be compatible with any POSIX/ISO-conforming
+  compilers. Some programs use non-standard GNU/LLVM extensions.
 
 ## Related
 - You can find my gpup management scripts
