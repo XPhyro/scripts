@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+eval "$(evalverbose)"
+
 xinput --list \
     | grep -o "$MAPTOUCH_ROOT_DEVNAME\s\+.*id=[0-9]\+" \
     | sed "s/\s\+id=[0-9]\+//" \
