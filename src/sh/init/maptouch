@@ -2,9 +2,9 @@
 
 eval "$(evalverbose)"
 
-w -oush | while IFS= read -r i; do
-    user="$(printf "%s\n" "$i" | awk '{print $1}')"
-    display="$(printf "%s\n" "$i" | grep -F 'X' | grep -o '\s\+:[0-9]\+\s*' | tr -d '[:blank:]')"
+w -oush | while IFS= read -r w; do
+    user="$(printf "%s\n" "$w" | awk '{print $1}')"
+    display="$(printf "%s\n" "$w" | grep -F 'X' | grep -o '\s\+:[0-9]\+\s*' | tr -d '[:blank:]')"
     [ -z "$display" ] && continue
 
     export DISPLAY="$display"
@@ -14,5 +14,9 @@ w -oush | while IFS= read -r i; do
         | grep -o "$MAPTOUCH_ROOT_DEVNAME\s\+.*id=[0-9]\+" \
         | sed "s/\s\+id=[0-9]\+//" \
         | sort \
-        | xargs -r -d '\n' -I DEV xinput map-to-output DEV "$XRH_EDP"
+        | while IFS= read -r dev; do
+            xinput map-to-output "$dev" "$XRH_EDP" &
+        done
 done
+
+wait
