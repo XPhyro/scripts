@@ -79,7 +79,7 @@ If you installed system-wide:
   and logged to a different file.
 - [numsh](src/c/util/math/numsh.c): A NumPy-like interface for the `math.h` C
   standard header, enabling fast mathematical computations of an array of
-  numbers in the shell. See `cmath -h`.
+  numbers in the shell. See `numsh -h`.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
