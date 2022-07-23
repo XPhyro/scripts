@@ -60,6 +60,12 @@ If you installed system-wide:
   against all, modified, unmodified or wiped lines synchronously or
   asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
   more versatile. See `mapexec -h`.
+- [maptouch](src/sh/udev/maptouch): Map touchscreen and stylus devices to the
+  touch-enabled display. Best used in `.xinitrc` or as a `udev` rule. Here's an
+  example rule for Microsoft Surface Pen EYU-000001: `ACTION=="change",
+  KERNEL=="hid-0018:04F3:2C82.0002-battery", SUBSYSTEM=="power_supply",
+  DRIVER=="", ENV{MAPTOUCH_ROOT_DEVNAME}="ELAN9008:00 04F3:2C82",
+  ENV{XRH_EDP}="eDP-1", RUN+="/usr/local/bin/maptouch"`.
 - [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a path.
 - [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use
   [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro
