@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+
+getcapacity() {
+    cat /sys/class/power_supply/BAT0/capacity
+}
+
+ischarging() {
+    [ "$(cat /sys/class/power_supply/BAT0/status)" = "Charging" ] && return 0
+    return 1
+}
+
+warn() {
+    prio="$1"
+    warndir="$confdir/$prio"
+    warnfl="$(find "$warndir" -type f -print0 | shuf -z -n 1 | tr '\0' '\n')"
+    play -- "$warnfl"
+}
+
+eval "$(getpath -dse -- warnbattery confdir 1 "$0: getpath: config directory [warnbattery] is not configured")"
+
+while true; do
+    ischarging && {
+        sleep 60
+        continue
+    }
+
+    capacity="$(getcapacity)"
+    [ "$capacity" -eq "$WARNBATTERY_LOW_THRESHOLD"      ] && warn low
+    [ "$capacity" -eq "$WARNBATTERY_CRITICAL_THRESHOLD" ] && warn critical
+    sleep 60
+done
