@@ -53,8 +53,8 @@ If you installed system-wide:
   `ffmw -h`.
 - [fmaps](src/c/util/core/fmaps.c): Map stdin per given key-value pairs. See `fmaps
   -h`.
-- [kdialog](src/sh/wrapper/kdialog): `kdialog` wrapper to not use awful file
-  dialogues.
+- [kdialog](src/sh/wrapper/kdialog): Wrapper for KDE's `kdialog` to trick
+  applications into using `lf` as the file picker.
 - [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is
   more minimal. See `latexstp -h`.
 - [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands
