@@ -4,7 +4,7 @@
 
 
 # scripts
-This repository is a collection of general or specific scripts and utiltiies for
+This repository is a collection of general or specific scripts and utilities for
 Unix-like operating systems. Most scripts are written in POSIX Shell, i.e. `sh`;
 and most non-script utilities are written in C.
 
