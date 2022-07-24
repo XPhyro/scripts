@@ -11,6 +11,7 @@ ischarging() {
 
 warn() {
     prio="$1"
+    # shellcheck disable=SC2154
     warndir="$confdir/$prio"
     warnfl="$(find "$warndir" -type f -print0 | shuf -z -n 1 | tr '\0' '\n')"
     play -- "$warnfl" 2> /dev/null
@@ -57,7 +58,6 @@ lowthresh="${WARNBATTERY_LOW_THRESHOLD:-15}"
 critthresh="${WARNBATTERY_CRITICAL_THRESHOLD:-7}"
 period="${WARNBATTERY_UPDATE_PERIOD:-60}"
 
-firsttime=1
 triggeredlow=0
 triggeredcritical=0
 main
