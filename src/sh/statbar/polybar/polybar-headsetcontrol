@@ -7,7 +7,7 @@ eval "$(evalverbose)"
 
 eval "$(
     { headsetcontrol -b -m || sudo headsetcontrol -b -m; } 2> /dev/null \
-        | grep -E '(Battery|Chat-Mix):\s+[0-9]+' \
+        | grep -E '(Battery|Chat-Mix):\s+([0-9]+|Charging)' \
         | tr -d ' -' \
         | tr ':' '=' \
         | tr -d '%'
