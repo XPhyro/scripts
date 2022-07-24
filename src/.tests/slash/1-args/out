@@ -4,4 +4,4 @@ printf "%s\n" \
     'XXXXXX' \
     '/XXXXXX/YYYYYY' \
     '/XXXXXX' \
-    '"$HOME"'
+    "$HOME"
