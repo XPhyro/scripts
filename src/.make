@@ -35,7 +35,7 @@ install() {
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
-            | xargs -r0 -n 1 -P "$(nproc)" sh -c '
+            | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 set -e
                 out="${1%.c}"
                 out="${out##*/}"
@@ -55,7 +55,7 @@ install() {
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
-            | xargs -r0 -n 1 -P "$(nproc)" sh -c '
+            | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 set -e
                 out="${1%.cpp}"
                 out="${out##*/}"
