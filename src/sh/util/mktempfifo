@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+while true; do
+    fifo="$(mktemp -u)"
+    mkfifo -- "$fifo" && {
+        printf "%s\n" "$fifo"
+        exit 0
+    }
+done
