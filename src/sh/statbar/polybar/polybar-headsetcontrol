@@ -6,8 +6,8 @@ eval "$(evalverbose)"
 { [ -z "$-" ] || [ -n "${-%%*x*}" ]; } && exec 2> /dev/null
 
 eval "$(
-    (headsetcontrol -b -m || sudo headsetcontrol -b -m) 2> /dev/null \
-        | tail -n 2 \
+    { headsetcontrol -b -m || sudo headsetcontrol -b -m; } 2> /dev/null \
+        | grep -E '(Battery|Chat-Mix):\s+[0-9]+' \
         | tr -d ' -' \
         | tr ':' '=' \
         | tr -d '%'
