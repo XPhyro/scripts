@@ -11,10 +11,10 @@ w -oush | while IFS= read -r w; do
     export XAUTHORITY="/home/$user/.Xauthority"
 
     xinput --list \
-            | grep -o "$MAPTOUCH_ROOT_DEVNAME\s\+.*id=[0-9]\+" \
-            | sed 's/\s\+id=[0-9]\+//' \
-            | sort \
-            | xargs -r -d '\n' -P 0 -I DEV xinput map-to-output DEV "$XRH_EDP" &
+        | grep -o "$MAPTOUCH_ROOT_DEVNAME\s\+.*id=[0-9]\+" \
+        | sed 's/\s\+id=[0-9]\+//' \
+        | sort \
+        | xargs -r -d '\n' -P 0 -I DEV xinput map-to-output DEV "$XRH_EDP" &
 done
 
 wait
