@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
 getcapacity() {
-    cat /sys/class/power_supply/BAT0/capacity
+    cat "$battery/capacity"
 }
 
 ischarging() {
-    [ "$(cat /sys/class/power_supply/BAT0/status)" = "Charging" ] && return 0
+    [ "$(cat "$battery/status")" = "Charging" ] && return 0
     return 1
 }
 
@@ -13,19 +13,55 @@ warn() {
     prio="$1"
     warndir="$confdir/$prio"
     warnfl="$(find "$warndir" -type f -print0 | shuf -z -n 1 | tr '\0' '\n')"
-    play -- "$warnfl"
+    play -- "$warnfl" 2> /dev/null
 }
 
-eval "$(getpath -dse -- warnbattery confdir 1 "$0: getpath: config directory [warnbattery] is not configured")"
-
-while true; do
-    ischarging && {
-        sleep "${WARNBATTERY_UPDATE_PERIOD:-60}"
-        continue
-    }
+main() {
+    ischarging && return
 
     capacity="$(getcapacity)"
-    [ "$capacity" -eq "$WARNBATTERY_LOW_THRESHOLD"      ] && warn low
-    [ "$capacity" -eq "$WARNBATTERY_CRITICAL_THRESHOLD" ] && warn critical
-    sleep "${WARNBATTERY_UPDATE_PERIOD:-60}"
+
+    [ "$triggeredlow" -eq 1 ] \
+        && [ "$capacity" -gt "$lowthresh" ] \
+        && triggeredlow=0
+    [ "$triggeredcritical" -eq 1 ] \
+        && [ "$capacity" -gt "$critthresh" ] \
+        && triggeredcritical=0
+
+    [ "$triggeredlow" -eq 0 ] \
+        && [ "$capacity" -le "$lowthresh" ] \
+        && {
+            warn low
+            triggeredlow=1
+            return
+        }
+    [ "$triggeredcritical" -eq 0 ] \
+        && [ "$capacity" -le "$critthresh" ] \
+        && {
+            warn critical
+            triggeredcritical=1
+            return
+        }
+}
+
+eval "$(evalverbose)"
+eval "$(getpath -dse -- warnbattery confdir 1 "$0: getpath: config directory [warnbattery] is not configured")"
+
+battery="${WARNBATTERY_BATTERY:-"$(find /sys/class/power_supply/ -mindepth 1 -maxdepth 1 -type l -print0 \
+                                       | grep -z 'BAT[0-9]\+' \
+                                       | sort -znr \
+                                       | head -z -n 1 \
+                                       | tr '\0' '\n')"}"
+[ -z "$battery" ] && exit 1
+lowthresh="${WARNBATTERY_LOW_THRESHOLD:-15}"
+critthresh="${WARNBATTERY_CRITICAL_THRESHOLD:-7}"
+period="${WARNBATTERY_UPDATE_PERIOD:-60}"
+
+firsttime=1
+triggeredlow=0
+triggeredcritical=0
+main
+while true; do
+    sleep "$period"
+    main
 done
