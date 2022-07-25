@@ -2,6 +2,7 @@
 changequote(`{{{', `}}}')%
 % syscmd({{{date --date=@"$(git log -1 --pretty="format:%ct" '}}}THIS{{{')" +"%Y-%m-%d %H:%M:%S"}}})
 undefine({{{VERSION}}})
+undefine({{{THIS}}})
 
 # NAME
 
