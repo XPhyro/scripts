@@ -6,9 +6,9 @@ logerrq() {
 }
 
 install() {
-    mkdir "$prefix/wrapper" 2> /dev/null \
+    mkdir "$binprefix/wrapper" 2> /dev/null \
         && printf "$C_RED%s %s$C_CLR\n" \
-            "There was no $prefix/wrapper directory, so it was created for you." \
+            "There was no $binprefix/wrapper directory, so it was created for you." \
             "Be sure to add it to your PATH with high priority."
 
     for i in bash el py sh; do
@@ -16,12 +16,12 @@ install() {
             cd "$i"
             find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
                                                      -not -path "*/wrapper/*" \
-                                                     -printf "%P\0$prefix/%f\0" \
+                                                     -printf "%P\0$binprefix/%f\0" \
                 | tee -a ../.installed \
                 | xargs -r0 -n 2 cp -f --
             find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
                                                           -path "*/wrapper/*" \
-                                                     -printf "%P\0$prefix/wrapper/%f\0" \
+                                                     -printf "%P\0$binprefix/wrapper/%f\0" \
                 | tee -a ../.installed \
                 | xargs -r0 -n 2 cp -f --
         )
@@ -42,8 +42,8 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                '"$CC"' '"$CFLAGS"' "$1" '"$CLIBS"' -o "$prefix/$out" \
-                    && printf "\0%s\0" "$prefix/$out" >> ../.installed
+                '"$CC"' '"$CFLAGS"' "$1" '"$CLIBS"' -o "$binprefix/$out" \
+                    && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
     )
         
@@ -62,9 +62,24 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                '"$CXX"' '"$CXXFLAGS"' "$1" '"$CXXLIBS"' -o "$prefix/$out" \
-                    && printf "\0%s\0" "$prefix/$out" >> ../.installed
+                '"$CXX"' '"$CXXFLAGS"' "$1" '"$CXXLIBS"' -o "$binprefix/$out" \
+                    && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
+    )
+
+    (
+        cd man
+        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" \
+            | while IFS= read -r section; do
+                mkdir -p -- "$manprefix/man$section" >&2
+                export section
+                find "$section" -type f -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
+                    progname="$(basename -- "$1")"
+                    manpath="$manprefix/man$section/${progname%.*}.1"
+                    pandoc --standalone --to man "$1" -o "$manpath" >&2
+                    printf "\0%s\0" "$manpath"
+                ' --
+            done >> ../.installed
     )
 }
 
@@ -193,17 +208,21 @@ else
 fi
 
 if [ -n "$PREFIX" ]; then
-    prefix="$PREFIX/bin"
+    prefix="$PREFIX"
 elif isroot; then
-    prefix="/usr/local/bin"
+    prefix="/usr/local"
 else
-    prefix="$HOME/.local/bin"
+    prefix="$HOME/.local"
 fi
+binprefix="$prefix/bin"
+manprefix="$prefix/share/man"
 
 export prefix
+export binprefix
+export manprefix
 
-mkdir -p -- "$prefix"
-[ -d "$prefix" ]
+mkdir -p -- "$prefix" "$manprefix"
+[ -d "$binprefix" ] && [ -d "$manprefix" ]
 
 cmd="$1"
 shift

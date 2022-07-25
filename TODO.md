@@ -51,7 +51,6 @@
 - Documentation:
   - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
-    - Use markdown and convert to roff while installing: `pandoc --standalone --to man prog.md -o prog.1`.
   - `-h` and/or `--help` flags.
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
