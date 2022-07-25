@@ -90,7 +90,7 @@ uninstall() {
 
 unittest() {
     (
-        cd .tests
+        cd tests
 
         tmpin="$(mktemp)"
         tmpout="$(mktemp)"
