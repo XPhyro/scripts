@@ -130,6 +130,6 @@ executed and all executed commands are printed to stderr.
   [here](https://github.com/XPhyro/archinstall).
 
 
-# License
+## License
 Unless otherwise stated, all software found in this repository are
 licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
