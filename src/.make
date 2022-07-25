@@ -6,6 +6,7 @@ logerrq() {
 }
 
 install() {
+    mkdir -p -- "$binprefix" "$manprefix"
     mkdir "$binprefix/wrapper" 2> /dev/null \
         && printf "$C_RED%s %s$C_CLR\n" \
             "There was no $binprefix/wrapper directory, so it was created for you." \
