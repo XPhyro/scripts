@@ -63,4 +63,4 @@ include({{{LICENSE}}})
 
 # SEE ALSO
 
-**NumPy** <https://github.com/numpy/numpy>, **bc(1)**
+**math.h(0)**, **bc(1)**, **NumPy** <https://github.com/numpy/numpy>
