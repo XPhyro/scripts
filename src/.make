@@ -77,7 +77,7 @@ install() {
                 find "$section" -type f -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
                     progname="$(basename -- "$1")"
                     manpath="$manprefix/man$section/${progname%.*}.1"
-                    pandoc --standalone --to man "$1" -o "$manpath" >&2
+                    m4 -I"$rootdir" -DVERSION="$shorthash" "$1" | pandoc --standalone --to man -o "$manpath" >&2
                     printf "\0%s\0" "$manpath"
                 ' --
             done >> ../.installed
@@ -189,6 +189,14 @@ spell() {
 }
 
 set -ex
+
+cd ..
+rootdir="$PWD"
+shorthash="$(git rev-parse --short HEAD)"
+cd "$OLDPWD"
+export rootdir
+export shorthash
+
 
 if [ -t 1 ]; then
     C_RED='\033[0;31m'
