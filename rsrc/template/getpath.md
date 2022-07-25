@@ -1,6 +1,7 @@
 % GETPATH(1) getpath VERSION | User Commands
+changequote(`{{{', `}}}')%
+% syscmd({{{date --date=@"$(git log -1 --pretty="format:%ct" '}}}THIS{{{')" +"%Y-%m-%d %H:%M:%S"}}})
 undefine({{{VERSION}}})
-changequote(`{{{', `}}}')
 
 # NAME
 
