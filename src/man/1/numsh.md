@@ -41,7 +41,7 @@ given exactly as many times as required.
 :   function to pass numbers through
 
 -o ARG
-:   pass additional argments to FUNC. must be given after -f, can be given
+:   pass additional arguments to FUNC. must be given after -f, can be given
     multiple times.
 
 
