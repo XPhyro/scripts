@@ -31,6 +31,10 @@ If you installed system-wide:
 
     sudo make uninstall
 
+## Usage
+See `man NAME` or `NAME -h`. Simple programs/scripts do not have man pages or
+help dialogs, either infer usage from their names, or see the source code.
+
 ## Notable Scripts and Utilities
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset. See `afgrep -h`.
