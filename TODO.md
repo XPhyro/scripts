@@ -54,6 +54,7 @@
   - `-h` and/or `--help` flags.
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
+  - Install man pages as compressed with `gzip`.
 - Add `cppcheck` to analyse target in `.make`.
 
 
