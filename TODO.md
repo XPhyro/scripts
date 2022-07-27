@@ -41,6 +41,9 @@
 - Write a script that uses `mpv` to show animated/video wallpapers. Integrate
   this script in `wallpaper`.
 - Same as `warnbattery`, except for `headsetcontrol`.
+- Create a script for enabling/disabling/toggling/querying xinput devices. Use
+  this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
+  scripts.
 
 ## Refactoring / Rewriting / Reworking
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
