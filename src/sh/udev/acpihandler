@@ -1,0 +1,190 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+loginfo() {
+    printf "%s\n" "$@"
+}
+
+logerr() {
+    printf "%s\n" "$@" >&2
+}
+
+undefinedarg() {
+    logerr "ACPI argument undefined: $1"
+}
+
+undefinedaction() {
+    logerr "ACPI action undefined: $1"
+}
+
+undefined() {
+    logerr "ACPI group / action undefined: $1 / $2"
+}
+
+toggleinput() {
+    if [ "$1" -ne 0 ]; then
+        tostate=enable
+    else
+        tostate=disable
+    fi
+
+    xinput --list \
+        | grep -o "$2\s\+.*id=[0-9]\+" \
+        | sort \
+        | grep -o '[0-9]\+$' \
+        | xargs -d '\n' -n 1 xinput --"$tostate"
+}
+
+toggletouch() {
+    [ -z "$MAPTOUCH_ROOT_DEVNAME" ] && {
+        logerr '$MAPTOUCH_ROOT_DEVNAME is not assigned, aborted toggling touchscreen.'
+        return
+    }
+
+    toggleinput "$1" "$MAPTOUCH_ROOT_DEVNAME"
+}
+
+togglekbtp() {
+    toggleinput "$1" Keyboard
+    toggleinput "$1" Touchpad
+}
+
+handleprog1() {
+    flipscreen 1
+}
+
+flipscreen() {
+    [ "$#" -eq 0 ] && {
+        [ "$inhibitscreenflip" -ne 0 ] && {
+            loginfo 'Screen flip inhibited'
+            inhibitscreenflip=0
+            return
+        }
+        [ -n "$ACPIHANDLER_AUTO_FLIP" ] && [ "$ACPIHANDLER_AUTO_FLIP" -gt 0 ] || {
+            loginfo 'Screen flip aborted: set $ACPIHANDLER_AUTO_FLIP to greater than 0 for automatic flipping.'
+            return
+        }
+    }
+
+    loginfo 'Screen flipped'
+
+    : $((screenflipped = !screenflipped))
+    togglekbtp "$((!screenflipped))"
+}
+
+openlid() {
+    loginfo 'LID opened'
+
+    toggletouch 1
+    togglekbtp 1
+}
+
+closelid() {
+    loginfo 'LID closed'
+
+    inhibitscreenflip=1
+
+    toggletouch 0
+    togglekbtp 0
+}
+
+onevent() {
+    loginfo "Received $group $action $arg1 $arg2"
+    case "$group" in
+        button/power)
+            case "$action" in
+                PBTN) loginfo 'Power button pressed';;
+                PWRF) loginfo 'Power-off signal received';;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        button/sleep)
+            case "$action" in
+                SLPB|SBTN) loginfo 'Sleep button pressed';;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        button/volumedown)
+            case "$action" in
+                VOLDN) loginfo 'Volume down button pressed';;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        button/volumeup)
+            case "$action" in
+                VOLUP) loginfo 'Volume up button pressed';;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        button/micmute)
+            case "$action" in
+                MICMUTE) loginfo 'Microphone mute button pressed';;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        button/prog1)
+            case "$action" in
+                PROG1) handleprog1;;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        ac_adapter)
+            case "$action" in
+                AC|ACAD|ADP0)
+                    case "$arg2" in
+                        00000000) loginfo 'AC unplugged';;
+                        00000001) loginfo 'AC plugged';;
+                    esac
+                    ;;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        battery)
+            case "$action" in
+                BAT*)
+                    case "$arg2" in
+                        00000000) loginfo 'Battery online';;
+                        00000001) loginfo 'Battery offline';;
+                    esac
+                    ;;
+                CPU*) :;;
+                *) undefinedaction "$action" ;;
+            esac
+            ;;
+        button/lid)
+            case "$action" in
+                LID) 
+                    case "$arg1" in
+                        close) closelid;;
+                        open) openlid;;
+                        *) undefinedarg "$arg1";;
+                    esac
+                    ;;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        0B3CBB35-E3C2-)
+            case "$action" in
+                000000ff) flipscreen;;
+                *) undefinedaction "$action";;
+            esac
+            ;;
+        *) undefined "$group" "$action";;
+    esac
+}
+
+inhibitscreenflip=0
+screenflipped=0
+
+if [ "$#" -ne 0 ]; then
+    group="$1"
+    action="$2"
+    arg1="$3"
+    arg2="$4"
+    onevent
+else
+    acpi_listen | while IFS=" " read -r group action arg1 arg2; do
+        onevent
+    done
+fi
