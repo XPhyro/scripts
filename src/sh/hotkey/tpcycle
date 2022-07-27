@@ -3,7 +3,7 @@
 
 eval "$(evalverbose)"
 
-tpid="$(xinput --list | grep Touch | awk '{print $6}' | sed 's/id=//')"
+tpid="$(xinput --list | grep -o 'Touchpad\s\+.*id=[0-9]\+' | grep -o '[0-9]\+$')"
 xinput "$(
     xinput --list-props "$tpid" \
         | head -n 2 \
