@@ -70,6 +70,14 @@ flipscreen() {
     loginfo 'Screen flipped'
 
     : $((screenflipped = !screenflipped))
+    [ -n "$ACPIHANDLER_AUTO_INVERT_PREFIX" ] && {
+        if [ "$screenflipped" -ne 0 ]; then
+            xinvert='-inverted'
+        else
+            xinvert=
+        fi
+        autorandr "$ACPIHANDLER_AUTO_INVERT_PREFIX$xinvert"
+    }
     togglekbtp "$((!screenflipped))"
 }
 
