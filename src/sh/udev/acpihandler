@@ -99,7 +99,7 @@ closelid() {
 }
 
 onevent() {
-    loginfo "Received $group $action $arg1 $arg2"
+    loginfo "Received $group $action $arg1 $arg2 $arg3 $argv"
     case "$group" in
         button/power)
             case "$action" in
@@ -191,9 +191,12 @@ if [ "$#" -ne 0 ]; then
     action="$2"
     arg1="$3"
     arg2="$4"
+    arg3="$5"
+    shift 5
+    argv="$*"
     onevent
 else
-    acpi_listen | while IFS=" " read -r group action arg1 arg2; do
+    acpi_listen | while IFS=" " read -r group action arg1 arg2 arg3 argv; do
         onevent
     done
 fi
