@@ -54,8 +54,12 @@ handleprog1() {
     flipscreen 1
 }
 
+handletablet() {
+    flipscreen 0
+}
+
 flipscreen() {
-    [ "$#" -eq 0 ] && {
+    [ "$1" -eq 0 ] && {
         [ "$inhibitscreenflip" -ne 0 ] && {
             loginfo 'Screen flip inhibited'
             inhibitscreenflip=0
@@ -175,7 +179,7 @@ onevent() {
             ;;
         0B3CBB35-E3C2-)
             case "$action" in
-                000000ff) flipscreen;;
+                000000ff) handletablet;;
                 *) undefinedaction "$action";;
             esac
             ;;
