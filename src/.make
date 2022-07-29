@@ -116,7 +116,8 @@ unittest() {
                     && printf "$C_RED%s: Test %s failed. %s$C_CLR\n" \
                         "$cmd" \
                         "$testdir" \
-                        "$failstr"
+                        "$failstr" \
+                    || true
             done
         done | sponge
 
