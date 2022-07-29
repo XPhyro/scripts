@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+seq 0 255
