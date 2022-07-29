@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+tmp=/tmp/x13kbdsleep-kbdbrt
+
+case "$1" in
+    pre)
+        current="$(asusctl -k | sed 's/^.*: //')"
+        [ "$current" -eq "$current" ] && {
+            case "$current" in
+                48) current=off;;
+                49) current=low;;
+                50) current=med;;
+                51) current=high;;
+                * )
+                    printf "%s\n" "Unknown keyboard brightness, assuming low."
+                    current=low
+                    ;;
+            esac
+        }
+        printf "%s" "$current" > "$tmp"
+        asusctl -k off
+        ;;
+    post)
+        asusctl -k "$(cat -- "$tmp")"
+        ;;
+esac
