@@ -22,7 +22,7 @@ for i; do
     fi
 done
 
-log "Acquiring lock..."
+log "Acquiring lock."
 
 trap cleanexit INT TERM HUP QUIT
 
@@ -30,8 +30,7 @@ lck "$lckdir"
 
 # yay -Syu # --noconfirm
 
-log "Reading updateables.
-"
+log "Reading updateables."
 
 errcount=0
 cmdcount=0
@@ -61,8 +60,6 @@ while IFS= read -r i; do
     fi
 
     : $((cmdcount += 1))
-
-    printf "\n"
 done < "$lst"
 
 ulck "$lckdir"
