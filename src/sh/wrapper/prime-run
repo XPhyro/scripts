@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if [ -e "$PRIME_RUN_STATE_FILE" ]; then
+if [ -z "$PRIME_RUN_STATE_FILE" ] || [ -e "$PRIME_RUN_STATE_FILE" ]; then
     exec execaux "$0" "$@"
 else
     exec "$@"
