@@ -69,6 +69,70 @@ magic_t magic;
 bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 bool (*negtests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 
+/* TODO: if -M and -m are given together, functions runs twice.
+         either refactor that, or implemens some sort of hash table. */
+char *getmime(const char *path)
+{
+    static bool magicfailed = false;
+    const char *err;
+    char *mimes;
+    const char *magics;
+    int pid;
+    int pipefd[2];
+    FILE *out;
+    size_t size;
+    ssize_t len;
+    const char delim = '\0';
+
+    if (!magicfailed) {
+        if ((magics = magic_file(magic, path))) {
+            mimes = strdup(magics);
+        } else {
+            if ((err = magic_error(magic)))
+                fprintf(stderr, "%s\n", err);
+            else
+                fputs("unknown libmagic error\n", stderr);
+
+            magicfailed = true;
+            goto magicfailed;
+        }
+    } else {
+magicfailed:
+        errno = 0;
+        if (pipe(pipefd) < 0 || errno) {
+            perror("pipe");
+            exit(EXIT_FAILURE);
+        }
+        if ((pid = fork()) < 0 || errno) {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        }
+
+        if (pid == 0) {
+            dup2(pipefd[1], STDOUT_FILENO);
+            close(pipefd[0]);
+            close(pipefd[1]);
+            execl("/usr/bin/file", "-00", "-b", "--mime-type", "--", path, NULL);
+            exit(EXIT_SUCCESS);
+        }
+
+        close(pipefd[1]);
+
+        out = fdopen(pipefd[0], "r");
+
+        mimes = NULL;
+        size = 0;
+        if ((len = getdelim(&mimes, &size, delim, out)) == -1) {
+            fputs("file failed\n", stderr);
+            exit(EXIT_FAILURE);
+        }
+        if (len && mimes[len - 1] == '\n')
+            mimes[len - 1] = '\0';
+    }
+
+    return mimes;
+}
+
 TESTFUNCDEF(testhidden)
 {
     int i;
@@ -105,33 +169,17 @@ TESTFUNCDEF(testlink)
 }
 TESTFUNCDEF(testmstype)
 {
-    const char *mime;
-
-    if (!(mime = magic_file(magic, path))) {
-        if ((mime = magic_error(magic)))
-            fputs(mime, stderr);
-        else
-            fputs("unknown libmagic error\n", stderr);
-
-        return false;
-    }
-
-    return streq(strchr(mime, '/') + 1, optsmime);
+    char *mime = getmime(path);
+    bool ret = streq(strchr(mime, '/') + 1, optsmime);
+    free(mime);
+    return ret;
 }
 TESTFUNCDEF(testmtype)
 {
-    const char *mime;
-
-    if (!(mime = magic_file(magic, path))) {
-        if ((mime = magic_error(magic)))
-            fputs(mime, stderr);
-        else
-            fputs("unknown libmagic error\n", stderr);
-
-        return false;
-    }
-
-    return strneq(mime, optmime, strchr(mime, '/') - mime);
+    char *mime = getmime(path);
+    bool ret = strneq(mime, optmime, strchr(mime, '/') - mime);
+    free(mime);
+    return ret;
 }
 TESTFUNC(testmodif, st->st_mtime > st->st_atime)
 TESTFUNC(testnewer, st->st_mtime > newer.st_mtime)
