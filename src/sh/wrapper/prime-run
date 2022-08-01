@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if [ -e "$PRIME_RUN_STATE_FILE" ]; then
+    exec execaux "$0" prime-run "$@"
+else
+    exec "$@"
+fi
