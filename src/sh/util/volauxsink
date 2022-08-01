@@ -3,7 +3,7 @@
 eval "$(evalverbose)"
 
 pactl list sources \
-    | grep '	Monitor of Sink: ' \
+    | grep -F '	Monitor of Sink: ' \
     | grep -vF "$(voldefsink)" \
     | grep -vF -m 1 "	Monitor of Sink: n/a" \
     | cut -d' ' -f4
