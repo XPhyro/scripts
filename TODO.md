@@ -45,6 +45,8 @@
 - Create a script for enabling/disabling/toggling/querying xinput devices. Use
   this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
   scripts.
+- Automate [PulseAudio/PipeWire-Pulse network
+  streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5).
 
 ## Refactoring / Rewriting / Reworking
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
