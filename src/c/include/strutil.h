@@ -18,9 +18,11 @@ inline void __attribute__((always_inline)) * amallocset(size_t size, int c)
     return memset(amalloc(size), c, size);
 }
 
+/* if `n` may be greater than `size`, use `amallocsetn_s(...)`.
+ * otherwise this function will likely lead to a segfault.
+ */
 inline void __attribute__((always_inline)) * amallocsetn(size_t size, int c, size_t n)
 {
-    /* it is the user's responsibility to ensure n <= size */
     assert(n <= size);
     return memset(amalloc(size), c, n);
 }
