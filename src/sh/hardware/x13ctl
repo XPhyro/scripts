@@ -15,6 +15,7 @@ while getopts "c:hk:p:" OPT; do
     case "$OPT" in
         c)
             case "$OPTARG" in
+                sync) asusctl -c "$(cat -- "$batlimfl")";;
                 get) cat -- "$batlimfl";;
                 get-polybar) printf "%s %s%%\n" "♻" "$(cat -- "$batlimfl")";;
                 *)
@@ -31,15 +32,16 @@ while getopts "c:hk:p:" OPT; do
         h)
             printf "%s" \
 "$0 [OPTION...]
-   -c LIMIT     get or set charging limit. accepted LIMITs are {get, get-polybar, next, {20..100}}.
+   -c LIMIT     get or set charging limit. accepted LIMITs are {sync, get, get-polybar, next, {20..100}}.
    -h           display help dialog and exit
-   -k LEVEL     get or set keyboard light brightness. accepted LEVELs are {get, get-polybar, next, {0, 48, o, {O, o}ff}, {1, 49, l, {L, l}ow}, {2, 50, m, {M, m}ed, {M, m}edium}, {3, 51, h, {H, h}igh}}.
-   -p PROFILE   get or set performance profile. accepted PROFILEs are {get, get-polybar, next, {I, |, 0, q, {Q, q}uiet}, {II, ||, 1, b, {B, b}alanced}, {III, |||, 2, p, {P, p}erformance}}.
+   -k LEVEL     get or set keyboard light brightness. accepted LEVELs are {sync, get, get-polybar, next, {0, 48, o, {O, o}ff}, {1, 49, l, {L, l}ow}, {2, 50, m, {M, m}ed, {M, m}edium}, {3, 51, h, {H, h}igh}}.
+   -p PROFILE   get or set performance profile. accepted PROFILEs are {sync, get, get-polybar, next, {I, |, 0, q, {Q, q}uiet}, {II, ||, 1, b, {B, b}alanced}, {III, |||, 2, p, {P, p}erformance}}.
 "
             exit 0
             ;;
         k)
             case "$OPTARG" in
+                sync) printf "%s" "$(asusctl -k | cut -d' ' -f5 | fmaps 48=Off 49=Low 50=Med 51=High)" > "$kbfl";;
                 get) cat -- "$kbfl";;
                 get-polybar) printf "%s %s\n" "🚦" "$(cat -- "$kbfl")";;
                 *)
@@ -62,6 +64,7 @@ while getopts "c:hk:p:" OPT; do
             ;;
         p)
             case "$OPTARG" in
+                sync) printf "%s" "$(asusctl profile -p | cut -d' ' -f4)" > "$proffl";;
                 get) cat -- "$proffl";;
                 get-polybar) printf "%s %s\n" "🍀" "$(cat -- "$proffl")";;
                 *)
