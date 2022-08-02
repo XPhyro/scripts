@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+
+logerrq() {
+    printf "%s\n" "$@" >&2
+    exit 1
+}
+
+eval "$(getpath -dse -- x13ctl cachedir 1 "$0: \`getpath -ds x13ctl\` failed")"
+# shellcheck disable=SC2154
+batlimfl="$cachedir/batterylimit"
+
+while getopts "c:h" OPT; do
+    case "$OPT" in
+        c)
+            case "$OPTARG" in
+                get) cat -- "$batlimfl";;
+                get-polybar) printf "%s %s\n" "♻" "$(cat -- "$batlimfl")";;
+                *)
+                    [ "$OPTARG" = "next" ] \
+                        && OPTARG="$(DEF=100 fmaps $X13CTL_BATTERY_NEXT_FMAPS < "$batlimfl")"
+                    [ "$OPTARG" -ge 5 ] && [ "$OPTARG" -le 100 ] \
+                        || logerrq "invalid charging limit"
+                    asusctl -c "$OPTARG"
+                    printf "%s" "$OPTARG" > "$batlimfl"
+                    polybar-msg action '#batterylimit.hook.0'
+                    ;;
+            esac
+            ;;
+        h)
+            printf "%s" \
+"$0 [OPTION...]
+   -c LIMIT   set charging limit. LIMIT must be in the range [5, 100].
+   -h         display help dialog and exit
+"
+            exit 0
+            ;;
+        *) logerrq "invalid option given: $OPT";;
+    esac
+done
+shift "$((OPTIND - 1))"
