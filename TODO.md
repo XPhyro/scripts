@@ -26,6 +26,7 @@
   other words, `make` should try `make`ing parents until it finds a `Makefile`.
 - In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
   numbers.
+- Support arbitrary counts of warnings and configurations in `warnbattery`.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
