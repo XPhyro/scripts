@@ -8,13 +8,14 @@ logerrq() {
 eval "$(getpath -dse -- x13ctl cachedir 1 "$0: \`getpath -ds x13ctl\` failed")"
 # shellcheck disable=SC2154
 batlimfl="$cachedir/batterylimit"
+proffl="$cachedir/perfprofile"
 
-while getopts "c:h" OPT; do
+while getopts "c:hp:" OPT; do
     case "$OPT" in
         c)
             case "$OPTARG" in
                 get) cat -- "$batlimfl";;
-                get-polybar) printf "%s %s\n" "♻" "$(cat -- "$batlimfl")";;
+                get-polybar) printf "%s %s%%\n" "♻" "$(cat -- "$batlimfl")";;
                 *)
                     [ "$OPTARG" = "next" ] \
                         && OPTARG="$(DEF=100 fmaps $X13CTL_BATTERY_NEXT_FMAPS < "$batlimfl")"
@@ -29,10 +30,32 @@ while getopts "c:h" OPT; do
         h)
             printf "%s" \
 "$0 [OPTION...]
-   -c LIMIT   set charging limit. LIMIT must be in the range [5, 100].
-   -h         display help dialog and exit
+   -c LIMIT     get or set charging limit. accepted LIMITs are {get, get-polybar, next, {5..100}}.
+   -h           display help dialog and exit
+   -p PROFILE   get or set performance profile. accepted PROFILEs are {get, get-polybar, next, {I, |, 0, q, {Q, q}uiet}, {II, ||, 1, b, {B, b}alanced}, {III, |||, 2, p, {P, p}erformance}}.
 "
             exit 0
+            ;;
+        p)
+            case "$OPTARG" in
+                get) cat -- "$proffl";;
+                get-polybar) printf "%s %s\n" "🍀" "$(cat -- "$proffl")";;
+                *)
+                    if [ "$OPTARG" = "next" ]; then
+                        OPTARG="$(DEF=Quiet fmaps Quiet=Balanced Balanced=Performance < "$proffl")"
+                    else
+                        OPTARG="$(printf "%s" "$OPTARG" | fmaps \
+                            I=0 '|'=0 q=0 quiet=0 \
+                            II=1 '||'=1 b=1 balanced=1 \
+                            III=2 '|||'=2 p=2 performance=2 \
+                            | DEF=invalid fmaps 0=Quiet 1=Balanced 2=Performance)"
+                    fi
+                    [ "$OPTARG" = "invalid" ] && logerrq "invalid performance profile"
+                    asusctl profile -P "$OPTARG"
+                    printf "%s" "$OPTARG" > "$proffl"
+                    polybar-msg action '#perfprofile.hook.0'
+                    ;;
+            esac
             ;;
         *) logerrq "invalid option given: $OPT";;
     esac
