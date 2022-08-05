@@ -26,7 +26,8 @@ jobs:
     - name: dep
       run: |
         sudo apt -y install shellcheck clang-tools golang-go
-        go install mvdan.cc/sh/v3/cmd/shfmt@latest
+        go version
+        go install mvdancc/sh/v3/cmd/shfmt
     - name: analyse
       run: |
         make analyse
