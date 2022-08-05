@@ -103,8 +103,8 @@ unittest() {
                 testdir="$cmd/$testname"
 
                 "$testdir/in" > "$tmpin"
-                ec=0
-                eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'" || ec="$?"
+                eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
+                ec="$((ec | $?))"
 
                 failstr=
                 "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
@@ -158,7 +158,28 @@ analyse() {
                 -e SC2088 \
                 -e SC2188 \
                 --
-    ec="$?"
+    ec="$((ec | $?))"
+
+    printf "%s\n" \
+        "" \
+        "==========" \
+        "shfmt" \
+        "==========" \
+        ""
+
+    shfmt --version
+
+    find 'sh' -mindepth 1 -type f -executable \
+        -not -path "*/.archived/*" -print0 \
+        | xargs -r0 $unbuffer \
+            shfmt -p -- > /dev/null
+    ec="$((ec | $?))"
+
+    find 'bash' -mindepth 1 -type f -executable \
+        -not -path "*/.archived/*" -print0 \
+        | xargs -r0 $unbuffer \
+            shfmt -ln bash -- > /dev/null
+    ec="$((ec | $?))"
 
     printf "%s\n" \
         "" \
@@ -177,12 +198,14 @@ analyse() {
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
-                "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout" || ec="$?"
+                "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout"
+    ec="$((ec | $?))"
     find 'cpp' -mindepth 1 -type f -iname "*.cpp" -print0 \
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
                 "$CXX" $CXXFLAGS 'FILE' $CXXLIBS -o "$tmpout" || ec="$?"
+    ec="$((ec | $?))"
 }
 
 spell() {
@@ -307,7 +330,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
 CXXLIBS=""
 export CPLUS_INCLUDE_PATH="$PWD/cpp/include"
 
-unset ec
+ec=0
 
 case "$cmd" in
     install) install;;
