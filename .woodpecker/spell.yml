@@ -5,5 +5,5 @@ pipeline:
     image: ubuntu:22.04
     commands: |
       apt-get -y update
-      apt-get -y install make codespell
+      apt-get -y install make git codespell
       make spell
