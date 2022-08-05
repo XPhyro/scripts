@@ -160,20 +160,22 @@ analyse() {
                 --
     ec="$((ec | $?))"
 
-    printf "%s\n" \
-        "" \
-        "==========" \
-        "shfmt" \
-        "==========" \
-        ""
+    command -v shfmt > /dev/null && {
+        printf "%s\n" \
+            "" \
+            "==========" \
+            "shfmt" \
+            "==========" \
+            ""
 
-    shfmt --version
+        shfmt --version
 
-    find 'sh' -mindepth 1 -type f -executable \
-        -not -path "*/.archived/*" -print0 \
-        | xargs -r0 $unbuffer \
-            shfmt -p -- > /dev/null
-    ec="$((ec | $?))"
+        find 'sh' -mindepth 1 -type f -executable \
+            -not -path "*/.archived/*" -print0 \
+            | xargs -r0 $unbuffer \
+                shfmt -p -- > /dev/null
+        ec="$((ec | $?))"
+    }
 
     find 'bash' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
