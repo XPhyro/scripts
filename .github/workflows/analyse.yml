@@ -27,7 +27,7 @@ jobs:
       run: |
         sudo apt -y install shellcheck clang-tools golang-go
         go version
-        go install mvdancc/sh/v3/cmd/shfmt
+        go install 'mvdancc/sh/v3/cmd/shfmt@latest'
     - name: analyse
       run: |
         make analyse
