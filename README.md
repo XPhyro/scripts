@@ -32,42 +32,41 @@ If you installed system-wide:
     sudo make uninstall
 
 ## Usage
-See `man NAME` or `NAME -h`. Simple programs/scripts do not have man pages or
-help dialogs, either infer usage from their names, or see the source code.
+See `man COMMAND`, `COMMAND -h` or `COMMAND --help`. Simple programs/scripts do
+not have man pages or help dialogs, either infer usage from their names, or see
+the source code.
 
 ## Notable Scripts and Utilities
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
-  offset. See `afgrep -h`.
+  offset.
 - [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for
   [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include
   `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating
   hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but
-  the script was designed with it in mind. See `bspwmpad -h`. There is also
+  the script was designed with it in mind. There is also
   [dwmpad](src/sh/.archived/dwm/util/dwmpad).
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it
   is modified. This is especially useful if you are iteratively processing data
-  using an interpreted or hot-compiled language. See `contexec -h`.
+  using an interpreted or hot-compiled language.
 - [eln](src/sh/ishell/eln): Batch edit or create symlinks.
 - [expandpath](src/c/util/core/expandpath.c): Like `wordexp`, but only expands `~`.
-  See `expandpath -h`.
-- [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions. See
-  `ffmw -h`.
-- [fmaps](src/c/util/core/fmaps.c): Map stdin per given key-value pairs. See `fmaps
-  -h`.
+- [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions.
+- [fmaps](src/c/util/core/fmaps.c): Map stdin per given key-value pairs.
 - [kdialog](src/sh/wrapper/kdialog): Wrapper for KDE's `kdialog` to trick
   applications into using `lf` as the file picker.
 - [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is
-  more minimal. See `latexstp -h`.
+  more minimal.
 - [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands
   against all, modified, unmodified or wiped lines synchronously or
   asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
-  more versatile. See `mapexec -h`.
+  more versatile.
 - [maptouch](src/sh/udev/maptouch): Map touchscreen and stylus devices to the
   touch-enabled display. Best used in `.xinitrc` or as a `udev` rule. Here's an
-  example rule for Microsoft Surface Pen EYU-000001: `ACTION=="change",
+  example rule for Microsoft Surface Pen EYU-000001 and ASUS ROG Flow X13
+  GVE301RC: `ACTION=="change",
   KERNEL=="hid-0018:04F3:2C82.0002-battery", SUBSYSTEM=="power_supply",
   DRIVER=="", ENV{MAPTOUCH_ROOT_DEVNAME}="ELAN9008:00 04F3:2C82",
   ENV{XRH_EDP}="eDP-1", RUN+="/usr/local/bin/maptouch"`.
@@ -84,21 +83,19 @@ help dialogs, either infer usage from their names, or see the source code.
   and logged to a different file.
 - [numsh](src/c/util/math/numsh.c): A NumPy-like interface for the `math.h` C
   standard header, enabling fast mathematical computations of an array of
-  numbers in the shell. See `numsh -h`.
+  numbers in the shell.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
 - [stest](src/c/util/core/stest.c): Filter a list of files by properties. This is
-  different from the `stest` included with suckless `dmenu`. See `stest -h`.
-- [sumsize](src/py/util/sumsize): Sum human readable sizes. See `sumsize -h`.
+  different from the `stest` included with suckless `dmenu`.
+- [sumsize](src/py/util/sumsize): Sum human readable sizes.
 - [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on
   hashcodes. Originally written for toggling applications with the same hotkey
-  via `sxhkd`. See `tglapp -h`.
-- [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`. See
-  `unexpandpath -h`.
+  via `sxhkd`.
+- [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`.
 - [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX shell.
-  See `man 3 wordexp`.
-- [xins](src/sh/util/xins): Like `xargs` but for standard input. See `xins -h`.
+- [xins](src/sh/util/xins): Like `xargs` but for standard input.
 
 ## Environment Variables
 Some scripts use optional or mandatory environment variables for applications.
