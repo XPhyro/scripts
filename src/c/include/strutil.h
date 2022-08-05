@@ -11,9 +11,10 @@
 #include <sys/param.h>
 #include <sys/types.h>
 
+#include <hedley/hedley.h>
 #include <stdutil.h>
 
-inline void __attribute__((always_inline)) * amallocset(size_t size, int c)
+HEDLEY_ALWAYS_INLINE void *amallocset(size_t size, int c)
 {
     return memset(amalloc(size), c, size);
 }
@@ -21,13 +22,13 @@ inline void __attribute__((always_inline)) * amallocset(size_t size, int c)
 /* if `n` may be greater than `size`, use `amallocsetn_s(...)`.
  * otherwise this function will likely lead to a segfault.
  */
-inline void __attribute__((always_inline)) * amallocsetn(size_t size, int c, size_t n)
+HEDLEY_ALWAYS_INLINE void *amallocsetn(size_t size, int c, size_t n)
 {
     assert(n <= size);
     return memset(amalloc(size), c, n);
 }
 
-inline void __attribute__((always_inline)) * amallocsetn_s(size_t size, int c, size_t n)
+HEDLEY_ALWAYS_INLINE void *amallocsetn_s(size_t size, int c, size_t n)
 {
     return memset(amalloc(size), c, MIN(size, n));
 }
@@ -60,22 +61,22 @@ char *strnend(const char *s, size_t n)
     return (char *)s;
 }
 
-inline bool __attribute__((always_inline)) streq(const char *s1, const char *s2)
+HEDLEY_ALWAYS_INLINE bool streq(const char *s1, const char *s2)
 {
     return !strcmp(s1, s2);
 }
 
-inline bool __attribute__((always_inline)) strneq(const char *s1, const char *s2, size_t n)
+HEDLEY_ALWAYS_INLINE bool strneq(const char *s1, const char *s2, size_t n)
 {
     return !strncmp(s1, s2, n);
 }
 
-inline bool __attribute__((always_inline)) strcaseeq(const char *s1, const char *s2)
+HEDLEY_ALWAYS_INLINE bool strcaseeq(const char *s1, const char *s2)
 {
     return !strcasecmp(s1, s2);
 }
 
-inline bool __attribute__((always_inline)) strncaseeq(const char *s1, const char *s2, size_t n)
+HEDLEY_ALWAYS_INLINE bool strncaseeq(const char *s1, const char *s2, size_t n)
 {
     return !strncasecmp(s1, s2, n);
 }

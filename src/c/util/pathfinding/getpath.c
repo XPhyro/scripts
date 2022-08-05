@@ -10,6 +10,7 @@
 #include <sys/param.h>
 #include <unistd.h>
 
+#include <hedley/hedley.h>
 #include <stdutil.h>
 #include <sysutil.h>
 
@@ -29,7 +30,7 @@ typedef enum {
     FILEMODE_FILE = 2,
 } FILEMODES;
 
-void __attribute__((noreturn)) die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
+HEDLEY_NO_RETURN void die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
 {
     va_list ap;
 

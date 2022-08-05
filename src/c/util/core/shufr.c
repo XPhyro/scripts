@@ -10,6 +10,7 @@
 #include <sys/random.h>
 #include <unistd.h>
 
+#include <hedley/hedley.h>
 #include <stdutil.h>
 
 #define EXECNAME "shufr"
@@ -34,7 +35,7 @@
             exit(EXIT_SUCCESS);             \
     }
 
-void __attribute__((noreturn)) die(const char *fmt, ...)
+HEDLEY_NO_RETURN void die(const char *fmt, ...)
 {
     va_list ap;
 

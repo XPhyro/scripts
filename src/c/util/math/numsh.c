@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <hedley/hedley.h>
 #include <stdutil.h>
 #include <strutil.h>
 
@@ -74,7 +75,7 @@ function functions[] = {
     FUNCREDUCE(max), FUNCREDUCE(min), FUNCREDUCE(sum),
 };
 
-void __attribute__((noreturn)) die(const char *fmt, ...)
+HEDLEY_NO_RETURN void die(const char *fmt, ...)
 {
     va_list ap;
 

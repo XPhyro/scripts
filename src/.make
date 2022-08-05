@@ -196,13 +196,13 @@ analyse() {
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
-    find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
+    find 'c' -mindepth 1 -type f -iname "*.c" -not -path "c/include/hedley/*" -print0 \
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout"
     ec="$((ec | $?))"
-    find 'cpp' -mindepth 1 -type f -iname "*.cpp" -print0 \
+    find 'cpp' -mindepth 1 -type f -iname "*.cpp" -not -path "cpp/include/hedley/*" -print0 \
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
