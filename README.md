@@ -11,6 +11,7 @@ and most non-script utilities are written in C.
 ## Installation
 To install for your user:
 
+    git submodule update --init --recursive
     make install
 
 To install system-wide (recommended):

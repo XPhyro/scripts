@@ -1,0 +1,3 @@
+[submodule "src/c/include/hedley"]
+	path = src/c/include/hedley
+	url = git@github.com:nemequ/hedley.git
