@@ -26,6 +26,7 @@ jobs:
     - name: dep
       run: |
         sudo apt -y install shellcheck clang-tools
+        git submodule update --init --recursive
     - name: analyse
       run: |
         make analyse

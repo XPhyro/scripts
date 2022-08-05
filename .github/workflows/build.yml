@@ -24,6 +24,7 @@ jobs:
     - name: dep
       run: |
         sudo apt -y install libmagic-dev moreutils
+        git submodule update --init --recursive
     - name: build
       run: |
         make install
