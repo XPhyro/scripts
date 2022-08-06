@@ -223,7 +223,6 @@ cd "$OLDPWD"
 export rootdir
 export shorthash
 
-
 if [ -t 1 ]; then
     C_RED='\033[0;31m'
     C_CLR='\033[0m'
@@ -318,7 +317,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wno-implicit-fallthrough -Wno-sign-compare \
        -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
-       -Iinclude"
+       -Iinclude -I'$rootdir/lib/hedley'"
 CLIBS="-lm -lmagic"
 export C_INCLUDE_PATH="$PWD/c/include"
 
@@ -328,7 +327,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wno-unused-parameter -Wno-unused-result \
           -Wno-implicit-fallthrough -Wno-sign-compare -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
-          -Iinclude"
+          -Iinclude -I'$rootdir/lib/hedley'"
 CXXLIBS=""
 export CPLUS_INCLUDE_PATH="$PWD/cpp/include"
 
