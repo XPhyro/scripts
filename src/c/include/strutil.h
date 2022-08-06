@@ -11,7 +11,7 @@
 #include <sys/param.h>
 #include <sys/types.h>
 
-#include <hedley/hedley.h>
+#include <hedley.h>
 #include <stdutil.h>
 
 HEDLEY_ALWAYS_INLINE void *amallocset(size_t size, int c)

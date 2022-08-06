@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <hedley/hedley.h>
+#include <hedley.h>
 #include <stdutil.h>
 #include <strutil.h>
 

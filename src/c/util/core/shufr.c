@@ -10,7 +10,7 @@
 #include <sys/random.h>
 #include <unistd.h>
 
-#include <hedley/hedley.h>
+#include <hedley.h>
 #include <stdutil.h>
 
 #define EXECNAME "shufr"
