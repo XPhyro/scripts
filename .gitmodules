@@ -1,3 +1,6 @@
 [submodule "src/c/include/hedley"]
 	path = lib/hedley
 	url = https://github.com/nemequ/hedley.git
+[submodule "lib/NumCpp"]
+	path = lib/NumCpp
+	url = https://github.com/dpilger26/NumCpp
