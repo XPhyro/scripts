@@ -12,7 +12,6 @@
 ## Bugs
 - `yank` stops working after the first usage. The issue is probably caused by
   `lck` and/or `ulck`.
-- Unit testing exits with 0 even if tests failed.
 
 ## Features
 - Add the ability to have default arguments via environment variables in
