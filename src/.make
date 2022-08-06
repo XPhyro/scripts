@@ -196,13 +196,13 @@ analyse() {
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
-    find 'c' -mindepth 1 -type f -iname "*.c" -not -path "c/include/hedley/*" -print0 \
+    find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout"
     ec="$((ec | $?))"
-    find 'cpp' -mindepth 1 -type f -iname "*.cpp" -not -path "cpp/include/hedley/*" -print0 \
+    find 'cpp' -mindepth 1 -type f -iname "*.cpp" -print0 \
         | xargs -r0 -I FILE \
             scan-build -analyze-headers --status-bugs \
                 $v $view -maxloop "$m" -no-failure-reports \
@@ -319,7 +319,8 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -Iinclude -I'$rootdir/lib/hedley'"
 CLIBS="-lm -lmagic"
-export C_INCLUDE_PATH="$PWD/c/include"
+C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
+export C_INCLUDE_PATH
 
 CXX="g++"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
@@ -329,7 +330,8 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Iinclude -I'$rootdir/lib/hedley' -I'$rootdir/lib/NumCpp/include'"
 CXXLIBS=""
-export CPLUS_INCLUDE_PATH="$PWD/cpp/include"
+CPLUS_INCLUDE_PATH="$PWD/cpp/include:$rootdir/lib/hedley:$rootdir/lib/NumCpp/include"
+export CPLUS_INCLUDE_PATH
 
 ec=0
 
