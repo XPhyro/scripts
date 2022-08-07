@@ -86,7 +86,7 @@ char *getmime(const char *path)
 
     if (!magicfailed) {
         if ((magics = magic_file(magic, path))) {
-            mimes = strdup(magics);
+            mimes = astrdup(magics);
         } else {
             if ((err = magic_error(magic)))
                 fprintf(stderr, "%s\n", err);
