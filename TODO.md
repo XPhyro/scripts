@@ -62,6 +62,7 @@
     beginning of the file.
   - Install man pages as compressed with `gzip`.
 - Add `cppcheck` to analyse target in `.make`.
+- Maybe install C/C++ headers?
 
 
 # Normal Priority
