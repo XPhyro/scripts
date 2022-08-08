@@ -19,8 +19,8 @@ warn() {
         && notify-send \
             -i "$(
                 case "$1" in
-                    low) printf battery-caution;;
-                    critical) printf battery-low;;
+                    low) printf battery-low;;
+                    critical) printf battery-caution;;
                 esac
             )" \
             -u critical \
