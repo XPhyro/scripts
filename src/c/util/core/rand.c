@@ -35,7 +35,6 @@ void randbuf(void *buf, size_t buflen)
         exit(3);
 #else /* ifdef __linux__ */
     arc4random_buf(buf, buflen);
-    buflen;
 #endif /* ifndef __linux__ */
 #endif /* ifdef __unix__ */
 }
@@ -107,9 +106,8 @@ int main(int argc, char *argv[])
     argc -= optind;
 #endif /* ifndef __clang_analyzer__ */
 
-    if (optprintmode != PRINTMODE_BINARY) {
+    if (optprintmode != PRINTMODE_BINARY)
         buflen = 64;
-    }
     buf = amalloc(buflen);
 
     for (i = 0; i < n; i++) {
