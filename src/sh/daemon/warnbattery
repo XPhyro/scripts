@@ -15,6 +15,17 @@ warn() {
     warndir="$confdir/$prio"
     warnfl="$(find "$warndir" -type f -print0 | shuf -z -n 1 | tr '\0' '\n')"
     play -- "$warnfl" 2> /dev/null
+    [ -n "$DISPLAY" ] \
+        && notify-send \
+            -i "$(
+                case "$1" in
+                    low) printf battery-caution;;
+                    critical) printf battery-low;;
+                esac
+            )" \
+            -u critical \
+            -t 0 \
+            "$(printf "$1" | sed 's/.*/\u&/') Battery"
 }
 
 main() {
