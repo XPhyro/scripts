@@ -46,7 +46,8 @@
   this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
   scripts.
 - Automate [PulseAudio/PipeWire-Pulse network
-  streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5).
+  streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
+  with optional pair configuration over `ssh`.
 
 ## Refactoring / Rewriting / Reworking
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
