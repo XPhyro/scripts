@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
                     "\n"
                     "On *BSD, this program never fails.\n"
                     "\n"
+                    "Options\n"
                     "  -b       print random bits as raw bytes\n"
                     "  -c NUM   generate n bits instead of 64, ignored if -b is not given\n"
                     "  -h       display this help and exit\n"
