@@ -11,16 +11,31 @@
 #include <stdutil.h>
 
 #define EXECNAME "rand"
-#define RSIZE 64
-_Static_assert(RSIZE == 64, "Other values are not supported in the rest of the code.");
+
+typedef enum {
+    PRINTMODE_SIGNED,
+    PRINTMODE_UNSIGNED,
+    PRINTMODE_BINARY,
+} printmode_t;
+
+printmode_t optprintmode = PRINTMODE_SIGNED;
 
 void randbuf(void *buf, size_t buflen)
 {
+    ssize_t retlen;
 #ifdef __unix__
 #ifdef __linux__
-    getrandom(buf, buflen, 0);
+    errno = 0;
+    retlen = getrandom(buf, buflen, 0);
+    if (errno == EINTR)
+        exit(2);
+    if (retlen == -1 || (errno && errno != EINTR))
+        exit(1);
+    if (retlen < buflen)
+        exit(3);
 #else /* ifdef __linux__ */
     arc4random_buf(buf, buflen);
+    buflen;
 #endif /* ifndef __linux__ */
 #endif /* ifdef __unix__ */
 }
@@ -28,34 +43,56 @@ void randbuf(void *buf, size_t buflen)
 int main(int argc, char *argv[])
 {
     int i, n = 1;
-    void *r = alloca(RSIZE);
-    bool optsigned = false;
+    void *buf;
+    size_t buflen = 64;
 
-    while ((i = getopt(argc, argv, "hn:s")) != -1) {
+    while ((i = getopt(argc, argv, "bc:hn:su")) != -1) {
         switch (i) {
+            case 'b':
+                optprintmode = PRINTMODE_BINARY;
+                break;
+            case 'c':
+                buflen = astrtoull(optarg, EXECNAME ": invalid number given\n");
+                break;
             case 'h':
                 puts(
                     "Usage: " EXECNAME " [OPTION]...\n"
-                    "Generate cryptographically secure 64-bit random numbers on Linux 3.17 or later.\n"
+                    "Generate cryptographically secure random bits on Linux 3.17 or later, or *BSD.\n"
+                    "\n"
+                    "By default, 64 bits are generated and printed as an unsigned integer.\n"
                     "\n"
                     "On Linux 3.19 or later, " EXECNAME
                     " might not immediately react to SIGINT depending on CPU load.\n"
                     "\n"
-                    "  -h         display this help and exit\n"
-                    "  -n COUNT   count of random numbers to generate\n"
-                    "  -s         generate a signed number\n"
+                    "On Linux, getrandom(2) and on *BSD, arc4random_buf(3) are used to generate random bits.\n"
+                    "\n"
+                    "On Linux, `" EXECNAME
+                    " -b -c NUM` is guaranteed to be equivalent to `head -c NUM /dev/urandom` if NUM is less than or equal to 256.\n"
+                    "\n"
+                    "On *BSD, this program never fails.\n"
+                    "\n"
+                    "  -b       print random bits as raw bytes\n"
+                    "  -c NUM   generate n bits instead of 64, ignored if -b is not given\n"
+                    "  -h       display this help and exit\n"
+                    "  -n NUM   count of random numbers to generate\n"
+                    "  -s       print random bits as a signed integer\n"
+                    "  -u       print random bits as an unsigned integer (default)\n"
                     "\n"
                     "Exit Codes\n"
-                    "   0         Succeeded\n"
-                    "   1         Interrupted during random number generation\n"
-                    "   2         An error occurred");
+                    "   0       Succeeded\n"
+                    "   1       An error occured\n"
+                    "   2       Interrupted during random number generation\n"
+                    "   3       Could not generate enough random bits");
                 exit(EXIT_SUCCESS);
                 break;
             case 'n':
                 n = astrtol(optarg, EXECNAME ": invalid number given\n");
                 break;
             case 's':
-                optsigned = true;
+                optprintmode = PRINTMODE_SIGNED;
+                break;
+            case 'u':
+                optprintmode = PRINTMODE_UNSIGNED;
                 break;
             default:
                 fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
@@ -69,21 +106,25 @@ int main(int argc, char *argv[])
     argc -= optind;
 #endif /* ifndef __clang_analyzer__ */
 
-#define PRINTRANDOM(SPECIFIER, TYPE)                \
-    {                                               \
-        for (i = 0; i < n; i++) {                   \
-            errno = 0;                              \
-            randbuf(r, RSIZE);                      \
-            if (errno)                              \
-                exit(errno == EINTR ? 1 : 2);       \
-            printf("%" SPECIFIER "\n", *(TYPE *)r); \
-        }                                           \
+    if (optprintmode != PRINTMODE_BINARY) {
+        buflen = 64;
     }
+    buf = amalloc(buflen);
 
-    if (optsigned)
-        PRINTRANDOM(PRId64, int64_t)
-    else
-        PRINTRANDOM(PRIu64, uint64_t)
+    for (i = 0; i < n; i++) {
+        randbuf(buf, buflen);
+        switch (optprintmode) {
+            case PRINTMODE_SIGNED:
+                printf("%" PRId64 "\n", *(int64_t *)buf);
+                break;
+            case PRINTMODE_UNSIGNED:
+                printf("%" PRIu64 "\n", *(uint64_t *)buf);
+                break;
+            case PRINTMODE_BINARY:
+                write(STDOUT_FILENO, buf, buflen);
+                break;
+        }
+    }
 
     return 0;
 }
