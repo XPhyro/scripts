@@ -210,7 +210,7 @@ main() {
     export TABBED_ARGS="$optgeometry -n bspwmpad$lck"
     # shellcheck disable=SC2086
     st $optdirectory -n "bspwmpad$lck" \
-        -t "${opttitle:-"bspwmpad #$lck: ${*:-"$SHELL"}"}" \
+        -t "bspwmpad #$lck: ${opttitle:-"${*:-"$SHELL"}"}" \
         -e bspwmpadinit "$lckdir" "$lck" "$@" &
     until ids="$(xdotool search --limit 0 --classname "bspwmpad$lck")"; do
         sleep 0.1
