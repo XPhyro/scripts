@@ -14,6 +14,17 @@
 #define RSIZE 64
 _Static_assert(RSIZE == 64, "Other values are not supported in the rest of the code.");
 
+void randbuf(void *buf, size_t buflen)
+{
+#ifdef __unix__
+#ifdef __linux__
+    getrandom(buf, buflen, 0);
+#else /* ifdef __linux__ */
+    arc4random_buf(buf, buflen);
+#endif /* ifndef __linux__ */
+#endif /* ifdef __unix__ */
+}
+
 int main(int argc, char *argv[])
 {
     int i, n = 1;
@@ -62,10 +73,9 @@ int main(int argc, char *argv[])
     {                                               \
         for (i = 0; i < n; i++) {                   \
             errno = 0;                              \
-            getrandom(r, RSIZE, 0);                 \
-            if (errno) {                            \
+            randbuf(r, RSIZE);                      \
+            if (errno)                              \
                 exit(errno == EINTR ? 1 : 2);       \
-            }                                       \
             printf("%" SPECIFIER "\n", *(TYPE *)r); \
         }                                           \
     }
