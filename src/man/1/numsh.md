@@ -11,7 +11,7 @@ undefine({{{THIS}}})
 
 # SYNOPSIS
 
-| **numsh** \[OPTION...\] \[KEYCODE...\]
+| **numsh** \[OPTION...\] \[NUMBER...\]
 
 
 # DESCRIPTION

@@ -76,7 +76,7 @@ default, -n is selected.
 
 :   Directory database.
 
-See ENVIRONMENT section for `$PREFIX`
+See ENVIRONMENT section for `$PREFIX`.
 
 
 # ENVIRONMENT
