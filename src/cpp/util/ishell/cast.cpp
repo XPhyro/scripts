@@ -1,0 +1,184 @@
+// C++
+#include <algorithm>
+#include <cstdlib>
+#include <iostream>
+#include <ranges>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+// C
+#include <unistd.h>
+
+// libraries
+#include <consts.hpp>
+#include <strutil.hpp>
+
+// third party
+#include <hedley.h>
+
+typedef enum { TYPE_CHAR, TYPE_STR, TYPE_OCT, TYPE_DEC, TYPE_HEX, TYPE_INT } type_t;
+
+HEDLEY_NO_RETURN void help();
+HEDLEY_NO_RETURN void invalidargs(std::string err);
+void castint(std::string val);
+void caststr(std::string val);
+void castchar(std::string val);
+
+const std::unordered_map<std::string, type_t> types = {
+    { "char", TYPE_CHAR }, { "str", TYPE_STR }, { "oct", TYPE_OCT },
+    { "dec", TYPE_DEC },   { "hex", TYPE_HEX }, { "int", TYPE_INT }
+};
+
+std::string execname;
+type_t fromtype, totype;
+
+int main(int argc, char* argv[])
+{
+    execname = argv[0];
+
+    for (int i; (i = getopt(argc, argv, "h")) != -1;) {
+        switch (i) {
+            case 'h':
+                help();
+            default:
+                invalidargs(consts::str::empty);
+        }
+    }
+
+    argv += optind;
+    argc -= optind;
+
+    if (argc < 2)
+        invalidargs(consts::str::empty);
+
+    try {
+        fromtype = types.at(*strutil::getlower(std::string(argv[0])));
+        totype = types.at(*strutil::getlower(std::string(argv[1])));
+    } catch (const std::out_of_range& e) {
+        invalidargs("invalid type given");
+    }
+
+    argv += 2;
+    argc -= 2;
+
+    auto func = fromtype == TYPE_CHAR ? castchar : fromtype == TYPE_STR ? caststr : castint;
+    if (argc) {
+        auto args = std::views::counted(argv, argc);
+        std::ranges::for_each(args.begin(), args.end(), func);
+    } else {
+        for (std::string s; std::cin >> s;)
+            func(s);
+    }
+}
+
+HEDLEY_NO_RETURN void help()
+{
+    std::cout << "Usage: " << execname
+              << " [OPTION...] [FROM_TYPE] [TO_TYPE] [VALUE...]\n"
+                 "Cast types to types.\n"
+                 "\n"
+                 "Valid types are: ";
+
+    std::vector<std::string> typenames;
+    typenames.reserve(types.size());
+    for (const auto& [name, _] : types)
+        typenames.push_back(name);
+
+    std::sort(typenames.begin(), typenames.end());
+
+    for (auto it = typenames.begin(); it < typenames.end() - 1; it++)
+        std::cout << *it << ", ";
+    std::cout << typenames.back()
+              << ".\n"
+                 "\n"
+                 "  -h        display this help and exit\n";
+
+    std::exit(EXIT_SUCCESS);
+}
+
+HEDLEY_NO_RETURN void invalidargs(const std::string err)
+{
+    if (!err.empty())
+        std::cerr << err << '\n';
+    std::cerr << "Try '" << execname << " -h' for more information.\n";
+    std::exit(EXIT_FAILURE);
+}
+
+void castint(std::string val)
+{
+    static std::stringstream ss;
+    int i;
+
+    ss.str("");
+    ss.clear();
+
+    ss << val;
+    ss >> i;
+
+    switch (totype) {
+        case TYPE_CHAR:
+            std::cout << (char)i;
+            break;
+        case TYPE_STR:
+            std::cout << (char)i << '\n';
+            break;
+        case TYPE_OCT:
+            std::cout << std::oct << i << '\n';
+            break;
+        case TYPE_DEC:
+        case TYPE_INT:
+            std::cout << std::dec << i << '\n';
+            break;
+        case TYPE_HEX:
+            std::cout << std::hex << i << '\n';
+            break;
+        default:
+            std::cerr << execname << ": given combination of `from` to `to` is not supported.\n";
+            std::exit(EXIT_FAILURE);
+    }
+}
+
+void caststr(std::string val)
+{
+    switch (totype) {
+        case TYPE_CHAR:
+            castchar(val);
+            break;
+        case TYPE_STR:
+            std::cout << val << '\n';
+            break;
+        default:
+            std::cerr << execname << ": given combination of `from` to `to` is not supported.\n";
+            std::exit(EXIT_FAILURE);
+    }
+}
+
+void castchar(std::string val)
+{
+    for (auto const& c : val) {
+        switch (totype) {
+            case TYPE_CHAR:
+                std::cout << c;
+                break;
+            case TYPE_STR:
+                std::cout << c << '\n';
+                break;
+            case TYPE_OCT:
+                std::cout << std::oct << (int)c << '\n';
+                break;
+            case TYPE_DEC:
+            case TYPE_INT:
+                std::cout << std::dec << (int)c << '\n';
+                break;
+            case TYPE_HEX:
+                std::cout << std::hex << (int)c << '\n';
+                break;
+            default:
+                std::cerr << execname
+                          << ": given combination of `from` to `to` is not supported.\n";
+                std::exit(EXIT_FAILURE);
+        }
+    }
+}
