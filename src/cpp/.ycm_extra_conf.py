@@ -9,6 +9,9 @@ flags = [
     "-Wfloat-equal",
     "-Wdouble-promotion",
     "-Wdisabled-optimization",
+    "-Iinclude",
+    "-I../../lib/hedley",
+    "-I../../lib/NumCpp/include",
 ]
 
 SOURCE_EXTENSIONS = [

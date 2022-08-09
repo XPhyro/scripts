@@ -18,6 +18,8 @@ flags = [
     "-Wdisabled-optimization",
     "-lm",
     "-lmagic",
+    "-Iinclude",
+    "-I../../lib/hedley",
 ]
 
 SOURCE_EXTENSIONS = [
