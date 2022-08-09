@@ -1,6 +1,6 @@
 % GETSTR(3) getstr VERSION | Library Functions
 changequote(`{{{', `}}}')%
-% syscmd({{{date --date=@"$({ git log -1 --pretty="format:%ct" '}}}THIS{{{'; date +"%s"; } | head -n 1)" +"%Y-%m-%d %H:%M:%S"}}})
+% syscmd({{{date --date=@"$({ git log -1 --pretty="format:%ct%n" '}}}THIS{{{'; date +"%s"; } | head -n 1)" +"%Y-%m-%d %H:%M:%S"}}})
 undefine({{{VERSION}}})
 undefine({{{THIS}}})
 
