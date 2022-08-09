@@ -16,12 +16,6 @@
 #endif /* ifndef _POSIX_C_SOURCE */
 #include <sys/types.h>
 
-/* usage:
- *   char *line;
- *   while ((line = getstr(argc, argv, delim)))
- *       processline(line);
- *   free(line);
- */
 char *getstr(int argc, char *argv[], int delim)
 {
     static int i = 0;
@@ -40,12 +34,6 @@ char *getstr(int argc, char *argv[], int delim)
     return NULL;
 }
 
-/* usage:
- *   char *line;
- *   while ((line = fgetstr(stream, delim)))
- *       processline(line);
- *   free(line);
- */
 char *fgetstr(FILE *stream, int delim)
 {
     static char *line = NULL;
