@@ -24,7 +24,7 @@ char *getstr(int argc, char *argv[], int delim);
 `fgetstr()` is an easy-to-use wrapper for `getdelim(3)`.
 
 `getstr()` is similar to `fgetstr()`. If `argc` is not 0, it gathers input from
-`argv`. Otherwise, it gathers input from `stdin` using `getdelim(3)`.
+`argv`. Otherwise, it gathers input using `fgetstr()` on `stdin`.
 
 
 # RETURN VALUE
