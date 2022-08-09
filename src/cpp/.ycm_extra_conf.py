@@ -10,6 +10,7 @@ flags = [
     "-Wdouble-promotion",
     "-Wdisabled-optimization",
     "-Iinclude",
+    "-I../c/include",
     "-I../../lib/hedley",
     "-I../../lib/NumCpp/include",
 ]
