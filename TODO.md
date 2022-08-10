@@ -26,6 +26,7 @@
 - In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
   numbers.
 - Support arbitrary counts of warnings and configurations in `warnbattery`.
+- In `tglapp`, support terminating the X window instead of the run process.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
