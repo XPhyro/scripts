@@ -18,6 +18,9 @@
 # Environment=PATH=/usr/bin:/usr/local/bin
 # Environment=GETPATH_CONFIG_HOME=/home/USERNAME/.config
 # Environment=DISPLAY=:0
+# Environment=WARNBATTERY_LOW_THRESHOLD=20
+# Environment=WARNBATTERY_CRITICAL_THRESHOLD=10
+# Environment=WARNBATTERY_UPDATE_PERIOD=90
 # 
 # [Install]
 # WantedBy=default.target
