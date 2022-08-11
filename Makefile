@@ -3,22 +3,22 @@
 noop:
 
 install: uninstall
-	sh -c 'cd src && ./.make install o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+	cd src && ./.make install o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 uninstall:
-	sh -c 'cd src && ./.make uninstall o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+	cd src && ./.make uninstall o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 test:
-	sh -c 'cd src && ./.make test o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+	cd src && ./.make test o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 format:
-	sh -c 'cd src && ./.make format o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+	cd src && ./.make format o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 analyse:
-	sh -c 'cd src && ./.make analyse o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+	cd src && ./.make analyse o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 spell:
-	sh -c 'cd src && ./.make spell o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)'
+	cd src && ./.make spell o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 clean:
 
