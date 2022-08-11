@@ -62,7 +62,6 @@
 bool optquiet = false, optinvert = false, optverbose = false, optall = false, optmagic = false;
 const char *optmime, *optsmime;
 struct stat newer, older;
-magic_t magic;
 
 bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 bool (*negtests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
@@ -305,21 +304,11 @@ int main(int argc, char *argv[])
             TESTCASE('k', teststicky);
             TESTCASE('L', testlink);
             TESTCASENOBREAK('M', testmstype);
-            if (!optmagic) {
-                magic = magic_open(MAGIC_MIME_TYPE);
-                magic_load(magic, NULL);
-                magic_compile(magic, NULL);
-                optmagic = true;
-            }
+            optmagic = true;
             optsmime = optarg;
             break;
             TESTCASENOBREAK('m', testmtype);
-            if (!optmagic) {
-                magic = magic_open(MAGIC_MIME_TYPE);
-                magic_load(magic, NULL);
-                magic_compile(magic, NULL);
-                optmagic = true;
-            }
+            optmagic = true;
             optmime = optarg;
             break;
             TESTCASE('N', testmodif);
