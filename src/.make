@@ -319,7 +319,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -Iinclude -I'$rootdir/lib/hedley'"
-CLIBS="-lm -lmagic"
+CLIBS="-lm"
 C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
 export C_INCLUDE_PATH
 
