@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <sys/param.h>
 #include <unistd.h>
 
 #include <strutil.h>
