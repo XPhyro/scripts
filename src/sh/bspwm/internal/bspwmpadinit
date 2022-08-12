@@ -17,11 +17,13 @@ shift 2
     if [ "$#" -eq 0 ]; then
         printf "%s\n\n" "Deploying shell: $SHELL"
         fillline "‾"
+        printf "\n"
         exec "$SHELL"
     else
         { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
         printf "%s\n\n" "Running command: $*"
         fillline "‾"
+        printf "\n"
         (eval "$*")
         exit "$?"
     fi
