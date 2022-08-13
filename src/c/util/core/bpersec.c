@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_REALTIME, &t0);
     while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0) {
         totread += nread;
-        if (!(i++ % optcycle))
+        if (optcycle && !(i++ % optcycle))
             printdiff(t0, totread, optunit);
     }
     printdiff(t0, totread, optunit);
