@@ -1,5 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/param.h>
@@ -15,7 +16,11 @@ typedef struct timespec timespec_t;
 
 enum { NS_PER_SECOND = 1000000000 };
 
-void clock_gettimediff(timespec_t t0, timespec_t t1, timespec_t *td)
+ssize_t totread = 0;
+timespec_t t0;
+unit_t optunit = UNIT_BYTE;
+
+void clock_gettimediff(timespec_t t1, timespec_t *td)
 {
     td->tv_nsec = t1.tv_nsec - t0.tv_nsec;
     td->tv_sec = t1.tv_sec - t0.tv_sec;
@@ -28,24 +33,29 @@ void clock_gettimediff(timespec_t t0, timespec_t t1, timespec_t *td)
     }
 }
 
-void printdiff(timespec_t t0, ssize_t totread, unit_t unit)
+void printdiff(void)
 {
     static timespec_t t1, td;
+
     clock_gettime(CLOCK_REALTIME, &t1);
-    clock_gettimediff(t0, t1, &td);
+    clock_gettimediff(t1, &td);
+
     printf("%.16e\n",
            (double)totread / ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND));
+}
+
+void onsigint(int _)
+{
+    printdiff();
+    exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char *argv[])
 {
     ssize_t nread;
     char buf[PIPE_BUF];
-    ssize_t totread = 0;
     int i;
-    timespec_t t0;
     char *execname = argv[0];
-    unit_t optunit = UNIT_BYTE;
 #define DEFAULT_OPTCYCLE 10000
     unsigned int optcycle = DEFAULT_OPTCYCLE;
 
@@ -76,12 +86,15 @@ int main(int argc, char *argv[])
 
     i = 0;
     clock_gettime(CLOCK_REALTIME, &t0);
+
+    signal(SIGINT, onsigint);
+
     while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0) {
         totread += nread;
         if (optcycle && !(i++ % optcycle))
-            printdiff(t0, totread, optunit);
+            printdiff();
     }
-    printdiff(t0, totread, optunit);
+    printdiff();
 
     return 0;
 }
