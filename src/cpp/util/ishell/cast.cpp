@@ -1,5 +1,6 @@
 // C++
 #include <algorithm>
+#include <bitset>
 #include <cstdlib>
 #include <iostream>
 #include <ranges>
@@ -18,7 +19,7 @@
 // third party
 #include <hedley.h>
 
-typedef enum { TYPE_CHAR, TYPE_STR, TYPE_OCT, TYPE_DEC, TYPE_HEX, TYPE_INT } type_t;
+typedef enum { TYPE_CHAR, TYPE_STR, TYPE_OCT, TYPE_DEC, TYPE_HEX, TYPE_INT, TYPE_BIN } type_t;
 
 HEDLEY_NO_RETURN void help();
 HEDLEY_NO_RETURN void invalidargs(std::string err);
@@ -27,8 +28,8 @@ void caststr(std::string val);
 void castchar(std::string val);
 
 const std::unordered_map<std::string, type_t> types = {
-    { "char", TYPE_CHAR }, { "str", TYPE_STR }, { "oct", TYPE_OCT },
-    { "dec", TYPE_DEC },   { "hex", TYPE_HEX }, { "int", TYPE_INT }
+    { "char", TYPE_CHAR }, { "str", TYPE_STR }, { "oct", TYPE_OCT }, { "dec", TYPE_DEC },
+    { "hex", TYPE_HEX },   { "int", TYPE_INT }, { "bin", TYPE_BIN },
 };
 
 std::string execname;
@@ -148,6 +149,10 @@ void caststr(std::string val)
             break;
         case TYPE_STR:
             std::cout << val << '\n';
+            break;
+        case TYPE_BIN:
+            for (auto c : val)
+                std::cout << std::bitset<8>(c);
             break;
         default:
             std::cerr << execname << ": given combination of `from` to `to` is not supported.\n";
