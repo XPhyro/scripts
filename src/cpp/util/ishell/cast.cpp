@@ -24,6 +24,7 @@ typedef enum { TYPE_CHAR, TYPE_STR, TYPE_OCT, TYPE_DEC, TYPE_HEX, TYPE_INT, TYPE
 
 HEDLEY_NO_RETURN void help();
 HEDLEY_NO_RETURN void invalidargs(std::string err);
+HEDLEY_NO_RETURN void invalidcast();
 void castint(std::string val);
 void caststr(std::string val);
 void castchar(std::string val);
@@ -33,7 +34,7 @@ const std::unordered_map<std::string, type_t> types = {
     { "hex", TYPE_HEX },   { "int", TYPE_INT }, { "bin", TYPE_BIN },
 };
 
-std::string execname;
+std::string execname, fromtypename, totypename;
 type_t fromtype, totype;
 
 int main(int argc, char* argv[])
@@ -56,8 +57,8 @@ int main(int argc, char* argv[])
         invalidargs(consts::str::empty);
 
     try {
-        fromtype = types.at(*strutil::getlower(std::string(argv[0])));
-        totype = types.at(*strutil::getlower(std::string(argv[1])));
+        fromtype = types.at(fromtypename = *strutil::getlower(std::string(argv[0])));
+        totype = types.at(totypename = *strutil::getlower(std::string(argv[1])));
     } catch (const std::out_of_range& e) {
         invalidargs("invalid type given");
     }
@@ -108,6 +109,13 @@ HEDLEY_NO_RETURN void invalidargs(const std::string err)
     std::exit(EXIT_FAILURE);
 }
 
+HEDLEY_NO_RETURN void invalidcast()
+{
+    std::cerr << execname << ": given cast of `" << fromtypename << "` to `" << totypename
+              << "` is not supported.\n";
+    std::exit(EXIT_FAILURE);
+}
+
 void castint(std::string val)
 {
     static std::stringstream ss;
@@ -137,8 +145,7 @@ void castint(std::string val)
             std::cout << std::hex << i << '\n';
             break;
         default:
-            std::cerr << execname << ": given combination of `from` to `to` is not supported.\n";
-            std::exit(EXIT_FAILURE);
+            invalidcast();
     }
 }
 
@@ -177,8 +184,7 @@ void caststr(std::string val)
             }
         } break;
         default:
-            std::cerr << execname << ": given combination of `from` to `to` is not supported.\n";
-            std::exit(EXIT_FAILURE);
+            invalidcast();
     }
 }
 
@@ -207,9 +213,7 @@ void castchar(std::string val)
                     std::cout << std::bitset<8>(c);
                 break;
             default:
-                std::cerr << execname
-                          << ": given combination of `from` to `to` is not supported.\n";
-                std::exit(EXIT_FAILURE);
+                invalidcast();
         }
     }
 }
