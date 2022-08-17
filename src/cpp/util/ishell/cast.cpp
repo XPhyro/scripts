@@ -6,6 +6,7 @@
 #include <ranges>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -143,6 +144,9 @@ void castint(std::string val)
 
 void caststr(std::string val)
 {
+    static unsigned char bits = 0;
+    static int bitidx = 0;
+
     switch (totype) {
         case TYPE_CHAR:
             castchar(val);
@@ -150,10 +154,28 @@ void caststr(std::string val)
         case TYPE_STR:
             std::cout << val << '\n';
             break;
-        case TYPE_BIN:
-            for (auto c : val)
-                std::cout << std::bitset<8>(c);
-            break;
+        case TYPE_BIN: {
+            std::string_view view{ val };
+            for (size_t i = 0; i < view.length(); i += 8) {
+                for (auto c : view.substr(i, 8) | std::views::reverse) {
+                    switch (c) {
+                        case '0':
+                            bits &= ~((unsigned char)1 << bitidx++);
+                            break;
+                        case '1':
+                            bits |= (unsigned char)1 << bitidx++;
+                            break;
+                        default:
+                            std::cerr << execname << ": expected 0 or 1, got '" << c << "'.\n";
+                            std::exit(EXIT_FAILURE);
+                    }
+                    if (bitidx == 8) {
+                        bitidx = 0;
+                        std::cout << bits;
+                    }
+                }
+            }
+        } break;
         default:
             std::cerr << execname << ": given combination of `from` to `to` is not supported.\n";
             std::exit(EXIT_FAILURE);
@@ -179,6 +201,10 @@ void castchar(std::string val)
                 break;
             case TYPE_HEX:
                 std::cout << std::hex << (int)c << '\n';
+                break;
+            case TYPE_BIN:
+                for (auto c : val)
+                    std::cout << std::bitset<8>(c);
                 break;
             default:
                 std::cerr << execname
