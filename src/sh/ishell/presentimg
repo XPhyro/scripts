@@ -1,0 +1,84 @@
+#!/usr/bin/env sh
+
+opttextclr=red
+optborderclr=red
+optfont=DejaVu-Sans-Book
+optgravity="southwest"
+unset optoutheight
+optoutpath=out_presentimg.png
+optpoint=72
+optvertical=+
+unset optoutwidth
+optborder=20
+while getopts "C:c:f:g:H:hlo:p:vW:w:" OPT; do
+    case "$OPT" in
+        C) opttextclr="$OPTARG";;
+        c) optborderclr="$OPTARG";;
+        f) optfont="$OPTARG";;
+        g) gravity="$OPTARG";;
+        H) optoutheight="$OPTARG";;
+        h)
+            printf "%s" \
+"$0 [OPTION...] [IMAGEPATH=LABEL...] -- [IMAGEPATH=LABEL...]
+
+At least one of -H or -W must be given.
+
+Options
+   -C CLR    text colour. default is red.
+   -c CLR    border colour. default is red.
+   -f FONT   text font. default is DejaVu-Sans-Book.
+   -g GRAV   text gravity. default is southwest.
+   -H SIZE   height of the output image. if not given, the height of the input images are preserved.
+   -h        display this help and exit
+   -l        list all available fonts
+   -o PATH   output image path. if not given, out_presentimg.png is used.
+   -p SIZE   text point size. default is 72.
+   -v        stack images vertically
+   -W SIZE   width of the output image. if not given, the width of the input images are preserved.
+   -w SIZE   border width. default is 20.
+
+Examples
+   $ $0 -H 2160 -o my_horizontally_stacked_image.jpg -- my_vertical_image_1.png=A my_vertical_image_2.webp=B
+   $ $0 -W 3840 -v -o my_vertically_stacked_image.jpg -- my_horizontal_image_1.png=\"Image 1\" my_horizontal_image_2.webp=\"Image 2\"
+"
+            exit 0
+            ;;
+        l)
+            convert -list font | grep "^  Font: " | sed 's/^  Font: //'
+            exit "$?"
+            ;;
+        p) optpoint="$OPTARG";;
+        o) optoutpath="$OPTARG";;
+        v) optvertical=-;;
+        W) optoutwidth="$OPTARG";;
+        w) optborder="$OPTARG";;
+        *) printf "Try '%s -h' for more information." "$0"; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+tmpdir="$(mktemp -d)"
+i=1
+for img; do
+    convert \
+        -resize "${optoutwidth}x${optoutheight}" \
+        -- "${img%%=*}" "$tmpdir/$i.png"
+    convert \
+        -font "$optfont" -pointsize "$optpoint" -fill "$opttextclr" \
+        -gravity "$optgravity" -annotate "+$optborder+$optborder" "${img#*=}" \
+        -- "$tmpdir/$i.png" "$tmpdir/$i.png"
+    convert \
+        -bordercolor "$optborderclr" -border "$optborder" \
+        -- "$tmpdir/$i.png" "$tmpdir/$i.png"
+    : $((i += 1))
+done
+
+{   find "$tmpdir" -type f -print0 | sort -nz
+    printf "%s\0" "$optoutpath"
+} | xargs -r0 convert "${optvertical}append" --
+convert \
+    -bordercolor "$optborderclr" -border "$optborder" \
+    -- "$optoutpath" "$optoutpath"
+convert \
+    -set "comment" "Image generated via $(basename -- "$0")." \
+    -- "$optoutpath" "$optoutpath"
