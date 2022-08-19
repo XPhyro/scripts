@@ -8,9 +8,11 @@ unset optoutheight
 optoutpath=out_presentimg.png
 optpoint=72
 optvertical=+
+optoffsetx=20
+optoffsetx=20
 unset optoutwidth
 optborder=20
-while getopts "C:c:f:g:H:hlo:p:vW:w:" OPT; do
+while getopts "C:c:f:g:H:hlo:p:vx:y:W:w:" OPT; do
     case "$OPT" in
         C) opttextclr="$OPTARG";;
         c) optborderclr="$OPTARG";;
@@ -34,6 +36,8 @@ Options
    -o PATH   output image path. if not given, out_presentimg.png is used.
    -p SIZE   text point size. default is 72.
    -v        stack images vertically
+   -x NUM    offset text in x axis. default is 20. recommended is same as border width.
+   -y NUM    offset text in y axis. default is 20. recommended is same as border width.
    -W SIZE   width of the output image. if not given, the width of the input images are preserved.
    -w SIZE   border width. default is 20.
 
@@ -50,6 +54,8 @@ Examples
         p) optpoint="$OPTARG";;
         o) optoutpath="$OPTARG";;
         v) optvertical=-;;
+        x) optoffsetx="$OPTARG";;
+        y) optoffsetx="$OPTARG";;
         W) optoutwidth="$OPTARG";;
         w) optborder="$OPTARG";;
         *) printf "Try '%s -h' for more information." "$0"; exit 1;;
@@ -65,7 +71,7 @@ for img; do
         -- "${img%%=*}" "$tmpdir/$i.png"
     convert \
         -font "$optfont" -pointsize "$optpoint" -fill "$opttextclr" \
-        -gravity "$optgravity" -annotate "+$optborder+$optborder" "${img#*=}" \
+        -gravity "$optgravity" -annotate "+$optoffsetx+$optoffsety" "${img#*=}" \
         -- "$tmpdir/$i.png" "$tmpdir/$i.png"
     convert \
         -bordercolor "$optborderclr" -border "$optborder" \
