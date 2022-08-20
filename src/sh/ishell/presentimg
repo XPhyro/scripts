@@ -22,8 +22,9 @@ while getopts "C:c:f:g:H:hlo:p:vx:y:W:w:" OPT; do
         h)
             printf "%s" \
 "$0 [OPTION...] [IMAGEPATH=LABEL...] -- [IMAGEPATH=LABEL...]
+Outline, label and append imamges.
 
-At least one of -H or -W must be given.
+IMAGEPATH must not contain an equals sign (=). At least one of -H or -W must be given.
 
 Options
    -C CLR    text colour. default is red.
