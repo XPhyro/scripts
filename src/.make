@@ -212,7 +212,11 @@ analyse() {
 }
 
 spell() {
-    (cd .. && codespell --builtin "clear,rare,informal" -L "ans,ba,erformance" -- **)
+    (
+        cd .. || exit 1
+        find . -mindepth 1 -maxdepth 1 \( -not -name ".git" -a -not -name "lib" \) -print0 \
+            | xargs -r0 codespell --builtin "clear,rare,informal" -L "ans,ba,erformance" --
+    )
 }
 
 set -ex
