@@ -9,7 +9,7 @@ optoutpath=out_presentimg.png
 optpoint=72
 optvertical=+
 optoffsetx=20
-optoffsetx=20
+optoffsety=20
 unset optoutwidth
 optborder=20
 while getopts "C:c:f:g:H:hlo:p:vx:y:W:w:" OPT; do
@@ -56,7 +56,7 @@ Examples
         o) optoutpath="$OPTARG";;
         v) optvertical=-;;
         x) optoffsetx="$OPTARG";;
-        y) optoffsetx="$OPTARG";;
+        y) optoffsety="$OPTARG";;
         W) optoutwidth="$OPTARG";;
         w) optborder="$OPTARG";;
         *) printf "Try '%s -h' for more information." "$0"; exit 1;;
