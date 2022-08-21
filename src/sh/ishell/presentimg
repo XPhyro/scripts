@@ -17,7 +17,7 @@ while getopts "C:c:f:g:H:hlo:p:vx:y:W:w:" OPT; do
         C) opttextclr="$OPTARG";;
         c) optborderclr="$OPTARG";;
         f) optfont="$OPTARG";;
-        g) gravity="$OPTARG";;
+        g) optgravity="$OPTARG";;
         H) optoutheight="$OPTARG";;
         h)
             printf "%s" \
