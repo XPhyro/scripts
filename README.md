@@ -16,6 +16,7 @@ To install for your user:
 
 To install system-wide (recommended):
 
+    git submodule update --init --recursive
     sudo make install
 
 You may change the installation directory by setting `$PREFIX`.
