@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
                     "\n"
                     "Exit Codes\n"
                     "   0       Succeeded\n"
-                    "   1       An error occured\n"
+                    "   1       An error occurred\n"
                     "   2       Interrupted during random number generation\n"
                     "   3       Could not generate enough random bits");
                 exit(EXIT_SUCCESS);
