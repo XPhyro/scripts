@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
                     rf = pow(buf[i] / 255.0, 2.2) * 0.2126;
                     gf = pow(buf[i + 1] / 255.0, 2.2) * 0.7152;
                     bf = pow(buf[i + 2] / 255.0, 2.2) * 0.0722;
-                    graybuf[grayidx] = MIN(pow((rf + gf + bf), 0.454545) * 255, 255);
+                    graybuf[grayidx] = MIN(pow(rf + gf + bf, 0.454545) * 255, 255);
                     break;
                 case METHOD_RED:
                     graybuf[grayidx] = buf[i];
