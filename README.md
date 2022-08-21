@@ -47,6 +47,7 @@ the source code.
   hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but
   the script was designed with it in mind. There is also
   [dwmpad](src/sh/.archived/dwm/util/dwmpad).
+- [cast](src/cpp/util/ishell/cast.cpp): Cast data between different data types.
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
@@ -86,6 +87,8 @@ the source code.
 - [numsh](src/c/util/math/numsh.c): A NumPy-like interface for the `math.h` C
   standard header, enabling fast mathematical computations of an array of
   numbers in the shell.
+- [rgb24togray](src/c/util/math/rgb24togray.c): Convert RGB24 images/video to
+  grayscale with selectable algorithms.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
