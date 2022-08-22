@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <bitset>
 #include <cstdlib>
+#include <functional>
 #include <iostream>
 #include <ranges>
 #include <sstream>
@@ -20,18 +21,30 @@
 // third party
 #include <hedley.h>
 
-typedef enum { TYPE_CHAR, TYPE_STR, TYPE_OCT, TYPE_DEC, TYPE_HEX, TYPE_INT, TYPE_BIN } type_t;
+typedef enum {
+    TYPE_CHAR,
+    TYPE_STR,
+    TYPE_OCT,
+    TYPE_DEC,
+    TYPE_HEX,
+    TYPE_INT,
+    TYPE_BIN,
+    TYPE_FLOAT,
+    TYPE_RAW
+} type_t;
 
 HEDLEY_NO_RETURN void help();
 HEDLEY_NO_RETURN void invalidargs(std::string err);
 HEDLEY_NO_RETURN void invalidcast();
 void castint(std::string val);
+void castfloat(std::string val);
 void caststr(std::string val);
 void castchar(std::string val);
 
 const std::unordered_map<std::string, type_t> types = {
-    { "char", TYPE_CHAR }, { "str", TYPE_STR }, { "oct", TYPE_OCT }, { "dec", TYPE_DEC },
-    { "hex", TYPE_HEX },   { "int", TYPE_INT }, { "bin", TYPE_BIN },
+    { "char", TYPE_CHAR }, { "str", TYPE_STR },     { "oct", TYPE_OCT },
+    { "dec", TYPE_DEC },   { "hex", TYPE_HEX },     { "int", TYPE_INT },
+    { "bin", TYPE_BIN },   { "float", TYPE_FLOAT }, { "raw", TYPE_RAW },
 };
 
 std::string execname, fromtypename, totypename;
@@ -66,7 +79,22 @@ int main(int argc, char* argv[])
     argv += 2;
     argc -= 2;
 
-    auto func = fromtype == TYPE_CHAR ? castchar : fromtype == TYPE_STR ? caststr : castint;
+    std::function<void(std::string)> func;
+    switch (fromtype) {
+        case TYPE_CHAR:
+            func = castchar;
+            break;
+        case TYPE_STR:
+            func = caststr;
+            break;
+        case TYPE_FLOAT:
+            func = castfloat;
+            break;
+        default:
+            func = castint;
+            break;
+    }
+
     if (argc) {
         auto args = std::views::counted(argv, argc);
         std::ranges::for_each(args.begin(), args.end(), func);
@@ -143,6 +171,26 @@ void castint(std::string val)
             break;
         case TYPE_HEX:
             std::cout << std::hex << i << '\n';
+            break;
+        default:
+            invalidcast();
+    }
+}
+
+void castfloat(std::string val)
+{
+    static std::stringstream ss;
+    double f;
+
+    ss.str("");
+    ss.clear();
+
+    ss << val;
+    ss >> f;
+
+    switch (totype) {
+        case TYPE_RAW:
+            write(STDOUT_FILENO, &f, sizeof(double));
             break;
         default:
             invalidcast();
