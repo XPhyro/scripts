@@ -40,8 +40,8 @@ void printdiff(void)
     clock_gettime(CLOCK_REALTIME, &t1);
     clock_gettimediff(t1, &td);
 
-    printf("%.16e\n",
-           (double)totread / ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND));
+    printf("%.16e\n", (double)(optunit == UNIT_BYTE ? totread : totread * 8) /
+                          ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND));
 }
 
 void onsigint(int _)
