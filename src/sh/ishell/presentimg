@@ -45,6 +45,7 @@ Options
 Examples
    $ $0 -H 2160 -o my_horizontally_stacked_image.jpg -- my_vertical_image_1.png=A my_vertical_image_2.webp=B
    $ $0 -W 3840 -v -o my_vertically_stacked_image.jpg -- my_horizontal_image_1.png=\"Image 1\" my_horizontal_image_2.webp=\"Image 2\"
+   $ $0 -W 3840 -v -o stacked_frames.png -- my_video_1.mp4=\"First Frame of Video 1\" my_video_2.mov=\"First Frame of Video 2\"
 "
             exit 0
             ;;
@@ -65,8 +66,16 @@ done
 shift "$((OPTIND - 1))"
 
 tmpdir="$(mktemp -d)"
+trap 'rm -rf -- "$tmpdir"' INT TERM HUP QUIT EXIT
 i=1
 for img; do
+    ft="$(file --brief --mime-type -- "${img%%=*}")"
+    [ "${ft%%/*}" = "video" ] && {
+        tmpviddir="$(mktemp -d)"
+        vidframe="$(mktemp -p "$tmpviddir" --suffix=.png)"
+        ffmpeg -hide_banner -y -i "${img%%=*}" -vframes 1 -update true -loglevel warning "$vidframe"
+        img="$vidframe=${img#*=}"
+    }
     convert \
         -resize "${optoutwidth}x${optoutheight}" \
         -- "${img%%=*}" "$tmpdir/$i.png"
@@ -80,7 +89,7 @@ for img; do
     : $((i += 1))
 done
 
-{   find "$tmpdir" -type f -print0 | sort -nz
+{   find "$tmpdir" -mindepth 1 -maxdepth 1 -type f -print0 | sort -nz
     printf "%s\0" "$optoutpath"
 } | xargs -r0 convert "${optvertical}append" --
 convert \
