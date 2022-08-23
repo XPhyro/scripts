@@ -21,7 +21,7 @@ const std::string clear_color = "\x1b[0m";
 
 int main(int argc, char* argv[])
 {
-    const char *execname = argv[0];
+    const char* execname = argv[0];
 
     if (argc < 2) {
         std::cout << execname << ": no argument given" << std::endl;
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     try {
         std::cout << colors.at(strutil::makelower(argv[1]));
     } catch (const std::out_of_range& e) {
-        std::cout << execname <<  ": incorrect color given. color must be one of: ";
+        std::cout << execname << ": incorrect color given. color must be one of: ";
 
         std::vector<std::string> color_names;
         color_names.reserve(colors.size());
