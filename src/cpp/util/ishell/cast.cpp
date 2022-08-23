@@ -172,6 +172,9 @@ void castint(std::string val)
         case TYPE_HEX:
             std::cout << std::hex << ll << '\n';
             break;
+        case TYPE_BIN:
+            std::cout << std::bitset<8 * sizeof(long long)>(ll);
+            break;
         case TYPE_RAW:
             write(STDOUT_FILENO, &ll, sizeof(long long));
             break;
