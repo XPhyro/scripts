@@ -147,33 +147,33 @@ HEDLEY_NO_RETURN void invalidcast()
 void castint(std::string val)
 {
     static std::stringstream ss;
-    long long i;
+    long long ll;
 
     ss.str("");
     ss.clear();
 
     ss << val;
-    ss >> i;
+    ss >> ll;
 
     switch (totype) {
         case TYPE_CHAR:
-            std::cout << (char)i;
+            std::cout << (char)ll;
             break;
         case TYPE_STR:
-            std::cout << (char)i << '\n';
+            std::cout << (char)ll << '\n';
             break;
         case TYPE_OCT:
-            std::cout << std::oct << i << '\n';
+            std::cout << std::oct << ll << '\n';
             break;
         case TYPE_DEC:
         case TYPE_INT:
-            std::cout << std::dec << i << '\n';
+            std::cout << std::dec << ll << '\n';
             break;
         case TYPE_HEX:
-            std::cout << std::hex << i << '\n';
+            std::cout << std::hex << ll << '\n';
             break;
         case TYPE_RAW:
-            write(STDOUT_FILENO, &i, sizeof(long long));
+            write(STDOUT_FILENO, &ll, sizeof(long long));
             break;
         default:
             invalidcast();
