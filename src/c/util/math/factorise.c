@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
                 break;
             case 'h':
                 puts("Usage: factorise [OPTION]... [NUMBER]...\n"
-                     "Factorise numbers similar to GNU factor, but faster.\n"
+                     "Factorise numbers.\n"
                      "\n"
                      "  -g        emulate GNU factor\n"
                      "  -h        display this help and exit");
