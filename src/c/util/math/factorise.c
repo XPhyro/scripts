@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
                 continue;
             putchar(' ');
 
-            for (; !(num % 2);) {
+            while (!(num % 2)) {
                 num /= 2;
                 putchar('2');
                 if (num != 1)
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
             }
 
             for (fac = 3; fac <= num; fac += 2) {
-                for (; !(num % fac);) {
+                while (!(num % fac)) {
                     num /= fac;
                     printf("%llu", fac);
                     if (num != 1)
