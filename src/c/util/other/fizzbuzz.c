@@ -55,6 +55,9 @@ int main(int argc, char *argv[])
         }
     }
 
+    argc -= optind;
+    argv += optind;
+
     buf = NULL;
     bufsize = 0;
     for (i = 1; i < argc; i++) {
