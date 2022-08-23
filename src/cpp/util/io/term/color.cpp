@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-#define EXECNAME "color"
+#include <strutil.hpp>
 
 const std::unordered_map<std::string, std::string> colors = {
     { "black", "\x1b[0;30m" },   { "red", "\x1b[0;31m" },    { "green", "\x1b[0;32m" },
@@ -19,17 +19,19 @@ const std::unordered_map<std::string, std::string> colors = {
 
 const std::string clear_color = "\x1b[0m";
 
-int main(const int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
+    const char *execname = argv[0];
+
     if (argc < 2) {
-        std::cout << EXECNAME ": no argument given" << std::endl;
+        std::cout << execname << ": no argument given" << std::endl;
         return EXIT_FAILURE;
     }
 
     try {
-        std::cout << colors.at(argv[1]);
+        std::cout << colors.at(strutil::makelower(argv[1]));
     } catch (const std::out_of_range& e) {
-        std::cout << EXECNAME ": incorrect color given. color must be one of: ";
+        std::cout << execname <<  ": incorrect color given. color must be one of: ";
 
         std::vector<std::string> color_names;
         color_names.reserve(colors.size());
