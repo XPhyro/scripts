@@ -147,7 +147,7 @@ HEDLEY_NO_RETURN void invalidcast()
 void castint(std::string val)
 {
     static std::stringstream ss;
-    int i;
+    long long i;
 
     ss.str("");
     ss.clear();
@@ -173,7 +173,7 @@ void castint(std::string val)
             std::cout << std::hex << i << '\n';
             break;
         case TYPE_RAW:
-            write(STDOUT_FILENO, &i, sizeof(int));
+            write(STDOUT_FILENO, &i, sizeof(long long));
             break;
         default:
             invalidcast();
