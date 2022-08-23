@@ -172,6 +172,9 @@ void castint(std::string val)
         case TYPE_HEX:
             std::cout << std::hex << i << '\n';
             break;
+        case TYPE_RAW:
+            write(STDOUT_FILENO, &i, sizeof(int));
+            break;
         default:
             invalidcast();
     }
