@@ -215,6 +215,10 @@ void caststr(std::string val)
         case TYPE_STR:
             std::cout << val << '\n';
             break;
+        case TYPE_BIN:
+            castchar(val);
+            std::cout << '\n';
+            break;
         case TYPE_RAW: {
             std::string_view view{ val };
             for (size_t i = 0; i < view.length(); i += 8) {
