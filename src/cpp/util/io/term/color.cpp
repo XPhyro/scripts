@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     if (argc == 2)
         std::cout << std::cin.rdbuf();
     else
-        for (auto const arg : std::views::counted(argv + 2, argc - 2))
+        for (auto const& arg : std::views::counted(argv + 2, argc - 2))
             std::cout << arg << '\n';
 
     std::cout << clear_color;
