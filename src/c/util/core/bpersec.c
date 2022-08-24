@@ -40,8 +40,9 @@ void printdiff(void)
     clock_gettime(CLOCK_REALTIME, &t1);
     clock_gettimediff(t1, &td);
 
-    printf("%.16e\n", (double)(optunit == UNIT_BYTE ? totread : totread * 8) /
-                          ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND));
+    printf("%.16e\n",
+           (double)(optunit == UNIT_BYTE ? totread : totread * 8) /
+               ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND));
 }
 
 void onsigint(int _)
@@ -76,7 +77,8 @@ int main(int argc, char *argv[])
                     "  -b        output in bits\n"
                     "  -h        display this help and exit\n"
                     "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n",
-                    execname, STRINGIFY(DEFAULT_OPTCYCLE));
+                    execname,
+                    STRINGIFY(DEFAULT_OPTCYCLE));
                 return EXIT_SUCCESS;
             case 'n':
                 optcycle = astrtoul(optarg, "invalid number given");

@@ -23,7 +23,9 @@ int main(int argc, char *argv[])
     if (argc < 4)
         DIE("not enough arguments given");
 
-    printf("[38;2;%hu;%hu;%hum", astrtocu(argv[1], numerr), astrtocu(argv[2], numerr),
+    printf("[38;2;%hu;%hu;%hum",
+           astrtocu(argv[1], numerr),
+           astrtocu(argv[2], numerr),
            astrtocu(argv[3], numerr));
     fflush(stdout);
 

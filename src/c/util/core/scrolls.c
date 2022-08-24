@@ -85,8 +85,11 @@ int main(int argc, char *argv[])
                     "  -p LEN    add LEN spaces of padding after the text ending. default is %s\n"
                     "  -S NSEC   wait NSEC nanoseconds after each scroll iteration. can be combined with -s. NSEC is clamped to 999999999. default is %s\n"
                     "  -s SEC    wait SEC seconds after each scroll iteration. can be combined with -S. default is %s\n",
-                    execname, STRINGIFY(DEFAULTTEXTLEN), STRINGIFY(DEFAULTTEXTSEP),
-                    STRINGIFY(DEFAULTNSEC), STRINGIFY(DEFAULTSEC));
+                    execname,
+                    STRINGIFY(DEFAULTTEXTLEN),
+                    STRINGIFY(DEFAULTTEXTSEP),
+                    STRINGIFY(DEFAULTNSEC),
+                    STRINGIFY(DEFAULTSEC));
                 exit(EXIT_SUCCESS);
                 break;
             case 'k':

@@ -36,7 +36,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: false
 
-BinPackArguments: true
+BinPackArguments: false
 BinPackParameters: true
 
 BreakBeforeBinaryOperators: None
@@ -54,6 +54,8 @@ BraceWrapping:
   BeforeElse: false
   IndentBraces: false
   SplitEmptyFunction: true
+
+InsertTrailingCommas: Wrapped
 
 Cpp11BracedListStyle: false # adds spaces around braces
 MaxEmptyLinesToKeep: 1

@@ -38,7 +38,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 
-BinPackArguments: true
+BinPackArguments: false
 BinPackParameters: true
 
 BraceWrapping:
@@ -66,6 +66,8 @@ BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: BeforeComma
 BreakConstructorInitializersBeforeComma: false
 BreakStringLiterals: false
+
+InsertTrailingCommas: Wrapped
 
 Cpp11BracedListStyle: false
 MaxEmptyLinesToKeep: 1
