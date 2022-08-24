@@ -333,6 +333,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wno-unused-parameter -Wno-unused-result \
           -Wno-implicit-fallthrough -Wno-sign-compare -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
+          -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
           -Iinclude -I'$rootdir/lib/hedley' -I'$rootdir/lib/NumCpp/include'"
 CXXLIBS=""
 CPLUS_INCLUDE_PATH="$PWD/cpp/include:$PWD/c/include:$rootdir/lib/hedley:$rootdir/lib/NumCpp/include"
