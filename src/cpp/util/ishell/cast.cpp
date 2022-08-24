@@ -157,10 +157,10 @@ void castint(std::string val)
 
     switch (totype) {
         case TYPE_CHAR:
-            std::cout << (char)ll;
+            std::cout << static_cast<char>(ll);
             break;
         case TYPE_STR:
-            std::cout << (char)ll << '\n';
+            std::cout << static_cast<char>(ll) << '\n';
             break;
         case TYPE_OCT:
             std::cout << std::oct << ll << '\n';
@@ -222,13 +222,13 @@ void caststr(std::string val)
         case TYPE_RAW: {
             std::string_view view{ val };
             for (size_t i = 0; i < view.length(); i += 8) {
-                for (auto c : view.substr(i, 8) | std::views::reverse) {
+                for (auto const& c : view.substr(i, 8) | std::views::reverse) {
                     switch (c) {
                         case '0':
-                            bits &= ~((unsigned char)1 << bitidx++);
+                            bits &= ~(static_cast<unsigned char>(1) << bitidx++);
                             break;
                         case '1':
-                            bits |= (unsigned char)1 << bitidx++;
+                            bits |= static_cast<unsigned char>(1) << bitidx++;
                             break;
                         default:
                             std::cerr << execname << ": expected 0 or 1, got '" << c << "'.\n";
@@ -257,18 +257,17 @@ void castchar(std::string val)
                 std::cout << c << '\n';
                 break;
             case TYPE_OCT:
-                std::cout << std::oct << (int)c << '\n';
+                std::cout << std::oct << static_cast<int>(c) << '\n';
                 break;
             case TYPE_DEC:
             case TYPE_INT:
-                std::cout << std::dec << (int)c << '\n';
+                std::cout << std::dec << static_cast<int>(c) << '\n';
                 break;
             case TYPE_HEX:
-                std::cout << std::hex << (int)c << '\n';
+                std::cout << std::hex << static_cast<int>(c) << '\n';
                 break;
             case TYPE_BIN:
-                for (auto c : val)
-                    std::cout << std::bitset<8>(c);
+                std::cout << std::bitset<8>(c);
                 break;
             default:
                 invalidcast();
