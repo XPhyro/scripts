@@ -191,7 +191,7 @@ funcavail:
             printf("%.16g\n", func->func(funcargc, funcargv, funckwargv));
             break;
         default:
-            fprintf(stderr, "unkown function type: %d\n", func->type);
+            fprintf(stderr, "unknown function type: %d\n", func->type);
             return EXIT_FAILURE;
     }
 

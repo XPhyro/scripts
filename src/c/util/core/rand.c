@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
                 write(STDOUT_FILENO, buf, buflen);
                 break;
             default:
-                fprintf(stderr, "unkown print mode: %d\n", optprintmode);
+                fprintf(stderr, "unknown print mode: %d\n", optprintmode);
                 return EXIT_FAILURE;
         }
     }

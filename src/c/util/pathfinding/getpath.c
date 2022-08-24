@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
                     (dirturn ? rmkdir : rmkfile)(line, 0755);
                     break;
                 default:
-                    DIE("unkown safety mode: %d\n", safetymode);
+                    DIE("unknown safety mode: %d\n", safetymode);
             }
 
             if (!optshell) {
