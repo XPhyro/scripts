@@ -173,10 +173,10 @@ void castint(std::string val)
             std::cout << std::hex << ll << '\n';
             break;
         case TYPE_BIN:
-            std::cout << std::bitset<8 * sizeof(long long)>(ll);
+            std::cout << std::bitset<8 * sizeof(ll)>(ll);
             break;
         case TYPE_RAW:
-            write(STDOUT_FILENO, &ll, sizeof(long long));
+            write(STDOUT_FILENO, &ll, sizeof(ll));
             break;
         default:
             invalidcast();
@@ -196,7 +196,7 @@ void castfloat(std::string val)
 
     switch (totype) {
         case TYPE_RAW:
-            write(STDOUT_FILENO, &f, sizeof(double));
+            write(STDOUT_FILENO, &f, sizeof(f));
             break;
         default:
             invalidcast();
