@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
                     "  -u        select unsafe mode: create none of the elements of the path\n"
                     "  -z        line delimiter is NUL, not newline\n"
                     "  -0        line delimiter is NUL, not newline");
-                return EXIT_SUCCESS;
+                exit(EXIT_SUCCESS);
                 break;
             case 'n':
                 safetymode = SAFETYMODE_NORMAL;
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
                 break;
             default:
                 fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
-                return EXIT_FAILURE;
+                exit(EXIT_FAILURE);
         }
     }
 

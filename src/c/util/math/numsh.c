@@ -128,7 +128,7 @@ funcavail:
                     "  -o  ARG   pass additional arguments to FUNC. this option can be\n"
                     "            given multiple times, and has to be given after -f.\n",
                     stdout);
-                return EXIT_SUCCESS;
+                exit(EXIT_SUCCESS);
             case 'L':
                 puts("Map Functions");
                 for (j = 0; j < LEN(functions); j++) {
@@ -146,14 +146,14 @@ funcavail:
                     puts(functions[j].name);
                 }
 
-                return EXIT_SUCCESS;
+                exit(EXIT_SUCCESS);
             case 'o':
                 funckwargv = arealloc(funckwargv, ++funckwargc * sizeof(double));
                 funckwargv[funckwargc - 1] = astrtod(optarg, EXECNAME ": invalid number given\n");
                 break;
             default:
                 fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
-                return EXIT_FAILURE;
+                exit(EXIT_FAILURE);
         }
     }
 
@@ -192,7 +192,7 @@ funcavail:
             break;
         default:
             fprintf(stderr, "unknown function type: %d\n", func->type);
-            return EXIT_FAILURE;
+            exit(EXIT_FAILURE);
     }
 
     free(funcargv);
