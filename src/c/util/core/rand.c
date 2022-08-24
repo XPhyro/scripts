@@ -83,8 +83,7 @@ int main(int argc, char *argv[])
                     "   1       An error occurred\n"
                     "   2       Interrupted during random number generation\n"
                     "   3       Could not generate enough random bits");
-                exit(EXIT_SUCCESS);
-                break;
+                return EXIT_SUCCESS;
             case 'n':
                 n = astrtol(optarg, EXECNAME ": invalid number given\n");
                 break;
@@ -96,8 +95,7 @@ int main(int argc, char *argv[])
                 break;
             default:
                 fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
-                exit(EXIT_FAILURE);
-                break;
+                return EXIT_FAILURE;
         }
     }
 
@@ -122,6 +120,9 @@ int main(int argc, char *argv[])
             case PRINTMODE_BINARY:
                 write(STDOUT_FILENO, buf, buflen);
                 break;
+            default:
+                fprintf(stderr, "unkown print mode: %d\n", optprintmode);
+                return EXIT_FAILURE;
         }
     }
 

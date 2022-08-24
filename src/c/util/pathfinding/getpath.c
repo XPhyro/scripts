@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
                     "  -u        select unsafe mode: create none of the elements of the path\n"
                     "  -z        line delimiter is NUL, not newline\n"
                     "  -0        line delimiter is NUL, not newline");
-                exit(EXIT_SUCCESS);
+                return EXIT_SUCCESS;
                 break;
             case 'n':
                 safetymode = SAFETYMODE_NORMAL;
@@ -120,9 +120,8 @@ int main(int argc, char *argv[])
                 delim = '\0';
                 break;
             default:
-                fputs("Try 'getpath -h' for more information.\n", stderr);
-                exit(EXIT_FAILURE);
-                break;
+                fputs("Try '" EXECNAME " -h' for more information.\n", stderr);
+                return EXIT_FAILURE;
         }
     }
 
@@ -187,6 +186,8 @@ int main(int argc, char *argv[])
                 case SAFETYMODE_SAFE:
                     (dirturn ? rmkdir : rmkfile)(line, 0755);
                     break;
+                default:
+                    DIE("unkown safety mode: %d\n", safetymode);
             }
 
             if (!optshell) {

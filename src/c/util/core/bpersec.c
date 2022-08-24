@@ -77,10 +77,13 @@ int main(int argc, char *argv[])
                     "  -h        display this help and exit\n"
                     "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n",
                     execname, STRINGIFY(DEFAULT_OPTCYCLE));
-                exit(EXIT_SUCCESS);
+                return EXIT_SUCCESS;
             case 'n':
                 optcycle = astrtoul(optarg, "invalid number given");
                 break;
+            default:
+                fprintf(stderr, "Try '%s -h' for more information.\n", execname);
+                return EXIT_FAILURE;
         }
     }
 
