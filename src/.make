@@ -319,7 +319,7 @@ CC="gcc"
 CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wall -Wextra -Werror -Wabi=11 \
        -Wno-unused-parameter -Wno-unused-result \
-       -Wno-implicit-fallthrough -Wno-sign-compare \
+       -Wimplicit-fallthrough=5 -Wno-sign-compare \
        -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -Iinclude -I'$rootdir/lib/hedley'"
@@ -331,7 +331,7 @@ CXX="g++"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=11 \
           -Wno-unused-parameter -Wno-unused-result \
-          -Wno-implicit-fallthrough -Wno-sign-compare -Wstringop-overflow=4 \
+          -Wimplicit-fallthrough=5 -Wno-sign-compare -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
           -Iinclude -I'$rootdir/lib/hedley' -I'$rootdir/lib/NumCpp/include'"
