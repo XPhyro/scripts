@@ -18,6 +18,9 @@ typedef enum {
     METHOD_RED,
     METHOD_GREEN,
     METHOD_BLUE,
+    METHOD_HSV_H,
+    METHOD_HSV_S,
+    METHOD_HSV_V,
 } method_t;
 char *execname;
 
@@ -34,8 +37,8 @@ int main(int argc, char *argv[])
     unsigned char graybuf[graybuflen + 1], buf[buflen];
     unsigned char *bufptr = buf;
     uint64_t bufdiff;
-    double rf, gf, bf;
-    uint8_t r8, g8, b8;
+    double rf, gf, bf, h, s, v;
+    uint8_t r8, g8, b8, M, m;
     int i, bufpool, grayidx;
     method_t method = METHOD_SRGB;
 
@@ -48,7 +51,7 @@ int main(int argc, char *argv[])
                     "Usage: %s [OPTION...]\n"
                     "Convert RGB24 to GRAY with the given method.\n"
                     "\n"
-                    "  -m METHOD  method to use. can be one of: mean, coeff, srgb, red, green, blue.\n",
+                    "  -m METHOD  method to use. can be one of: mean, coeff, srgb, red, green, blue, hsv-value.\n",
                     execname);
                 exit(EXIT_SUCCESS);
                 break;
@@ -65,6 +68,12 @@ int main(int argc, char *argv[])
                     method = METHOD_GREEN;
                 else if (strcaseeq(optarg, "blue"))
                     method = METHOD_BLUE;
+                else if (strcaseeq(optarg, "hsv-h"))
+                    method = METHOD_HSV_H;
+                else if (strcaseeq(optarg, "hsv-s"))
+                    method = METHOD_HSV_S;
+                else if (strcaseeq(optarg, "hsv-v"))
+                    method = METHOD_HSV_V;
                 else {
                     fputs("invalid method given\n", stderr);
                     invalidarg();
@@ -115,6 +124,43 @@ int main(int argc, char *argv[])
                     break;
                 case METHOD_BLUE:
                     graybuf[grayidx] = buf[i + 2];
+                    break;
+                case METHOD_HSV_H:
+                    r8 = buf[i];
+                    g8 = buf[i + 1];
+                    b8 = buf[i + 2];
+
+                    M = MAX(r8, MAX(g8, b8));
+                    m = MIN(r8, MIN(g8, b8));
+
+                    h = acos((r8 - g8 / 2.0 - b8 / 2.0) /
+                             sqrt(r8 * r8 + g8 * g8 + b8 * b8 - r8 * g8 - r8 * b8 - g8 * b8));
+
+                    graybuf[grayidx] = (uint8_t)(h);
+                    break;
+                case METHOD_HSV_S:
+                    r8 = buf[i];
+                    g8 = buf[i + 1];
+                    b8 = buf[i + 2];
+
+                    M = MAX(r8, MAX(g8, b8));
+                    m = MIN(r8, MIN(g8, b8));
+
+                    s = !M ? 0 : 1 - (double)m / (double)M;
+
+                    graybuf[grayidx] = (uint8_t)(s);
+                    break;
+                case METHOD_HSV_V:
+                    r8 = buf[i];
+                    g8 = buf[i + 1];
+                    b8 = buf[i + 2];
+
+                    M = MAX(r8, MAX(g8, b8));
+                    m = MIN(r8, MIN(g8, b8));
+
+                    v = M / 255.0;
+
+                    graybuf[grayidx] = (uint8_t)(v);
                     break;
                 default:
                     fprintf(stderr, "%s: given method is not implemented\n", execname);
