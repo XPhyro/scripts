@@ -22,32 +22,18 @@ undefined() {
     logerr "ACPI group / action undefined: $1 / $2"
 }
 
-toggleinput() {
-    if [ "$1" -ne 0 ]; then
-        tostate=enable
-    else
-        tostate=disable
-    fi
-
-    xinput --list \
-        | grep -o "$2\s\+.*id=[0-9]\+" \
-        | sort \
-        | grep -o '[0-9]\+$' \
-        | xargs -d '\n' -n 1 xinput --"$tostate"
-}
-
 toggletouch() {
     [ -z "$MAPTOUCH_ROOT_DEVNAME" ] && {
         logerr '$MAPTOUCH_ROOT_DEVNAME is not assigned, aborted toggling touchscreen.'
         return
     }
 
-    toggleinput "$1" "$MAPTOUCH_ROOT_DEVNAME"
+    xtoggleinput "$1" "$MAPTOUCH_ROOT_DEVNAME"
 }
 
 togglekbtp() {
-    toggleinput "$1" Keyboard
-    toggleinput "$1" Touchpad
+    xtoggleinput "$1" Keyboard
+    xtoggleinput "$1" Touchpad
 }
 
 handleprog1() {
