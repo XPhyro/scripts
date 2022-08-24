@@ -68,8 +68,8 @@ flipscreen() {
             xinvert=
         fi
         autorandr "$ACPIHANDLER_AUTO_INVERT_PREFIX$xinvert"
-        maptouch
     }
+    maptouch
     togglekbtp "$((!screenflipped))"
 }
 
