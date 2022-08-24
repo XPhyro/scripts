@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
                     "Usage: %s [OPTION...]\n"
                     "Convert RGB24 to GRAY with the given method.\n"
                     "\n"
-                    "  -m METHOD  method to use. can be one of: mean, coeff, srgb, red, green, blue, hsv-value.\n",
+                    "  -m METHOD  method to use. can be one of: mean, coeff, srgb, red, green, blue, hsv-value. default is srgb.\n",
                     execname);
                 exit(EXIT_SUCCESS);
                 break;
