@@ -32,6 +32,7 @@ toggletouch() {
 }
 
 togglekbtp() {
+    loginfo 'Keyboard and touchpad status set to %s' "$1"
     xtoggleinput "$1" Keyboard
     xtoggleinput "$1" Touchpad
 }
@@ -186,7 +187,18 @@ if [ "$#" -ne 0 ]; then
     argv="$*"
     onevent
 else
+    event=
+    lasttime=0.0
     acpi_listen | while IFS=" " read -r group action arg1 arg2 arg3 argv; do
+        event="$group $action $arg1 $arg2 $arg3 $argv"
+        time="$(date +%s.%N)"
+        [ "$event" = "$lastevent" ] \
+            && [ "$(printf "%s - %s < %s\n" "$time" "$lasttime" 0.5 | bc)" -eq 1 ] \
+            && continue
+
         onevent
+
+        lasttime="$time"
+        lastevent="$event"
     done
 fi
