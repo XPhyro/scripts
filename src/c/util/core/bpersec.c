@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
     char *execname = argv[0];
 #define DEFAULT_OPTCYCLE 10000
     unsigned int optcycle = DEFAULT_OPTCYCLE;
+#define DEFAULT_WARMUP 0
+    unsigned long long optwarmup = DEFAULT_WARMUP;
 
     while ((i = getopt(argc, argv, "Bbhn:")) != -1) {
         switch (i) {
@@ -76,12 +78,17 @@ int main(int argc, char *argv[])
                     "  -B        output in bytes (default)\n"
                     "  -b        output in bits\n"
                     "  -h        display this help and exit\n"
-                    "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n",
+                    "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n"
+                    "  -s NUM    start measuring after the first NUM bytes (default is %s)\n",
                     execname,
-                    STRINGIFY(DEFAULT_OPTCYCLE));
+                    STRINGIFY(DEFAULT_OPTCYCLE),
+                    STRINGIFY(DEFAULT_WARMUP));
                 exit(EXIT_SUCCESS);
             case 'n':
                 optcycle = astrtoul(optarg, "invalid number given");
+                break;
+            case 's':
+                optwarmup = astrtoull(optarg, "invalid number given");
                 break;
             default:
                 fprintf(stderr, "Try '%s -h' for more information.\n", execname);
@@ -96,6 +103,12 @@ int main(int argc, char *argv[])
 
     while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0) {
         totread += nread;
+        if (optwarmup) {
+            if (totread < optwarmup)
+                continue;
+            totread -= optwarmup;
+            optwarmup = 0;
+        }
         if (optcycle && !(i++ % optcycle))
             printdiff();
     }
