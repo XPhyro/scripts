@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include <hedley.h>
+#include <mathutil.h>
 #include <stdutil.h>
 #include <strutil.h>
 
@@ -14,8 +15,8 @@
 
 #define LEN(ARR) (sizeof(ARR) / sizeof((ARR)[0]))
 
-#define DECLMAP(FUNC) double map_##FUNC(int, double *, double *)
-#define DECLREDUCE(FUNC) double reduce_##FUNC(int, double *, double *)
+#define DECLMAP(FUNC) bool map_##FUNC(int, double *, double *, double *)
+#define DECLREDUCE(FUNC) bool reduce_##FUNC(int, double *, double *, double *)
 
 #define FUNCMAP(FUNC)                                           \
     {                                                           \
@@ -33,7 +34,7 @@ typedef enum {
 
 typedef struct function {
     char *name;
-    double (*func)(int, double *, double *);
+    bool (*func)(int, double *, double *, double *);
     FUNCTYPE type;
 } __attribute__((packed)) function;
 
@@ -58,21 +59,23 @@ DECLMAP(sqrt);
 DECLMAP(tan);
 DECLMAP(tanh);
 DECLMAP(trunc);
+DECLMAP(nonzero);
 
 DECLREDUCE(max);
 DECLREDUCE(min);
 DECLREDUCE(sum);
 
 function functions[] = {
-    FUNCMAP(acos),   FUNCMAP(asin),   FUNCMAP(atan),
-    FUNCMAP(cbrt),   FUNCMAP(ceil),   FUNCMAP(cos),
-    FUNCMAP(cosh),   FUNCMAP(exp),    { .name = "abs", .func = map_fabs, .type = FUNCTYPE_MAP },
-    FUNCMAP(floor),  FUNCMAP(log),    FUNCMAP(log10),
-    FUNCMAP(log2),   FUNCMAP(pow),    FUNCMAP(round),
-    FUNCMAP(sin),    FUNCMAP(sinh),   FUNCMAP(sqrt),
-    FUNCMAP(tan),    FUNCMAP(tanh),   FUNCMAP(trunc),
+    FUNCMAP(acos),    FUNCMAP(asin),   FUNCMAP(atan),
+    FUNCMAP(cbrt),    FUNCMAP(ceil),   FUNCMAP(cos),
+    FUNCMAP(cosh),    FUNCMAP(exp),    { .name = "abs", .func = map_fabs, .type = FUNCTYPE_MAP },
+    FUNCMAP(floor),   FUNCMAP(log),    FUNCMAP(log10),
+    FUNCMAP(log2),    FUNCMAP(pow),    FUNCMAP(round),
+    FUNCMAP(sin),     FUNCMAP(sinh),   FUNCMAP(sqrt),
+    FUNCMAP(tan),     FUNCMAP(tanh),   FUNCMAP(trunc),
+    FUNCMAP(nonzero),
 
-    FUNCREDUCE(max), FUNCREDUCE(min), FUNCREDUCE(sum),
+    FUNCREDUCE(max),  FUNCREDUCE(min), FUNCREDUCE(sum),
 };
 
 HEDLEY_NO_RETURN void die(const char *fmt, ...)
@@ -97,7 +100,7 @@ int main(int argc, char *argv[])
     size_t size, funckwargc = 0;
     ssize_t len;
     function *func = NULL;
-    double *funcargv = NULL, *funckwargv = NULL;
+    double *funcargv = NULL, *funckwargv = NULL, result;
 
     while ((i = getopt(argc, argv, "f:hLo:")) != -1) {
         switch (i) {
@@ -184,11 +187,13 @@ funcavail:
     switch (func->type) {
         case FUNCTYPE_MAP:
             for (i = 0; i < funcargc; i++) {
-                printf("%.16g\n", func->func(1, funcargv + i, funckwargv));
+                if (func->func(1, funcargv + i, funckwargv, &result))
+                    printf("%.16g\n", result);
             }
             break;
         case FUNCTYPE_REDUCE:
-            printf("%.16g\n", func->func(funcargc, funcargv, funckwargv));
+            if (func->func(funcargc, funcargv, funckwargv, &result))
+                printf("%.16g\n", result);
             break;
         default:
             fprintf(stderr, "unknown function type: %d\n", func->type);
@@ -201,143 +206,188 @@ funcavail:
     return 0;
 }
 
-double map_acos(int argc, double *argv, double *kwargv)
+bool map_acos(int argc, double *argv, double *kwargv, double *result)
 {
-    return acos(argv[0]);
+    *result = acos(argv[0]);
+    return true;
 }
 
-double map_asin(int argc, double *argv, double *kwargv)
+bool map_asin(int argc, double *argv, double *kwargv, double *result)
 {
-    return asin(argv[0]);
+    *result = asin(argv[0]);
+    return true;
 }
 
-double map_atan(int argc, double *argv, double *kwargv)
+bool map_atan(int argc, double *argv, double *kwargv, double *result)
 {
-    return atan(argv[0]);
+    *result = atan(argv[0]);
+    return true;
 }
 
-double map_cbrt(int argc, double *argv, double *kwargv)
+bool map_cbrt(int argc, double *argv, double *kwargv, double *result)
 {
-    return cbrt(argv[0]);
+    *result = cbrt(argv[0]);
+    return true;
 }
 
-double map_ceil(int argc, double *argv, double *kwargv)
+bool map_ceil(int argc, double *argv, double *kwargv, double *result)
 {
-    return ceil(argv[0]);
+    *result = ceil(argv[0]);
+    return true;
 }
 
-double map_cos(int argc, double *argv, double *kwargv)
+bool map_cos(int argc, double *argv, double *kwargv, double *result)
 {
-    return cos(argv[0]);
+    *result = cos(argv[0]);
+    return true;
 }
 
-double map_cosh(int argc, double *argv, double *kwargv)
+bool map_cosh(int argc, double *argv, double *kwargv, double *result)
 {
-    return cosh(argv[0]);
+    *result = cosh(argv[0]);
+    return true;
 }
 
-double map_exp(int argc, double *argv, double *kwargv)
+bool map_exp(int argc, double *argv, double *kwargv, double *result)
 {
-    return exp(argv[0]);
+    *result = exp(argv[0]);
+    return true;
 }
 
-double map_fabs(int argc, double *argv, double *kwargv)
+bool map_fabs(int argc, double *argv, double *kwargv, double *result)
 {
-    return fabs(argv[0]);
+    *result = fabs(argv[0]);
+    return true;
 }
 
-double map_floor(int argc, double *argv, double *kwargv)
+bool map_floor(int argc, double *argv, double *kwargv, double *result)
 {
-    return floor(argv[0]);
+    *result = floor(argv[0]);
+    return true;
 }
 
-double map_log(int argc, double *argv, double *kwargv)
+bool map_log(int argc, double *argv, double *kwargv, double *result)
 {
-    return log(argv[0]);
+    *result = log(argv[0]);
+    return true;
 }
 
-double map_log10(int argc, double *argv, double *kwargv)
+bool map_log10(int argc, double *argv, double *kwargv, double *result)
 {
-    return log10(argv[0]);
+    *result = log10(argv[0]);
+    return true;
 }
 
-double map_log2(int argc, double *argv, double *kwargv)
+bool map_log2(int argc, double *argv, double *kwargv, double *result)
 {
-    return log2(argv[0]);
+    *result = log2(argv[0]);
+    return true;
 }
 
-double map_pow(int argc, double *argv, double *kwargv)
+bool map_pow(int argc, double *argv, double *kwargv, double *result)
 {
-    return pow(argv[0], kwargv[0]);
+    *result = pow(argv[0], kwargv[0]);
+    return true;
 }
 
-double map_round(int argc, double *argv, double *kwargv)
+bool map_round(int argc, double *argv, double *kwargv, double *result)
 {
-    return round(argv[0]);
+    *result = round(argv[0]);
+    return true;
 }
 
-double map_sin(int argc, double *argv, double *kwargv)
+bool map_sin(int argc, double *argv, double *kwargv, double *result)
 {
-    return sin(argv[0]);
+    *result = sin(argv[0]);
+    return true;
 }
 
-double map_sinh(int argc, double *argv, double *kwargv)
+bool map_sinh(int argc, double *argv, double *kwargv, double *result)
 {
-    return sinh(argv[0]);
+    *result = sinh(argv[0]);
+    return true;
 }
 
-double map_sqrt(int argc, double *argv, double *kwargv)
+bool map_sqrt(int argc, double *argv, double *kwargv, double *result)
 {
-    return sqrt(argv[0]);
+    *result = sqrt(argv[0]);
+    return true;
 }
 
-double map_tan(int argc, double *argv, double *kwargv)
+bool map_tan(int argc, double *argv, double *kwargv, double *result)
 {
-    return tan(argv[0]);
+    *result = tan(argv[0]);
+    return true;
 }
 
-double map_tanh(int argc, double *argv, double *kwargv)
+bool map_tanh(int argc, double *argv, double *kwargv, double *result)
 {
-    return tanh(argv[0]);
+    *result = tanh(argv[0]);
+    return true;
 }
 
-double map_trunc(int argc, double *argv, double *kwargv)
+bool map_trunc(int argc, double *argv, double *kwargv, double *result)
 {
-    return trunc(argv[0]);
+    *result = trunc(argv[0]);
+    return true;
 }
 
-double reduce_max(int argc, double *argv, double *kwargv)
+bool map_nonzero(int argc, double *argv, double *kwargv, double *result)
+{
+    if (approxzero(argv[0]))
+        return false;
+
+    *result = argv[0];
+    return true;
+}
+
+bool reduce_max(int argc, double *argv, double *kwargv, double *result)
 {
     int i;
-    double max = -INFINITY;
+    double max =
+#ifdef INFINITY
+        (double)-INFINITY
+#else
+        -HUGE_VAL
+#endif
+        ;
 
     for (i = 0; i < argc; i++) {
         if (argv[i] > max)
             max = argv[i];
     }
 
-    return max;
+    *result = max;
+    return true;
 }
 
-double reduce_min(int argc, double *argv, double *kwargv)
+bool reduce_min(int argc, double *argv, double *kwargv, double *result)
 {
     int i;
-    double min = INFINITY;
+    double min =
+#ifdef INFINITY
+        (double)INFINITY
+#else
+        HUGE_VAL
+#endif
+        ;
 
     for (i = 0; i < argc; i++) {
         if (argv[i] < min)
             min = argv[i];
     }
 
-    return min;
+    *result = min;
+    return true;
 }
 
-double reduce_sum(int argc, double *argv, double *kwargv)
+bool reduce_sum(int argc, double *argv, double *kwargv, double *result)
 {
     int i;
     double sum = 0;
 
     for (i = 0; i < argc; sum += argv[i++]) {}
 
-    return sum;
+    *result = sum;
+    return true;
 }
