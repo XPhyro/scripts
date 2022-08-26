@@ -1,3 +1,15 @@
 #!/usr/bin/env sh
 
-make format
+git diff --cached --name-only \
+    | grep -E "^src/c(pp)?/.*\.[ch](pp)?$" \
+    | xargs -r -d '\n' realpath -P -- \
+    | while IFS= read -r fl; do
+        [ -e "$fl" ] || continue
+        flcontent="$(cat -- "$fl")"
+        (cd "$(dirname -- "$fl")" \
+             && clang-format -i --style=file -- "$fl" \
+             && git add -- "$fl"
+        )
+        printf "%s\n" "$flcontent" | cmp -s -- "$fl" \
+            && printf "Formatted file %s\n" "$(basename -- "$fl")"
+    done
