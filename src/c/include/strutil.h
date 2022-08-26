@@ -14,7 +14,7 @@
 #include <hedley.h>
 #include <stdutil.h>
 
-HEDLEY_ALWAYS_INLINE void *amallocset(size_t size, int c)
+HEDLEY_MALLOC HEDLEY_ALWAYS_INLINE void *amallocset(size_t size, int c)
 {
     return memset(amalloc(size), c, size);
 }
@@ -22,18 +22,18 @@ HEDLEY_ALWAYS_INLINE void *amallocset(size_t size, int c)
 /* if `n` may be greater than `size`, use `amallocsetn_s(...)`.
  * otherwise this function will likely lead to a segfault.
  */
-HEDLEY_ALWAYS_INLINE void *amallocsetn(size_t size, int c, size_t n)
+HEDLEY_MALLOC HEDLEY_ALWAYS_INLINE void *amallocsetn(size_t size, int c, size_t n)
 {
     assert(n <= size);
     return memset(amalloc(size), c, n);
 }
 
-HEDLEY_ALWAYS_INLINE void *amallocsetn_s(size_t size, int c, size_t n)
+HEDLEY_MALLOC HEDLEY_ALWAYS_INLINE void *amallocsetn_s(size_t size, int c, size_t n)
 {
     return memset(amalloc(size), c, MIN(size, n));
 }
 
-char *astrdup(const char *s)
+HEDLEY_MALLOC char *astrdup(const char *s)
 {
     size_t size = strlen(s) * sizeof(char);
     char *dup = amalloc(size);
@@ -365,14 +365,14 @@ char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const 
     return buf;
 }
 
-char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
+HEDLEY_MALLOC char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
 {
 #ifndef __clang_analyzer__
     return astrncatbuf(amalloc((totsize + 1) * sizeof(char)), totsize + 1, sptr, n, sizes, totsize);
 #endif /* ifndef __clang_analyzer__ */
 }
 
-char *astrcat(const char **sptr, size_t n)
+HEDLEY_MALLOC char *astrcat(const char **sptr, size_t n)
 {
     size_t i, totsize, *sizes;
     char *o;
@@ -418,7 +418,7 @@ char *astrcatbuf(char *buf, size_t bufsize, const char **sptr, size_t n)
     return o;
 }
 
-char *vstrncat(size_t n, ...)
+HEDLEY_MALLOC char *vstrncat(size_t n, ...)
 {
     va_list ap;
     const char **sptr = amalloc(n * sizeof(char *));
@@ -447,7 +447,7 @@ char *vstrncat(size_t n, ...)
     return o;
 }
 
-char *vstrcat(size_t n, ...)
+HEDLEY_MALLOC char *vstrcat(size_t n, ...)
 {
     va_list ap;
     const char **sptr = amalloc(n * sizeof(char *));

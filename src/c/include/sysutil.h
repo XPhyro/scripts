@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <hedley.h>
 #include <strutil.h>
 
 #ifdef _POSIX_C_SOURCE
@@ -178,7 +179,7 @@ char *dirslashbuf(char *path, char *buf)
     return buf;
 }
 
-char *dirslash(const char *path)
+HEDLEY_MALLOC char *dirslash(const char *path)
 {
     struct stat st;
     size_t size;

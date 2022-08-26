@@ -9,6 +9,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <hedley.h>
+
 #define ASTRTOGENPRE(TYPE, FUNC)                 \
     TYPE a##FUNC(char *s, const char *const err) \
     {                                            \
@@ -89,7 +91,7 @@ ASTRTOLGEN(short, h, SHRT_MIN, SHRT_MAX)
 ASTRTOULGEN(unsigned char, cu, UCHAR_MAX)
 ASTRTOULGEN(unsigned short, hu, USHRT_MAX)
 
-void *amalloc(size_t size)
+HEDLEY_MALLOC void *amalloc(size_t size)
 {
     int olderrno;
     void *ptr;
@@ -131,7 +133,7 @@ void *areallocfit(void *ptr, size_t oldsize, size_t size)
     return size <= oldsize ? ptr : arealloc(ptr, size);
 }
 
-void *acalloc(size_t nmemb, size_t size)
+HEDLEY_MALLOC void *acalloc(size_t nmemb, size_t size)
 {
     int olderrno;
     void *ptr;
@@ -153,7 +155,7 @@ void *acalloc(size_t nmemb, size_t size)
     return ptr;
 }
 
-void *acrealloc(void *oldptr, size_t oldnmemb, size_t nmemb, size_t size)
+HEDLEY_MALLOC void *acrealloc(void *oldptr, size_t oldnmemb, size_t nmemb, size_t size)
 {
     void *ptr;
 
