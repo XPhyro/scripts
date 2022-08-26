@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
                     "  -B        output in bytes (default)\n"
                     "  -b        output in bits\n"
                     "  -h        display this help and exit\n"
-                    "  -i NUM    ignore the first NUM bytes (default is %s)\n",
+                    "  -i NUM    ignore the first NUM bytes (default is %s)\n"
                     "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n"
                     "  -s        start measuring after -i is satisfied\n",
                     execname,
