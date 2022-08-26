@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/param.h>
@@ -61,6 +62,7 @@ int main(int argc, char *argv[])
     unsigned int optcycle = DEFAULT_OPTCYCLE;
 #define DEFAULT_WARMUP 0
     unsigned long long optwarmup = DEFAULT_WARMUP;
+    bool optstart = false;
 
     while ((i = getopt(argc, argv, "Bbhn:")) != -1) {
         switch (i) {
@@ -78,11 +80,12 @@ int main(int argc, char *argv[])
                     "  -B        output in bytes (default)\n"
                     "  -b        output in bits\n"
                     "  -h        display this help and exit\n"
+                    "  -i NUM    ignore the first NUM bytes (default is %s)\n",
                     "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n"
-                    "  -s NUM    start measuring after the first NUM bytes (default is %s)\n",
+                    "  -s        start measuring after -i is satisfied\n",
                     execname,
-                    STRINGIFY(DEFAULT_OPTCYCLE),
-                    STRINGIFY(DEFAULT_WARMUP));
+                    STRINGIFY(DEFAULT_WARMUP),
+                    STRINGIFY(DEFAULT_OPTCYCLE));
                 exit(EXIT_SUCCESS);
             case 'n':
                 optcycle = astrtoul(optarg, "invalid number given");
@@ -108,6 +111,8 @@ int main(int argc, char *argv[])
                 continue;
             totread -= optwarmup;
             optwarmup = 0;
+            if (optstart)
+                clock_gettime(CLOCK_REALTIME, &t0);
         }
         if (optcycle && !(i++ % optcycle))
             printdiff();
