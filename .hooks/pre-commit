@@ -2,7 +2,6 @@
 
 git diff --cached --name-only \
     | grep -E "^src/c(pp)?/.*\.[ch](pp)?$" \
-    | xargs -r -d '\n' realpath -P -- \
     | while IFS= read -r fl; do
         [ -e "$fl" ] || continue
         flcontent="$(cat -- "$fl")"
