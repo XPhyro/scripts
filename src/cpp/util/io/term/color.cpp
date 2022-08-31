@@ -24,14 +24,14 @@ int main(int argc, char* argv[])
     const char* execname = argv[0];
 
     if (argc < 2) {
-        std::cout << execname << ": no argument given" << std::endl;
-        return EXIT_FAILURE;
+        std::cerr << execname << ": no argument given" << std::endl;
+        std::exit(EXIT_FAILURE);
     }
 
     try {
         std::cout << colors.at(strutil::makelower(argv[1]));
     } catch (const std::out_of_range& e) {
-        std::cout << execname << ": incorrect color given. color must be one of: ";
+        std::cerr << execname << ": incorrect color given. color must be one of: ";
 
         std::vector<std::string> color_names;
         color_names.reserve(colors.size());
@@ -41,10 +41,10 @@ int main(int argc, char* argv[])
         std::sort(color_names.begin(), color_names.end());
 
         for (auto it = color_names.begin(); it < color_names.end() - 1; it++)
-            std::cout << *it << ", ";
-        std::cout << color_names.back() << '.' << std::endl;
+            std::cerr << *it << ", ";
+        std::cerr << color_names.back() << '.' << std::endl;
 
-        return EXIT_FAILURE;
+        std::exit(EXIT_FAILURE);
     }
 
     if (argc == 2)
@@ -55,5 +55,5 @@ int main(int argc, char* argv[])
 
     std::cout << clear_color;
 
-    return EXIT_SUCCESS;
+    std::exit(EXIT_SUCCESS);
 }
