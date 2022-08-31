@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <iostream>
+#include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <unistd.h>
@@ -12,6 +14,12 @@ typedef enum {
     CACHE_PERSISTENT,
 } cache_t;
 
+const std::unordered_map<std::string, cache_t> caches = {
+    { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
+    { "temp", CACHE_TEMPORARY }, { "temporary", CACHE_TEMPORARY },
+    { "p", CACHE_PERSISTENT },   { "persistent", CACHE_PERSISTENT },
+};
+
 int main(int argc, char* argv[])
 {
     const char* const execname = argv[0];
@@ -19,14 +27,15 @@ int main(int argc, char* argv[])
     cache_t cache;
     int i;
 
-    while ((i = getopt(argc, argv, "ch"))) {
+    while ((i = getopt(argc, argv, "c:h"))) {
         switch (i) {
             case 'c':
-                if (auto caches = strutil::makelower(optarg);
-                    caches == "t" || caches == "tmp" || caches == "temp" || caches == "temporary")
-                    cache = CACHE_TEMPORARY;
-                else if (caches == "p" || caches == "persistent")
-                    cache = CACHE_PERSISTENT;
+                try {
+                    cache = caches.at(strutil::makelower(optarg));
+                } catch (const std::out_of_range& e) {
+                    std::cerr << execname << ": unkown cache type " << optarg << '\n';
+                    std::exit(EXIT_FAILURE);
+                }
                 break;
             case 'h':
                 std::cout
@@ -63,11 +72,9 @@ int main(int argc, char* argv[])
                        "Options\n"
                        "  -c     set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n";
                 std::exit(EXIT_SUCCESS);
-                break;
             default:
-                fprintf(stderr, "Try '%s -h' for more information.\n", execname);
+                std::cerr << "Try '" << execname << " -h' for more information.\n";
                 std::exit(EXIT_FAILURE);
-                break;
         }
     }
 
