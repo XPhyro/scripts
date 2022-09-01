@@ -156,7 +156,9 @@ cache_t parseargs(int* argc, char** argv[])
                 break;
             case 'h':
                 std::cout
-                    << "Usage: " << execname
+                    << "Usage: "
+                    << execname
+                    // TODO: Add at, front, back, empty, clear, insert, erase, pop_back, swap
                     << " [OPTION...] [PROG_HASH] [SYNTAX]\n"
                        "Handle arrays in a strictly POSIX shell.\n"
                        "\n"
