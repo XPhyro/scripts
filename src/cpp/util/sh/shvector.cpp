@@ -33,99 +33,37 @@ typedef enum {
 } cache_t;
 
 HEDLEY_NO_RETURN void die(const std::string err);
+cache_t parseargs(int* argc, char** argv[]);
 std::pair<size_t, std::string> readcache();
 void vecout();
 void vecnew();
 void vecsize();
 void vecpush(std::string value);
+void vecindex(std::string indexstr);
 
 const std::unordered_map<std::string, cache_t> caches = {
     { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
     { "temp", CACHE_TEMPORARY }, { "temporary", CACHE_TEMPORARY },
     { "p", CACHE_PERSISTENT },   { "persistent", CACHE_PERSISTENT },
 };
-const char* const givenexecname = "shvector";
-const char* execname;
+const std::string givenexecname = "shvector";
 
+std::string execname, cachefl;
 char optdelim = '\0';
-std::string cachefl;
 
 int main(int argc, char* argv[])
 {
-    std::string proghash, vecname;
-    const std::vector<std::string> v;
-    cache_t cache = CACHE_TEMPORARY;
-    int i;
-
     if (!argc)
         execname = "NULL";
     else
         execname = argv[0];
 
-    while ((i = getopt(argc, argv, "c:hn")) != -1) {
-        switch (i) {
-            case 'c':
-                try {
-                    cache = caches.at(strutil::makelower(optarg));
-                } catch (const std::out_of_range& e) {
-                    std::cerr << execname << ": unkown cache type " << optarg << '\n';
-                    std::exit(EXIT_FAILURE);
-                }
-                break;
-            case 'h':
-                std::cout
-                    << "Usage: " << execname
-                    << " [OPTION...] [PROG_HASH] [SYNTAX]\n"
-                       "Handle arrays in a strictly POSIX shell.\n"
-                       "\n"
-                       "SYNTAX may be one of:\n"
-                       "1. [VEC_NAME]\n"
-                       "   1. Get array.\n"
-                       "   2. Array must have been initialised.\n"
-                       "2. [VEC_NAME] [INDEX]\n"
-                       "   1. Get value at INDEX.\n"
-                       "   2. INDEX must be in range [0, size).\n"
-                       "   3. Array must have been initialised.\n"
-                       "3. [VEC_NAME] = [OTHER_VEC_NAME]\n"
-                       "   1. Copy OTHER_VEC_NAME to VEC_NAME.\n"
-                       "   2. If OTHER_VEC_NAME is NULL or nullptr, uninitialise array.\n"
-                       "4. [VEC_NAME] [INDEX] = [VALUE]\n"
-                       "   1. Set value at INDEX to VALUE.\n"
-                       "   2. INDEX must be in range [0, size).\n"
-                       "   3. Array must have been initialised.\n"
-                       "5. [VEC_NAME] [FUNC]\n"
-                       "   1. new\n"
-                       "      1. Initialise array.\n"
-                       "      2. If already initialised, array is reinitialised.\n"
-                       "   2. size\n"
-                       "      1. Get array size.\n"
-                       "      2. Array must have been initialised.\n"
-                       "   3. push_back [VALUE]\n"
-                       "      1. Append VALUE to the end of the array.\n"
-                       "      2. Array must have been initialised.\n"
-                       "\n"
-                       "Options\n"
-                       "  -c     set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n"
-                       "  -h     display this help and exit\n"
-                       "  -n     force output delimiter to be newline (\\n) instead of null (\\0)\n";
-                std::exit(EXIT_SUCCESS);
-            case 'n':
-                optdelim = '\n';
-                break;
-            default:
-                std::cerr << "Try '" << execname << " -h' for more information.\n";
-                std::exit(EXIT_FAILURE);
-        }
-    }
-
-    argv += optind;
-    argc -= optind;
+    auto cache = parseargs(&argc, &argv);
 
     if (argc < 2)
         die("invalid syntax");
 
-    proghash = argv[0];
-    vecname = argv[1];
+    std::string proghash = argv[0], vecname = argv[1];
     argv += 2;
     argc -= 2;
 
@@ -170,9 +108,8 @@ int main(int argc, char* argv[])
                 vecnew();
             else if (streq(argv[0], "size"))
                 vecsize();
-            else {
-                // TODO: if parseable to int, index
-            }
+            else
+                vecindex(argv[0]);
             break;
         case 2:
             if (streq(argv[0], "=")) {
@@ -184,7 +121,7 @@ int main(int argc, char* argv[])
             // TODO: if argv[0] is parseable to int and argv[1] is =, set index
             break;
         default:
-            break;
+            die("unkown syntax");
     }
 
     return EXIT_SUCCESS;
@@ -194,6 +131,73 @@ HEDLEY_NO_RETURN void die(const std::string err)
 {
     std::cerr << execname << ": " << err << '\n';
     std::exit(EXIT_FAILURE);
+}
+
+cache_t parseargs(int* argc, char** argv[])
+{
+    cache_t cache = CACHE_TEMPORARY;
+    int i;
+
+    while ((i = getopt(*argc, *argv, "c:hn")) != -1) {
+        switch (i) {
+            case 'c':
+                try {
+                    cache = caches.at(strutil::makelower(optarg));
+                } catch (const std::out_of_range& e) {
+                    std::cerr << execname << ": unkown cache type " << optarg << '\n';
+                    std::exit(EXIT_FAILURE);
+                }
+                break;
+            case 'h':
+                std::cout
+                    << "Usage: " << execname
+                    << " [OPTION...] [PROG_HASH] [SYNTAX]\n"
+                       "Handle arrays in a strictly POSIX shell.\n"
+                       "\n"
+                       "SYNTAX may be one of:\n"
+                       "1. [VEC_NAME]\n"
+                       "   1. Get array.\n"
+                       "   2. Array must have been initialised.\n"
+                       "2. [VEC_NAME] [INDEX]\n"
+                       "   1. Get value at INDEX.\n"
+                       "   2. INDEX must be in range [0, size).\n"
+                       "   3. Array must have been initialised.\n"
+                       "3. [VEC_NAME] = [OTHER_VEC_NAME]\n"
+                       "   1. Copy OTHER_VEC_NAME to VEC_NAME.\n"
+                       "   2. If OTHER_VEC_NAME is NULL or nullptr, uninitialise array.\n"
+                       "4. [VEC_NAME] [INDEX] = [VALUE]\n"
+                       "   1. Set value at INDEX to VALUE.\n"
+                       "   2. INDEX must be in range [0, size).\n"
+                       "   3. Array must have been initialised.\n"
+                       "5. [VEC_NAME] [FUNC]\n"
+                       "   1. new\n"
+                       "      1. Initialise array.\n"
+                       "      2. If already initialised, array is reinitialised.\n"
+                       "   2. size\n"
+                       "      1. Get array size.\n"
+                       "      2. Array must have been initialised.\n"
+                       "   3. push_back [VALUE]\n"
+                       "      1. Append VALUE to the end of the array.\n"
+                       "      2. Array must have been initialised.\n"
+                       "\n"
+                       "Options\n"
+                       "  -c TYPE   set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n"
+                       "  -h        display this help and exit\n"
+                       "  -n        force output delimiter to be newline (\\n) instead of null (\\0)\n";
+                std::exit(EXIT_SUCCESS);
+            case 'n':
+                optdelim = '\n';
+                break;
+            default:
+                std::cerr << "Try '" << execname << " -h' for more information.\n";
+                std::exit(EXIT_FAILURE);
+        }
+    }
+
+    *argv += optind;
+    *argc -= optind;
+
+    return cache;
 }
 
 std::pair<size_t, std::string> readcache()
@@ -219,9 +223,7 @@ std::pair<size_t, std::string> readcache()
 
 void vecout()
 {
-    auto cache = readcache();
-    auto size = cache.first;
-    auto buf = cache.second;
+    const auto& [size, buf] = readcache();
 
     for (auto&& view :
          buf | std::views::split('\0') | std::views::transform([](auto&& r) -> std::string {
@@ -233,7 +235,7 @@ void vecout()
 
 void vecnew()
 {
-    std::ofstream fl(cachefl, std::ios::out | std::ios::binary);
+    std::ofstream fl(cachefl, std::ios::out | std::ios::trunc | std::ios::binary);
 
     if (!fl)
         die("could not open cache file for writing");
@@ -246,8 +248,7 @@ void vecnew()
 
 void vecsize()
 {
-    auto cache = readcache();
-    auto size = cache.first;
+    const auto& [size, buf] = readcache();
     std::cout << size;
 }
 
@@ -261,11 +262,36 @@ void vecpush(std::string value)
     size_t size;
     fl.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-    if (size++ == std::numeric_limits<size_t>::max())
+    if (size == std::numeric_limits<size_t>::max())
         die("vector is at maximum capacity");
+    size++;
 
     fl.seekg(0, std::ios::beg);
     fl.write(reinterpret_cast<char*>(&size), sizeof(size));
     fl.seekg(0, std::ios::end);
     fl.write(value.c_str(), value.length() + 1);
+}
+
+void vecindex(std::string indexstr)
+{
+    std::stringstream ss;
+    ss << indexstr;
+
+    size_t index;
+    ss >> index;
+
+    if (ss.fail())
+        die("index is not an valid integer");
+
+    const auto& [size, buf] = readcache();
+
+    if (index > size - 1)
+        die("index is out of range");
+
+    auto view =
+        buf | std::views::split('\0') | std::views::transform([](auto&& r) -> std::string {
+            return { &*r.begin(), static_cast<std::string::size_type>(std::ranges::distance(r)) };
+        }) |
+        std::views::drop(index);
+    std::cout << view.front();
 }
