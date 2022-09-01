@@ -1,10 +1,14 @@
 // C++
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
+#include <ranges>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 // C
@@ -16,6 +20,7 @@
 #include <strutil.hpp>
 
 // C libraries
+#include <strutil.h>
 #include <sysutil.h>
 
 // third party
@@ -26,6 +31,9 @@ typedef enum {
     CACHE_PERSISTENT,
 } cache_t;
 
+std::pair<size_t, std::string> readcache(std::string flname);
+HEDLEY_NO_RETURN void die(const std::string err);
+
 const std::unordered_map<std::string, cache_t> caches = {
     { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
     { "temp", CACHE_TEMPORARY }, { "temporary", CACHE_TEMPORARY },
@@ -33,12 +41,6 @@ const std::unordered_map<std::string, cache_t> caches = {
 };
 const char* const givenexecname = "shvector";
 const char* execname;
-
-HEDLEY_NO_RETURN void die(const std::string err)
-{
-    std::cerr << execname << ": " << err << '\n';
-    std::exit(EXIT_FAILURE);
-}
 
 int main(int argc, char* argv[])
 {
@@ -107,7 +109,7 @@ int main(int argc, char* argv[])
     argv += optind;
     argc -= optind;
 
-    if (argc < 3)
+    if (argc < 2)
         die("invalid syntax");
 
     proghash = argv[0];
@@ -144,17 +146,83 @@ int main(int argc, char* argv[])
         cachefl = ss.str();
     }
 
-    std::cerr << cachedir << std::endl;
     rmkdirconst(cachedir.c_str(), 0755);
 
-    // TODO: array structure should be:
-    // size\0
-    // elem 0\0
-    // elem 1\0
-    // ...
-    // elem size - 1\0
-    // debug data\0
-    // TODO: elements shold be stored as strings.
+    switch (argc) {
+        case 0: {
+            auto cache = readcache(cachefl);
+            auto size = cache.first;
+            auto buf = cache.second;
+
+            for (auto&& view :
+                 buf | std::views::split('\0') | std::views::transform([](auto&& r) -> std::string {
+                     return { &*r.begin(),
+                              static_cast<std::string::size_type>(std::ranges::distance(r)) };
+                 }) | std::views::take(size)) {
+                std::cout << view << '\0';
+            }
+        } break;
+        case 1: {
+            if (streq(argv[0], "new")) {
+                std::ofstream fl(cachefl, std::ios::out | std::ios::binary);
+
+                if (!fl)
+                    die("could not open cache file");
+
+                size_t size = 2;
+                fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+                fl.write("\0", 1);
+
+                fl.close();
+            } else if (streq(argv[0], "size")) {
+                auto cache = readcache(cachefl);
+                auto size = cache.first;
+                std::cout << size;
+            } else {
+                // TODO: if parseable to int, index
+            }
+        } break;
+        case 2: {
+            if (streq(argv[0], "=")) {
+                // TODO: copy
+            } else if (streq(argv[0], "push_back")) {
+                // TODO: append
+            }
+        } break;
+        case 3: {
+            // TODO: if argv[0] is parseable to int and argv[1] is =, set index
+        } break;
+        default: {
+        } break;
+    }
 
     return EXIT_SUCCESS;
+}
+
+HEDLEY_NO_RETURN void die(const std::string err)
+{
+    std::cerr << execname << ": " << err << '\n';
+    std::exit(EXIT_FAILURE);
+}
+
+std::pair<size_t, std::string> readcache(std::string flname)
+{
+    std::ifstream fl(flname, std::ios::in | std::ios::binary);
+
+    if (!fl)
+        die("could not open cache file");
+
+    size_t size;
+    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+    fl.seekg(1, std::ios::cur);
+
+    std::string buf;
+    {
+        std::ostringstream ss;
+        ss << fl.rdbuf();
+        fl.close();
+        buf = ss.str();
+    }
+
+    return { size, buf };
 }
