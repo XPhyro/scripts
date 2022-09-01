@@ -230,7 +230,6 @@ std::pair<vecsize_t, std::string> readcache()
 void vecout()
 {
     const auto& [size, buf] = readcache();
-
     for (const auto&& view : buf | vecview | std::views::take(size))
         std::cout << view << optdelim;
 }
