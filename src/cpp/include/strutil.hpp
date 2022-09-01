@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_STRUTIL
-#define HEADER_SCRIPTS_STRUTIL
+#ifndef HEADER_SCRIPTS_CXX_STRUTIL
+#define HEADER_SCRIPTS_CXX_STRUTIL
 
 #include <algorithm>
 #include <memory>
@@ -25,4 +25,4 @@ std::string makelower(std::string str)
 }
 } // namespace strutil
 
-#endif /* ifndef HEADER_SCRIPTS_STRUTIL */
+#endif /* ifndef HEADER_SCRIPTS_CXX_STRUTIL */

@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_STRUTIL
-#define HEADER_SCRIPTS_STRUTIL
+#ifndef HEADER_SCRIPTS_C_STRUTIL
+#define HEADER_SCRIPTS_C_STRUTIL
 
 #include <assert.h>
 #include <ctype.h>
@@ -493,4 +493,4 @@ char *vstrcatbuf(char *buf, size_t bufsize, size_t n, ...)
     return o;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_STRUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_STRUTIL */
