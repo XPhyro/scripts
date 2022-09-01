@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <ranges>
 #include <sstream>
 #include <stdexcept>
@@ -36,6 +37,7 @@ std::pair<size_t, std::string> readcache(std::string flname);
 void vecout(std::string cachefl);
 void vecnew(std::string cachefl);
 void vecsize(std::string cachefl);
+void vecpush(std::string cachefl, std::string value);
 
 const std::unordered_map<std::string, cache_t> caches = {
     { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
@@ -160,14 +162,15 @@ int main(int argc, char* argv[])
                 vecnew(cachefl);
             else if (streq(argv[0], "size"))
                 vecsize(cachefl);
-            else
-                ; // TODO: if parseable to int, index
+            else {
+                // TODO: if parseable to int, index
+            }
             break;
         case 2:
-            if (streq(argv[0], "="))
-                ; // TODO: copy
-            else if (streq(argv[0], "push_back"))
-                ; // TODO: append
+            if (streq(argv[0], "=")) {
+                // TODO: copy
+            } else if (streq(argv[0], "push_back"))
+                vecpush(cachefl, argv[1]);
             break;
         case 3:
             // TODO: if argv[0] is parseable to int and argv[1] is =, set index
@@ -194,7 +197,6 @@ std::pair<size_t, std::string> readcache(std::string flname)
 
     size_t size;
     fl.read(reinterpret_cast<char*>(&size), sizeof(size));
-    fl.seekg(1, std::ios::cur);
 
     std::string buf;
     {
@@ -228,9 +230,8 @@ void vecnew(std::string cachefl)
     if (!fl)
         die("could not open cache file for writing");
 
-    size_t size = 2;
+    size_t size = 0;
     fl.write(reinterpret_cast<char*>(&size), sizeof(size));
-    fl.write("\0", 1);
 
     fl.close();
 }
@@ -240,4 +241,23 @@ void vecsize(std::string cachefl)
     auto cache = readcache(cachefl);
     auto size = cache.first;
     std::cout << size;
+}
+
+void vecpush(std::string cachefl, std::string value)
+{
+    std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
+
+    if (!fl)
+        die("could not open cache file for reading and writing");
+
+    size_t size;
+    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+    if (size++ == std::numeric_limits<size_t>::max())
+        die("vector is at maximum capacity");
+
+    fl.seekg(0, std::ios::beg);
+    fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+    fl.seekg(0, std::ios::end);
+    fl.write(value.c_str(), value.length() + 1);
 }
