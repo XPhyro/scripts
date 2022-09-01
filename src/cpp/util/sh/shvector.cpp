@@ -33,11 +33,11 @@ typedef enum {
 } cache_t;
 
 HEDLEY_NO_RETURN void die(const std::string err);
-std::pair<size_t, std::string> readcache(std::string flname);
-void vecout(std::string cachefl);
-void vecnew(std::string cachefl);
-void vecsize(std::string cachefl);
-void vecpush(std::string cachefl, std::string value);
+std::pair<size_t, std::string> readcache();
+void vecout();
+void vecnew();
+void vecsize();
+void vecpush(std::string value);
 
 const std::unordered_map<std::string, cache_t> caches = {
     { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
@@ -46,6 +46,9 @@ const std::unordered_map<std::string, cache_t> caches = {
 };
 const char* const givenexecname = "shvector";
 const char* execname;
+
+char optdelim = '\0';
+std::string cachefl;
 
 int main(int argc, char* argv[])
 {
@@ -59,7 +62,7 @@ int main(int argc, char* argv[])
     else
         execname = argv[0];
 
-    while ((i = getopt(argc, argv, "c:h")) != -1) {
+    while ((i = getopt(argc, argv, "c:hn")) != -1) {
         switch (i) {
             case 'c':
                 try {
@@ -103,8 +106,12 @@ int main(int argc, char* argv[])
                        "\n"
                        "Options\n"
                        "  -c     set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n"
-                       "  -h     display this help and exit\n";
+                       "  -h     display this help and exit\n"
+                       "  -n     force output delimiter to be newline (\\n) instead of null (\\0)\n";
                 std::exit(EXIT_SUCCESS);
+            case 'n':
+                optdelim = '\n';
+                break;
             default:
                 std::cerr << "Try '" << execname << " -h' for more information.\n";
                 std::exit(EXIT_FAILURE);
@@ -141,27 +148,28 @@ int main(int argc, char* argv[])
             die("unkown cache type");
     }
 
-    std::string cachedir;
-    std::string cachefl;
     {
-        std::ostringstream ss;
-        ss << prefix << '/' << givenexecname << '/' << proghash;
-        cachedir = ss.str();
-        ss << '/' << vecname;
-        cachefl = ss.str();
-    }
+        std::string cachedir;
+        {
+            std::ostringstream ss;
+            ss << prefix << '/' << givenexecname << '/' << proghash;
+            cachedir = ss.str();
+            ss << '/' << vecname;
+            cachefl = ss.str();
+        }
 
-    rmkdirconst(cachedir.c_str(), 0755);
+        rmkdirconst(cachedir.c_str(), 0755);
+    }
 
     switch (argc) {
         case 0:
-            vecout(cachefl);
+            vecout();
             break;
         case 1:
             if (streq(argv[0], "new"))
-                vecnew(cachefl);
+                vecnew();
             else if (streq(argv[0], "size"))
-                vecsize(cachefl);
+                vecsize();
             else {
                 // TODO: if parseable to int, index
             }
@@ -170,7 +178,7 @@ int main(int argc, char* argv[])
             if (streq(argv[0], "=")) {
                 // TODO: copy
             } else if (streq(argv[0], "push_back"))
-                vecpush(cachefl, argv[1]);
+                vecpush(argv[1]);
             break;
         case 3:
             // TODO: if argv[0] is parseable to int and argv[1] is =, set index
@@ -188,9 +196,9 @@ HEDLEY_NO_RETURN void die(const std::string err)
     std::exit(EXIT_FAILURE);
 }
 
-std::pair<size_t, std::string> readcache(std::string flname)
+std::pair<size_t, std::string> readcache()
 {
-    std::ifstream fl(flname, std::ios::in | std::ios::binary);
+    std::ifstream fl(cachefl, std::ios::in | std::ios::binary);
 
     if (!fl)
         die("could not open cache file for reading");
@@ -209,9 +217,9 @@ std::pair<size_t, std::string> readcache(std::string flname)
     return { size, buf };
 }
 
-void vecout(std::string cachefl)
+void vecout()
 {
-    auto cache = readcache(cachefl);
+    auto cache = readcache();
     auto size = cache.first;
     auto buf = cache.second;
 
@@ -219,11 +227,11 @@ void vecout(std::string cachefl)
          buf | std::views::split('\0') | std::views::transform([](auto&& r) -> std::string {
              return { &*r.begin(), static_cast<std::string::size_type>(std::ranges::distance(r)) };
          }) | std::views::take(size)) {
-        std::cout << view << '\0';
+        std::cout << view << optdelim;
     }
 }
 
-void vecnew(std::string cachefl)
+void vecnew()
 {
     std::ofstream fl(cachefl, std::ios::out | std::ios::binary);
 
@@ -236,14 +244,14 @@ void vecnew(std::string cachefl)
     fl.close();
 }
 
-void vecsize(std::string cachefl)
+void vecsize()
 {
-    auto cache = readcache(cachefl);
+    auto cache = readcache();
     auto size = cache.first;
     std::cout << size;
 }
 
-void vecpush(std::string cachefl, std::string value)
+void vecpush(std::string value)
 {
     std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
 
