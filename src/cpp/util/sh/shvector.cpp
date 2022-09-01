@@ -1,13 +1,25 @@
+// C++
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+// C
+#include <pwd.h>
+#include <sys/types.h>
 #include <unistd.h>
 
+// C++ libraries
 #include <strutil.hpp>
+
+// C libraries
+#include <sysutil.h>
+
+// third party
+#include <hedley.h>
 
 typedef enum {
     CACHE_TEMPORARY,
@@ -19,15 +31,28 @@ const std::unordered_map<std::string, cache_t> caches = {
     { "temp", CACHE_TEMPORARY }, { "temporary", CACHE_TEMPORARY },
     { "p", CACHE_PERSISTENT },   { "persistent", CACHE_PERSISTENT },
 };
+const char* const givenexecname = "shvector";
+const char* execname;
+
+HEDLEY_NO_RETURN void die(const std::string err)
+{
+    std::cerr << execname << ": " << err << '\n';
+    std::exit(EXIT_FAILURE);
+}
 
 int main(int argc, char* argv[])
 {
-    const char* const execname = argv[0];
+    std::string proghash, arrname;
     const std::vector<std::string> v;
-    cache_t cache;
+    cache_t cache = CACHE_TEMPORARY;
     int i;
 
-    while ((i = getopt(argc, argv, "c:h"))) {
+    if (!argc)
+        execname = "NULL";
+    else
+        execname = argv[0];
+
+    while ((i = getopt(argc, argv, "c:h")) != -1) {
         switch (i) {
             case 'c':
                 try {
@@ -70,7 +95,8 @@ int main(int argc, char* argv[])
                        "      2. Array must have been initialised.\n"
                        "\n"
                        "Options\n"
-                       "  -c     set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n";
+                       "  -c     set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n"
+                       "  -h     display this help and exit\n";
                 std::exit(EXIT_SUCCESS);
             default:
                 std::cerr << "Try '" << execname << " -h' for more information.\n";
@@ -81,6 +107,46 @@ int main(int argc, char* argv[])
     argv += optind;
     argc -= optind;
 
+    if (argc < 3)
+        die("invalid syntax");
+
+    proghash = argv[0];
+    arrname = argv[1];
+    argv += 2;
+    argc -= 2;
+
+    const char* prefix;
+    switch (cache) {
+        case CACHE_TEMPORARY:
+            if (!(prefix = std::getenv("TMPDIR")))
+                prefix = "/tmp";
+            break;
+        case CACHE_PERSISTENT:
+            if (!(prefix = std::getenv("XDG_CACHE_HOME"))) {
+                if (!(prefix = getenv("HOME")) && !(prefix = getpwuid(getuid())->pw_dir))
+                    die("could not determine persistent cache directory");
+                std::ostringstream ss;
+                ss << prefix << "/.cache";
+                prefix = ss.str().c_str();
+            }
+            break;
+        default:
+            die("unkown cache type");
+    }
+
+    std::string cachedir;
+    std::string cachefl;
+    {
+        std::ostringstream ss;
+        ss << prefix << '/' << givenexecname << '/' << proghash;
+        cachedir = ss.str();
+        ss << '/' << arrname;
+        cachefl = ss.str();
+    }
+
+    std::cerr << cachedir << std::endl;
+    rmkdirconst(cachedir.c_str(), 0755);
+
     // TODO: array structure should be:
     // size\0
     // elem 0\0
@@ -90,5 +156,5 @@ int main(int argc, char* argv[])
     // debug data\0
     // TODO: elements shold be stored as strings.
 
-    return 0;
+    return EXIT_SUCCESS;
 }
