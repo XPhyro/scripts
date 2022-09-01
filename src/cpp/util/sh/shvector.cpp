@@ -32,20 +32,26 @@ typedef enum {
     CACHE_PERSISTENT,
 } cache_t;
 
-HEDLEY_NO_RETURN void die(const std::string err);
+typedef size_t vecsize_t;
+
+HEDLEY_NO_RETURN void die(const std::string& err);
 cache_t parseargs(int* argc, char** argv[]);
-std::pair<size_t, std::string> readcache();
+std::pair<vecsize_t, std::string> readcache();
 void vecout();
 void vecnew();
 void vecsize();
-void vecpush(std::string value);
-void vecindex(std::string indexstr);
+void vecpush(const std::string& value);
+void vecindex(const std::string& indexstr);
 
 const std::unordered_map<std::string, cache_t> caches = {
     { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
     { "temp", CACHE_TEMPORARY }, { "temporary", CACHE_TEMPORARY },
     { "p", CACHE_PERSISTENT },   { "persistent", CACHE_PERSISTENT },
 };
+const auto vecview =
+    std::views::split('\0') | std::views::transform([](const auto&& r) -> std::string {
+        return { &*r.begin(), static_cast<std::string::size_type>(std::ranges::distance(r)) };
+    });
 const std::string givenexecname = "shvector";
 
 std::string execname, cachefl;
@@ -58,7 +64,7 @@ int main(int argc, char* argv[])
     else
         execname = argv[0];
 
-    auto cache = parseargs(&argc, &argv);
+    const auto cache = parseargs(&argc, &argv);
 
     if (argc < 2)
         die("invalid syntax");
@@ -127,7 +133,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-HEDLEY_NO_RETURN void die(const std::string err)
+HEDLEY_NO_RETURN void die(const std::string& err)
 {
     std::cerr << execname << ": " << err << '\n';
     std::exit(EXIT_FAILURE);
@@ -200,15 +206,15 @@ cache_t parseargs(int* argc, char** argv[])
     return cache;
 }
 
-std::pair<size_t, std::string> readcache()
+std::pair<vecsize_t, std::string> readcache()
 {
     std::ifstream fl(cachefl, std::ios::in | std::ios::binary);
 
     if (!fl)
         die("could not open cache file for reading");
 
-    size_t size;
-    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+    vecsize_t size;
+    fl.read(reinterpret_cast<char*>(&size), sizeof(vecsize_t));
 
     std::string buf;
     {
@@ -225,12 +231,8 @@ void vecout()
 {
     const auto& [size, buf] = readcache();
 
-    for (auto&& view :
-         buf | std::views::split('\0') | std::views::transform([](auto&& r) -> std::string {
-             return { &*r.begin(), static_cast<std::string::size_type>(std::ranges::distance(r)) };
-         }) | std::views::take(size)) {
+    for (const auto&& view : buf | vecview | std::views::take(size))
         std::cout << view << optdelim;
-    }
 }
 
 void vecnew()
@@ -240,8 +242,8 @@ void vecnew()
     if (!fl)
         die("could not open cache file for writing");
 
-    size_t size = 0;
-    fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+    vecsize_t size = 0;
+    fl.write(reinterpret_cast<char*>(&size), sizeof(vecsize_t));
 
     fl.close();
 }
@@ -252,46 +254,42 @@ void vecsize()
     std::cout << size;
 }
 
-void vecpush(std::string value)
+void vecpush(const std::string& value)
 {
     std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
 
     if (!fl)
         die("could not open cache file for reading and writing");
 
-    size_t size;
-    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+    vecsize_t size;
+    fl.read(reinterpret_cast<char*>(&size), sizeof(vecsize_t));
 
-    if (size == std::numeric_limits<size_t>::max())
+    if (size == std::numeric_limits<vecsize_t>::max())
         die("vector is at maximum capacity");
     size++;
 
     fl.seekg(0, std::ios::beg);
-    fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+    fl.write(reinterpret_cast<char*>(&size), sizeof(vecsize_t));
     fl.seekg(0, std::ios::end);
     fl.write(value.c_str(), value.length() + 1);
 }
 
-void vecindex(std::string indexstr)
+void vecindex(const std::string& indexstr)
 {
     std::stringstream ss;
     ss << indexstr;
 
-    size_t index;
+    vecsize_t index;
     ss >> index;
 
     if (ss.fail())
-        die("index is not an valid integer");
+        die("index is not a valid integer");
 
     const auto& [size, buf] = readcache();
 
     if (index > size - 1)
         die("index is out of range");
 
-    auto view =
-        buf | std::views::split('\0') | std::views::transform([](auto&& r) -> std::string {
-            return { &*r.begin(), static_cast<std::string::size_type>(std::ranges::distance(r)) };
-        }) |
-        std::views::drop(index);
+    auto view = buf | vecview | std::views::drop(index);
     std::cout << view.front();
 }
