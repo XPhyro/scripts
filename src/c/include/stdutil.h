@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_STDUTIL
-#define HEADER_SCRIPTS_STDUTIL
+#ifndef HEADER_SCRIPTS_C_STDUTIL
+#define HEADER_SCRIPTS_C_STDUTIL
 
 #include <errno.h>
 #include <limits.h>
@@ -166,4 +166,4 @@ HEDLEY_MALLOC void *acrealloc(void *oldptr, size_t oldnmemb, size_t nmemb, size_
     return ptr;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_STDUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_STDUTIL */

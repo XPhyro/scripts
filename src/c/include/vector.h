@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_VECTOR
-#define HEADER_SCRIPTS_VECTOR
+#ifndef HEADER_SCRIPTS_C_VECTOR
+#define HEADER_SCRIPTS_C_VECTOR
 
 #include <sys/param.h>
 
@@ -148,4 +148,4 @@ void vec_shrink(vector_t *vec)
         vec_del(&VEC_DUP)                                              \
     }
 
-#endif /* HEADER_SCRIPTS_VECTOR */
+#endif /* HEADER_SCRIPTS_C_VECTOR */

@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CONSTS
-#define HEADER_SCRIPTS_CONSTS
+#ifndef HEADER_SCRIPTS_CXX_CONSTS
+#define HEADER_SCRIPTS_CXX_CONSTS
 
 #include <string>
 
@@ -11,4 +11,4 @@ const std::string empty = "";
 }
 } // namespace consts
 
-#endif /* ifndef HEADER_SCRIPTS_CONSTS */
+#endif /* ifndef HEADER_SCRIPTS_CXX_CONSTS */
