@@ -63,6 +63,24 @@ std::vector<std::string> constexpr split(std::vector<std::string>& tokens, const
 
     return tokens;
 }
+
+void replaceall(std::string& str, const std::string&& from, const std::string&& to)
+{
+    std::string newstr;
+    newstr.reserve(str.length());
+
+    std::string::size_type pos;
+    std::string::size_type lastpos = 0;
+    while ((pos = str.find(from, lastpos)) != std::string::npos) {
+        newstr.append(str, lastpos, pos - lastpos);
+        newstr += to;
+        lastpos = pos + from.length();
+    }
+
+    newstr.append(str, lastpos, str.length() - lastpos);
+
+    str.swap(newstr);
+}
 } // namespace strutil
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_STRUTIL */
