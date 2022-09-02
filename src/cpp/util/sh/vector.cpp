@@ -45,7 +45,7 @@ vecsize_t readsize();
 void vecout();
 void vecnew();
 void vecsize();
-void vecpopback();
+void vecpopback(const std::string&& countstr);
 void vecpushback(const std::string&& value);
 void vecgetindex(const std::string&& indexstr);
 void vecsetindex(const std::string&& indexstr, const std::string&& value);
@@ -142,13 +142,15 @@ int main(int argc, char* argv[])
                 else if (streq(argv[0], "size"))
                     vecsize();
                 else if (streq(argv[0], "pop_back"))
-                    vecpopback();
+                    vecpopback("1");
                 else
                     vecgetindex(argv[0]);
                 break;
             case 2:
                 if (streq(argv[0], "="))
                     vecset(argv[1]);
+                else if (streq(argv[0], "pop_back"))
+                    vecpopback(argv[1]);
                 break;
             case 3:
                 if (streq(argv[1], "="))
@@ -189,37 +191,41 @@ cache parseargs(int* argc, char** argv[])
                     << "Usage: "
                     << execname
                     // TODO: Have more natural syntax.
-                    // TODO: Add at, front, back, empty, clear, insert, erase, pop_back, swap
+                    // TODO: Add at, front, back, empty, clear, insert, erase, swap
                     << " [OPTION...] [PROG_HASH] [SYNTAX]\n"
-                       "Handle arrays in a strictly POSIX shell.\n"
+                       "Handle vectors in a strictly POSIX shell.\n"
                        "\n"
                        "SYNTAX may be one of:\n"
                        "1. = {NULL, nullptr}\n"
                        "   1. Uninitialise all vectors belonging to PROG_HASH.\n"
                        "2. [VEC_NAME]\n"
-                       "   1. Get array.\n"
-                       "   2. Array must have been initialised.\n"
+                       "   1. Get vector.\n"
+                       "   2. Vector must have been initialised.\n"
                        "3. [VEC_NAME] [INDEX]\n"
                        "   1. Get value at INDEX.\n"
                        "   2. INDEX must be in range [0, size).\n"
-                       "   3. Array must have been initialised.\n"
+                       "   3. Vector must have been initialised.\n"
                        "4. [VEC_NAME] = [OTHER_VEC_NAME]\n"
                        "   1. Copy OTHER_VEC_NAME to VEC_NAME.\n"
-                       "   2. If OTHER_VEC_NAME is NULL or nullptr, uninitialise array.\n"
+                       "   2. If OTHER_VEC_NAME is NULL or nullptr, uninitialise vector.\n"
                        "5. [VEC_NAME] [INDEX] = [VALUE]\n"
                        "   1. Set value at INDEX to VALUE.\n"
                        "   2. INDEX must be in range [0, size).\n"
-                       "   3. Array must have been initialised.\n"
+                       "   3. Vector must have been initialised.\n"
                        "6. [VEC_NAME] [FUNC]\n"
                        "   1. new\n"
-                       "      1. Initialise array.\n"
-                       "      2. If already initialised, array is reinitialised.\n"
+                       "      1. Initialise vector.\n"
+                       "      2. If already initialised, vector is reinitialised.\n"
                        "   2. size\n"
-                       "      1. Get array size.\n"
-                       "      2. Array must have been initialised.\n"
+                       "      1. Get vector size.\n"
+                       "      2. Vector must have been initialised.\n"
                        "   3. push_back [VALUE...]\n"
-                       "      1. Append VALUEs to the end of the array.\n"
-                       "      2. Array must have been initialised.\n"
+                       "      1. Append VALUEs to the end of the vector.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   4. pop_back [COUNT]?\n"
+                       "      1. Pop COUNT values from the end of the vector.\n"
+                       "      2. If COUNT is not given, COUNT is 1.\n"
+                       "      3. Vector must have been initialised.\n"
                        "\n"
                        "PROG_HASH cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
                        "VEC_NAME cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
@@ -386,24 +392,27 @@ void vecpushback(const std::string&& value)
     fl.write(value.c_str(), value.length() + 1);
 }
 
-void vecpopback()
+void vecpopback(const std::string&& countstr)
 {
+    auto count = parseindex(countstr);
     auto vec = readvec();
 
-    if (!vec.size())
-        die("cannot pop_back with empty vector");
+    if (count > vec.size())
+        die("pop_back count cannot be greater than vector size");
 
-    std::cout << vec.back();
-    conditionaldelim();
+    for ([[maybe_unused]] const auto&& _ : std::views::iota(0u, count)) {
+        std::cout << vec.back();
+        conditionaldelim();
 
-    vec.pop_back();
+        vec.pop_back();
+    }
 
     writecache(vec);
 }
 
 void vecgetindex(const std::string&& indexstr)
 {
-    vecsize_t index = parseindex(indexstr);
+    auto index = parseindex(indexstr);
 
     // TODO: reuse file stream
     if (auto size = readsize(); !size || index > size - 1)
@@ -418,7 +427,7 @@ void vecgetindex(const std::string&& indexstr)
 
 void vecsetindex(const std::string&& indexstr, const std::string&& value)
 {
-    vecsize_t index = parseindex(indexstr);
+    auto index = parseindex(indexstr);
 
     // TODO: reuse file stream
     if (auto size = readsize(); !size || index > size - 1)
