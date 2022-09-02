@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
             case 'm':
                 if (strcaseeq(optarg, "mean"))
                     method = METHOD_MEAN;
-                else if (strcaseeq(optarg, "coeff"))
+                else if (strcaseeq(optarg, "weighted_sum"))
                     method = METHOD_COEFF;
                 else if (strcaseeq(optarg, "srgb"))
                     method = METHOD_SRGB;
@@ -68,11 +68,11 @@ int main(int argc, char *argv[])
                     method = METHOD_GREEN;
                 else if (strcaseeq(optarg, "blue"))
                     method = METHOD_BLUE;
-                else if (strcaseeq(optarg, "hsv-h"))
+                else if (strcaseeq(optarg, "hue"))
                     method = METHOD_HSV_H;
-                else if (strcaseeq(optarg, "hsv-s"))
+                else if (strcaseeq(optarg, "saturation"))
                     method = METHOD_HSV_S;
-                else if (strcaseeq(optarg, "hsv-v"))
+                else if (strcaseeq(optarg, "value"))
                     method = METHOD_HSV_V;
                 else {
                     fputs("invalid method given\n", stderr);
