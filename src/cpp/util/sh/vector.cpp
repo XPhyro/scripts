@@ -50,6 +50,7 @@ void vecpushback(const std::string&& value);
 void vecgetindex(const std::string&& indexstr);
 void vecsetindex(const std::string&& indexstr, const std::string&& value);
 void vecset(const std::string&& other);
+void vecswap(const std::string&& other);
 
 const std::unordered_map<std::string, cache> caches = {
     { "t", cache::temporary },    { "tmp", cache::temporary },
@@ -151,6 +152,8 @@ int main(int argc, char* argv[])
                     vecset(argv[1]);
                 else if (streq(argv[0], "pop_back"))
                     vecpopback(argv[1]);
+                else if (streq(argv[0], "swap"))
+                    vecswap(argv[1]);
                 break;
             case 3:
                 if (streq(argv[1], "="))
@@ -207,7 +210,7 @@ cache parseargs(int* argc, char** argv[])
                        "   3. Vector must have been initialised.\n"
                        "4. [VEC_NAME] = [OTHER_VEC_NAME]\n"
                        "   1. Copy OTHER_VEC_NAME to VEC_NAME.\n"
-                       "   2. If OTHER_VEC_NAME is NULL or nullptr, uninitialise vector.\n"
+                       "   2. If OTHER_VEC_NAME is NULL or nullptr, uninitialise vector. Otherwise, OTHER_VEC_NAME must have been initialised.\n"
                        "5. [VEC_NAME] [INDEX] = [VALUE]\n"
                        "   1. Set value at INDEX to VALUE.\n"
                        "   2. INDEX must be in range [0, size).\n"
@@ -226,6 +229,10 @@ cache parseargs(int* argc, char** argv[])
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
+                       "   5. swap [OTHER_VEC_NAME]\n"
+                       "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
+                       "      2. OTHER_VEC_NAME cannot be NULL or nullptr."
+                       "      3. Vectors must have been initialised.\n"
                        "\n"
                        "PROG_HASH cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
                        "VEC_NAME cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
@@ -347,6 +354,18 @@ std::vector<std::string> readvec()
     return vec;
 }
 
+std::string buildcachefl(const std::string& vecname)
+{
+    std::string cachefl;
+    {
+        std::ostringstream ss;
+        ss << prefix << '/' << givenexecname << '/' << proghash;
+        ss << '/' << vecname;
+        cachefl = ss.str();
+    }
+    return cachefl;
+}
+
 void vecout()
 {
     const auto& [size, buf] = readcache();
@@ -439,24 +458,38 @@ void vecsetindex(const std::string&& indexstr, const std::string&& value)
 
 void vecset(const std::string&& other)
 {
-    assertexists();
     if (other == "NULL" || other == "nullptr") {
         std::filesystem::remove(cachefl);
     } else if (other == "") {
         die("OTHER_VEC_NAME cannot be empty");
+    } else if (other == vecname) {
+        die("OTHER_VEC_NAME cannot be the same as VEC_NAME");
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-
-        std::string othercachefl;
-        {
-            std::ostringstream ss;
-            ss << prefix << '/' << givenexecname << '/' << proghash;
-            ss << '/' << other;
-            othercachefl = ss.str();
-        }
+        std::string othercachefl = buildcachefl(other);
         assertexists(othercachefl);
         std::filesystem::copy_file(
             othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
+    }
+}
+
+void vecswap(const std::string&& other)
+{
+    assertexists();
+    if (other == "" || other == "NULL" || other == "nullptr") {
+        die("OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\" or empty");
+    } else if (other == vecname) {
+        die("OTHER_VEC_NAME cannot be the same as VEC_NAME");
+    } else if (other.contains('/')) {
+        die("OTHER_VEC_NAME cannot contain '/'");
+    } else {
+        auto othercachefl = buildcachefl(other);
+        assertexists(othercachefl);
+        auto tmpfl = std::tmpnam(nullptr);
+        std::filesystem::rename(cachefl, tmpfl);
+        std::filesystem::rename(othercachefl, cachefl);
+        std::filesystem::rename(tmpfl, othercachefl);
+        std::filesystem::remove(tmpfl);
     }
 }
