@@ -24,6 +24,7 @@
 // C++ libraries
 #include <macros.hpp>
 #include <strutil.hpp>
+#include <sysutil.hpp>
 #include <vecutil.hpp>
 
 // C libraries
@@ -527,11 +528,7 @@ void vecswap(const std::string&& other)
     } else {
         auto othercachefl = buildcachefl(other);
         assertexists(othercachefl);
-        auto tmpfl = std::tmpnam(nullptr);
-        std::filesystem::rename(cachefl, tmpfl);
-        std::filesystem::rename(othercachefl, cachefl);
-        std::filesystem::rename(tmpfl, othercachefl);
-        std::filesystem::remove(tmpfl);
+        sysutil::swapfile(cachefl, othercachefl);
     }
 }
 
