@@ -45,6 +45,8 @@ vecsize_t readsize();
 void vecout();
 void vecnew();
 void vecsize();
+void vecfront();
+void vecback();
 void vecpopback(const std::string&& countstr);
 void vecpushback(const std::string&& value);
 void vecgetindex(const std::string&& indexstr);
@@ -142,6 +144,10 @@ int main(int argc, char* argv[])
                     vecnew();
                 else if (streq(argv[0], "size"))
                     vecsize();
+                else if (streq(argv[0], "front"))
+                    vecfront();
+                else if (streq(argv[0], "back"))
+                    vecback();
                 else if (streq(argv[0], "pop_back"))
                     vecpopback("1");
                 else
@@ -194,7 +200,7 @@ cache parseargs(int* argc, char** argv[])
                     << "Usage: "
                     << execname
                     // TODO: Have more natural syntax.
-                    // TODO: Add at, front, back, empty, clear, insert, erase, swap
+                    // TODO: Add at, front, back, insert, erase.
                     << " [OPTION...] [PROG_HASH] [SYNTAX]\n"
                        "Handle vectors in a strictly POSIX shell.\n"
                        "\n"
@@ -222,14 +228,20 @@ cache parseargs(int* argc, char** argv[])
                        "   2. size\n"
                        "      1. Get vector size.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   3. push_back [VALUE...]\n"
+                       "   3. front\n"
+                       "      1. Get front element of vector.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   4. back\n"
+                       "      1. Get back element of vector.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   5. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   4. pop_back [COUNT]?\n"
+                       "   6. pop_back [COUNT]?\n"
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
-                       "   5. swap [OTHER_VEC_NAME]\n"
+                       "   7. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
                        "      2. OTHER_VEC_NAME cannot be NULL or nullptr."
                        "      3. Vectors must have been initialised.\n"
@@ -492,4 +504,22 @@ void vecswap(const std::string&& other)
         std::filesystem::rename(tmpfl, othercachefl);
         std::filesystem::remove(tmpfl);
     }
+}
+
+void vecfront()
+{
+    auto vec = readvec();
+    if (vec.empty())
+        die("cannot get front element of empty vector");
+    std::cout << vec.front();
+    conditionaldelim();
+}
+
+void vecback()
+{
+    auto vec = readvec();
+    if (vec.empty())
+        die("cannot get back element of empty vector");
+    std::cout << vec.back();
+    conditionaldelim();
 }
