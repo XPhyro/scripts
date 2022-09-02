@@ -16,22 +16,14 @@
 
 // libraries
 #include <consts.hpp>
+#include <macros.hpp>
 #include <strutil.hpp>
 
 // third party
 #include <hedley.h>
 
-typedef enum {
-    TYPE_CHAR,
-    TYPE_STR,
-    TYPE_OCT,
-    TYPE_DEC,
-    TYPE_HEX,
-    TYPE_INT,
-    TYPE_BIN,
-    TYPE_FLOAT,
-    TYPE_RAW
-} type_t;
+DEFINE_ENUM(type, character COMMA string COMMA octal COMMA decimal COMMA hexadecimal COMMA integer
+                      COMMA binary COMMA floating_point COMMA raw_binary COMMA);
 
 HEDLEY_NO_RETURN void help();
 HEDLEY_NO_RETURN void invalidargs(std::string err);
@@ -41,14 +33,14 @@ void castfloat(std::string val);
 void caststr(std::string val);
 void castchar(std::string val);
 
-const std::unordered_map<std::string, type_t> types = {
-    { "char", TYPE_CHAR }, { "str", TYPE_STR },     { "oct", TYPE_OCT },
-    { "dec", TYPE_DEC },   { "hex", TYPE_HEX },     { "int", TYPE_INT },
-    { "bin", TYPE_BIN },   { "float", TYPE_FLOAT }, { "raw", TYPE_RAW },
+const std::unordered_map<std::string, type> types = {
+    { "char", type::character }, { "str", type::string },           { "oct", type::octal },
+    { "dec", type::decimal },    { "hex", type::hexadecimal },      { "int", type::integer },
+    { "bin", type::binary },     { "float", type::floating_point }, { "raw", type::raw_binary },
 };
 
 std::string execname, fromtypename, totypename;
-type_t fromtype, totype;
+type fromtype, totype;
 
 int main(int argc, char* argv[])
 {
@@ -80,14 +72,14 @@ int main(int argc, char* argv[])
     argc -= 2;
 
     std::function<void(std::string)> func;
-    switch (fromtype) {
-        case TYPE_CHAR:
+    switch (fromtype.value()) {
+        case type::character:
             func = castchar;
             break;
-        case TYPE_STR:
+        case type::string:
             func = caststr;
             break;
-        case TYPE_FLOAT:
+        case type::floating_point:
             func = castfloat;
             break;
         default:
@@ -155,27 +147,27 @@ void castint(std::string val)
     ss << val;
     ss >> ll;
 
-    switch (totype) {
-        case TYPE_CHAR:
+    switch (totype.value()) {
+        case type::character:
             std::cout << static_cast<char>(ll);
             break;
-        case TYPE_STR:
+        case type::string:
             std::cout << static_cast<char>(ll) << '\n';
             break;
-        case TYPE_OCT:
+        case type::octal:
             std::cout << std::oct << ll << '\n';
             break;
-        case TYPE_DEC:
-        case TYPE_INT:
+        case type::decimal:
+        case type::integer:
             std::cout << std::dec << ll << '\n';
             break;
-        case TYPE_HEX:
+        case type::hexadecimal:
             std::cout << std::hex << ll << '\n';
             break;
-        case TYPE_BIN:
+        case type::binary:
             std::cout << std::bitset<8 * sizeof(ll)>(ll);
             break;
-        case TYPE_RAW:
+        case type::raw_binary:
             write(STDOUT_FILENO, &ll, sizeof(ll));
             break;
         default:
@@ -194,8 +186,8 @@ void castfloat(std::string val)
     ss << val;
     ss >> f;
 
-    switch (totype) {
-        case TYPE_RAW:
+    switch (totype.value()) {
+        case type::raw_binary:
             write(STDOUT_FILENO, &f, sizeof(f));
             break;
         default:
@@ -208,18 +200,18 @@ void caststr(std::string val)
     static unsigned char bits = 0;
     static int bitidx = 0;
 
-    switch (totype) {
-        case TYPE_CHAR:
+    switch (totype.value()) {
+        case type::character:
             castchar(val);
             break;
-        case TYPE_STR:
+        case type::string:
             std::cout << val << '\n';
             break;
-        case TYPE_BIN:
+        case type::binary:
             castchar(val);
             std::cout << '\n';
             break;
-        case TYPE_RAW: {
+        case type::raw_binary: {
             std::string_view view{ val };
             for (size_t i = 0; i < view.length(); i += 8) {
                 for (auto const& c : view.substr(i, 8) | std::views::reverse) {
@@ -249,24 +241,24 @@ void caststr(std::string val)
 void castchar(std::string val)
 {
     for (auto const& c : val) {
-        switch (totype) {
-            case TYPE_CHAR:
+        switch (totype.value()) {
+            case type::character:
                 std::cout << c;
                 break;
-            case TYPE_STR:
+            case type::string:
                 std::cout << c << '\n';
                 break;
-            case TYPE_OCT:
+            case type::octal:
                 std::cout << std::oct << static_cast<int>(c) << '\n';
                 break;
-            case TYPE_DEC:
-            case TYPE_INT:
+            case type::decimal:
+            case type::integer:
                 std::cout << std::dec << static_cast<int>(c) << '\n';
                 break;
-            case TYPE_HEX:
+            case type::hexadecimal:
                 std::cout << std::hex << static_cast<int>(c) << '\n';
                 break;
-            case TYPE_BIN:
+            case type::binary:
                 std::cout << std::bitset<8>(c);
                 break;
             default:
