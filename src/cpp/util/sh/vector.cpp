@@ -47,6 +47,8 @@ void vecnew();
 void vecsize();
 void vecfront();
 void vecback();
+void vecinsert(const std::string&& indexstr, const std::string&& value);
+void vecerase(const std::string&& indexstr);
 void vecpopback(const std::string&& countstr);
 void vecpushback(const std::string&& value);
 void vecgetindex(const std::string&& indexstr);
@@ -160,10 +162,14 @@ int main(int argc, char* argv[])
                     vecpopback(argv[1]);
                 else if (streq(argv[0], "swap"))
                     vecswap(argv[1]);
+                else if (streq(argv[0], "erase"))
+                    vecerase(argv[1]);
                 break;
             case 3:
                 if (streq(argv[1], "="))
                     vecsetindex(argv[0], argv[2]);
+                else if (streq(argv[0], "insert"))
+                    vecinsert(argv[1], argv[2]);
                 break;
             default:
                 die("unkown syntax");
@@ -197,10 +203,7 @@ cache parseargs(int* argc, char** argv[])
                 break;
             case 'h':
                 std::cout
-                    << "Usage: "
-                    << execname
-                    // TODO: Have more natural syntax.
-                    // TODO: Add at, front, back, insert, erase.
+                    << "Usage: " << execname
                     << " [OPTION...] [PROG_HASH] [SYNTAX]\n"
                        "Handle vectors in a strictly POSIX shell.\n"
                        "\n"
@@ -233,6 +236,12 @@ cache parseargs(int* argc, char** argv[])
                        "      2. Vector must have been initialised.\n"
                        "   4. back\n"
                        "      1. Get back element of vector.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   5. insert [INDEX] [VALUE]\n"
+                       "      1. Insert VALUE at INDEX.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   5. erase [INDEX]\n"
+                       "      1. Erase value at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
                        "   5. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
@@ -444,13 +453,10 @@ void vecpopback(const std::string&& countstr)
 void vecgetindex(const std::string&& indexstr)
 {
     auto index = parseindex(indexstr);
-
-    // TODO: reuse file stream
-    if (auto size = readsize(); !size || index > size - 1)
-        die("index is out of range");
-
-    // TODO: reuse file stream
     const auto& [size, buf] = readcache();
+
+    if (!size || index > size - 1)
+        die("index is out of range");
 
     auto view = buf | vecview | std::views::drop(index);
     std::cout << view.front();
@@ -522,4 +528,30 @@ void vecback()
         die("cannot get back element of empty vector");
     std::cout << vec.back();
     conditionaldelim();
+}
+
+void vecinsert(const std::string&& indexstr, const std::string&& value)
+{
+    auto index = parseindex(indexstr);
+    auto vec = readvec();
+
+    if (index > vec.size())
+        die("index is out of range");
+
+    vec.insert(vec.begin() + index, value);
+
+    writecache(vec);
+}
+
+void vecerase(const std::string&& indexstr)
+{
+    auto index = parseindex(indexstr);
+    auto vec = readvec();
+
+    if (vec.empty() || index > vec.size() - 1)
+        die("index is out of range");
+
+    vec.erase(vec.begin() + index);
+
+    writecache(vec);
 }
