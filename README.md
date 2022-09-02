@@ -99,6 +99,8 @@ the source code.
   hashcodes. Originally written for toggling applications with the same hotkey
   via `sxhkd`.
 - [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`.
+- [vector](src/cpp/util/sh/vector.cpp): Wrapper for `std::vector<std::string>`
+  for use in POSIX shells.
 - [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX shell.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input.
 
