@@ -66,7 +66,7 @@ const std::unordered_map<std::string, cache> caches = {
 };
 const char indelim = '\0';
 const auto constexpr vecview = strutil::splitview(indelim);
-const std::string givenexecname = "shvector";
+const std::string givenexecname = "vector";
 
 std::string execname, proghash, vecname, cachefl;
 char outdelim = indelim;
