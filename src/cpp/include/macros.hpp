@@ -7,19 +7,19 @@
     struct _##NAME##_definition {       \
         enum type { VALS };             \
     };                                  \
-    typedef macros::safe_enum<_##NAME##_definition> NAME;
+    typedef macros::safe_enum<_##NAME##_definition> NAME
 
 #define DEFINE_TYPED_ENUM(TYPE, NAME, VALS) \
     struct _##NAME##_definition {           \
         enum type { VALS };                 \
     };                                      \
-    typedef macros::safe_enum<_##NAME##_definition, TYPE> NAME;
+    typedef macros::safe_enum<_##NAME##_definition, TYPE> NAME
 
 #define DEFINE_ENUM(NAME, VALS)   \
     struct _##NAME##_definition { \
         enum type { VALS };       \
     };                            \
-    typedef macros::safe_enum<_##NAME##_definition, int> NAME;
+    typedef macros::safe_enum<_##NAME##_definition, int> NAME
 
 namespace macros
 {

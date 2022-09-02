@@ -32,7 +32,7 @@
 // third party
 #include <hedley.h>
 
-DEFINE_ENUM(cache, temporary COMMA persistent COMMA)
+DEFINE_ENUM(cache, temporary COMMA persistent COMMA);
 
 typedef std::size_t vecsize_t;
 
