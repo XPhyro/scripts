@@ -190,8 +190,9 @@ cache parseargs(int* argc, char** argv[])
     cache cache = cache::temporary;
     int i;
     bool optoutdelim = false;
+    int optquiet = 0;
 
-    while ((i = getopt(*argc, *argv, "c:hnz0")) != -1) {
+    while ((i = getopt(*argc, *argv, "c:hnqz0")) != -1) {
         switch (i) {
             case 'c':
                 try {
@@ -264,12 +265,22 @@ cache parseargs(int* argc, char** argv[])
                        "  -c TYPE   set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n"
                        "  -h        display this help and exit\n"
                        "  -n        force output delimiter to be newline (\\n)\n"
+                       "  -q        if given once, do not use stdout; if given twice or more, do not use stdout or stderr\n"
                        "  -z        force output delimiter to be null (\\0)\n"
                        "  -0        force output delimiter to be null (\\0)\n";
                 std::exit(EXIT_SUCCESS);
             case 'n':
                 optoutdelim = true;
                 outdelim = '\n';
+                break;
+            case 'q':
+                if (optquiet < 2) {
+                    if (optquiet == 0)
+                        std::cout.setstate(std::ios_base::failbit);
+                    else
+                        std::cerr.setstate(std::ios_base::failbit);
+                    optquiet++;
+                }
                 break;
             case 'z':
             case '0':
