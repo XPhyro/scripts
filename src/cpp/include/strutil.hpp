@@ -35,14 +35,33 @@ auto constexpr splitview(char delim)
            });
 }
 
-std::vector<std::string> constexpr split(const std::string& str, char delim)
+std::vector<std::string> constexpr split(const std::string& str, char delim, bool ignoreend = true)
 {
     std::vector<std::string> tokens;
 
     for (auto&& token : str | splitview(delim))
         tokens.push_back(token);
 
+    // TODO: could use `| std::views::drop_last(static_cast<int>(ignoreend && *str.end() == delim))` with C++23
+    if (ignoreend && *str.end() == delim)
+        tokens.pop_back();
+
     return std::move(tokens);
+}
+
+std::vector<std::string> constexpr split(std::vector<std::string>& tokens, const std::string& str,
+                                         char delim, bool ignoreend = true)
+{
+    auto initsize = tokens.size();
+
+    for (auto&& token : str | splitview(delim))
+        tokens.push_back(token);
+
+    // TODO: could use `| std::views::drop_last(static_cast<int>(ignoreend && *str.end() == delim))` with C++23
+    if (ignoreend && str.back() == delim && tokens.size() != initsize)
+        tokens.pop_back();
+
+    return tokens;
 }
 } // namespace strutil
 
