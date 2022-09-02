@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
             }
             break;
         default:
-            die("unkown cache type");
+            die("unknown cache type");
     }
 
     {
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
                     vecinsert(argv[1], argv[2]);
                 break;
             default:
-                die("unkown syntax");
+                die("unknown syntax");
         }
     }
 
@@ -203,7 +203,7 @@ cache parseargs(int* argc, char** argv[])
                 try {
                     cache = caches.at(strutil::makelower(optarg));
                 } catch (const std::out_of_range& e) {
-                    std::cerr << execname << ": unkown cache type " << optarg << '\n';
+                    std::cerr << execname << ": unknown cache type " << optarg << '\n';
                     std::exit(EXIT_FAILURE);
                 }
                 break;
