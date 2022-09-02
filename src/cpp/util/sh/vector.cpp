@@ -22,6 +22,7 @@
 #include <unistd.h>
 
 // C++ libraries
+#include <macros.hpp>
 #include <strutil.hpp>
 #include <vecutil.hpp>
 
@@ -31,15 +32,12 @@
 // third party
 #include <hedley.h>
 
-typedef enum {
-    CACHE_TEMPORARY,
-    CACHE_PERSISTENT,
-} cache_t;
+DEFINE_ENUM(cache, temporary COMMA persistent COMMA)
 
 typedef std::size_t vecsize_t;
 
 HEDLEY_NO_RETURN void die(const std::string& err);
-cache_t parseargs(int* argc, char** argv[]);
+cache parseargs(int* argc, char** argv[]);
 void conditionaldelim();
 std::pair<vecsize_t, std::string> readcache();
 void writecache(std::vector<std::string> vec);
@@ -53,10 +51,10 @@ void vecgetindex(const std::string&& indexstr);
 void vecsetindex(const std::string&& indexstr, const std::string&& value);
 void vecset(const std::string&& other);
 
-const std::unordered_map<std::string, cache_t> caches = {
-    { "t", CACHE_TEMPORARY },    { "tmp", CACHE_TEMPORARY },
-    { "temp", CACHE_TEMPORARY }, { "temporary", CACHE_TEMPORARY },
-    { "p", CACHE_PERSISTENT },   { "persistent", CACHE_PERSISTENT },
+const std::unordered_map<std::string, cache> caches = {
+    { "t", cache::temporary },    { "tmp", cache::temporary },
+    { "temp", cache::temporary }, { "temporary", cache::temporary },
+    { "p", cache::persistent },   { "persistent", cache::persistent },
 };
 const char indelim = '\0';
 const auto constexpr vecview = strutil::splitview(indelim);
@@ -92,12 +90,12 @@ int main(int argc, char* argv[])
         die("VEC_NAME cannot contain '/'");
 
     const char* prefix;
-    switch (cache) {
-        case CACHE_TEMPORARY:
+    switch (cache.value()) {
+        case cache::temporary:
             if (!(prefix = std::getenv("TMPDIR")))
                 prefix = "/tmp";
             break;
-        case CACHE_PERSISTENT:
+        case cache::persistent:
             if (!(prefix = std::getenv("XDG_CACHE_HOME"))) {
                 if (!(prefix = getenv("HOME")) && !(prefix = getpwuid(getuid())->pw_dir))
                     die("could not determine persistent cache directory");
@@ -170,9 +168,9 @@ HEDLEY_NO_RETURN void die(const std::string& err)
     std::exit(EXIT_FAILURE);
 }
 
-cache_t parseargs(int* argc, char** argv[])
+cache parseargs(int* argc, char** argv[])
 {
-    cache_t cache = CACHE_TEMPORARY;
+    cache cache = cache::temporary;
     int i;
     bool optoutdelim = false;
 
