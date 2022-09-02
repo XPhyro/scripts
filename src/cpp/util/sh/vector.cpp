@@ -39,11 +39,13 @@ typedef std::size_t vecsize_t;
 HEDLEY_NO_RETURN void die(const std::string& err);
 cache parseargs(int* argc, char** argv[]);
 void conditionaldelim();
+void shellescape(std::string& str);
 std::pair<vecsize_t, std::string> readcache();
 void writecache(std::vector<std::string> vec);
 vecsize_t readsize();
 void vecout();
 void vecnew();
+void veceval();
 void vecsize();
 void vecfront();
 void vecback();
@@ -144,6 +146,8 @@ int main(int argc, char* argv[])
             case 1:
                 if (streq(argv[0], "new"))
                     vecnew();
+                else if (streq(argv[0], "eval"))
+                    veceval();
                 else if (streq(argv[0], "size"))
                     vecsize();
                 else if (streq(argv[0], "front"))
@@ -229,29 +233,32 @@ cache parseargs(int* argc, char** argv[])
                        "   1. new\n"
                        "      1. Initialise vector.\n"
                        "      2. If already initialised, vector is reinitialised.\n"
-                       "   2. size\n"
+                       "   2. eval\n"
+                       "      1. Print vector in a format `eval`able by a POSIX shell.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   3. size\n"
                        "      1. Get vector size.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   3. front\n"
+                       "   4. front\n"
                        "      1. Get front element of vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   4. back\n"
+                       "   5. back\n"
                        "      1. Get back element of vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   5. insert [INDEX] [VALUE]\n"
+                       "   6. insert [INDEX] [VALUE]\n"
                        "      1. Insert VALUE at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   6. erase [INDEX]\n"
+                       "   7. erase [INDEX]\n"
                        "      1. Erase value at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   7. push_back [VALUE...]\n"
+                       "   8. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   8. pop_back [COUNT]?\n"
+                       "   9. pop_back [COUNT]?\n"
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
-                       "   9. swap [OTHER_VEC_NAME]\n"
+                       "  10. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
                        "      2. OTHER_VEC_NAME cannot be NULL or nullptr."
                        "      3. Vectors must have been initialised.\n"
@@ -312,6 +319,11 @@ void conditionaldelim()
 {
     if (outdelim != indelim)
         std::cout << outdelim;
+}
+
+void shellescape(std::string& str)
+{
+    strutil::replaceall(str, "'", "'\\''");
 }
 
 std::pair<vecsize_t, std::string> readcache()
@@ -565,4 +577,14 @@ void vecerase(const std::string&& indexstr)
     vec.erase(vec.begin() + index);
 
     writecache(vec);
+}
+
+void veceval()
+{
+    auto vec = readvec();
+    std::cout << "set --";
+    for (auto&& str : vec) {
+        shellescape(str);
+        std::cout << " '" << str << '\'';
+    }
 }
