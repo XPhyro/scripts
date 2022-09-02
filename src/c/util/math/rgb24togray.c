@@ -130,9 +130,6 @@ int main(int argc, char *argv[])
                     g8 = buf[i + 1];
                     b8 = buf[i + 2];
 
-                    M = MAX(r8, MAX(g8, b8));
-                    m = MIN(r8, MIN(g8, b8));
-
                     h = acos((r8 - g8 / 2.0 - b8 / 2.0) /
                              sqrt(r8 * r8 + g8 * g8 + b8 * b8 - r8 * g8 - r8 * b8 - g8 * b8));
 
@@ -156,7 +153,6 @@ int main(int argc, char *argv[])
                     b8 = buf[i + 2];
 
                     M = MAX(r8, MAX(g8, b8));
-                    m = MIN(r8, MIN(g8, b8));
 
                     v = M / 255.0;
 
