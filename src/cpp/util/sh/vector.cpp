@@ -60,8 +60,9 @@ const char indelim = '\0';
 const auto constexpr vecview = strutil::splitview(indelim);
 const std::string givenexecname = "shvector";
 
-std::string execname, cachefl;
+std::string execname, proghash, vecname, cachefl;
 char outdelim = indelim;
+const char* prefix;
 
 int main(int argc, char* argv[])
 {
@@ -75,21 +76,20 @@ int main(int argc, char* argv[])
     if (argc < 2)
         die("invalid syntax");
 
-    std::string proghash = argv[0];
-    std::string vecname = argv[1];
+    proghash = argv[0];
+    vecname = argv[1];
     argv += 2;
     argc -= 2;
 
     if (!proghash.length() || proghash == "NULL" || proghash == "nullptr")
-        die("PROG_HASH cannot be \"NULL\", \"nullptr\" or empty.");
+        die("PROG_HASH cannot be \"NULL\", \"nullptr\" or empty");
     if (proghash.contains('/'))
         die("PROG_HASH cannot contain '/'");
     if (!vecname.length() || vecname == "NULL" || vecname == "nullptr")
-        die("VEC_NAME cannot be \"NULL\", \"nullptr\" or empty.");
+        die("VEC_NAME cannot be \"NULL\", \"nullptr\" or empty");
     if (vecname.contains('/'))
         die("VEC_NAME cannot contain '/'");
 
-    const char* prefix;
     switch (cache.value()) {
         case cache::temporary:
             if (!(prefix = std::getenv("TMPDIR")))
@@ -263,9 +263,9 @@ cache parseargs(int* argc, char** argv[])
     return cache;
 }
 
-void assertexists()
+void assertexists(std::string path = cachefl)
 {
-    if (!std::filesystem::exists(cachefl))
+    if (!std::filesystem::exists(path))
         die("vector is not initialised");
 }
 
@@ -439,8 +439,24 @@ void vecsetindex(const std::string&& indexstr, const std::string&& value)
 
 void vecset(const std::string&& other)
 {
+    assertexists();
     if (other == "NULL" || other == "nullptr") {
         std::filesystem::remove(cachefl);
-        std::exit(EXIT_SUCCESS);
+    } else if (other == "") {
+        die("OTHER_VEC_NAME cannot be empty");
+    } else if (other.contains('/')) {
+        die("OTHER_VEC_NAME cannot contain '/'");
+    } else {
+
+        std::string othercachefl;
+        {
+            std::ostringstream ss;
+            ss << prefix << '/' << givenexecname << '/' << proghash;
+            ss << '/' << other;
+            othercachefl = ss.str();
+        }
+        assertexists(othercachefl);
+        std::filesystem::copy_file(
+            othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
     }
 }
