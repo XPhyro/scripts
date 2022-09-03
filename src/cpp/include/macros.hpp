@@ -65,6 +65,17 @@ public:
         return lhs.val >= rhs.val;
     }
 };
+
+#define STRING_SWITCH(VALUE)                     \
+    const std::string STRING_SWITCH_LHS = VALUE; \
+    if (false) {}
+#define STRING_CASE(VALUE)                                         \
+    else if (STRING_SWITCH_LHS == static_cast<std::string>(VALUE)) \
+    {
+#define STRING_DEFAULT \
+    else               \
+    {
+#define STRING_BREAK }
 } // namespace macros
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_MACROS */
