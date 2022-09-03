@@ -24,8 +24,7 @@ shift 2
         printf "%s\n\n" "Running command: $*"
         fillline "‾"
         printf "\n"
-        (eval "$*")
-        exit "$?"
+        exec "$@"
     fi
 }
 

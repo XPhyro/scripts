@@ -2,7 +2,7 @@
 
 eval "$(evalverbose)"
 
-"$PAD" -- '
+"$PAD" -- sh -c '
     if yay -Syu; then
         color green "All done."
     else
