@@ -150,32 +150,45 @@ int main(int argc, char* argv[])
             case 0:
                 vec::get();
                 break;
-            case 1:
-                if (streq(argv[0], "new"))
-                    vec::init();
-                else if (streq(argv[0], "eval"))
-                    vec::eval();
-                else if (streq(argv[0], "size"))
-                    vec::size();
-                else if (streq(argv[0], "front"))
-                    vec::front();
-                else if (streq(argv[0], "back"))
-                    vec::back();
-                else if (streq(argv[0], "pop_back"))
-                    vec::pop_back("1");
-                else
-                    vec::get_index(argv[0]);
-                break;
-            case 2:
-                if (streq(argv[0], "="))
-                    vec::set(argv[1]);
-                else if (streq(argv[0], "pop_back"))
-                    vec::pop_back(argv[1]);
-                else if (streq(argv[0], "swap"))
-                    vec::swap(argv[1]);
-                else if (streq(argv[0], "erase"))
-                    vec::erase(argv[1]);
-                break;
+            case 1: {
+                STRING_SWITCH(argv[0])
+                STRING_CASE("new")
+                vec::init();
+                STRING_BREAK
+                STRING_CASE("eval")
+                vec::eval();
+                STRING_BREAK
+                STRING_CASE("size")
+                vec::size();
+                STRING_BREAK
+                STRING_CASE("front")
+                vec::front();
+                STRING_BREAK
+                STRING_CASE("back")
+                vec::back();
+                STRING_BREAK
+                STRING_CASE("pop_back")
+                vec::pop_back("1");
+                STRING_BREAK
+                STRING_DEFAULT
+                vec::get_index(argv[0]);
+                STRING_BREAK
+            } break;
+            case 2: {
+                STRING_SWITCH(argv[0])
+                STRING_CASE("=")
+                vec::set(argv[1]);
+                STRING_BREAK
+                STRING_CASE("pop_back")
+                vec::pop_back(argv[1]);
+                STRING_BREAK
+                STRING_CASE("swap")
+                vec::swap(argv[1]);
+                STRING_BREAK
+                STRING_CASE("erase")
+                vec::erase(argv[1]);
+                STRING_BREAK
+            } break;
             case 3:
                 if (streq(argv[1], "="))
                     vec::set_index(argv[0], argv[2]);
