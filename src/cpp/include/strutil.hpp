@@ -87,10 +87,10 @@ void replaceall(std::string& str, const std::string&& from, const std::string&& 
 
 constexpr uint32_t crc32(const std::string_view& str)
 {
-    uint32_t crc = 0xffffffff;
+    uint32_t crc = ~0;
     for (auto&& c : str)
-        crc = (crc >> 8) ^ consts::zlib_crc_table[(crc ^ c) & 0xff];
-    return crc ^ 0xffffffff;
+        crc = (crc >> 8) ^ consts::zlib_crc_table[(crc ^ c) & ~0];
+    return crc ^ ~0;
 }
 } // namespace strutil
 
