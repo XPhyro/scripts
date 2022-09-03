@@ -241,7 +241,7 @@ bool stest(const char *path)
     return !optinvert;
 }
 
-inline void printhelp(void)
+void printhelp(void)
 {
     fputs(
         "Usage: stest [OPTION]... [PATH]...\n"
