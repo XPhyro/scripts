@@ -330,8 +330,8 @@ export C_INCLUDE_PATH
 CXX="g++"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=11 \
-          -Wno-unused-parameter -Wno-unused-result -Wswitch-default \
-          -Wimplicit-fallthrough=5 -Wno-sign-compare -Wstringop-overflow=4 \
+          -Wswitch-default \
+          -Wimplicit-fallthrough=5 -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
           -fpermissive \
