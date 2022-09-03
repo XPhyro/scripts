@@ -2,11 +2,14 @@
 #define HEADER_SCRIPTS_CXX_STRUTIL
 
 #include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <ranges>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <consts.hpp>
 
 namespace strutil
 {
@@ -80,6 +83,14 @@ void replaceall(std::string& str, const std::string&& from, const std::string&& 
     newstr.append(str, lastpos, str.length() - lastpos);
 
     str.swap(newstr);
+}
+
+constexpr uint32_t crc32(const std::string_view& str)
+{
+    uint32_t crc = 0xffffffff;
+    for (auto&& c : str)
+        crc = (crc >> 8) ^ consts::zlib_crc_table[(crc ^ c) & 0xff];
+    return crc ^ 0xffffffff;
 }
 } // namespace strutil
 
