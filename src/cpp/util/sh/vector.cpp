@@ -23,6 +23,7 @@
 
 // C++ libraries
 #include <macros.hpp>
+#include <nullable.hpp>
 #include <strutil.hpp>
 #include <sysutil.hpp>
 #include <vecutil.hpp>
@@ -75,7 +76,7 @@ const auto constexpr vecview = strutil::splitview(indelim);
 const std::string givenexecname = "vector";
 
 std::string execname, proghash, vecname, cachefl;
-char outdelim = indelim;
+nullable<char> outdelim(indelim);
 const char* prefix;
 bool opthash = false;
 
@@ -219,7 +220,6 @@ cache parse_args(int* argc, char** argv[])
 {
     cache cache = cache::temporary;
     int i;
-    bool optoutdelim = false;
     int optquiet = 0;
 
     while ((i = getopt(*argc, *argv, "c:Hhnqz0")) != -1) {
@@ -307,7 +307,6 @@ cache parse_args(int* argc, char** argv[])
                        "  -0        force output delimiter to be null (\\0)\n";
                 std::exit(EXIT_SUCCESS);
             case 'n':
-                optoutdelim = true;
                 outdelim = '\n';
                 break;
             case 'q':
@@ -321,7 +320,6 @@ cache parse_args(int* argc, char** argv[])
                 break;
             case 'z':
             case '0':
-                optoutdelim = true;
                 outdelim = '\0';
                 break;
             default:
@@ -333,7 +331,7 @@ cache parse_args(int* argc, char** argv[])
     *argv += optind;
     *argc -= optind;
 
-    if (!optoutdelim && isatty(fileno(stdout)))
+    if (!outdelim && isatty(fileno(stdout)))
         outdelim = '\n';
 
     return cache;
