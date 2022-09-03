@@ -67,7 +67,7 @@ std::vector<std::string> constexpr split(std::vector<std::string>& tokens, const
     return tokens;
 }
 
-void replaceall(std::string& str, const std::string&& from, const std::string&& to)
+constexpr void replaceall(std::string& str, const std::string&& from, const std::string&& to)
 {
     std::string newstr;
     newstr.reserve(str.length());
