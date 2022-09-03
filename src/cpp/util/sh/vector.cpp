@@ -45,7 +45,7 @@ namespace vec
 {
 vecsize_t parse_index(const std::string& indexstr);
 std::vector<std::string> parse();
-std::string build_cache_file(const std::string& vecname);
+std::string build_cache_path(const std::string& vecname);
 std::pair<vecsize_t, std::string> read();
 void write(std::vector<std::string> vec);
 vecsize_t read_size();
@@ -77,6 +77,7 @@ const std::string givenexecname = "vector";
 std::string execname, proghash, vecname, cachefl;
 char outdelim = indelim;
 const char* prefix;
+bool opthash = false;
 
 int main(int argc, char* argv[])
 {
@@ -103,6 +104,11 @@ int main(int argc, char* argv[])
         die("VEC_NAME cannot be \"NULL\", \"nullptr\" or empty");
     if (vecname.contains('/'))
         die("VEC_NAME cannot contain '/'");
+
+    if (opthash) {
+        strutil::hashstr_in_place(proghash);
+        strutil::hashstr_in_place(vecname);
+    }
 
     switch (cache.value()) {
         case cache::temporary:
@@ -216,7 +222,7 @@ cache parse_args(int* argc, char** argv[])
     bool optoutdelim = false;
     int optquiet = 0;
 
-    while ((i = getopt(*argc, *argv, "c:hnqz0")) != -1) {
+    while ((i = getopt(*argc, *argv, "c:Hhnqz0")) != -1) {
         switch (i) {
             case 'c':
                 try {
@@ -225,6 +231,9 @@ cache parse_args(int* argc, char** argv[])
                     std::cerr << execname << ": unknown cache type " << optarg << '\n';
                     std::exit(EXIT_FAILURE);
                 }
+                break;
+            case 'H':
+                opthash = true;
                 break;
             case 'h':
                 std::cout
@@ -290,6 +299,7 @@ cache parse_args(int* argc, char** argv[])
                        "\n"
                        "Options\n"
                        "  -c TYPE   set cache type. must be one of {{t, tmp, temp, temporary}, {p, persistent}}. default is temporary.\n"
+                       "  -H        hash PROG_HASH, VEC_NAME and OTHER_VEC_NAME when writing to cache. note that std::hash is used for hashing, so the resultant hash is not cryptographically secure, and the contents of the vectors are not encrypted.\n"
                        "  -h        display this help and exit\n"
                        "  -n        force output delimiter to be newline (\\n)\n"
                        "  -q        if given once, do not use stdout; if given twice or more, do not use stdout or stderr\n"
@@ -420,13 +430,13 @@ std::vector<std::string> parse()
     return vec;
 }
 
-std::string build_cache_file(const std::string& vecname)
+std::string build_cache_path(const std::string& vecname)
 {
     std::string cachefl;
     {
         std::ostringstream ss;
         ss << prefix << '/' << givenexecname << '/' << proghash;
-        ss << '/' << vecname;
+        ss << '/' << (!opthash ? vecname : strutil::hashstr(vecname));
         cachefl = ss.str();
     }
     return cachefl;
@@ -530,7 +540,7 @@ void set(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        std::string othercachefl = build_cache_file(other);
+        std::string othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         std::filesystem::copy_file(
             othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
@@ -547,7 +557,7 @@ void swap(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        auto othercachefl = build_cache_file(other);
+        auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         sysutil::swapfile(cachefl, othercachefl);
     }
