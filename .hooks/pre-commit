@@ -8,6 +8,7 @@ git diff --cached --name-only \
         flcontent="$(cat -- "$realfl")"
         (cd "$(dirname -- "$realfl")" \
              && clang-format -i --style=file -- "$realfl" \
+             && [ "$GIT_PRE_COMMIT_NO_ADD" -ne 0 ] \
              && git add -- "$realfl"
         )
         printf "%s\n" "$flcontent" | cmp -s -- "$realfl" \
