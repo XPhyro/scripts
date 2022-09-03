@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
     size_t bufsize;
     const divn_t divs[8] = {
         { .div = 3, .name = "Fizz" },      { .div = 5, .name = "Buzz" },
-        { .div = 7, .name = "Wizz" },      { .div = 9, .name = "Triss" },
-        { .div = 11, .name = "Yennefer" }, { .div = 13, .name = "Mario" },
-        { .div = 15, .name = "Claire" },   { .div = 17, .name = "Peach" },
+        { .div = 7, .name = "Wizz" },      { .div = 11, .name = "Triss" },
+        { .div = 13, .name = "Yennefer" }, { .div = 17, .name = "Mario" },
+        { .div = 19, .name = "Claire" },   { .div = 23, .name = "Peach" },
     };
     const char *execname = argv[0];
 
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
     buf = NULL;
     bufsize = 0;
-    for (i = 1; i < argc; i++) {
+    for (i = 0; i < argc; i++) {
         buf =
             vstrcatbuf(buf, bufsize, 3, "given string \"", argv[i], "\" is not a valid number.\n");
         num = astrtoull(argv[i], buf);
