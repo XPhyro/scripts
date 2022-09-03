@@ -283,7 +283,7 @@ cache parseargs(int* argc, char** argv[])
                 break;
             case 'q':
                 if (optquiet < 2) {
-                    if (optquiet == 0)
+                    if (!optquiet)
                         std::cout.setstate(std::ios_base::failbit);
                     else
                         std::cerr.setstate(std::ios_base::failbit);
