@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-printf "%s\n" yt-dlp youtube-dl | while IFS= read -r i; do
-    command -v -- "$i" > /dev/null 2>&1 && exec "$i" "$@"
+for i in yt-dlp youtube-dl; do
+    command -v -- "$i" > /dev/null 2>&1 \
+        && exec "$i" "$@"
 done
 
 exit 1
