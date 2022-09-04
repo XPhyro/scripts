@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     }
 
     try {
-        std::cout << colors.at(strutil::makelower(argv[1]));
+        std::cout << colors.at(xph::str::makelower(argv[1]));
     } catch (const std::out_of_range& e) {
         std::cerr << execname << ": incorrect color given. color must be one of: ";
 

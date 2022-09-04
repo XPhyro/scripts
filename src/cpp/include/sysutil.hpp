@@ -12,7 +12,7 @@
 
 #include <strutil.h>
 
-namespace sysutil
+namespace xph::sys
 {
 void swapfile(std::string& path1, std::string& path2)
 {
@@ -32,6 +32,6 @@ void swapfile(std::string& path1, std::string& path2)
     close(tmpfd);
     free(tmppath);
 }
-} // namespace sysutil
+} // namespace xph::sys
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_SYSUTIL */

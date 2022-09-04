@@ -7,21 +7,21 @@
     struct _##NAME##_definition {       \
         enum type { VALS };             \
     };                                  \
-    typedef macros::safe_enum<_##NAME##_definition> NAME
+    typedef xph::macros::safe_enum<_##NAME##_definition> NAME
 
 #define DEFINE_TYPED_ENUM(TYPE, NAME, VALS) \
     struct _##NAME##_definition {           \
         enum type { VALS };                 \
     };                                      \
-    typedef macros::safe_enum<_##NAME##_definition, TYPE> NAME
+    typedef xph::macros::safe_enum<_##NAME##_definition, TYPE> NAME
 
 #define DEFINE_ENUM(NAME, VALS)   \
     struct _##NAME##_definition { \
         enum type { VALS };       \
     };                            \
-    typedef macros::safe_enum<_##NAME##_definition, int> NAME
+    typedef xph::macros::safe_enum<_##NAME##_definition, int> NAME
 
-namespace macros
+namespace xph::macros
 {
 template <typename def, typename inner = typename def::type>
 class safe_enum : public def {

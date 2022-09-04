@@ -14,7 +14,7 @@
 
 #include <consts.hpp>
 
-namespace strutil
+namespace xph::str
 {
 std::unique_ptr<std::string> getlower(const std::string str)
 {
@@ -122,6 +122,6 @@ void hashstr_in_place(std::string& str)
 
     ss >> str;
 }
-} // namespace strutil
+} // namespace xph::str
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_STRUTIL */

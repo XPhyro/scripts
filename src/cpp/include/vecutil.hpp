@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace vecutil
+namespace xph::vec
 {
 template <typename T>
 std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T& val)
@@ -33,6 +33,6 @@ std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T&&
     vec[idx] = val;
     return std::move(vec);
 }
-} // namespace vecutil
+} // namespace xph::vec
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_VECUTIL */

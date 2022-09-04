@@ -3,6 +3,8 @@
 
 #include <ostream>
 
+namespace xph
+{
 template <typename T>
 class nullable {
 public:
@@ -58,5 +60,6 @@ private:
     bool is_null = true;
     T value;
 };
+} // namespace xph
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_NULLABLE */

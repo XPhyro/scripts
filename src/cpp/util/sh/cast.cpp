@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
             case 'h':
                 help();
             default:
-                invalidargs(consts::str::empty);
+                invalidargs(xph::consts::str::empty);
         }
     }
 
@@ -59,11 +59,11 @@ int main(int argc, char* argv[])
     argc -= optind;
 
     if (argc < 2)
-        invalidargs(consts::str::empty);
+        invalidargs(xph::consts::str::empty);
 
     try {
-        fromtype = types.at(fromtypename = strutil::makelower(std::string(argv[0])));
-        totype = types.at(totypename = strutil::makelower(std::string(argv[1])));
+        fromtype = types.at(fromtypename = xph::str::makelower(std::string(argv[0])));
+        totype = types.at(totypename = xph::str::makelower(std::string(argv[1])));
     } catch (const std::out_of_range& e) {
         invalidargs("invalid type given");
     }

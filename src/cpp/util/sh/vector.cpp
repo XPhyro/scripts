@@ -72,11 +72,11 @@ const std::unordered_map<std::string, cache> caches = {
     { "p", cache::persistent },   { "persistent", cache::persistent },
 };
 const char indelim = '\0';
-const auto constexpr vecview = strutil::splitview(indelim);
+const auto constexpr vecview = xph::str::splitview(indelim);
 const std::string givenexecname = "vector";
 
 std::string execname, proghash, vecname, cachefl;
-nullable<char> outdelim(indelim);
+xph::nullable<char> outdelim(indelim);
 const char* prefix;
 bool opthash = false;
 
@@ -107,8 +107,8 @@ int main(int argc, char* argv[])
         die("VEC_NAME cannot contain '/'");
 
     if (opthash) {
-        strutil::hashstr_in_place(proghash);
-        strutil::hashstr_in_place(vecname);
+        xph::str::hashstr_in_place(proghash);
+        xph::str::hashstr_in_place(vecname);
     }
 
     switch (cache.value()) {
@@ -226,7 +226,7 @@ cache parse_args(int* argc, char** argv[])
         switch (i) {
             case 'c':
                 try {
-                    cache = caches.at(strutil::makelower(optarg));
+                    cache = caches.at(xph::str::makelower(optarg));
                 } catch (const std::out_of_range& e) {
                     std::cerr << execname << ": unknown cache type " << optarg << '\n';
                     std::exit(EXIT_FAILURE);
@@ -351,7 +351,7 @@ void conditional_delim()
 
 void shell_escape(std::string& str)
 {
-    strutil::replaceall(str, "'", "'\\''");
+    xph::str::replaceall(str, "'", "'\\''");
 }
 
 namespace vec
@@ -424,7 +424,7 @@ std::vector<std::string> parse()
     const auto& [size, buf] = read();
     std::vector<std::string> vec;
     vec.reserve(size);
-    strutil::split(vec, buf, indelim);
+    xph::str::split(vec, buf, indelim);
     return vec;
 }
 
@@ -434,7 +434,7 @@ std::string build_cache_path(const std::string& vecname)
     {
         std::ostringstream ss;
         ss << prefix << '/' << givenexecname << '/' << proghash;
-        ss << '/' << (!opthash ? vecname : strutil::hashstr(vecname));
+        ss << '/' << (!opthash ? vecname : xph::str::hashstr(vecname));
         cachefl = ss.str();
     }
     return cachefl;
@@ -524,7 +524,7 @@ void set_index(const std::string&& indexstr, const std::string&& value)
         die("index is out of range");
 
     // TODO: reuse file stream
-    write(vecutil::setindex(parse(), index, value));
+    write(xph::vec::setindex(parse(), index, value));
 }
 
 void set(const std::string&& other)
@@ -557,7 +557,7 @@ void swap(const std::string&& other)
     } else {
         auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
-        sysutil::swapfile(cachefl, othercachefl);
+        xph::sys::swapfile(cachefl, othercachefl);
     }
 }
 
