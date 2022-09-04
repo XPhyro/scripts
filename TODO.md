@@ -51,6 +51,7 @@
 - Automate [PulseAudio/PipeWire-Pulse network
   streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
   with optional pair configuration over `ssh`.
+- Merge `*maps` into a single C/C++ program.
 
 ## Refactoring / Rewriting / Reworking
 - Rewrite `lck` and other locking-related scripts to be more sturdy. The new
