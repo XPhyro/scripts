@@ -2,8 +2,24 @@
 
 eval "$(evalverbose)"
 
+exec 3>&1
+
 pactl list sources \
     | grep -F '	Monitor of Sink: ' \
-    | grep -vF "$(voldefsink)" \
-    | grep -vF -m 1 "	Monitor of Sink: n/a" \
-    | cut -d' ' -f4
+    | cut -d' ' -f4 \
+    | grep -vFx 'n/a' \
+    | grep -vFx -- "$(voldefsink)" \
+    | while IFS= read -r i; do
+        printf "%s\n" "$VOLAUXSINK_PRIORITISED_SOURCES" | grep -Fxq -- "$i" && {
+            printf "%s\n" "$i" >&3
+            exit 0
+        }
+        printf "%s\n" "$i"
+    done | while IFS= read -r i; do
+        printf "%s\n" "$VOLAUXSINK_IGNORED_SOURCES" | grep -Fxq -- "$i" || {
+            printf "%s\n" "$i" >&3
+            exit 0
+        }
+    done
+
+exit 1
