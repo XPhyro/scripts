@@ -20,3 +20,5 @@ headsetcontrol -s "$val" || {
 }
 
 printf "%s" "$val" > "$stfl"
+
+[ -n "$TGLSIDETONE_POLYBAR_HOOK" ] && polybar-msg action "$TGLSIDETONE_POLYBAR_HOOK"
