@@ -2,21 +2,21 @@
 
 eval "$(evalverbose)"
 
-cfgdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/headsetcontrol"
+cfgdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/headsetcontrol"
 mkdir -p -- "$cfgdir"
-fl="$cfgdir/sidetone"
+stfl="$cfgdir/sidetone"
 
-[ "$#" -eq 0 ] && exec tr -d '\n' < "$fl"
+[ "$#" -eq 0 ] && exec tr -d '\n' < "$stfl"
 
-case "$(cat -- "$fl")" in
+case "$(cat -- "$stfl")" in
     "$1") val=0;;
     *) val="$1";;
 esac
 
 headsetcontrol -s "$val" || {
     ec="$?"
-    printf "%s" -2 > "$fl"
+    printf "%s" -2 > "$stfl"
     exit "$ec"
 }
 
-printf "%s" "$val" > "$fl"
+printf "%s" "$val" > "$stfl"
