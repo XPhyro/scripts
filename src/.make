@@ -49,9 +49,17 @@ install() {
     )
         
     (
+        cxxversion="$("$CXX" --version)"
+        [ "$CXX" = "g++" ] \
+            && [ "$(printf "%s\n" "$cxxversion" | head -n 1 | sed 's/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -lt 12 ] \
+            && {
+            printf "%s\n" "Not attempting to compile C++ programs as GCC version is less than 12."
+            exit 0
+        }
+
         cd cpp
 
-        "$CXX" --version
+        printf "%s\n" "$cxxversion"
 
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
