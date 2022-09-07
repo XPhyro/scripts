@@ -3,4 +3,4 @@
 
 eval "$(evalverbose)"
 
-pactl set-sink-volume "$(volauxsink)" "$@"
+exec pactl set-sink-volume "$(volauxsink)" "$@"

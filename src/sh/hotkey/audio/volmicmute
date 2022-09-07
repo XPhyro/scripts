@@ -3,4 +3,4 @@
 
 eval "$(evalverbose)"
 
-pactl set-source-mute "$(voldefsource)" toggle
+exec pactl set-source-mute "$(voldefsource)" toggle

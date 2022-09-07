@@ -2,4 +2,4 @@
 
 eval "$(evalverbose)"
 
-awk -- '{print strftime("%a %Y-%m-%d %H:%M:%S", $1)}' "$@"
+exec awk -- '{print strftime("%a %Y-%m-%d %H:%M:%S", $1)}' "$@"

@@ -9,4 +9,4 @@ for i; do
     done
 done
 
-notify-send -u critical -t 0 "psnotif" "Specified processes became absent on $(date)."
+exec notify-send -u critical -t 0 "psnotif" "Specified processes became absent on $(date)."

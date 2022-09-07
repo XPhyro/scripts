@@ -3,4 +3,4 @@
 
 eval "$(evalverbose)"
 
-pactl set-sink-mute "$(volauxsink)" toggle
+exec pactl set-sink-mute "$(volauxsink)" toggle
