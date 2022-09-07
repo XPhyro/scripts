@@ -100,6 +100,8 @@ unittest() {
         trap "rm -f -- '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
 
         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
+            command -v -- "$cmd" > /dev/null 2>&1 || continue
+
             find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
                 testdir="$cmd/$testname"
 
