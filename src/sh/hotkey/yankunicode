@@ -10,5 +10,5 @@ chosen="$(
         | sed "s/ .*//"
 )"
 [ -z "$chosen" ] && exit 0
-lckget clplog
+lck -rq clplog
 printf "%s" "$chosen" | tr -d '\n' | xclip -se c

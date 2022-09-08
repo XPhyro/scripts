@@ -3,4 +3,4 @@
 
 eval "$(evalverbose)"
 
-lckget clplog && xclip "$1" -se c -t "$(file -b --mime-type -- "$1")"
+lck -rq clplog && xclip "$1" -se c -t "$(file -b --mime-type -- "$1")"

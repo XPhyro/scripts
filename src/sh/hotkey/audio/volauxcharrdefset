@@ -10,8 +10,7 @@
 
 eval "$(evalverbose)"
 
-lckdir="/tmp/${0##*/}-lckdir"
-lck "$lckdir"
+lck -rq volauxcharrdefset
 
 dir="$1"
 fallback="$2"
@@ -52,4 +51,4 @@ esac
     pactl set-sink-volume "$defsink" "$defvol"
 }
 
-ulck "$lckdir"
+lck -uq volauxcharrdefset

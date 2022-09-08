@@ -4,8 +4,7 @@
 eval "$(evalverbose)"
 
 cleanexit() {
-    # shellcheck disable=SC2154
-    ulck "$lckdir"
+    lck -uq -- update
     exit 0
 }
 
@@ -13,22 +12,19 @@ log() {
     printf "[update]: %s\n" "$1"
 }
 
-eval "$(getpath -due -- upabllck lckdir 1 "[ERROR]: getpath -du -- failed, aborting.")"
 eval "$(getpath -fe  -- upabl    lst    1 "[ERROR]: getpath -f -- failed, aborting." )"
 
 for i; do
     if [ "$i" = "-u" ] || [ "$i" = "--unlock" ]; then
-        cleanexit
+        cleanexit "$0"
     fi
 done
 
 log "Acquiring lock."
 
-trap cleanexit INT TERM HUP QUIT
+trap 'cleanexit "$0"' INT TERM HUP QUIT
 
-lck "$lckdir"
-
-# yay -Syu # --noconfirm
+lck -rq -- update
 
 log "Reading updateables."
 
@@ -62,7 +58,7 @@ while IFS= read -r i; do
     : $((cmdcount += 1))
 done < "$lst"
 
-ulck "$lckdir"
+lck -uq -- update
 
 log "Done."
 

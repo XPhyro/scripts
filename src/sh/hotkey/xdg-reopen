@@ -12,5 +12,5 @@ sel="$(
 
 [ -z "$sel" ] && exit 0
 
-lckget xdgopenlog
+lck -rq xdgopenlog
 exec xdg-open "${sel#*;  }"

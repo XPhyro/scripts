@@ -10,17 +10,15 @@ eval "$(evalverbose)"
 
 logfl="$(readlink -m -- "$(getpath -f -- clplog)")"
 bakdir="$(readlink -m -- "$(getpath -ds -- clplogbak)")"
-eval "$(getpath -du -- clploglck lckdir 1 "[ERROR]: getpath -f -- failed, aborting.")"
 lastclp="$(xclip -o -se c)"
 oldclp="$lastclp"
 
-# shellcheck disable=SC2154
-rm -rf -- "$lckdir"
+ulck -uq clplog
 
 while true; do
     clipnotify
 
-    rm -r -- "$lckdir" 2> /dev/null && continue
+    ulck -uq clplog && continue
 
     clp="$(xclip -o -se c)"
     [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue

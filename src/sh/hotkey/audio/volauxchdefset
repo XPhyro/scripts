@@ -3,12 +3,11 @@
 
 eval "$(evalverbose)"
 
-lckdir="/tmp/${0##*/}-lckdir"
-lck "$lckdir"
+lck -rq volauxchdefset
 
 sink="$(voldefsink)"
 vol="$(volgetsinkraw "$sink")"
 pactl set-sink-volume "$(volauxsink)" "$@"
 pactl set-sink-volume "$sink" "$vol"
 
-ulck "$lckdir"
+ulck -uq volauxchdefset
