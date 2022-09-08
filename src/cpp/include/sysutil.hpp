@@ -1,10 +1,13 @@
 #ifndef HEADER_SCRIPTS_CXX_SYSUTIL
 #define HEADER_SCRIPTS_CXX_SYSUTIL
 
+#include <algorithm>
 #include <cerrno>
+#include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <set>
 #include <string>
 
 #include <system_error>
@@ -31,6 +34,12 @@ void swapfile(std::string& path1, std::string& path2)
 
     close(tmpfd);
     free(tmppath);
+}
+
+void signals(std::set<int> signals, void (*func)(int))
+{
+    for (auto&& sig : signals)
+        signal(sig, func);
 }
 } // namespace xph::sys
 
