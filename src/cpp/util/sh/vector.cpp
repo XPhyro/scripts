@@ -1,5 +1,6 @@
 // C++
 #include <algorithm>
+#include <csignal>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
@@ -29,17 +30,20 @@
 #include <vecutil.hpp>
 
 // C libraries
+#include <dbutil.h>
 #include <strutil.h>
-
-// third party
-#include <hedley.h>
 
 DEFINE_ENUM(cache, temporary COMMA persistent COMMA);
 
 typedef std::size_t vecsize_t;
 
-HEDLEY_NO_RETURN void die(const std::string& err);
+std::string lckhash;
+
+void lock_database(std::string hash = lckhash);
+void unlock_database(std::string hash = lckhash);
+[[noreturn]] void die(const std::string& err);
 cache parse_args(int* argc, char** argv[]);
+void handle_sig(int sig);
 void conditional_delim();
 void shell_escape(std::string& str);
 namespace vec
@@ -78,7 +82,7 @@ const std::string givenexecname = "vector";
 std::string execname, proghash, vecname, cachefl;
 xph::nullable<char> outdelim(indelim);
 const char* prefix;
-bool opthash = false;
+bool opthash = false, unlockondie = false;
 
 int main(int argc, char* argv[])
 {
@@ -113,21 +117,22 @@ int main(int argc, char* argv[])
 
     switch (cache.value()) {
         case cache::temporary:
-            if (!(prefix = std::getenv("TMPDIR")))
-                prefix = "/tmp";
+            prefix = temphome();
             break;
         case cache::persistent:
-            if (!(prefix = std::getenv("XDG_CACHE_HOME"))) {
-                if (!(prefix = getenv("HOME")) && !(prefix = getpwuid(getuid())->pw_dir))
-                    die("could not determine persistent cache directory");
-                std::ostringstream ss;
-                ss << prefix << "/.cache";
-                prefix = ss.str().c_str();
-            }
+            prefix = cachehome();
             break;
         default:
             die("unknown cache type");
     }
+
+    lckhash = proghash + '-' + vecname;
+    lock_database();
+    unlockondie = true;
+    signal(SIGINT, handle_sig);
+    signal(SIGTERM, handle_sig);
+    signal(SIGQUIT, handle_sig);
+    signal(SIGHUP, handle_sig);
 
     {
         std::string cachedir;
@@ -207,12 +212,34 @@ int main(int argc, char* argv[])
         }
     }
 
+    unlock_database();
+
     return EXIT_SUCCESS;
 }
 
-HEDLEY_NO_RETURN void die(const std::string& err)
+void lock_database(std::string hash)
+{
+    if (!lckdb(hash.c_str(), LCKDB_TEMP)) {
+        unlockondie = false;
+        die("could not lock database");
+    }
+}
+
+void unlock_database(std::string hash)
+{
+    if (!ulckdb(hash.c_str(), LCKDB_TEMP)) {
+        unlockondie = false;
+        die("could not unlock database");
+    }
+}
+
+[[noreturn]] void die(const std::string& err)
 {
     std::cerr << execname << ": " << err << '\n';
+
+    if (unlockondie)
+        unlock_database();
+
     std::exit(EXIT_FAILURE);
 }
 
@@ -335,6 +362,12 @@ cache parse_args(int* argc, char** argv[])
         outdelim = '\n';
 
     return cache;
+}
+
+void handle_sig([[maybe_unused]] int sig)
+{
+    unlock_database();
+    std::exit(EXIT_FAILURE);
 }
 
 void assertexists(std::string path = cachefl)
@@ -538,10 +571,13 @@ void set(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        std::string othercachefl = build_cache_path(other);
+        lock_database(proghash + '-' + other);
+        auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         std::filesystem::copy_file(
             othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
+        unlock_database(proghash + '-' +
+                        other); // TODO: incorporate this into signal handling via a locks vector
     }
 }
 
@@ -555,9 +591,12 @@ void swap(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
+        lock_database(proghash + '-' + other);
         auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         xph::sys::swapfile(cachefl, othercachefl);
+        unlock_database(proghash + '-' +
+                        other); // TODO: incorporate this into signal handling via a locks vector
     }
 }
 

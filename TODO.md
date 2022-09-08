@@ -27,9 +27,6 @@
   numbers.
 - Support arbitrary counts of warnings and configurations in `warnbattery`.
 - In `tglapp`, support terminating the X window instead of the run process.
-- Lock program/vector databases before usage in `vector` using an atomic method
-  (such as directory creation).
-  - Perhaps add some functions to the C headers for this purpose.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
