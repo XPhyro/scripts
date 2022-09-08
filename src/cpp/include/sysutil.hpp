@@ -36,7 +36,7 @@ void swapfile(std::string& path1, std::string& path2)
     free(tmppath);
 }
 
-void signals(std::set<int> signals, void (*func)(int))
+void signals(std::set<int> signals, void (*func)(int)) noexcept
 {
     for (auto&& sig : signals)
         signal(sig, func);
