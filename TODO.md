@@ -12,6 +12,8 @@
 ## Bugs
 - `yank` stops working after the first usage. The issue is probably caused by
   `lck` and/or `ulck`.
+- `acpihandler` does not handle already-off keyboard/touchpad correctly on PROG1
+  event.
 
 ## Features
 - Add the ability to have default arguments via environment variables in
