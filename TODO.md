@@ -27,6 +27,11 @@
   numbers.
 - Support arbitrary counts of warnings and configurations in `warnbattery`.
 - In `tglapp`, support terminating the X window instead of the run process.
+- `dbutil.h`:
+  1. [ ] Create an `awaitdb` function using `inotify` if available and
+     `nanosleep` otherwise.
+  2. [ ] Create a `lckdb` alternative that integrates `awaitdb` and retries
+     until lock is acquired.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
