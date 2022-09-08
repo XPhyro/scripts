@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-eval "$(evalverbose)"
-exec ulck "$(getpath -du -- "$1lck")"
