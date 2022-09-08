@@ -9,6 +9,7 @@
 #include <iostream>
 #include <limits>
 #include <ranges>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -38,9 +39,13 @@ DEFINE_ENUM(cache, temporary COMMA persistent COMMA);
 typedef std::size_t vecsize_t;
 
 std::string lckhash;
+std::set<std::string> acquiredlocks;
 
-void lock_database(std::string hash = lckhash);
-void unlock_database(std::string hash = lckhash);
+void lock_database(std::string& hash = lckhash);
+void lock_database(std::string&& hash);
+void unlock_database(std::string& hash = lckhash);
+void unlock_database(std::string&& hash);
+void unlock_all_databases();
 [[noreturn]] void die(const std::string& err);
 cache parse_args(int* argc, char** argv[]);
 void handle_sig(int sig);
@@ -75,14 +80,15 @@ const std::unordered_map<std::string, cache> caches = {
     { "temp", cache::temporary }, { "temporary", cache::temporary },
     { "p", cache::persistent },   { "persistent", cache::persistent },
 };
-const char indelim = '\0';
+const constexpr char indelim = '\0';
 const auto constexpr vecview = xph::str::splitview(indelim);
 const std::string givenexecname = "vector";
+const constexpr lckdb_t lcktype = LCKDB_TEMP;
 
 std::string execname, proghash, vecname, cachefl;
 xph::nullable<char> outdelim(indelim);
 const char* prefix;
-bool opthash = false, unlockondie = false;
+bool opthash = false;
 
 int main(int argc, char* argv[])
 {
@@ -128,7 +134,6 @@ int main(int argc, char* argv[])
 
     lckhash = proghash + '-' + vecname;
     lock_database();
-    unlockondie = true;
     signal(SIGINT, handle_sig);
     signal(SIGTERM, handle_sig);
     signal(SIGQUIT, handle_sig);
@@ -217,19 +222,37 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-void lock_database(std::string hash)
+void lock_database(std::string& hash)
 {
-    if (!lckdb(hash.c_str(), LCKDB_TEMP)) {
-        unlockondie = false;
+    if (!lckdb(hash.c_str(), lcktype))
         die("could not lock database");
-    }
+
+    acquiredlocks.insert(hash);
 }
 
-void unlock_database(std::string hash)
+inline void lock_database(std::string&& hash)
 {
-    if (!ulckdb(hash.c_str(), LCKDB_TEMP)) {
-        unlockondie = false;
+    lock_database(hash);
+}
+
+void unlock_database(std::string& hash)
+{
+    if (!ulckdb(hash.c_str(), lcktype))
         die("could not unlock database");
+
+    acquiredlocks.erase(hash);
+}
+
+void unlock_database(std::string&& hash)
+{
+    unlock_database(hash);
+}
+
+void unlock_all_databases()
+{
+    for (auto&& lock : acquiredlocks) {
+        if (!ulckdb(lock.c_str(), lcktype))
+            std::cerr << execname << ": could not unlock database " << lock << '\n';
     }
 }
 
@@ -237,8 +260,7 @@ void unlock_database(std::string hash)
 {
     std::cerr << execname << ": " << err << '\n';
 
-    if (unlockondie)
-        unlock_database();
+    unlock_all_databases();
 
     std::exit(EXIT_FAILURE);
 }
@@ -316,7 +338,7 @@ cache parse_args(int* argc, char** argv[])
                        "      3. Vector must have been initialised.\n"
                        "  10. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
-                       "      2. OTHER_VEC_NAME cannot be NULL or nullptr."
+                       "      2. OTHER_VEC_NAME cannot be NULL or nullptr.\n"
                        "      3. Vectors must have been initialised.\n"
                        "\n"
                        "PROG_HASH cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
@@ -366,7 +388,7 @@ cache parse_args(int* argc, char** argv[])
 
 void handle_sig([[maybe_unused]] int sig)
 {
-    unlock_database();
+    unlock_all_databases();
     std::exit(EXIT_FAILURE);
 }
 
@@ -571,13 +593,13 @@ void set(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        lock_database(proghash + '-' + other);
+        auto otherlckhash = proghash + '-' + other;
+        lock_database(otherlckhash);
         auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         std::filesystem::copy_file(
             othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
-        unlock_database(proghash + '-' +
-                        other); // TODO: incorporate this into signal handling via a locks vector
+        unlock_database(otherlckhash);
     }
 }
 
@@ -591,12 +613,12 @@ void swap(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        lock_database(proghash + '-' + other);
+        auto otherlckhash = proghash + '-' + other;
+        lock_database(otherlckhash);
         auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         xph::sys::swapfile(cachefl, othercachefl);
-        unlock_database(proghash + '-' +
-                        other); // TODO: incorporate this into signal handling via a locks vector
+        unlock_database(otherlckhash);
     }
 }
 
