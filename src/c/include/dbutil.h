@@ -54,6 +54,32 @@ const char *confhome()
     return confhome;
 }
 
+const char *cachehome()
+{
+    static const char *cachehome;
+    static bool cachehomeset = false;
+    char *prefix, *s;
+    bool allocedprefix = false;
+
+    if (cachehomeset)
+        return cachehome;
+
+    if (!(prefix = getenv("XDG_CACHE_HOME"))) {
+        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir)) {
+            cachehomeset = true;
+            return cachehome = NULL;
+        }
+        prefix = vstrcat(2, s, "/.cache");
+        allocedprefix = true;
+    }
+
+    cachehomeset = true;
+    cachehome = vstrcat(2, prefix, "/scripts");
+    if (allocedprefix)
+        free(prefix);
+    return cachehome;
+}
+
 typedef enum { LCKDB_TEMP, LCKDB_PERS } lckdb_t;
 
 const char *lckhome(lckdb_t type)
