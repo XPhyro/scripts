@@ -173,6 +173,26 @@ bool strnsfx(const char *s, const char *sfx, size_t n)
     return true;
 }
 
+bool strhaschr(const char *s, int c)
+{
+    return strchr(s, c);
+}
+
+bool strnhaschr(const char *s, int c, size_t n)
+{
+    return strchr(s, c) - s < n;
+}
+
+bool strhasstr(const char *s, const char *str)
+{
+    return strstr(s, str);
+}
+
+bool strnhasstr(const char *s, const char *str, size_t n)
+{
+    return strstr(s, str) - s < n;
+}
+
 /* BEGIN COMMENT FROM ORIGINAL AUTHOR */
 /* Strrstr.c, included for those computers that do not have it. */
 /* Written by Kent Irwin, irwin@leland.stanford.edu.  I am
