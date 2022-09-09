@@ -39,8 +39,8 @@ def setfilepaths():
         exit(1)
 
     lockdirpath = run(
-        ["getpath", "-du", "--", "notifloglck"], capture_output=True
-    ).stdout.decode("utf-8")
+        ["lck", "-p", "--", "notiflog"], capture_output=True
+    ).stdout.decode("utf-8")[:-1]
     print("Found lock directory: %s" % lockdirpath)
 
     if not lockdirpath:
