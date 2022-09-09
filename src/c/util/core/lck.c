@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -16,25 +17,31 @@ int main(int argc, char *argv[])
     const char *execname;
     int i, ret;
     lckdb_t lcktype = LCKDB_TEMP;
-    bool optsleep = false, optlck = true, optprint = false, optretry = false, optquiet = false;
+    bool optstatus = false, optsleep = false, optlck = true, optprint = false, optretry = false,
+         optquiet = false;
     char optdelim = '\n';
     bool (*func)(const char *, lckdb_t);
     const char *s;
     char *path;
     struct timespec optretrytime = { .tv_sec = 0, .tv_nsec = 500000000 };
+    struct stat st;
 
     if (!argc)
         return EXIT_SUCCESS;
     execname = argv[0];
 
-    while ((i = getopt(argc, argv, "hilprS:s:t:uqz0")) != -1) {
+    while ((i = getopt(argc, argv, "dhilprS:s:t:uqz0")) != -1) {
         switch (i) {
+            case 'd':
+                optstatus = true;
+                break;
             case 'h':
                 printf(
                     "Usage: %s [OPTION...] [HASH...]\n"
                     "\n"
                     "If HASH contains '/', the part after the last '/' is used.\n"
                     "\n"
+                    "  -d        indicate lock status via exit codes instead of managing locks. if all hashes are locked, exit code is 0, otherwise it is 1. no guarantee is made that the information provided will be correct at exit time, locks are checked sequentially and only once.\n"
                     "  -h        display this help and exit\n"
                     "  -i        use nanosleep(3p) instead of inotify(7)\n"
                     "  -l        lock lock (default)\n"
@@ -102,6 +109,17 @@ int main(int argc, char *argv[])
         for (i = 0; i < argc; i++) {
             path = lckpath(argv[i], lcktype, false);
             printf("%s%c", path, optdelim);
+            free(path);
+        }
+        return EXIT_SUCCESS;
+    }
+
+    if (optstatus) {
+        for (i = 0; i < argc; i++) {
+            path = lckpath(argv[i], lcktype, false);
+            stat(path, &st);
+            if (!S_ISDIR(st.st_mode))
+                return EXIT_FAILURE;
             free(path);
         }
         return EXIT_SUCCESS;
