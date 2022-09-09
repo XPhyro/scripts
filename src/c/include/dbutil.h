@@ -6,8 +6,10 @@
 #include <pwd.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <sys/inotify.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <strutil.h>
 #include <sysutil.h>
@@ -138,26 +140,74 @@ bool lckdb(const char *hash, lckdb_t type)
 {
     char *path;
     bool ret;
+    int errnobak = errno;
 
     path = lckpath(hash, type, true);
 
     errno = 0;
     ret = !(mkdir(path, 0755) || errno);
+    errno = errnobak;
 
     free(path);
 
     return ret;
 }
 
+bool awaitdb(const char *hash, lckdb_t type)
+{
+    enum {
+        eventsize = sizeof(struct inotify_event),
+        buflen = (eventsize + 16) * 1024,
+    };
+    int length, fd, wd, i = 0;
+    char buf[buflen], *path;
+
+    fd = inotify_init();
+
+    if (fd < 0) {
+        perror("inotify_init");
+        return false;
+    }
+
+    path = lckpath(hash, type, false);
+    wd = inotify_add_watch(fd, path, IN_DELETE_SELF);
+    length = read(fd, buf, buflen);
+
+    if (length < 0) {
+        perror("read");
+        return false;
+    }
+
+    while (i < length) {
+        struct inotify_event *event = (struct inotify_event *)&buf[i];
+        if (event->len && event->mask & IN_DELETE_SELF)
+            goto cleanup;
+        i += eventsize + event->len;
+    }
+
+cleanup:
+    inotify_rm_watch(fd, wd);
+    close(fd);
+    return true;
+}
+
+void alckdb(const char *hash, lckdb_t type)
+{
+    while (!lckdb(hash, type))
+        awaitdb(hash, type);
+}
+
 bool ulckdb(const char *hash, lckdb_t type)
 {
     char *path;
     bool ret;
+    int errnobak = errno;
 
     path = lckpath(hash, type, false);
 
     errno = 0;
     ret = !(rmdir(path) || errno);
+    errno = errnobak;
 
     free(path);
 
