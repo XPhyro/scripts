@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     const char *execname;
     int i, ret;
     lckdb_t lcktype = LCKDB_TEMP;
-    bool optsleep = false, optlck = true, optprint = true, optretry = false, optquiet = false;
+    bool optsleep = false, optlck = true, optprint = false, optretry = false, optquiet = false;
     char optdelim = '\n';
     bool (*func)(const char *, lckdb_t);
     const char *s;
