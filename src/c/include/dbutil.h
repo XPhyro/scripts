@@ -119,21 +119,33 @@ const char *lckhome(lckdb_t type)
     return lckhome = prefix;
 }
 
-bool lckdb(const char *hash, lckdb_t type)
+char *lckpath(const char *hash, lckdb_t type, bool mkdir)
 {
     const char *prefix;
     char *path;
-    bool ret;
 
     assert(hash);
 
     prefix = lckhome(type);
-    rmkdir((char *)prefix, 0755);
+    if (mkdir)
+        rmkdir((char *)prefix, 0755);
     path = vstrcat(2, prefix, hash);
+
+    return path;
+}
+
+bool lckdb(const char *hash, lckdb_t type)
+{
+    char *path;
+    bool ret;
+
+    path = lckpath(hash, type, true);
 
     errno = 0;
     ret = !(mkdir(path, 0755) || errno);
+
     free(path);
+
     return ret;
 }
 
@@ -142,13 +154,13 @@ bool ulckdb(const char *hash, lckdb_t type)
     char *path;
     bool ret;
 
-    assert(hash);
-
-    path = vstrcat(2, lckhome(type), hash);
+    path = lckpath(hash, type, false);
 
     errno = 0;
     ret = !(rmdir(path) || errno);
+
     free(path);
+
     return ret;
 }
 
