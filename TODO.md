@@ -27,6 +27,8 @@
   numbers.
 - Support arbitrary counts of warnings and configurations in `warnbattery`.
 - In `tglapp`, support terminating the X window instead of the run process.
+- Support custom lock directory prefix in `dbutil.h`.
+- Support custom lock directory prefix in `lck`.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
