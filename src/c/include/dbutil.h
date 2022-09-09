@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <meta.h>
 #include <strutil.h>
 #include <sysutil.h>
 
@@ -124,7 +125,7 @@ const char *lckhome(lckdb_t type)
     return lckhome = prefix;
 }
 
-char *lckpath(const char *hash, lckdb_t type, bool mkdir)
+char *lckpath(META_NONNULL const char *hash, lckdb_t type, bool mkdir)
 {
     const char *prefix;
     char *path;
@@ -139,7 +140,7 @@ char *lckpath(const char *hash, lckdb_t type, bool mkdir)
     return path;
 }
 
-bool lckdb(const char *hash, lckdb_t type)
+bool lckdb(META_NONNULL const char *hash, lckdb_t type)
 {
     char *path;
     bool ret;
@@ -156,7 +157,7 @@ bool lckdb(const char *hash, lckdb_t type)
     return ret;
 }
 
-bool awaitdb(const char *hash, lckdb_t type)
+bool awaitdb(META_NONNULL const char *hash, lckdb_t type)
 {
     enum {
         eventsize = sizeof(struct inotify_event),
@@ -195,13 +196,13 @@ cleanup:
     return true;
 }
 
-void alckdb(const char *hash, lckdb_t type)
+void alckdb(META_NONNULL const char *hash, lckdb_t type)
 {
     while (!lckdb(hash, type))
         awaitdb(hash, type);
 }
 
-bool ulckdb(const char *hash, lckdb_t type)
+bool ulckdb(META_NONNULL const char *hash, lckdb_t type)
 {
     char *path;
     bool ret;
