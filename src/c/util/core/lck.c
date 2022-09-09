@@ -117,8 +117,7 @@ int main(int argc, char *argv[])
     if (optstatus) {
         for (i = 0; i < argc; i++) {
             path = lckpath(argv[i], lcktype, false);
-            stat(path, &st);
-            if (!S_ISDIR(st.st_mode))
+            if (stat(path, &st) || !S_ISDIR(st.st_mode))
                 return EXIT_FAILURE;
             free(path);
         }
