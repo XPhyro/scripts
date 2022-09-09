@@ -10,7 +10,6 @@
 #include <set>
 #include <string>
 
-#include <system_error>
 #include <unistd.h>
 
 #include <strutil.h>
