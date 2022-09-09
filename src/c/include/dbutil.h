@@ -159,7 +159,7 @@ bool awaitdb(const char *hash, lckdb_t type)
         eventsize = sizeof(struct inotify_event),
         buflen = (eventsize + 16) * 1024,
     };
-    int length, fd, wd, i = 0;
+    int length, fd, wd, i;
     char buf[buflen], *path;
 
     fd = inotify_init();
@@ -178,6 +178,7 @@ bool awaitdb(const char *hash, lckdb_t type)
         return false;
     }
 
+    i = 0;
     while (i < length) {
         struct inotify_event *event = (struct inotify_event *)&buf[i];
         if (event->len && event->mask & IN_DELETE_SELF)
