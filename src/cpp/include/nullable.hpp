@@ -30,12 +30,12 @@ public:
         return *this;
     }
 
-    bool operator==(const T& t)
+    bool operator==(const T& t) const
     {
         return value == t;
     }
 
-    bool operator!=(const T& t)
+    bool operator!=(const T& t) const
     {
         return value != t;
     }
@@ -46,12 +46,12 @@ public:
         return os;
     }
 
-    operator const T&()
+    operator const T&() const
     {
         return std::move(value);
     }
 
-    operator bool()
+    operator bool() const
     {
         return !is_null;
     }
