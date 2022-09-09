@@ -209,10 +209,13 @@ analyse() {
 
     find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
         | xargs -r0 -I FILE \
-            scan-build -analyze-headers --status-bugs \
-                $v $view -maxloop "$m" -no-failure-reports \
+            scan-build \
+                -analyze-headers --status-bugs $v $view \
+                -maxloop "$m" -no-failure-reports \
+                --use-cc="$(command -v "$CC")" \
                 "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout"
     ec="$((ec | $?))"
+    rm -f -- "$tmpout"
     # TODO: re-enable this after clang implements c++2b ranges
     # find 'cpp' -mindepth 1 -type f -iname "*.cpp" -print0 \
     #     | xargs -r0 -I FILE \
