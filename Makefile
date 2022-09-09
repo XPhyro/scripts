@@ -20,6 +20,8 @@ analyse:
 spell:
 	cd src && ./.make spell o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
+auto: format spell analyse install test
+
 clean:
 
-.PHONY: install uninstall test format analyse clean
+.PHONY: install uninstall test format analyse auto clean
