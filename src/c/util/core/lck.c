@@ -16,16 +16,18 @@ int main(int argc, char *argv[])
     const char *execname;
     int i, ret;
     lckdb_t lcktype = LCKDB_TEMP;
-    bool lck = true, optsleep = false, optretry = false, optquiet = false;
+    bool optsleep = false, optlck = true, optprint = true, optretry = false, optquiet = false;
+    char optdelim = '\n';
     bool (*func)(const char *, lckdb_t);
-    char *s;
+    const char *s;
+    char *path;
     struct timespec optretrytime = { .tv_sec = 0, .tv_nsec = 500000000 };
 
     if (!argc)
         return EXIT_SUCCESS;
     execname = argv[0];
 
-    while ((i = getopt(argc, argv, "hilrS:s:t:uq")) != -1) {
+    while ((i = getopt(argc, argv, "hilprS:s:t:uqz0")) != -1) {
         switch (i) {
             case 'h':
                 printf(
@@ -36,19 +38,25 @@ int main(int argc, char *argv[])
                     "  -h        display this help and exit\n"
                     "  -i        use nanosleep(3p) instead of inotify(7)\n"
                     "  -l        lock lock (default)\n"
+                    "  -p        print to-be locks and do nothing else\n"
                     "  -r        retry until lock is acquired. ignored if -u is given.\n"
                     "  -S NSEC   retry interval in nanoseconds, cumulative with -s. ignored if -ir is not given.\n"
                     "  -s SEC    retry interval in seconds, cumulative with -S. ignored if -ir is not given.\n"
                     "  -t TYPE   type of lock. can be one of {t, tmp, temp, temporary} or {p, prs, pers, persistent}. default is temporary.\n"
                     "  -u        unlock lock\n"
-                    "  -q        do not use stdout\n",
+                    "  -q        do not use stdout\n"
+                    "  -z        line delimiter is nul instead of newline\n"
+                    "  -0        line delimiter is nul instead of newline\n",
                     execname);
                 break;
             case 'i':
                 optsleep = true;
                 break;
             case 'l':
-                lck = true;
+                optlck = true;
+                break;
+            case 'p':
+                optprint = true;
                 break;
             case 'r':
                 optretry = true;
@@ -72,10 +80,14 @@ int main(int argc, char *argv[])
                 }
                 break;
             case 'u':
-                lck = false;
+                optlck = false;
                 break;
             case 'q':
                 optquiet = true;
+                break;
+            case 'z':
+            case '0':
+                optdelim = '\0';
                 break;
             default:
                 fprintf(stderr, "Try '%s -h' for more information.\n", execname);
@@ -86,14 +98,23 @@ int main(int argc, char *argv[])
     argc -= optind;
     argv += optind;
 
-    if (lck && optretry && !optsleep) {
+    if (optprint) {
+        for (i = 0; i < argc; i++) {
+            path = lckpath(argv[i], lcktype, false);
+            printf("%s%c", path, optdelim);
+            free(path);
+        }
+        return EXIT_SUCCESS;
+    }
+
+    if (optlck && optretry && !optsleep) {
         for (i = 0; i < argc; alckdb(argv[i++], lcktype)) {}
         ret = EXIT_SUCCESS;
     } else {
-        func = lck ? lckdb : ulckdb;
+        func = optlck ? lckdb : ulckdb;
         for (ret = EXIT_SUCCESS, i = 0; i < argc;) {
             if (!func((s = strrchr(argv[i], '/')) ? s + 1 : argv[i], lcktype)) {
-                if (optretry && lck) {
+                if (optretry && optlck) {
                     nanosleep(&optretrytime, NULL);
                     continue;
                 }
@@ -106,7 +127,7 @@ int main(int argc, char *argv[])
     }
 
     if (!optquiet)
-        printf("%d\n", i);
+        printf("%d%c", i, optdelim);
 
     return ret;
 }
