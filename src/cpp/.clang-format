@@ -42,6 +42,11 @@ AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: true
 
+QualifierAlignment: Left
+ReferenceAlignment: Left
+SeparateDefinitionBlocks: Always
+ShortNamespaceLines: 0
+
 BraceWrapping:
   AfterClass: false
   AfterControlStatement: false
@@ -86,21 +91,28 @@ ReflowComments: false
 SortIncludes: true
 SortUsingDeclarations: true
 
-ObjCSpaceAfterProperty: true
-ObjCSpaceBeforeProtocolList: true
 SpaceAfterCStyleCast: false
 SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
-SpacesInAngles: false
+SpacesInAngles: Never
 SpacesInCStyleCastParentheses: false
+SpacesInConditionalStatement: false
 SpacesInContainerLiterals: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
+
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: -1
 
 ...
