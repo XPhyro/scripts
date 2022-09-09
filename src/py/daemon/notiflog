@@ -23,7 +23,7 @@ def setfilepaths():
     logfilepath = run(
         ["getpath", "-fu", "--", "notiflog"], capture_output=True
     ).stdout.decode("utf-8")
-    print("Found log file: %s" % logfilepath)
+    print(f"Found log file: {logfilepath}")
 
     if not logfilepath:
         print("`getpath -fu -- notiflog` failed, exiting.", file=stderr)
@@ -32,7 +32,7 @@ def setfilepaths():
     blacklogfilepath = run(
         ["getpath", "-fu", "--", "notiflogblack"], capture_output=True
     ).stdout.decode("utf-8")
-    print("Found blacklisted log file: %s" % blacklogfilepath)
+    print(f"Found blacklisted log file: {blacklogfilepath}")
 
     if not blacklogfilepath:
         print("`getpath -fu -- notiflogblack` failed, exiting.", file=stderr)
@@ -41,10 +41,10 @@ def setfilepaths():
     lockdirpath = run(
         ["lck", "-p", "--", "notiflog"], capture_output=True
     ).stdout.decode("utf-8")[:-1]
-    print("Found lock directory: %s" % lockdirpath)
+    print(f"Found lock directory: {lockdirpath}")
 
     if not lockdirpath:
-        print("`getpath -du -- notifloglck` failed, exiting.", file=stderr)
+        print("`lck -p -- notiflog` failed, exiting.", file=stderr)
         exit(1)
 
     logfile = open(logfilepath, "a")
@@ -60,8 +60,9 @@ def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretim
 
 def log(file, summary, body):
     file.write(
-        "%s\b%s\b%s\n"
-        % (floor(time()), summary.replace("\n", "\r"), body.replace("\n", "\r"))
+        f"{floor(time())}\b"
+        f"{summary.replace('\n', '\r')}\b"
+        f"{body.replace('\n', '\r')}\n"
     )
     file.flush()
 
@@ -73,8 +74,14 @@ def filternotif(bus, message):
         ]
 
         print(
-            "Received notification:\nTime: %s\nSummary:\n%s\nBody:\n%s\nApp Name: %s\nID: %s\nApp Icon: %s\nExpire Timeout: %s\n"
-            % (floor(time()), summary, body, appname, id, appicon, expiretimeout)
+            "Received notification:\n"
+            f"Time: {floor(time())}\n"
+            f"Summary:\n{summary}\n"
+            f"Body:\n{body}\n"
+            f"App Name: {appname}\n"
+            f"ID: {id}\n"
+            f"App Icon: {appicon}\n"
+            f"Expire Timeout: {expiretimeout}\n"
         )
 
         if isblacklisted(
@@ -92,7 +99,7 @@ def filternotif(bus, message):
             print("Lock file present, not logging")
             rmdir(lockdirpath)
     except Exception as e:
-        print("Caught exception: " + repr(e))
+        print(f"Caught exception: {repr(e)}")
 
 
 def main():
@@ -103,7 +110,7 @@ def main():
     except FileNotFoundError:
         pass
     except Exception as e:
-        print("Caught exception: " + repr(e))
+        print(f"Caught exception: {repr(e)}")
 
     DBusGMainLoop(set_as_default=True)
 
