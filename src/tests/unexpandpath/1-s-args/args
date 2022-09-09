@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+printf "%s " -s \
+    'XXXXXX' \
+    'XXXXXX/YYYYYY' \
+    '~' \
+    '~/XXXXXX' \
+    '~/XXXXXX/' \
+    '~/XXXXXX/YYYYYY' \
+    '~/XXXXXX//////YYYYYY' \
+    '/home/XXXXXX' \
+    '/home/XXXXXX/YYYYYY'

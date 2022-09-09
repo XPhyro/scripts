@@ -1,14 +1,9 @@
 #!/usr/bin/env sh
 
-printf "%s " -s \
+printf "%s " \
     'XXXXXX' \
     'XXXXXX/YYYYYY' \
-    '~' \
-    '~/XXXXXX' \
-    '~/XXXXXX/' \
     '~root' \
     '~root/XXXXXX' \
-    '~/XXXXXX/YYYYYY' \
-    '~/XXXXXX//////YYYYYY' \
     '/home/XXXXXX' \
     '/home/XXXXXX/YYYYYY'
