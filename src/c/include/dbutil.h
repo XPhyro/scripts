@@ -14,6 +14,9 @@
 #include <strutil.h>
 #include <sysutil.h>
 
+const char *const db_scriptsprefix = "/scripts/";
+const char *const db_locksprefix = "/locks/";
+
 const char *temphome()
 {
     static const char *temphome;
@@ -27,7 +30,7 @@ const char *temphome()
         prefix = "/tmp";
 
     tmphomeset = true;
-    return temphome = vstrcat(2, prefix, "/scripts");
+    return temphome = vstrcat(2, prefix, db_scriptsprefix);
 }
 
 const char *confhome()
@@ -50,7 +53,7 @@ const char *confhome()
     }
 
     confhomeset = true;
-    confhome = vstrcat(2, prefix, "/scripts");
+    confhome = vstrcat(2, prefix, db_scriptsprefix);
     if (allocedprefix)
         free(prefix);
     return confhome;
@@ -76,7 +79,7 @@ const char *cachehome()
     }
 
     cachehomeset = true;
-    cachehome = vstrcat(2, prefix, "/scripts");
+    cachehome = vstrcat(2, prefix, db_scriptsprefix);
     if (allocedprefix)
         free(prefix);
     return cachehome;
@@ -112,7 +115,7 @@ const char *lckhome(lckdb_t type)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif /* __GNUC__ */
-    prefix = vstrcat(2, s, "/locks/");
+    prefix = vstrcat(2, s, db_locksprefix);
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif /* __GNUC__ */
