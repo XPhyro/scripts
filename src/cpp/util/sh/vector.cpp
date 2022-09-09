@@ -50,6 +50,7 @@ void handle_sig(int sig);
 cache parse_args(int* argc, char** argv[]);
 void conditional_delim();
 void shell_escape(std::string& str);
+
 namespace vec
 {
 vecsize_t parse_index(const std::string& indexstr);
@@ -79,10 +80,10 @@ const std::unordered_map<std::string, cache> caches = {
     { "temp", cache::temporary }, { "temporary", cache::temporary },
     { "p", cache::persistent },   { "persistent", cache::persistent },
 };
-const constexpr char indelim = '\0';
-const auto constexpr vecview = xph::str::splitview(indelim);
+constexpr const char indelim = '\0';
+constexpr const auto vecview = xph::str::splitview(indelim);
+constexpr const lckdb_t lcktype = LCKDB_TEMP;
 const std::string givenexecname = "vector";
-const constexpr lckdb_t lcktype = LCKDB_TEMP;
 
 std::string execname, proghash, vecname, cachefl;
 xph::nullable<char> outdelim(indelim);

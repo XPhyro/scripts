@@ -30,6 +30,7 @@ class safe_enum : public def {
 
 public:
     safe_enum() {}
+
     safe_enum(type v)
         : val(v)
     {
@@ -44,22 +45,27 @@ public:
     {
         return lhs.val == rhs.val;
     }
+
     friend bool operator!=(const safe_enum& lhs, const safe_enum& rhs)
     {
         return lhs.val != rhs.val;
     }
+
     friend bool operator<(const safe_enum& lhs, const safe_enum& rhs)
     {
         return lhs.val < rhs.val;
     }
+
     friend bool operator<=(const safe_enum& lhs, const safe_enum& rhs)
     {
         return lhs.val <= rhs.val;
     }
+
     friend bool operator>(const safe_enum& lhs, const safe_enum& rhs)
     {
         return lhs.val > rhs.val;
     }
+
     friend bool operator>=(const safe_enum& lhs, const safe_enum& rhs)
     {
         return lhs.val >= rhs.val;

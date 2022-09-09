@@ -214,7 +214,7 @@ void caststr(std::string val)
         case type::raw_binary: {
             std::string_view view{ val };
             for (size_t i = 0; i < view.length(); i += 8) {
-                for (auto const& c : view.substr(i, 8) | std::views::reverse) {
+                for (const auto& c : view.substr(i, 8) | std::views::reverse) {
                     switch (c) {
                         case '0':
                             bits &= ~(static_cast<unsigned char>(1) << bitidx++);
@@ -240,7 +240,7 @@ void caststr(std::string val)
 
 void castchar(std::string val)
 {
-    for (auto const& c : val) {
+    for (const auto& c : val) {
         switch (totype.value()) {
             case type::character:
                 std::cout << c;
