@@ -28,7 +28,7 @@ public:
 
     nullable operator=(const T& t)
     {
-        is_null = t == T{};
+        is_null = false;
         value = t;
         return *this;
     }
