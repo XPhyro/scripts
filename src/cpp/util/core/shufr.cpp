@@ -104,7 +104,11 @@ template <typename... Ts>
 [[noreturn]] void die(const Ts&... args)
 {
     std::cerr << execname << ": ";
-    [[maybe_unused]] int _[sizeof...(Ts)] = { (std::cerr << args, 0)... };
+    (
+        [&] {
+            std::cerr << args;
+        }(),
+        ...);
     std::cerr << '\n';
     std::exit(EXIT_FAILURE);
 }
