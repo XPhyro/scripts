@@ -56,6 +56,7 @@
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
   - [ ] Reuse built paths.
+- Rewrite `sumsize` in C/C++.
 
 ## Other
 - Documentation:
@@ -67,6 +68,7 @@
   - Install man pages as compressed with `gzip`.
 - Add `cppcheck` to analyse target in `.make`.
 - Maybe install C/C++ headers?
+- Add `shufr` to the readme.
 
 
 # Normal Priority
