@@ -43,6 +43,26 @@ public:
         return value != t;
     }
 
+    bool operator<(const T& t) const
+    {
+        return value < t;
+    }
+
+    bool operator<=(const T& t) const
+    {
+        return value <= t;
+    }
+
+    bool operator>(const T& t) const
+    {
+        return value < t;
+    }
+
+    bool operator>=(const T& t) const
+    {
+        return value <= t;
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const nullable& n)
     {
         os << n.value;
