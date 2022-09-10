@@ -2,6 +2,7 @@
 #define HEADER_SCRIPTS_CXX_VECUTIL
 
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 namespace xph::vec

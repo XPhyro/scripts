@@ -2,6 +2,7 @@
 #define HEADER_SCRIPTS_CXX_NULLABLE
 
 #include <ostream>
+#include <utility>
 
 namespace xph
 {
