@@ -33,7 +33,7 @@
 #include <dbutil.h>
 #include <strutil.h>
 
-DEFINE_ENUM(cache, temporary COMMA persistent COMMA);
+enum class cache { temporary, persistent };
 
 typedef std::size_t vecsize_t;
 
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
         xph::str::hashstr_in_place(vecname);
     }
 
-    switch (cache.value()) {
+    switch (cache) {
         case cache::temporary:
             prefix = temphome();
             break;
