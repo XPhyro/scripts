@@ -9,6 +9,8 @@ namespace xph
 template <typename T>
 class nullable {
 public:
+    nullable() {}
+
     nullable(T t)
     {
         value = t;
