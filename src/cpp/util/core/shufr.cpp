@@ -12,23 +12,19 @@
 
 #include <unistd.h>
 
+#include <die.hpp>
 #include <nullable.hpp>
 #include <parse.hpp>
 
-template <typename... Ts>
-[[noreturn]] void die(const Ts&... args);
 void parseargs(int& argc, char**& argv);
 
-const char* execname;
 char optdelim = '\n';
 bool optargisline = false, optuniquemax = false;
 xph::nullable<std::size_t> optrangelow, optrangehigh, optcount, optunique;
 
 int main(int argc, char* argv[])
 {
-    if (!argc)
-        die("nonzero argc is required");
-    execname = argv[0];
+    CAPTURE_EXECNAME();
 
     parseargs(argc, argv);
 
@@ -98,19 +94,6 @@ int main(int argc, char* argv[])
     }
 
     return EXIT_SUCCESS;
-}
-
-template <typename... Ts>
-[[noreturn]] void die(const Ts&... args)
-{
-    std::cerr << execname << ": ";
-    (
-        [&] {
-            std::cerr << args;
-        }(),
-        ...);
-    std::cerr << '\n';
-    std::exit(EXIT_FAILURE);
 }
 
 void parseargs(int& argc, char**& argv)
