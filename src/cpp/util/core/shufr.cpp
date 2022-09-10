@@ -176,8 +176,12 @@ void parseargs(int& argc, char**& argv)
     argc -= optind;
     argv += optind;
 
-    if (optargisline && (optrangelow || optrangehigh))
-        die("cannot combine -e and -i options");
+    if (optrangelow || optrangehigh) {
+        if (optargisline)
+            die("cannot combine -e and -i options");
+        if (argc)
+            die("extra operand ‘", argv[0], "‘\nTry '", execname, " -h' for more information.");
+    }
     if (optrangelow > optrangehigh)
         die("LO must be less than HI");
 }
