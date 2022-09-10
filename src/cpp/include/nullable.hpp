@@ -26,47 +26,16 @@ public:
     {
     }
 
-    nullable operator=(const T& t)
+    nullable operator=(const T& other)
     {
         is_null = false;
-        value = t;
+        value = other;
         return *this;
     }
 
-    bool operator==(const T& t) const
+    operator bool() const
     {
-        return value == t;
-    }
-
-    bool operator!=(const T& t) const
-    {
-        return value != t;
-    }
-
-    bool operator<(const T& t) const
-    {
-        return t < value;
-    }
-
-    bool operator<=(const T& t) const
-    {
-        return t <= value;
-    }
-
-    bool operator>(const T& t) const
-    {
-        return t < value;
-    }
-
-    bool operator>=(const T& t) const
-    {
-        return t <= value;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const nullable& n)
-    {
-        os << n.value;
-        return os;
+        return !is_null;
     }
 
     operator const T&() const
@@ -74,9 +43,100 @@ public:
         return std::move(value);
     }
 
-    operator bool() const
+    bool operator==(const T& other) const
     {
-        return !is_null;
+        return value == other;
+    }
+
+    bool operator!=(const T& other) const
+    {
+        return value != other;
+    }
+
+    bool operator<(const T& other) const
+    {
+        return other < value;
+    }
+
+    bool operator<=(const T& other) const
+    {
+        return other <= value;
+    }
+
+    bool operator>(const T& other) const
+    {
+        return other < value;
+    }
+
+    bool operator>=(const T& other) const
+    {
+        return other <= value;
+    }
+
+    bool operator==(const nullable<T>& other) const
+    {
+        return value == other.value;
+    }
+
+    bool operator!=(const nullable<T>& other) const
+    {
+        return value != other.value;
+    }
+
+    bool operator<(const nullable<T>& other) const
+    {
+        return other.value < value;
+    }
+
+    bool operator<=(const nullable<T>& other) const
+    {
+        return other.value <= value;
+    }
+
+    bool operator>(const nullable<T>& other) const
+    {
+        return other.value < value;
+    }
+
+    bool operator>=(const nullable<T>& other) const
+    {
+        return other.value <= value;
+    }
+
+    friend bool operator==(const T& lhs, const nullable<T>& rhs)
+    {
+        return lhs == rhs.value;
+    }
+
+    friend bool operator!=(const T& lhs, const nullable<T>& rhs)
+    {
+        return lhs != rhs.value;
+    }
+
+    friend bool operator<(const T& lhs, const nullable<T>& rhs)
+    {
+        return lhs < rhs.value;
+    }
+
+    friend bool operator<=(const T& lhs, const nullable<T>& rhs)
+    {
+        return lhs <= rhs.value;
+    }
+
+    friend bool operator>(const T& lhs, const nullable<T>& rhs)
+    {
+        return lhs > rhs.value;
+    }
+
+    friend bool operator>=(const T& lhs, const nullable<T>& rhs)
+    {
+        return lhs >= rhs.value;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const nullable& n)
+    {
+        os << n.value;
+        return os;
     }
 
 private:
