@@ -45,22 +45,22 @@ public:
 
     bool operator<(const T& t) const
     {
-        return value < t;
+        return t < value;
     }
 
     bool operator<=(const T& t) const
     {
-        return value <= t;
+        return t <= value;
     }
 
     bool operator>(const T& t) const
     {
-        return value < t;
+        return t < value;
     }
 
     bool operator>=(const T& t) const
     {
-        return value <= t;
+        return t <= value;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const nullable& n)
