@@ -47,7 +47,7 @@ void unlock_all_databases();
 [[noreturn]] void die(const std::string& err);
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
-cache parse_args(int* argc, char** argv[]);
+cache parse_args(int& argc, char**& argv);
 void conditional_delim();
 void shell_escape(std::string& str);
 
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     else
         execname = argv[0];
 
-    const auto cache = parse_args(&argc, &argv);
+    const auto cache = parse_args(argc, argv);
 
     if (argc < 2)
         die("invalid syntax");
@@ -274,13 +274,13 @@ void handle_sig([[maybe_unused]] int sig)
     terminate(EXIT_FAILURE);
 }
 
-cache parse_args(int* argc, char** argv[])
+cache parse_args(int& argc, char**& argv)
 {
     cache cache = cache::temporary;
     int i;
     int optquiet = 0;
 
-    while ((i = getopt(*argc, *argv, "c:Hhnqz0")) != -1) {
+    while ((i = getopt(argc, argv, "c:Hhnqz0")) != -1) {
         switch (i) {
             case 'c':
                 try {
@@ -386,8 +386,8 @@ cache parse_args(int* argc, char** argv[])
         }
     }
 
-    *argv += optind;
-    *argc -= optind;
+    argv += optind;
+    argc -= optind;
 
     if (!outdelim && isatty(fileno(stdout)))
         outdelim = '\n';
