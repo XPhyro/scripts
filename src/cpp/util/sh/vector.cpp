@@ -38,16 +38,18 @@ enum class cache { temporary, persistent };
 typedef std::size_t vecsize_t;
 
 std::set<std::string> acquiredlocks;
+std::string cachefl;
 
-void lock_database(std::string& hash);
-inline void lock_database(std::string&& hash);
-void unlock_database(std::string& hash);
-inline void unlock_database(std::string&& hash);
+void lock_database(const std::string& hash);
+inline void lock_database(const std::string&& hash);
+void unlock_database(const std::string& hash);
+inline void unlock_database(const std::string&& hash);
 void unlock_all_databases();
 [[noreturn]] void die(const std::string& err);
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
 cache parse_args(int& argc, char**& argv);
+void assertexists(const std::string path = cachefl);
 void conditional_delim();
 void shell_escape(std::string& str);
 
@@ -85,7 +87,7 @@ constexpr const auto vecview = xph::str::splitview(indelim);
 constexpr const lckdb_t lcktype = LCKDB_TEMP;
 const std::string givenexecname = "vector";
 
-std::string execname, proghash, vecname, cachefl;
+std::string execname, proghash, vecname;
 xph::nullable<char> outdelim(indelim);
 const char* prefix;
 bool opthash = false;
@@ -117,8 +119,8 @@ int main(int argc, char* argv[])
         die("VEC_NAME cannot contain '/'");
 
     if (opthash) {
-        xph::str::hashstr_in_place(proghash);
-        xph::str::hashstr_in_place(vecname);
+        xph::str::hash_in_place(proghash);
+        xph::str::hash_in_place(vecname);
     }
 
     switch (cache) {
@@ -223,7 +225,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-void lock_database(std::string& hash)
+void lock_database(const std::string& hash)
 {
     if (!lckdb(hash.c_str(), lcktype))
         die("could not lock database");
@@ -231,12 +233,12 @@ void lock_database(std::string& hash)
     acquiredlocks.insert(hash);
 }
 
-inline void lock_database(std::string&& hash)
+inline void lock_database(const std::string&& hash)
 {
     lock_database(hash);
 }
 
-void unlock_database(std::string& hash)
+void unlock_database(const std::string& hash)
 {
     if (!ulckdb(hash.c_str(), lcktype))
         die("could not unlock database");
@@ -244,7 +246,7 @@ void unlock_database(std::string& hash)
     acquiredlocks.erase(hash);
 }
 
-inline void unlock_database(std::string&& hash)
+inline void unlock_database(const std::string&& hash)
 {
     unlock_database(hash);
 }
@@ -395,7 +397,7 @@ cache parse_args(int& argc, char**& argv)
     return cache;
 }
 
-void assertexists(std::string path = cachefl)
+void assertexists(const std::string path)
 {
     if (!std::filesystem::exists(path))
         die("vector is not initialised");
@@ -442,8 +444,8 @@ void write(std::vector<std::string> vec)
     if (!fl)
         die("could not open cache file for writing");
 
-    vecsize_t size = vec.size();
-    fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+    const vecsize_t size = vec.size();
+    fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
     std::for_each(vec.begin(), vec.end(), [&fl](std::string& str) {
         fl.write(str.c_str(), str.length() + 1);
     });
@@ -492,7 +494,7 @@ std::string build_cache_path(const std::string& vecname)
     {
         std::ostringstream ss;
         ss << prefix << '/' << givenexecname << '/' << proghash;
-        ss << '/' << (!opthash ? vecname : xph::str::hashstr(vecname));
+        ss << '/' << (!opthash ? vecname : xph::str::hash(vecname));
         cachefl = ss.str();
     }
     return cachefl;
@@ -512,8 +514,8 @@ void init()
     if (!fl)
         die("could not open cache file for writing");
 
-    vecsize_t size = 0;
-    fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+    const vecsize_t size = 0;
+    fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
 }
 
 void size()
@@ -545,7 +547,7 @@ void push_back(const std::string&& value)
 
 void pop_back(const std::string&& countstr)
 {
-    auto count = parse_index(countstr);
+    const auto count = parse_index(countstr);
     auto vec = parse();
 
     if (count > vec.size())
@@ -563,7 +565,7 @@ void pop_back(const std::string&& countstr)
 
 void get_index(const std::string&& indexstr)
 {
-    auto index = parse_index(indexstr);
+    const auto index = parse_index(indexstr);
     const auto& [size, buf] = read();
 
     if (!size || index > size - 1)
@@ -575,10 +577,10 @@ void get_index(const std::string&& indexstr)
 
 void set_index(const std::string&& indexstr, const std::string&& value)
 {
-    auto index = parse_index(indexstr);
+    const auto index = parse_index(indexstr);
 
     // TODO: reuse file stream
-    if (auto size = read_size(); !size || index > size - 1)
+    if (const auto size = read_size(); !size || index > size - 1)
         die("index is out of range");
 
     // TODO: reuse file stream
@@ -596,9 +598,9 @@ void set(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        auto otherlckhash = execname + '-' + proghash + '-' + other;
+        const auto otherlckhash = execname + '-' + proghash + '-' + other;
         lock_database(otherlckhash);
-        auto othercachefl = build_cache_path(other);
+        const auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         std::filesystem::copy_file(
             othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
@@ -616,9 +618,9 @@ void swap(const std::string&& other)
     } else if (other.contains('/')) {
         die("OTHER_VEC_NAME cannot contain '/'");
     } else {
-        auto otherlckhash = execname + '-' + proghash + '-' + other;
+        const auto otherlckhash = execname + '-' + proghash + '-' + other;
         lock_database(otherlckhash);
-        auto othercachefl = build_cache_path(other);
+        const auto othercachefl = build_cache_path(other);
         assertexists(othercachefl);
         xph::sys::swapfile(cachefl, othercachefl);
         unlock_database(otherlckhash);
@@ -627,7 +629,7 @@ void swap(const std::string&& other)
 
 void front()
 {
-    auto vec = parse();
+    const auto vec = parse();
     if (vec.empty())
         die("cannot get front element of empty vector");
     std::cout << vec.front();
@@ -636,7 +638,7 @@ void front()
 
 void back()
 {
-    auto vec = parse();
+    const auto vec = parse();
     if (vec.empty())
         die("cannot get back element of empty vector");
     std::cout << vec.back();
@@ -645,7 +647,7 @@ void back()
 
 void insert(const std::string&& indexstr, const std::string&& value)
 {
-    auto index = parse_index(indexstr);
+    const auto index = parse_index(indexstr);
     auto vec = parse();
 
     if (index > vec.size())
@@ -658,7 +660,7 @@ void insert(const std::string&& indexstr, const std::string&& value)
 
 void erase(const std::string&& indexstr)
 {
-    auto index = parse_index(indexstr);
+    const auto index = parse_index(indexstr);
     auto vec = parse();
 
     if (vec.empty() || index > vec.size() - 1)
