@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <random>
@@ -40,6 +41,11 @@ int main(int argc, char* argv[])
             ss << i;
             lines.push_back(ss.str());
             ss.str("");
+        }
+    } else if (argc) {
+        for (const auto& path : std::views::counted(argv, argc)) {
+            std::ifstream ifs(path);
+            for (std::string line; std::getline(ifs, line, optdelim); lines.push_back(line)) {}
         }
     } else {
         for (std::string line; std::getline(std::cin, line, optdelim); lines.push_back(line)) {}
