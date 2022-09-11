@@ -55,7 +55,7 @@ case "$optexec" in
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-            | shufr -0  -n "$((optcount * 3))" \
+            | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
                 bgs -z "$@"
                 printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
@@ -66,7 +66,7 @@ case "$optexec" in
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-            | shufr -0  -n 3 \
+            | shufr -U0 \
             | xargs -r0 -n 1 sh -c '
                 hsetroot -cover "$1"
                 printf "%s\n" "$1" > '"$optdir/.current-wallpapers"'
@@ -78,7 +78,7 @@ case "$optexec" in
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-            | shufr -0  -n "$((optcount * 3))" \
+            | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
                 mons="$(xrandr | grep -Fw "connected" | cut -d" " -f1)"
                 xwallpaper --output "$(printf "%s\n" "$mons" | head -n 1)" --zoom "$(printf "%s\0" "$@" | head -z -n 1)" &
