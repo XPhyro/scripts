@@ -40,8 +40,8 @@ int main(int argc, char* argv[])
 
         std::sort(color_names.begin(), color_names.end());
 
-        for (auto it = color_names.begin(); it < color_names.end() - 1; it++)
-            std::cerr << *it << ", ";
+        for (const auto& color_name : color_names | std::views::take(color_names.size() - 1))
+            std::cerr << color_name << ", ";
         std::cerr << color_names.back() << '.' << std::endl;
 
         std::exit(EXIT_FAILURE);
