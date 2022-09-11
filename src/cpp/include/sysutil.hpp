@@ -16,9 +16,9 @@
 
 namespace xph::sys
 {
-void swapfile(const std::string& path1, const std::string& path2)
+void swapfile(const std::filesystem::path& path1, const std::filesystem::path& path2)
 {
-    auto tmppath = astrdup((path1 + "XXXXXX").c_str());
+    auto tmppath = astrdup((path1.string() + "XXXXXX").c_str());
     auto tmpfd = mkstemp(tmppath);
 
     if (tmpfd == -1)
@@ -33,6 +33,11 @@ void swapfile(const std::string& path1, const std::string& path2)
 
     close(tmpfd);
     free(tmppath);
+}
+
+void swapfile(const std::string& path1, const std::string& path2)
+{
+    swapfile(static_cast<std::filesystem::path>(path1), static_cast<std::filesystem::path>(path2));
 }
 
 void signals(std::set<int> signals, void (*func)(int)) noexcept
