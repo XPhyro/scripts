@@ -97,7 +97,7 @@ constexpr uint32_t crc32(const std::string_view& str)
     return crc ^ ~0;
 }
 
-std::string hashstr(const std::string& str)
+std::string hash(const std::string& str)
 {
     auto hash = std::hash<std::string>{}(str);
     std::bitset<sizeof(hash) * 8> bits(hash);
@@ -112,7 +112,7 @@ std::string hashstr(const std::string& str)
     return std::move(hashstr);
 }
 
-void hashstr_in_place(std::string& str)
+void hash_in_place(std::string& str)
 {
     auto hash = std::hash<std::string>{}(str);
     std::bitset<sizeof(hash) * 8> bits(hash);

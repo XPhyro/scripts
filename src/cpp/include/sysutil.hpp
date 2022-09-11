@@ -16,7 +16,7 @@
 
 namespace xph::sys
 {
-void swapfile(std::string& path1, std::string& path2)
+void swapfile(const std::string& path1, const std::string& path2)
 {
     auto tmppath = astrdup((path1 + "XXXXXX").c_str());
     auto tmpfd = mkstemp(tmppath);
