@@ -1,3 +1,6 @@
 [submodule "src/c/include/hedley"]
 	path = lib/hedley
 	url = https://github.com/nemequ/hedley.git
+[submodule "lib/pstreams"]
+	path = lib/pstreams
+	url = https://git.code.sf.net/p/pstreams/code
