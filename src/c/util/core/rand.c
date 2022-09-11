@@ -5,8 +5,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/random.h>
 #include <unistd.h>
+#ifdef __linux__
+#include <sys/random.h>
+#endif
 
 #include <stdutil.h>
 
