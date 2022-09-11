@@ -19,6 +19,7 @@
 
 // C
 #include <pwd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -73,7 +74,7 @@ void back();
 void insert(const std::string&& indexstr, const std::string&& value);
 void erase(const std::string&& indexstr);
 void pop_back(const std::string&& countstr);
-void push_back(const std::string&& value);
+void push_back(int argc, char* argv[]);
 void emplace_back(int argc, char* argv[]);
 void get_index(const std::string&& indexstr);
 void set_index(const std::string&& indexstr, const std::string&& value);
@@ -169,8 +170,7 @@ int main(int argc, char* argv[])
     if (argc) {
         STRING_SWITCH(argv[0])
         STRING_CASE("push_back")
-        for (auto&& val : std::views::counted(argv + 1, argc - 1))
-            vec::push_back(val);
+        vec::push_back(argc - 1, argv + 1);
         STRING_BREAK
         STRING_CASE("emplace_back")
         if (argc < 2)
@@ -543,7 +543,7 @@ void size()
     conditional_delim();
 }
 
-void push_back(const std::string&& value)
+void push_back(int argc, char* argv[])
 {
     assertexists();
     std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
@@ -556,12 +556,19 @@ void push_back(const std::string&& value)
 
     if (size == std::numeric_limits<vecsize_t>::max())
         die("vector is at maximum capacity");
-    size++;
 
-    fl.seekg(0, std::ios::beg);
-    fl.write(reinterpret_cast<char*>(&size), sizeof(size));
-    fl.seekg(0, std::ios::end);
-    fl.write(value.c_str(), value.length() + 1);
+    for (const auto& line : std::views::counted(argv, argc)) {
+        size++;
+
+        fl.seekg(0, std::ios::beg);
+        fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+
+        fl.seekg(0, std::ios::end);
+        fl.write(line, strlen(line) + 1);
+
+        if (size >= std::numeric_limits<vecsize_t>::max())
+            die("vector is at maximum capacity");
+    }
 }
 
 void emplace_back(int argc, char* argv[])
