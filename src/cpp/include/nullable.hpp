@@ -13,23 +13,23 @@ public:
 
     nullable(T t)
     {
-        value = t;
+        underlying = t;
     }
 
     nullable(T& t)
-        : value(t)
+        : underlying(t)
     {
     }
 
     nullable(T&& t)
-        : value(t)
+        : underlying(t)
     {
     }
 
     nullable operator=(const T& other)
     {
         is_null = false;
-        value = other;
+        underlying = other;
         return *this;
     }
 
@@ -40,109 +40,22 @@ public:
 
     operator const T&() const
     {
-        return std::move(value);
+        return std::move(underlying);
     }
 
-    friend bool operator==(const nullable<T>& lhs, const T& rhs)
+    bool is_set()
     {
-        return lhs.value == rhs;
-        ;
+        return !is_null;
     }
 
-    friend bool operator!=(const nullable<T>& lhs, const T& rhs)
+    bool value()
     {
-        return lhs.value != rhs;
-    }
-
-    friend bool operator<(const nullable<T>& lhs, const T& rhs)
-    {
-        return lhs.value < rhs;
-    }
-
-    friend bool operator<=(const nullable<T>& lhs, const T& rhs)
-    {
-        return lhs.value <= rhs;
-    }
-
-    friend bool operator>(const nullable<T>& lhs, const T& rhs)
-    {
-        return lhs.value > rhs;
-    }
-
-    friend bool operator>=(const nullable<T>& lhs, const T& rhs)
-    {
-        return lhs.value >= rhs;
-    }
-
-    friend bool operator==(const T& lhs, const nullable<T>& rhs)
-    {
-        return lhs == rhs.value;
-    }
-
-    friend bool operator!=(const T& lhs, const nullable<T>& rhs)
-    {
-        return lhs != rhs.value;
-    }
-
-    friend bool operator<(const T& lhs, const nullable<T>& rhs)
-    {
-        return lhs < rhs.value;
-    }
-
-    friend bool operator<=(const T& lhs, const nullable<T>& rhs)
-    {
-        return lhs <= rhs.value;
-    }
-
-    friend bool operator>(const T& lhs, const nullable<T>& rhs)
-    {
-        return lhs > rhs.value;
-    }
-
-    friend bool operator>=(const T& lhs, const nullable<T>& rhs)
-    {
-        return lhs >= rhs.value;
-    }
-
-    friend bool operator==(const nullable<T>& lhs, const nullable<T>& rhs)
-    {
-        return lhs.value == rhs.value;
-    }
-
-    friend bool operator!=(const nullable<T>& lhs, const nullable<T>& rhs)
-    {
-        return lhs.value != rhs.value;
-    }
-
-    friend bool operator<(const nullable<T>& lhs, const nullable<T>& rhs)
-    {
-        return lhs.value < rhs.value;
-    }
-
-    friend bool operator<=(const nullable<T>& lhs, const nullable<T>& rhs)
-    {
-        return lhs.value <= rhs.value;
-    }
-
-    friend bool operator>(const nullable<T>& lhs, const nullable<T>& rhs)
-    {
-        return lhs.value > rhs.value;
-    }
-
-    friend bool operator>=(const nullable<T>& lhs, const nullable<T>& rhs)
-    {
-        return lhs.value >= rhs.value;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const nullable& n)
-    {
-        os << n.value;
-        return os;
+        return !underlying;
     }
 
 private:
     bool is_null = true;
-    T value;
+    T underlying;
 };
 } // namespace xph
 
