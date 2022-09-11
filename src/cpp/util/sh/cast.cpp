@@ -16,14 +16,22 @@
 
 // libraries
 #include <consts.hpp>
-#include <macros.hpp>
 #include <strutil.hpp>
 
 // third party
 #include <hedley.h>
 
-DEFINE_ENUM(type, character COMMA string COMMA octal COMMA decimal COMMA hexadecimal COMMA integer
-                      COMMA binary COMMA floating_point COMMA raw_binary COMMA);
+enum class type {
+    character,
+    string,
+    octal,
+    decimal,
+    hexadecimal,
+    integer,
+    binary,
+    floating_point,
+    raw_binary,
+};
 
 HEDLEY_NO_RETURN void help();
 HEDLEY_NO_RETURN void invalidargs(std::string err);
@@ -72,7 +80,7 @@ int main(int argc, char* argv[])
     argc -= 2;
 
     std::function<void(std::string)> func;
-    switch (fromtype.value()) {
+    switch (fromtype) {
         case type::character:
             func = castchar;
             break;
@@ -147,7 +155,7 @@ void castint(std::string val)
     ss << val;
     ss >> ll;
 
-    switch (totype.value()) {
+    switch (totype) {
         case type::character:
             std::cout << static_cast<char>(ll);
             break;
@@ -186,7 +194,7 @@ void castfloat(std::string val)
     ss << val;
     ss >> f;
 
-    switch (totype.value()) {
+    switch (totype) {
         case type::raw_binary:
             write(STDOUT_FILENO, &f, sizeof(f));
             break;
@@ -200,7 +208,7 @@ void caststr(std::string val)
     static unsigned char bits = 0;
     static int bitidx = 0;
 
-    switch (totype.value()) {
+    switch (totype) {
         case type::character:
             castchar(val);
             break;
@@ -241,7 +249,7 @@ void caststr(std::string val)
 void castchar(std::string val)
 {
     for (const auto& c : val) {
-        switch (totype.value()) {
+        switch (totype) {
             case type::character:
                 std::cout << c;
                 break;
