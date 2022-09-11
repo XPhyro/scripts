@@ -33,6 +33,9 @@
 #include <dbutil.h>
 #include <strutil.h>
 
+// third-party
+#include <pstream.h>
+
 enum class cache { temporary, persistent };
 
 typedef std::size_t vecsize_t;
@@ -71,6 +74,7 @@ void insert(const std::string&& indexstr, const std::string&& value);
 void erase(const std::string&& indexstr);
 void pop_back(const std::string&& countstr);
 void push_back(const std::string&& value);
+void emplace_back(int argc, char* argv[]);
 void get_index(const std::string&& indexstr);
 void set_index(const std::string&& indexstr, const std::string&& value);
 void set(const std::string&& other);
@@ -162,10 +166,22 @@ int main(int argc, char* argv[])
     if (vecname == "=")
         die("VECNAME cannot be \"=\"");
 
-    if (argc && streq(argv[0], "push_back")) {
+    if (argc) {
+        STRING_SWITCH(argv[0])
+        STRING_CASE("push_back")
         for (auto&& val : std::views::counted(argv + 1, argc - 1))
             vec::push_back(val);
+        STRING_BREAK
+        STRING_CASE("emplace_back")
+        if (argc < 2)
+            die("no command given to emplace_back");
+        vec::emplace_back(argc - 1, argv + 1);
+        STRING_BREAK
+        STRING_DEFAULT
+        goto non_variadic;
+        STRING_BREAK
     } else {
+non_variadic:
         switch (argc) {
             case 0:
                 vec::get();
@@ -343,11 +359,14 @@ cache parse_args(int& argc, char**& argv)
                        "   8. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   9. pop_back [COUNT]?\n"
+                       "   9. emplace_back [COMMAND] [ARG...]\n"
+                       "      1. Execute the given command with the given arguments, if any, and push_back its output after removing nulls (\\0).\n"
+                       "      2. Vector must have been initialised.\n"
+                       "  10. pop_back [COUNT]?\n"
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
-                       "  10. swap [OTHER_VEC_NAME]\n"
+                       "  11. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
                        "      2. OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty, or contain '/'.\n"
                        "      3. Vectors must have been initialised.\n"
@@ -543,6 +562,46 @@ void push_back(const std::string&& value)
     fl.write(reinterpret_cast<char*>(&size), sizeof(size));
     fl.seekg(0, std::ios::end);
     fl.write(value.c_str(), value.length() + 1);
+}
+
+void emplace_back(int argc, char* argv[])
+{
+    assertexists();
+    std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
+
+    if (!fl)
+        die("could not open cache file for reading and writing");
+
+    vecsize_t size;
+    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+    if (size >= std::numeric_limits<vecsize_t>::max())
+        die("vector is at maximum capacity");
+
+    // TODO: replace with the following with C++23
+    // auto exec_argv = std::ranges::to<std::vector>(std::views::counted(argv, argc));
+    std::vector<std::string> exec_argv;
+    exec_argv.reserve(argc);
+    for (const auto& arg : std::views::counted(argv, argc))
+        exec_argv.emplace_back(arg);
+
+    redi::ipstream proc(exec_argv, redi::pstreams::pstdout);
+    std::string line;
+    while (std::getline(proc.out(), line, '\0')) { // TODO: make delimiter configurable
+        size++;
+
+        fl.seekg(0, std::ios::beg);
+        fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+
+        fl.seekg(0, std::ios::end);
+        fl.write(line.c_str(), line.length() + 1);
+
+        if (size >= std::numeric_limits<vecsize_t>::max())
+            die("vector is at maximum capacity");
+    }
+
+    if (proc.eof() && proc.fail())
+        proc.clear();
 }
 
 void pop_back(const std::string&& countstr)
