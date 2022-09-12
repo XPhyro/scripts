@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-[ "$#" -lt 2 ] && exit 1
+[ "$#" -eq 0 ] && exec locate -- ""
+[ "$#" -eq 1 ] && exec locate -- "$1"
 
 prog="${0##*/}"
 vec="argv"
