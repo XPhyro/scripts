@@ -35,9 +35,8 @@ int main(int argc, char* argv[])
         for (const auto& arg : std::views::counted(argv, argc))
             lines.emplace_back(arg);
     } else if (optrangelow && optrangehigh) {
-        std::ostringstream ss;
-        for (const auto& i :
-             std::views::iota(static_cast<std::size_t>(optrangelow), optrangehigh)) {
+        for (std::ostringstream ss; const auto& i : std::views::iota(
+                                        static_cast<std::size_t>(optrangelow), optrangehigh)) {
             ss << i;
             lines.push_back(ss.str());
             ss.str("");

@@ -521,8 +521,8 @@ std::string build_cache_path(const std::string& vecname)
 
 void get()
 {
-    const auto& [size, buf] = read();
-    for (const auto&& view : buf | vecview | std::views::take(size))
+    for (const auto& [size, buf] = read();
+         const auto&& view : buf | vecview | std::views::take(size))
         std::cout << view << outdelim;
 }
 
@@ -739,9 +739,8 @@ void erase(const std::string&& indexstr)
 
 void eval()
 {
-    auto vec = parse();
     std::cout << "set --";
-    for (auto&& str : vec) {
+    for (auto vec = parse(); auto&& str : vec) {
         shell_escape(str);
         std::cout << " '" << str << '\'';
     }
