@@ -36,6 +36,7 @@ enum class type {
 HEDLEY_NO_RETURN void help();
 HEDLEY_NO_RETURN void invalidargs(std::string err);
 HEDLEY_NO_RETURN void invalidcast();
+void castraw(ssize_t n, unsigned char* buf);
 void castint(std::string val);
 void castfloat(std::string val);
 void caststr(std::string val);
@@ -99,8 +100,15 @@ int main(int argc, char* argv[])
         auto args = std::views::counted(argv, argc);
         std::ranges::for_each(args.begin(), args.end(), func);
     } else {
-        for (std::string s; std::cin >> s;)
-            func(s);
+        if (fromtype == type::raw_binary) {
+            unsigned char buf[4096];
+            ssize_t n;
+            while ((n = read(STDIN_FILENO, buf, sizeof(buf))))
+                castraw(n, buf);
+        } else {
+            for (std::string s; std::cin >> s;)
+                func(s);
+        }
     }
 }
 
@@ -142,6 +150,23 @@ HEDLEY_NO_RETURN void invalidcast()
     std::cerr << execname << ": given cast of `" << fromtypename << "` to `" << totypename
               << "` is not supported.\n";
     std::exit(EXIT_FAILURE);
+}
+
+void castraw(ssize_t n, unsigned char buf[])
+{
+    switch (totype) {
+        case type::binary:
+            for (ssize_t i = 0; i < n; i++) {
+                auto c = buf[i];
+                for (int b = 0; b < 7; b++) {
+                    auto bit = (c & (1 << b)) >> b;
+                    std::cout << bit;
+                }
+            }
+            break;
+        default:
+            invalidcast();
+    }
 }
 
 void castint(std::string val)
