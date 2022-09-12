@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+eval "$(getpath -ef mounts mounts)"
+
+# shellcheck disable=SC2154
+cut -d'' -f2 -- "$mounts" | while IFS= read -r path; do
+    mountpoint -q -- "$path" || continue
+    pathhash="$(printf "%s" "$path" | sha512sum | cut -d' ' -f1)"
+    updatedb -U "$path" -o "/var/lib/mlocate/$pathhash.db"
+done
+
+updatedb
