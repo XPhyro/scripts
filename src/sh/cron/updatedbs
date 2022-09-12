@@ -9,4 +9,5 @@ cut -d'' -f2 -- "$mounts" | while IFS= read -r path; do
     updatedb -U "$path" -o "/var/lib/mlocate/$pathhash.db"
 done
 
-updatedb
+# sha512 of /mnt/..
+updatedb -o "/var/lib/mlocate/b64d1c90b4754247e7acd3fbb57c480eccf539857b7d9a103e3f5bb5bff5d18ac3a3c9c739044f184a1230371f6a66b2307c5f98aadefd9d636dba06a9085959.db"
