@@ -34,13 +34,13 @@ enum class type {
 };
 
 HEDLEY_NO_RETURN void help();
-HEDLEY_NO_RETURN void invalidargs(std::string err);
+HEDLEY_NO_RETURN void invalidargs(const std::string& err);
 HEDLEY_NO_RETURN void invalidcast();
 void castraw(ssize_t n, unsigned char* buf);
-void castint(std::string val);
-void castfloat(std::string val);
-void caststr(std::string val);
-void castchar(std::string val);
+void castint(const std::string& val);
+void castfloat(const std::string& val);
+void caststr(const std::string& val);
+void castchar(const std::string& val);
 
 const std::unordered_map<std::string, type> types = {
     { "char", type::character }, { "str", type::string },           { "oct", type::octal },
@@ -137,7 +137,7 @@ HEDLEY_NO_RETURN void help()
     std::exit(EXIT_SUCCESS);
 }
 
-HEDLEY_NO_RETURN void invalidargs(const std::string err)
+HEDLEY_NO_RETURN void invalidargs(const std::string& err)
 {
     if (!err.empty())
         std::cerr << err << '\n';
@@ -169,7 +169,7 @@ void castraw(ssize_t n, unsigned char buf[])
     }
 }
 
-void castint(std::string val)
+void castint(const std::string& val)
 {
     static std::stringstream ss;
     long long ll;
@@ -208,7 +208,7 @@ void castint(std::string val)
     }
 }
 
-void castfloat(std::string val)
+void castfloat(const std::string& val)
 {
     static std::stringstream ss;
     double f;
@@ -228,7 +228,7 @@ void castfloat(std::string val)
     }
 }
 
-void caststr(std::string val)
+void caststr(const std::string& val)
 {
     static unsigned char bits = 0;
     static int bitidx = 0;
@@ -271,7 +271,7 @@ void caststr(std::string val)
     }
 }
 
-void castchar(std::string val)
+void castchar(const std::string& val)
 {
     for (const auto& c : val) {
         switch (totype) {
