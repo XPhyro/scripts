@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+[ "$#" -lt 2 ] && exit 1
+
+prog="${0##*/}"
+vec="argv"
+
+vector -- "$prog" "$vec" new
+vector -- "$prog" "$vec" push_back "$@"
+query="$(vector -- "$prog" "$vec" pop_back)"
+db="$(vector -- "$prog" "$vec" pop_back)"
+eval "$(vector -- "$prog" "$vec" eval)"
+
+locate -d "/var/lib/mlocate/$(printf "%s" "/mnt/$db" | sha512sum | cut -d' ' -f1).db" "$@" -- "$query"
