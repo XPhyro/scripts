@@ -57,6 +57,7 @@
 - Optimise `dbutil.h` to do less allocations.
   - [ ] Reuse built paths.
 - Rewrite `sumsize` in C/C++.
+- Rewrite `cast` with size-aware conversion.
 
 ## Other
 - Documentation:
