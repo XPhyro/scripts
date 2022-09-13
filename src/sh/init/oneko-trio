@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+oneko         -tofocus -position -32+8 &
+oneko -sakura -tofocus -position  +0-4 &
+oneko -dog    -tofocus -position +26+6 &
+wait
