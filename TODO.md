@@ -29,6 +29,8 @@
 - In `tglapp`, support terminating the X window instead of the run process.
 - Support custom lock directory prefix in `dbutil.h`.
 - Support custom lock directory prefix in `lck`.
+- Support animated wallpapers via `mpv` in `wallpaper`.
+- Support matching aspect ratios and displays in `wallpaper`.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -42,8 +44,6 @@
 - Write a C program that takes in argv through argv and parsing configuration
   through stdin and outputs shell `eval`able code, then replace all applicable
   existing argument parsing in shell scripts with this program.
-- Write a script that uses `mpv` to show animated/video wallpapers. Integrate
-  this script in `wallpaper`.
 - Same as `warnbattery`, except for `headsetcontrol`.
 - Create a script for enabling/disabling/toggling/querying xinput devices. Use
   this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
