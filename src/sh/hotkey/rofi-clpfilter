@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+filter="$(ROFIFIT_WIDTH_OFFSET=400 ROFIFIT_HEIGHT_OFFSET=0 rofifit rofi -dmenu -p "clipboard filter:")"
+xclip -o -se c | eval "$filter" | xclip -se c
