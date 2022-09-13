@@ -100,11 +100,21 @@ int main(int argc, char* argv[])
         auto args = std::views::counted(argv, argc);
         std::ranges::for_each(args.begin(), args.end(), func);
     } else {
+        // TODO: fix this mess
         if (fromtype == type::raw_binary) {
             unsigned char buf[4096];
             ssize_t n;
-            while ((n = read(STDIN_FILENO, buf, sizeof(buf))))
+            while ((n = read(STDIN_FILENO, buf, sizeof(buf))) > 0)
                 castraw(n, buf);
+        } else if (fromtype == type::binary && totype == type::raw_binary) {
+            unsigned char buf[8];
+            ssize_t n;
+            while ((n = read(STDIN_FILENO, buf, sizeof(buf))) > 0) {
+                unsigned char c = 0;
+                for (const auto&& i : std::views::iota(0, n - 1))
+                    c |= (buf[i] & 1) << i;
+                write(STDOUT_FILENO, &c, sizeof(c));
+            }
         } else {
             for (std::string s; std::cin >> s;)
                 func(s);
