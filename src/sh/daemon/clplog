@@ -13,12 +13,12 @@ bakdir="$(readlink -m -- "$(getpath -ds -- clplogbak)")"
 lastclp="$(xclip -o -se c)"
 oldclp="$lastclp"
 
-ulck -uq clplog
+lck -uq clplog
 
 while true; do
     clipnotify
 
-    ulck -uq clplog && continue
+    lck -uq clplog && continue
 
     clp="$(xclip -o -se c)"
     [ "$(printf "%s" "$clp" | sed '/^\s*$/d')" = "" ] && continue
