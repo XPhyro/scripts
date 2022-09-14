@@ -17,18 +17,28 @@ def parseargs():
     global args
 
     parser = argparse.ArgumentParser(description="Sum sizes.")
+
     parser.add_argument(
-        "-b", "--useb", help="print in B instead of iB", action="store_true"
+        "-b",
+        "--useb",
+        help="print in B instead of iB",
+        action="store_true",
     )
+
     parser.add_argument(
-        "-u", "--unitless", help="total size is given unitless", action="store_true"
+        "-u",
+        "--unitless",
+        help="total size is given unitless",
+        action="store_true",
     )
+
     parser.add_argument(
         "-f",
         "--figure",
         help="significant figure count after the dot (default 2)",
         type=int,
     )
+
     parser.add_argument(
         "-c",
         "--column",
@@ -36,12 +46,14 @@ def parseargs():
         type=argtypecol,
         default=1,
     )
+
     parser.add_argument(
         "-d",
         "--double-input",
         help="use both stdin and files if present",
         action="store_true",
     )
+
     parser.add_argument(
         "files",
         help="paths to files that contain the sizes. files have precedence over stdin unless -d option is given",
