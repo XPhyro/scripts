@@ -128,8 +128,6 @@ executed and all executed commands are printed to stderr.
   compilers. Some programs use non-standard GNU/LLVM extensions.
 
 ## Related
-- You can find my gpup management scripts
-  [here](https://github.com/XPhyro/gpupmanager).
 - You can find the scripts I use to install an Arch Linux system (to my liking)
   [here](https://github.com/XPhyro/archinstall).
 
