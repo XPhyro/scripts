@@ -46,7 +46,7 @@ Only use syncing on initialisation, such as on boot or at the beginning of xinit
             ;;
         k)
             case "$OPTARG" in
-                sync) printf "%s" "$(asusctl -k | cut -d' ' -f5 | fmaps 48=Off 49=Low 50=Med 51=High)" > "$kbfl";;
+                sync) printf "%s" "$(asusctl -k | cut -d' ' -f5 | fmaps 0=Off 1=Low 2=Med 3=High 48=Off 49=Low 50=Med 51=High)" > "$kbfl";;
                 get) cat -- "$kbfl";;
                 get-polybar) printf "%s %s\n" "🚦" "$(cat -- "$kbfl")";;
                 *)
