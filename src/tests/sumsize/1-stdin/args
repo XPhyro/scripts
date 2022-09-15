@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 printf "%s " \
-    -b \
+    -d \
     -f 6

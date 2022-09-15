@@ -188,6 +188,7 @@
 - In `polybar-headsetcontrol`, make the battery icon's fill follow the
   percentage.
 - In `stdutil.h`, min/max/minmax clamped versions add `astrto*` functions.
+- Add `-c` option to select column in `sumsize`.
 
 ## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
