@@ -103,7 +103,8 @@ void parseargs(int *restrict argc, char **restrict argv[])
                 optdelim = '\0';
                 break;
             default:
-                die("invalid option -- '%c'\nTry '%s -h' for more information.\n", i, execname);
+                fprintf(stderr, "Try '%s -h' for more information.\n", execname);
+                exit(EXIT_FAILURE);
         }
     }
 
