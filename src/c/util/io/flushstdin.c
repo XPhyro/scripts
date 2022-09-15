@@ -1,8 +1,9 @@
+#include <sys/param.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-    unsigned char buf[2048];
+    unsigned char buf[PIPE_BUF];
 
     while (read(STDIN_FILENO, buf, sizeof(buf))) {}
 
