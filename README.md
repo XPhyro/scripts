@@ -94,7 +94,7 @@ the source code.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
 - [stest](src/c/util/core/stest.c): Filter a list of files by properties. This is
   different from the `stest` included with suckless `dmenu`.
-- [sumsize](src/py/util/sumsize): Sum human readable sizes.
+- [sumsize](src/c/util/core/sumsize.c): Sum human readable or raw sizes.
 - [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on
   hashcodes. Originally written for toggling applications with the same hotkey
   via `sxhkd`.
