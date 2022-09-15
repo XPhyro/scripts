@@ -10,7 +10,7 @@ bool approxzero(double x)
 
 bool approxzerof(float x)
 {
-    return -1e-7f < x && x < 1e-7f;
+    return -1e-6f < x && x < 1e-6f;
 }
 
 #endif /* ifndef HEADER_SCRIPTS_C_MATHUTIL */
