@@ -59,10 +59,13 @@ def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretim
 
 
 def log(file, summary, body):
+    # "The point of this is to disallow convoluted code" says the author of PEP 498
+    newline = "\n"
+    linefeed = "\r"
     file.write(
         f"{floor(time())}\b"
-        f"{summary.replace('\n', '\r')}\b"
-        f"{body.replace('\n', '\r')}\n"
+        f"{summary.replace(newline, linefeed)}\b"
+        f"{body.replace(newline, linefeed)}\n"
     )
     file.flush()
 
