@@ -22,7 +22,7 @@ do
 "wallpaper [OPTION...]
    -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`.
    -h         Print help message and exit.
-   -n COUNT   Print detailed status before initialisation. Default is your display count as of initialisation. Ignored if -m is not 'bgs'.
+   -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'hsetroot'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
    -x EXEC    Executable to use. Can be one of 'bgs', 'hsetroot' or 'xwallpaper'.
 "
