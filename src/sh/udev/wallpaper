@@ -80,7 +80,6 @@ case "$optexec" in
             ' --
         ;;
     xwallpaper)
-        printf "%s\n" "Warning: 'xwallpaper' is only supported with '-n 1' for now." >&2
         find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
