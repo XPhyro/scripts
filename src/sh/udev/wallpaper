@@ -9,6 +9,8 @@ logerrq() {
     exit 1
 }
 
+execs="'xwallpaper', 'bgs' or 'hsetroot'"
+
 unset optcount opttime
 while getopts "d:hn:t:x:" OPT
 do
@@ -24,7 +26,7 @@ do
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'hsetroot'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
-   -x EXEC    Executable to use. Can be one of 'bgs', 'hsetroot' or 'xwallpaper'.
+   -x EXEC    Executable to use. Can be one of $execs. If not given, the aforementioned executables are searched for in the given order and the first installed one is used. At least one must be installed.
 "
             exit 0
             ;;
@@ -36,7 +38,7 @@ do
         x)
             case "$OPTARG" in
                 bgs|hsetroot|xwallpaper) :;;
-                *) logerrq "EXEC must be one of 'bgs', 'hsetroot' or 'xwallpaper'.";;
+                *) logerrq "EXEC must be one of $execs.";;
             esac
             optexec="$OPTARG"
             ;;
@@ -48,7 +50,11 @@ shift "$((OPTIND - 1))"
 [ -z "$optdir" ] && eval "$(getpath -dse -- wa optdir 1 "getpath -ds -- failed.")"
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
-[ -z "$optexec" ] && optexec="$(fmapsb bgs=bgs hsetroot=hsetroot xwallpaper=xwallpaper)"
+[ -z "$optexec" ] && {
+    optexec="$(fmapsb xwallpaper=xwallpaper bgs=bgs hsetroot=hsetroot)"
+    [ -z "$optexec" ] \
+        && logerrq "At least one of $execs must be installed."
+}
 
 case "$optexec" in
     bgs)
