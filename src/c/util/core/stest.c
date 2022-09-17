@@ -128,6 +128,8 @@ magicfailed:
         }
         if (len && mimes[len - 1] == '\n')
             mimes[len - 1] = '\0';
+
+        fclose(out);
     }
 
     return mimes;
