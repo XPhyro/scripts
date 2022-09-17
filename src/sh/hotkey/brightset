@@ -5,4 +5,4 @@ eval "$(evalverbose)"
 
 execmenu -p "Enter brightness %:" < /dev/null \
     | sed -e 's/\..*//g' -e 's/[^[:digit:]].*//g' \
-    | xargs -d '\n' -rI '{}' sudo brightnessctl s '{}%'
+    | xargs -d '\n' -rI '{}' sudo xbacklight $XBACKLIGHT_ARGS -set '{}'

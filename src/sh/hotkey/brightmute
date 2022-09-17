@@ -11,9 +11,9 @@ val="$(cat -- "$fl")"
 
 if [ "$val" = "0" ]; then
     val="$(brightnessctl g)"
-    sudo brightnessctl s 0
+    sudo xbacklight $XBACKLIGHT_ARGS -set 0
 else
-    sudo brightnessctl s "$val"
+    sudo xbacklight $XBACKLIGHT_ARGS -set "$val"
     val="0"
 fi
 
