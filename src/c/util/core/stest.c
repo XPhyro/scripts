@@ -69,10 +69,10 @@ magic_t magic;
 bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 bool (*negtests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
 
-/* TODO: if -M and -m are given together, functions runs twice.
-         either refactor that, or implemens some sort of hash table. */
-char *getmime(const char *path)
+const char *getmime(const char *path)
 {
+    static const char *oldpath = NULL;
+    static char *oldresult = NULL;
     static bool magicfailed = false;
     const char *err;
     char *mimes;
@@ -83,6 +83,11 @@ char *getmime(const char *path)
     size_t size;
     ssize_t len;
     const char delim = '\0';
+
+    if (oldpath == path)
+        return oldresult;
+    else
+        free(oldresult);
 
     if (!magicfailed) {
         if ((magics = magic_file(magic, path))) {
@@ -132,7 +137,8 @@ magicfailed:
         fclose(out);
     }
 
-    return mimes;
+    oldpath = path;
+    return oldresult = mimes;
 }
 
 TESTFUNCDEF(testhidden)
@@ -171,16 +177,14 @@ TESTFUNCDEF(testlink)
 }
 TESTFUNCDEF(testmstype)
 {
-    char *mime = getmime(path);
+    const char *mime = getmime(path);
     bool ret = streq(strchr(mime, '/') + 1, optsmime);
-    free(mime);
     return ret;
 }
 TESTFUNCDEF(testmtype)
 {
-    char *mime = getmime(path);
+    const char *mime = getmime(path);
     bool ret = strneq(mime, optmime, strchr(mime, '/') - mime);
-    free(mime);
     return ret;
 }
 TESTFUNC(testmodif, st->st_mtime > st->st_atime)
