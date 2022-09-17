@@ -31,6 +31,9 @@
 - Support custom lock directory prefix in `lck`.
 - Support animated wallpapers via `mpv` in `wallpaper`.
 - Support matching aspect ratios and displays in `wallpaper`.
+- Implement for/while-else construct of Python in C++.
+  [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
+  starting point.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
