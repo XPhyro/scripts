@@ -3,5 +3,5 @@
 eval "$(evalverbose)"
 
 bspc subscribe monitor_focus | while IFS= read -r _; do
-    polybar-msg hook bspwmmonf 1
+    polybar-msg action '#bspwmmonf.hook.0'
 done

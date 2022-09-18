@@ -9,6 +9,6 @@ sleep 15s
 
 while true; do
     syncmail
-    polybar-msg hook mail 1
+    polybar-msg action '#mail.hook.0'
     sleep "$interval"
 done
