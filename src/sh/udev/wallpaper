@@ -2,21 +2,15 @@
 
 eval "$(evalverbose)"
 
-execname="${0##*/}"
-
-logerrq() {
-    printf "%s: %s\n" "$execname" "$1" >&2
-    exit 1
-}
+. utility.sh
 
 execs="'xwallpaper', 'bgs' or 'hsetroot'"
 
 unset optcount opttime
-while getopts "d:hn:t:x:" OPT
-do
+while getopts "d:hn:t:x:" OPT; do
     case "$OPT" in
         d)
-            [ -d "$OPTARG" ] || logerrq "DIR must be a valid directory."
+            [ -d "$OPTARG" ] || std_logerrq "DIR must be a valid directory."
             optdir="$OPTARG"
             ;;
         h)
@@ -31,14 +25,14 @@ do
             exit 0
             ;;
         n)
-            [ "$OPTARG" -gt 0 ] || logerrq "COUNT must be a valid positive integer."
+            [ "$OPTARG" -gt 0 ] || std_logerrq "COUNT must be a valid positive integer."
             optcount="$OPTARG"
             ;;
         t) opttime="$OPTARG";;
         x)
             case "$OPTARG" in
                 bgs|hsetroot|xwallpaper) :;;
-                *) logerrq "EXEC must be one of $execs.";;
+                *) std_logerrq "EXEC must be one of $execs.";;
             esac
             optexec="$OPTARG"
             ;;
@@ -53,7 +47,7 @@ shift "$((OPTIND - 1))"
 [ -z "$optexec" ] && {
     optexec="$(fmapsb xwallpaper=xwallpaper bgs=bgs hsetroot=hsetroot)"
     [ -z "$optexec" ] \
-        && logerrq "At least one of $execs must be installed."
+        && std_logerrq "At least one of $execs must be installed."
 }
 
 case "$optexec" in
