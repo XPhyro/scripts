@@ -9,6 +9,8 @@ eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 # shellcheck disable=SC2154
 val="$(cat -- "$fl")"
 
+lck -rq xbacklight
+
 if [ "$val" = "0" ]; then
     val="$(sudo xbacklight $XBACKLIGHT_ARGS -get)"
     sudo xbacklight $XBACKLIGHT_ARGS -set 0
@@ -18,3 +20,5 @@ else
 fi
 
 printf "%s" "$val" > "$fl"
+
+lck -uq xbacklight
