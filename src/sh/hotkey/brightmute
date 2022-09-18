@@ -10,7 +10,7 @@ eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 val="$(cat -- "$fl")"
 
 if [ "$val" = "0" ]; then
-    val="$(brightnessctl g)"
+    val="$(sudo xbacklight $XBACKLIGHT_ARGS -get)"
     sudo xbacklight $XBACKLIGHT_ARGS -set 0
 else
     sudo xbacklight $XBACKLIGHT_ARGS -set "$val"
