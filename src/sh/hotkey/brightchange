@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+lck -q xbacklight || exit 1
+
+sudo xbacklight $XBACKLIGHT_RELATIVE_ARGS -"$1" "$2"
+
+lck -uq xbacklight
