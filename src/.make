@@ -6,23 +6,45 @@ logerrq() {
 }
 
 install() {
-    mkdir -p -- "$binprefix" "$manprefix"
+    mkdir -p -- "$binprefix" "$manprefix" "$dataprefix"
     mkdir "$binprefix/wrapper" 2> /dev/null \
         && printf "$C_RED%s %s$C_CLR\n" \
             "There was no $binprefix/wrapper directory, so it was created for you." \
+            "Be sure to add it to your PATH with high priority."
+    mkdir "$dataprefix/include" 2> /dev/null \
+        && printf "$C_RED%s %s$C_CLR\n" \
+            "There was no $dataprefix/include directory, so it was created for you." \
             "Be sure to add it to your PATH with high priority."
 
     for i in bash el py sh; do
         (
             cd "$i"
-            find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
-                                                     -not -path "*/wrapper/*" \
-                                                     -printf "%P\0$binprefix/%f\0" \
+
+            find '.' -mindepth 1 -type f      -executable \
+                                         -not -path "*/.archived/*" \
+                                         -not -path "*/wrapper/*" \
+                                         -not -path "*/include/*" \
+                                         -printf "%P\0$binprefix/%f\0" \
                 | tee -a ../.installed \
                 | xargs -r0 -n 2 cp -f --
-            find '.' -mindepth 1 -type f -executable -not -path "*/.archived/*" \
-                                                          -path "*/wrapper/*" \
-                                                     -printf "%P\0$binprefix/wrapper/%f\0" \
+
+            find '.' -mindepth 1 -type f      -executable \
+                                         -not -path "*/.archived/*" \
+                                              -path "*/wrapper/*" \
+                                         -printf "%P\0$binprefix/wrapper/%f\0" \
+                | tee -a ../.installed \
+                | xargs -r0 -n 2 cp -f --
+        )
+    done
+
+    for i in bash sh; do
+        (
+            cd "$i"
+
+            find '.' -mindepth 1 -type f -not -executable \
+                                         -not -path "*/.archived/*" \
+                                              -path "*/include/*" \
+                                         -printf "%P\0$dataprefix/include/%f\0" \
                 | tee -a ../.installed \
                 | xargs -r0 -n 2 cp -f --
         )
@@ -269,6 +291,7 @@ else
 fi
 binprefix="$prefix/bin"
 manprefix="$prefix/share/man"
+dataprefix="$prefix/share/scripts"
 
 export prefix
 export binprefix
