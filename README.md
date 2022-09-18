@@ -1,7 +1,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-2B3137?style=flat-square&logo=GitHub&logoColor=FFFFFF)](https://github.com/XPhyro/scripts)
 [![Codeberg](https://img.shields.io/badge/Codeberg-2185D0?style=flat-square&logo=codeberg&logoColor=F2F8FC)](https://codeberg.org/XPhyro/scripts)
 [![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge?style=flat-square)](https://www.codefactor.io/repository/github/xphyro/scripts)
-[![GitHub Build Workflow Status](https://img.shields.io/github/workflow/status/XPhyro/scripts/build?style=flat-square&label=build)](https://github.com/XPhyro/scripts/actions/workflows/build.yml)
+[![GitHub Build Workflow Status](https://img.shields.io/github/workflow/status/XPhyro/scripts/build?style=flat-square&label=build%20%26%20test)](https://github.com/XPhyro/scripts/actions/workflows/build.yml)
 [![GitHub Analyse Workflow Status](https://img.shields.io/github/workflow/status/XPhyro/scripts/analyse?style=flat-square&label=analyse)](https://github.com/XPhyro/scripts/actions/workflows/analyse.yml)
 [![GitHub Spell Workflow Status](https://img.shields.io/github/workflow/status/XPhyro/scripts/spell?style=flat-square&label=spell)](https://github.com/XPhyro/scripts/actions/workflows/spell.yml)
 
