@@ -72,7 +72,6 @@
   - Install man pages as compressed with `gzip`.
 - Add `cppcheck` to analyse target in `.make`.
 - Maybe install C/C++ headers?
-- Add `shufr` to the readme.
 
 
 # Normal Priority
