@@ -7,9 +7,10 @@
 
 
 # scripts
-This repository is a collection of general or specific scripts and utilities for
-Unix-like operating systems. Most scripts are written in POSIX Shell, i.e. `sh`;
-and most non-script utilities are written in C.
+This repository holds a collection of general and specific scripts, utilities
+and libraries for Unix-like operating systems. Almost all scripts are written in
+POSIX Shell, i.e. `sh`; and most non-script utilities and libraries are written
+in C.
 
 ## Installation
 To install for your user:
@@ -26,6 +27,7 @@ You may change the installation directory by setting `$PREFIX`.
 
 If you would like to use the provided wrapper scripts, add `$PREFIX/bin/wrapper`
 to your `$PATH` with higher priority than the locations of the wrapped scripts.
+Some scripts also require `$PREFIX/share/scripts/include` to be in your path.
 
 ## Uninstallation
 If you installed for your user:
@@ -36,15 +38,19 @@ If you installed system-wide:
 
     sudo make uninstall
 
+You do not need to re-set `$PREFIX` while uninstalling.
+
+If you altered your `$PATH`, you may also wish to undo it.
+
 ## Usage
 See `man COMMAND`, `COMMAND -h` or `COMMAND --help`. Simple programs/scripts do
-not have man pages or help dialogs, either infer usage from their names, or see
+not have man pages or help dialogues, either infer usage from their names, or see
 the source code.
 
 ## Notable Scripts and Utilities
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset.
-- [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratchpads for
+- [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratch pads for
   [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include
   `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating
   hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but
@@ -58,15 +64,17 @@ the source code.
   is modified. This is especially useful if you are iteratively processing data
   using an interpreted or hot-compiled language.
 - [eln](src/sh/ishell/eln): Batch edit or create symlinks.
-- [expandpath](src/c/util/core/expandpath.c): Like `wordexp`, but only expands `~`.
+- [expandpath](src/c/util/core/expandpath.c): Like `wordexp`, but only expands
+  `~`.
 - [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions.
-- [fmaps](src/c/util/core/fmaps.c): Map stdin per given key-value pairs.
+- [fmaps](src/c/util/core/fmaps.c): Map standard input per given key-value
+  pairs.
 - [kdialog](src/sh/wrapper/kdialog): Wrapper for KDE's `kdialog` to trick
   applications into using `lf` as the file picker.
 - [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is
   more minimal.
-- [mapexec](src/sh/util/mapexec): Open stdin in `$EDITOR` and execute commands
-  against all, modified, unmodified or wiped lines synchronously or
+- [mapexec](src/sh/util/mapexec): Open standard input in `$EDITOR` and execute
+  commands against all, modified, unmodified or wiped lines synchronously or
   asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
   more versatile.
 - [maptouch](src/sh/udev/maptouch): Map touchscreen and stylus devices to the
@@ -76,7 +84,8 @@ the source code.
   KERNEL=="hid-0018:04F3:2C82.0002-battery", SUBSYSTEM=="power_supply",
   DRIVER=="", ENV{MAPTOUCH_ROOT_DEVNAME}="ELAN9008:00 04F3:2C82",
   ENV{XRH_EDP}="eDP-1", RUN+="/usr/local/bin/maptouch"`.
-- [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a path.
+- [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a
+  path.
 - [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use
   [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro
   compose A "<shell-escape>neomuttpick<enter><enter-command>source
@@ -91,20 +100,23 @@ the source code.
   standard header, enabling fast mathematical computations of an array of
   numbers in the shell.
 - [rgb24togray](src/c/util/math/rgb24togray.c): Convert RGB24 images/video to
-  grayscale with selectable algorithms.
+  greyscale with selectable algorithms.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
-- [stest](src/c/util/core/stest.c): Filter a list of files by properties. This is
-  different from the `stest` included with suckless `dmenu`.
+- [shufr](src/cpp/util/core/shufr.cpp): Like `shuf -r`, but supports outputting
+  unique sequences.
+- [stest](src/c/util/core/stest.c): Filter a list of files by properties. This
+  is a superset of the `stest` included with suckless' `dmenu`.
 - [sumsize](src/c/util/core/sumsize.c): Sum human readable or raw sizes.
 - [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on
-  hashcodes. Originally written for toggling applications with the same hotkey
+  hash codes. Originally written for toggling applications with the same hotkey
   via `sxhkd`.
 - [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`.
 - [vector](src/cpp/util/sh/vector.cpp): Wrapper for `std::vector<std::string>`
   for use in POSIX shells.
-- [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX shell.
+- [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX
+  shell.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input.
 
 ## Environment Variables
@@ -116,7 +128,7 @@ include: `$BROWSER`, `$EDITOR`, `$OPENER`, `$PAGER`, `$SHELL`, `$TERMINAL`,
 application-specific options, such as `rofi -font` or `st -d`.
 
 In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is
-executed and all executed commands are printed to stderr.
+executed and all executed commands are printed to standard error.
 
 ## Notice
 - Some scripts assume that some of the other scripts are in your `$PATH`.
@@ -126,14 +138,13 @@ executed and all executed commands are printed to stderr.
   compatible with other Unixes and Unix-likes, or may be ported with minimal
   modification.
 - All scripts/programs are only tested on Linux.
-- C code are only tested with GCC & clang, and C++ code are only tested with GCC.
-  Most C/C++ programs should be compatible with any POSIX/ISO-conforming
+- C code are only tested with GCC & clang, and C++ code are only tested with
+  GCC. Most C/C++ programs should be compatible with any POSIX/ISO-conforming
   compilers. Some programs use non-standard GNU/LLVM extensions.
 
 ## Related
 - You can find the scripts I use to install an Arch Linux system (to my liking)
   [here](https://github.com/XPhyro/archinstall).
-
 
 ## License
 Unless otherwise stated, all software found in this repository are
