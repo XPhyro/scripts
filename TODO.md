@@ -44,6 +44,14 @@
   - Or, create a generic base file dialogue application that uses `lf` and
     create wrappers for other file dialogue applications that `exec` this
     generic base application.
+- Currently, if `fillline` is included in an on-terminal-initialisation
+  pipeline, the line might not be filled fully. This is not per se a bug on the
+  `fillline` end, but it would be nice to mitigate it. Add an option to wait a
+  tiny bit to allow for the terminal window to initialise and settle to its
+  permanent/semi-permanent row/column configuration. Add another option to wait
+  for the terminal row/column values to change. Add another option to limit the
+  waiting time of the previous action, so it does not end up waiting
+  indefinitely.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
