@@ -15,13 +15,17 @@ in C.
 ## Installation
 To install for your user:
 
-    git submodule update --init --recursive
-    make install
+```sh
+git submodule update --init --recursive
+make install
+```
 
 To install system-wide (recommended):
 
-    git submodule update --init --recursive
-    sudo make install
+```sh
+git submodule update --init --recursive
+sudo make install
+```
 
 You may change the installation directory by setting `$PREFIX`.
 
@@ -32,11 +36,15 @@ Some scripts also require `$PREFIX/share/scripts/include` to be in your path.
 ## Uninstallation
 If you installed for your user:
 
-    make uninstall
+```sh
+make uninstall
+```
 
 If you installed system-wide:
 
-    sudo make uninstall
+```sh
+sudo make uninstall
+```
 
 You do not need to re-set `$PREFIX` while uninstalling.
 
