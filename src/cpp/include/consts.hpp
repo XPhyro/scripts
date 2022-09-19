@@ -7,7 +7,8 @@ namespace xph::consts
 {
 namespace str
 {
-const std::string empty = "";
+using namespace std::string_literals;
+const std::string empty = ""s;
 } // namespace str
 
 static constexpr unsigned int zlib_crc_table[256] = {
