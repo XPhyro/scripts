@@ -34,6 +34,16 @@
 - Implement for/while-else construct of Python in C++.
   [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
   starting point.
+- Add an option to override or append to the default clean-up process on
+  toggling off in `tglapp`.
+  - This would be useful for double-forking programs and or those that have
+    weird process trees like Steam.
+- Make the `kdialog` wrapper cross-compatible with other dialogue applications
+  such as Zenity. Create wrappers for these newly supported applications that
+  `exec` the `kdialog` wrapper.
+  - Or, create a generic base file dialogue application that uses `lf` and
+    create wrappers for other file dialogue applications that `exec` this
+    generic base application.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
