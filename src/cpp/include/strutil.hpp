@@ -53,7 +53,7 @@ constexpr std::vector<std::string> split(const std::string& str, char delim, boo
     if (ignoreend && *str.end() == delim)
         tokens.pop_back();
 
-    return std::move(tokens);
+    return tokens;
 }
 
 constexpr std::vector<std::string> split(std::vector<std::string>& tokens, const std::string& str,
@@ -109,7 +109,7 @@ std::string hash(const std::string& str)
     std::string hashstr;
     ss >> hashstr;
 
-    return std::move(hashstr);
+    return hashstr;
 }
 
 void hash_in_place(std::string& str)
