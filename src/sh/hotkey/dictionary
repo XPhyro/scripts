@@ -12,4 +12,6 @@ lang="$(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | $men
 ft="$(printf "%s\n" "dictionary" "thesaurus" | $menu -p "select type")"
 [ -n "$ft" ] || exit 1
 
-$menu -p "select to copy" < "$dir/$lang/$ft" | xclip -se c
+sel="$($menu -p "select to copy" < "$dir/$lang/$ft")" \
+    && [ -n "$sel" ] \
+    && printf "%s" "$sel" | xclip -se c
