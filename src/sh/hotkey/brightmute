@@ -2,6 +2,18 @@
 # Log the current brightness, then set it to 0 if it is not 0 else set it
 # to the previously logged value. This only affects the laptop screen on my system.
 
+backlight() sudo xbacklight $XBACKLIGHT_ARGS "$@"
+
+mute() {
+    val="$(backlight -get)"
+    backlight -set 0
+}
+
+unmute() {
+    backlight -set "$val"
+    val="0"
+}
+
 eval "$(evalverbose)"
 
 eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
@@ -11,12 +23,16 @@ lck -rq xbacklight
 # shellcheck disable=SC2154
 val="$(cat -- "$fl")"
 
-if [ "$val" = "0" ]; then
-    val="$(sudo xbacklight $XBACKLIGHT_ARGS -get)"
-    sudo xbacklight $XBACKLIGHT_ARGS -set 0
+if [ "$val" -eq 0 ]; then
+    mute
 else
-    sudo xbacklight $XBACKLIGHT_ARGS -set "$val"
-    val="0"
+    newval="$(backlight  -get)"
+    if [ "$newval" -ne 0 ]; then
+        val="$newval"
+        mute
+    else
+        unmute
+    fi
 fi
 
 printf "%s" "$val" > "$fl"
