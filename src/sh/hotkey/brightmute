@@ -6,10 +6,10 @@ eval "$(evalverbose)"
 
 eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
+lck -rq xbacklight
+
 # shellcheck disable=SC2154
 val="$(cat -- "$fl")"
-
-lck -rq xbacklight
 
 if [ "$val" = "0" ]; then
     val="$(sudo xbacklight $XBACKLIGHT_ARGS -get)"
