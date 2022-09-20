@@ -4,13 +4,12 @@ eval "$(evalverbose)"
 
 eval "$(getpath -de -- dic dir 1 "[ERROR]: getpath -d -- failed, aborting.")"
 
-menu="$(getmenu)"
+menu="$(getmenu -i -m normal -l 20)"
 
 # shellcheck disable=SC2154
-lang="$(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | $menu -i)"
+lang="$(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort | $menu -p "select language")"
 [ -n "$lang" ] || exit 1
-ft="$(printf "dictionary\nthesaurus\n" | $menu -i)"
+ft="$(printf "%s\n" "dictionary" "thesaurus" | $menu -p "select type")"
 [ -n "$ft" ] || exit 1
 
-# TODO: Should the output be copied to the system clipboard?
-$menu -i -m normal -l 20 < "$dir/$lang/$ft" > /dev/null 2>&1
+$menu -p "select to copy" < "$dir/$lang/$ft" | xclip -se c
