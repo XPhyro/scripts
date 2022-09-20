@@ -1,11 +1,10 @@
-#include <limits.h>
+#include <string.h>
 #include <sys/param.h>
 #include <unistd.h>
 
-#include <strutil.h>
-
 int main(int argc, char *argv[])
 {
-    const void *const data = amallocset(PIPE_BUF, UCHAR_MAX);
+    unsigned char data[PIPE_BUF];
+    memset(data, UCHAR_MAX, PIPE_BUF * sizeof(unsigned char));
     for (;; write(STDOUT_FILENO, data, PIPE_BUF)) {}
 }
