@@ -10,7 +10,7 @@ static std::unordered_map<std::string, std::chrono::steady_clock::time_point> ti
 
 void tic(const std::string& hash)
 {
-    times.emplace(hash, std::chrono::steady_clock::now());
+    times[hash] = std::chrono::steady_clock::now();
 }
 
 [[nodiscard]] auto toc(const std::string& hash)
