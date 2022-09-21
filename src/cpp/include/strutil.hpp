@@ -7,11 +7,14 @@
 #include <functional>
 #include <ios>
 #include <memory>
-#include <ranges>
 #include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
+
+#if __cplusplus >= 202002L
+#include <ranges>
+#endif // if __cplusplus >= 202002L
 
 #include <consts.hpp>
 
@@ -26,6 +29,7 @@ std::unique_ptr<std::string> getlower(const std::string str)
     return std::make_unique<std::string>(*dup);
 }
 
+#if __cplusplus >= 202002L
 constexpr std::string makelower(std::string str)
 {
     std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
@@ -88,6 +92,7 @@ constexpr void replaceall(std::string& str, const std::string&& from, const std:
 
     str.swap(newstr);
 }
+#endif // if __cplusplus >= 202002L
 
 constexpr uint32_t crc32(const std::string_view& str)
 {
