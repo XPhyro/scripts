@@ -10,6 +10,9 @@
 namespace xph
 {
 template <std::ranges::range Titerable, std::ranges::range Titerator>
+constexpr inline Titerable&& enumerate(Titerable&& iterable);
+
+template <std::ranges::range Titerable, std::ranges::range Titerator>
 constexpr Titerable&& enumerate(Titerable&& iterable)
 {
     class iterator_t {

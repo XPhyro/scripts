@@ -20,7 +20,9 @@
 
 namespace xph::str
 {
-std::unique_ptr<std::string> getlower(const std::string str)
+std::unique_ptr<std::string> getlower(const std::string str);
+
+std::unique_ptr<std::string> inline getlower(const std::string str)
 {
     auto dup = new std::string(str);
     std::transform(dup->begin(), dup->end(), dup->begin(), [](unsigned char c) {
@@ -30,7 +32,9 @@ std::unique_ptr<std::string> getlower(const std::string str)
 }
 
 #if __cplusplus >= 202002L
-constexpr std::string makelower(std::string str)
+constexpr std::string makelower(std::string str);
+
+constexpr std::string inline makelower(std::string str)
 {
     std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
         return std::tolower(c);
@@ -38,7 +42,9 @@ constexpr std::string makelower(std::string str)
     return str;
 }
 
-constexpr auto splitview(char delim)
+constexpr auto splitview(char delim);
+
+constexpr inline auto splitview(char delim)
 {
     return std::views::split(delim) | std::views::transform([](const auto&& r) -> std::string {
                return { &*r.begin(),
@@ -46,7 +52,10 @@ constexpr auto splitview(char delim)
            });
 }
 
-constexpr std::vector<std::string> split(const std::string& str, char delim, bool ignoreend = true)
+constexpr inline std::vector<std::string> split(const std::string& str, char delim,
+                                                bool ignoreend = true);
+
+constexpr std::vector<std::string> split(const std::string& str, char delim, bool ignoreend)
 {
     std::vector<std::string> tokens;
 
@@ -61,7 +70,10 @@ constexpr std::vector<std::string> split(const std::string& str, char delim, boo
 }
 
 constexpr std::vector<std::string> split(std::vector<std::string>& tokens, const std::string& str,
-                                         char delim, bool ignoreend = true)
+                                         char delim, bool ignoreend = true);
+
+constexpr inline std::vector<std::string> split(std::vector<std::string>& tokens,
+                                                const std::string& str, char delim, bool ignoreend)
 {
     auto initsize = tokens.size();
 
@@ -75,7 +87,9 @@ constexpr std::vector<std::string> split(std::vector<std::string>& tokens, const
     return tokens;
 }
 
-constexpr void replaceall(std::string& str, const std::string&& from, const std::string&& to)
+constexpr void replaceall(std::string& str, const std::string&& from, const std::string&& to);
+
+constexpr inline void replaceall(std::string& str, const std::string&& from, const std::string&& to)
 {
     std::string newstr;
     newstr.reserve(str.length());
@@ -94,7 +108,9 @@ constexpr void replaceall(std::string& str, const std::string&& from, const std:
 }
 #endif // if __cplusplus >= 202002L
 
-constexpr uint32_t crc32(const std::string_view& str)
+constexpr uint32_t crc32(const std::string_view& str);
+
+constexpr inline uint32_t crc32(const std::string_view& str)
 {
     uint32_t crc = ~0;
     for (auto&& c : str)
@@ -102,7 +118,9 @@ constexpr uint32_t crc32(const std::string_view& str)
     return crc ^ ~0;
 }
 
-std::string hash(const std::string& str)
+std::string hash(const std::string& str);
+
+inline std::string hash(const std::string& str)
 {
     auto hash = std::hash<std::string>{}(str);
     std::bitset<sizeof(hash) * 8> bits(hash);
@@ -117,7 +135,9 @@ std::string hash(const std::string& str)
     return hashstr;
 }
 
-void hash_in_place(std::string& str)
+void hash_in_place(std::string& str);
+
+inline void hash_in_place(std::string& str)
 {
     auto hash = std::hash<std::string>{}(str);
     std::bitset<sizeof(hash) * 8> bits(hash);

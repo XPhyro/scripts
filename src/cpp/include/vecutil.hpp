@@ -8,28 +8,40 @@
 namespace xph::vec
 {
 template <typename T>
-std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T& val)
+std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T& val);
+
+template <typename T>
+inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T& val)
 {
     vec[idx] = val;
     return std::move(vec);
 }
 
 template <typename T>
-std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T&& val)
+std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T&& val);
+
+template <typename T>
+inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T&& val)
 {
     vec[idx] = val;
     return std::move(vec);
 }
 
 template <typename T>
-std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T& val)
+std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T& val);
+
+template <typename T>
+inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T& val)
 {
     vec[idx] = val;
     return std::move(vec);
 }
 
 template <typename T>
-std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T&& val)
+std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T&& val);
+
+template <typename T>
+inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T&& val)
 {
     vec[idx] = val;
     return std::move(vec);

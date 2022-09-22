@@ -32,13 +32,19 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] T parse(const std::string_view& s)
+[[nodiscard]] T parse(const std::string_view& s);
+
+template <typename T>
+[[nodiscard]] inline T parse(const std::string_view& s)
 {
     return std::move(_parse<T>(s));
 }
 
 template <typename T>
-[[nodiscard]] T parse(const std::string_view&& s)
+[[nodiscard]] T parse(const std::string_view&& s);
+
+template <typename T>
+[[nodiscard]] inline T parse(const std::string_view&& s)
 {
     return std::move(_parse<T>(s));
 }

@@ -6,7 +6,10 @@
 extern const char* execname;
 
 template <typename... Ts>
-[[noreturn]] void die(const Ts&... args)
+[[noreturn]] void die(const Ts&... args);
+
+template <typename... Ts>
+[[noreturn]] inline void die(const Ts&... args)
 {
     std::cerr << execname << ": ";
     (
