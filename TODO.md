@@ -90,6 +90,9 @@
   - Install man pages as compressed with `gzip`.
 - Add `cppcheck` to analyse target in `.make`.
 - Maybe install C/C++ headers?
+- Parse the beginning of C/C++ programs to set custom compiler/linker flags.
+- Do not clean C/C++ objects by default and use them to not re-compile unchanged
+  translation units.
 
 
 # Normal Priority
