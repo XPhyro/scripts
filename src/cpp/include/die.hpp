@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-const char* execname;
+extern const char* execname;
 
 template <typename... Ts>
 [[noreturn]] void die(const Ts&... args)

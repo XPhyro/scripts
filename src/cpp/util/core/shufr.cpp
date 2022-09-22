@@ -23,6 +23,8 @@ char optdelim = '\n';
 bool optargisline = false, optuniquemax = false;
 xph::nullable<std::size_t> optrangelow, optrangehigh, optcount, optunique;
 
+const char* execname;
+
 int main(int argc, char* argv[])
 {
     CAPTURE_EXECNAME();
