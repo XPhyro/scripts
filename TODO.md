@@ -29,7 +29,6 @@
 - In `tglapp`, support terminating the X window instead of the run process.
 - Support custom lock directory prefix in `dbutil.h`.
 - Support custom lock directory prefix in `lck`.
-- Support animated wallpapers via `mpv` in `wallpaper`.
 - Support matching aspect ratios and displays in `wallpaper`.
 - Implement for/while-else construct of Python in C++.
   [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
@@ -107,8 +106,6 @@
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the
   current desktop, even if it's in another monitor's focused desktop.
 - `clplog` sometimes does not release the lock, fix.
-- `wallpaper -x xwallpaper` assumes `-n 2` and that there are two output
-  displays.
 
 ## Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the
