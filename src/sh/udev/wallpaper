@@ -118,6 +118,7 @@ EOF4
                             --cursor-autohide=no \
                             --mute=yes \
                             --stop-screensaver=no \
+                            --panscan=1 \
                             --wid=WID \
                             -- "$fl" > /dev/null 2> /dev/null &
                     printf "%s\n" "$!"
