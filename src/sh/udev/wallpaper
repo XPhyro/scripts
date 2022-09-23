@@ -79,9 +79,14 @@ case "$optexec" in
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
-                mons="$(xrandr | grep -Fw "connected" | cut -d" " -f1)"
-                xwallpaper --output "$(printf "%s\n" "$mons" | head -n 1)" --zoom "$(printf "%s\0" "$@" | head -z -n 1)" &
-                xwallpaper --output "$(printf "%s\n" "$mons" | tail -n 1)" --zoom "$(printf "%s\0" "$@" | tail -z -n 1)" &
+                while IFS= read -r mon <&3 && IFS= read -r fl <&4; do
+                    xwallpaper --output "$mon" --zoom "$fl" &
+                done 3<<EOF3 4<<EOF4
+$(xrandr | grep -Fw "connected" | cut -d" " -f1)
+EOF3
+$(printf "%s\n" "$@")
+EOF4
+
                 printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
