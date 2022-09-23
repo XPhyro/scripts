@@ -166,4 +166,25 @@ HEDLEY_MALLOC void *acrealloc(void *oldptr, size_t oldnmemb, size_t nmemb, size_
     return ptr;
 }
 
+#ifdef _ISOC11_SOURCE
+HEDLEY_MALLOC void *aaligned_alloc(size_t alignment, size_t size)
+{
+    int olderrno;
+    void *ptr;
+
+    olderrno = errno;
+    errno = 0;
+    ptr = aligned_alloc(alignment, size);
+
+    if (!ptr || errno) {
+        perror("aligned_alloc");
+        exit(EXIT_FAILURE);
+    }
+
+    errno = olderrno;
+
+    return ptr;
+}
+#endif /* ifdef _ISOC11_SOURCE */
+
 #endif /* ifndef HEADER_SCRIPTS_C_STDUTIL */
