@@ -131,7 +131,6 @@ EOF4
                             --wid=WID \
                             -- "$fl" > /dev/null 2> /dev/null &
                     printf "%s\n" "$!"
-                    printf "%s\n" "$geom" >&2
                 done 3<<EOF3 4<<EOF4
 $(xrandr | sed -n "s/[a-zA-Z0-9_-]\+ connected \(primary \)\?\([0-9]\+x[0-9]\++[0-9]\++[0-9]\+\) (.*$/\2/p")
 EOF3
