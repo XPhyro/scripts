@@ -31,7 +31,9 @@ printhelp() {
     -n, --no-clobber
         Do nothing if the output file exists.
     -r, --remove
-        Remove INFILE if operation succeeded."
+        Remove INFILE if operation succeeded.
+    -t FILE, --target FILE
+        Specify TEMPOUTFILE as an option instead of a positional argument. Useful for integrating with \`xargs\`."
             ;;
         compress)
             printf "%s\n" \
@@ -328,6 +330,7 @@ parseargs_optimize() {
                         M) moveorig="1";;
                         n) overwrite="-n";;
                         r) remove="1";;
+                        t) shift; assertarg "-t" "FILE" "$1"; target="$1";;
                         *) printusage "-$opt" "optimize";;
                     esac
 
@@ -343,6 +346,7 @@ parseargs_optimize() {
                     move-to-original) moveorig="1";;
                     no-clobber) overwrite="-n";;
                     remove) remove="1";;
+                    target) shift; assertarg "-t" "FILE" "$1"; target="$1";;
                     "") shift; break;;
                     *) printusage "--$opt" "optimize";;
                 esac
@@ -362,8 +366,13 @@ $1"
 
     argv="$(printf "%s" "$argv" | tail -n +2)"
 
-    infls="$(printf "%s" "$argv" | head -n -1)"
-    outfl="$(printf "%s" "$argv" | tail -n 1)"
+    if [ -z "$target" ]; then
+        infls="$(printf "%s" "$argv" | head -n -1)"
+        outfl="$(printf "%s" "$argv" | tail -n 1)"
+    else
+        infls="$(printf "%s" "$argv")"
+        outfl="$target"
+    fi
 
     [ "$(printf "%s\n" "$infls" | wc -l)" -lt 1 ] \
         && printferrq "At least 2 in files and exactly one out file are required, exiting.\n"
