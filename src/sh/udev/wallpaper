@@ -6,9 +6,13 @@ eval "$(evalverbose)"
 
 execs="'xwallpaper', 'bgs', 'hsetroot' and 'mpv'"
 
-unset optcount opttime
-while getopts "d:hn:t:x:" OPT; do
+unset optdepth optcount opttime
+while getopts "D:d:hn:t:x:" OPT; do
     case "$OPT" in
+        D)
+            [ "$OPTARG" -ge 1 ] || std_logerrq "DEPTH must be a valid positive integer."
+            optdepth="$OPTARG"
+            ;;
         d)
             [ -d "$OPTARG" ] || std_logerrq "DIR must be a valid directory."
             optdir="$OPTARG"
@@ -16,7 +20,8 @@ while getopts "d:hn:t:x:" OPT; do
         h)
             printf "%s" \
 "wallpaper [OPTION...]
-   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`.
+   -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is 1.
+   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`/{image,video} depending the selected executable.
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'hsetroot'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
@@ -41,7 +46,7 @@ while getopts "d:hn:t:x:" OPT; do
 done
 shift "$((OPTIND - 1))"
 
-[ -z "$optdir" ] && eval "$(getpath -dse -- wa optdir 1 "getpath -ds -- failed.")"
+[ -z "$optdepth" ] && optdepth=1
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
 [ -z "$optexec" ] && {
@@ -49,10 +54,14 @@ shift "$((OPTIND - 1))"
     [ -z "$optexec" ] \
         && std_logerrq "At least one of $execs must be installed."
 }
+[ -z "$optdir" ] && {
+    eval "$(getpath -dse -- wa optdir 1 "getpath -ds -- failed.")"
+    optdir="$optdir/$(printf "%s\n" "$optexec" | DEF=image fmaps mpv=video)"
+}
 
 case "$optexec" in
     bgs)
-        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -63,7 +72,7 @@ case "$optexec" in
             ' --
         ;;
     hsetroot)
-        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -74,7 +83,7 @@ case "$optexec" in
             ' --
         ;;
     xwallpaper)
-        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -91,7 +100,7 @@ EOF4
             ' --
         ;;
     mpv)
-        find "$optdir" -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -print0 \
+        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "video/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
