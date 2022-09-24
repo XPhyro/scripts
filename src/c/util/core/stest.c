@@ -1,3 +1,6 @@
+/* @LDFLAGS -lmagic
+ */
+
 /*  This was inspired by the `stest` utility included with the suckless `dmenu`.
  *
  *  Differences from the suckless version are as so:

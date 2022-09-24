@@ -5,6 +5,47 @@ logerrq() {
     exit 1
 }
 
+FUNC_PARSEFLAGS='
+parseflags() {
+    flags=""
+    ldflags=""
+
+    firstline="$(head -n 1 -- "$1")"
+    if printf "%s\n" "$firstline" | grep -q "^\s*//"; then
+        multiline=0
+        firstlineregex="/"
+        lineregex="//"
+        inverselineregex="//"
+    elif printf "%s\n" "$firstline" | grep -q "^\s*/\*"; then
+        multiline=1
+        firstlineregex="\*"
+        lineregex="\*?"
+        inverselineregex=""
+    else
+        return
+    fi
+
+    eval "$(
+        {
+            printf "%s\n" "$firstline" \
+                | sed -E "s#^\s*/$firstlineregex#$inverselineregex#"
+            tail -n +2 -- "$1" | while IFS= read -r line; do
+                printf "%s\n" "$line" | grep "^\s*$lineregex" \
+                    || break
+            done
+        } | sed -En "s#^\s*$lineregex\s*@([A-Z0-9_-]+):?(.*)\$#\1=\"\2\"#p" \
+          | while IFS= read -r line; do
+                eval "$line"
+                [ -n "$FLAGS" ] && flags="$flags $FLAGS"
+                [ -n "$CFLAGS" ] && flags="$flags $CFLAGS"
+                [ -n "$CXXFLAGS" ] && flags="$flags $CXXFLAGS"
+                [ -n "$LDFLAGS" ] && ldflags="$ldflags $LDFLAGS"
+                printf "flags='\''%s'\''\nldflags='\''%s'\''\n" "$flags" "$ldflags"
+            done | tail -n 2
+    )"
+}
+'
+
 install() {
     mkdir -p -- "$binprefix" "$manprefix" "$dataprefix"
     mkdir "$binprefix/wrapper" 2> /dev/null \
@@ -59,13 +100,16 @@ install() {
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
+                '"$FUNC_PARSEFLAGS"'
+                set -x
+                parseflags "$1"
                 set -e
                 out="${1%.c}"
                 out="${out##*/}"
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                '"$CC"' '"$CFLAGS"' "$1" '"$CLIBS"' -o "$binprefix/$out" \
+                '"$CC"' '"$CFLAGS"' $flags "$1" '"$CLDFLAGS"' $ldflags -o "$binprefix/$out" \
                     && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
     )
@@ -87,13 +131,16 @@ install() {
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
+                '"$FUNC_PARSEFLAGS"'
+                set -x
+                parseflags "$1"
                 set -e
                 out="${1%.cpp}"
                 out="${out##*/}"
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
-                '"$CXX"' '"$CXXFLAGS"' "$1" '"$CXXLIBS"' -o "$binprefix/$out" \
+                '"$CXX"' '"$CXXFLAGS"' $flags "$1" '"$CXXLDFLAGS"' $ldflags -o "$binprefix/$out" \
                     && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
     )
@@ -105,6 +152,7 @@ install() {
                 mkdir -p -- "$manprefix/man$section" >&2
                 export section
                 find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
+                    set -x
                     progname="$(basename -- "$1")"
                     manpath="$manprefix/man$section/${progname%.*}.$section"
                     m4 -I"$rootdir" -DVERSION="$shorthash" -DTHIS="$1" "$1" \
@@ -231,12 +279,16 @@ analyse() {
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
     find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
-        | xargs -r0 -I FILE \
-            scan-build \
-                -analyze-headers --status-bugs $v $view \
-                -maxloop "$m" -no-failure-reports \
-                --use-cc="$(command -v "$CC")" \
-                "$CC" $CFLAGS 'FILE' $CLIBS -o "$tmpout"
+        | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" xargs -r0 -n 1 sh -c '
+                '"$FUNC_PARSEFLAGS"'
+                set -x
+                parseflags "$1"
+                scan-build \
+                    -analyze-headers --status-bugs $v $view \
+                    -maxloop "$m" -no-failure-reports \
+                    --use-cc="$(command -v "$CC")" \
+                    "$CC" $CFLAGS $flags "$1" $CLDFLAGS $ldflags -o "$tmpout"
+            ' --
     ec="$((ec | $?))"
     rm -f -- "$tmpout"
     # TODO: re-enable this after clang implements c++2b ranges
@@ -244,7 +296,7 @@ analyse() {
     #     | xargs -r0 -I FILE \
     #         scan-build -analyze-headers --status-bugs \
     #             $v $view -maxloop "$m" -no-failure-reports \
-    #             "$CXX" $CXXFLAGS 'FILE' $CXXLIBS -o "$tmpout" || ec="$?"
+    #             "$CXX" $CXXFLAGS 'FILE' $CXXLDFLAGS -o "$tmpout" || ec="$?"
     # ec="$((ec | $?))"
 }
 
@@ -362,7 +414,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -ffp-contract=on -fassociative-math -ffast-math \
        -Iinclude -I'$rootdir/lib/hedley'"
-CLIBS="-lm -lmagic"
+CLDFLAGS=""
 C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
 export C_INCLUDE_PATH
 
@@ -376,7 +428,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -fpermissive -ffp-contract=on -fassociative-math -ffast-math \
           -Iinclude -I'$rootdir/src/c/include' \
           -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
-CXXLIBS=""
+CXXLDFLAGS=""
 CPLUS_INCLUDE_PATH="$PWD/cpp/include:$PWD/c/include:$rootdir/lib/hedley:$rootdir/lib/pstreams"
 export CPLUS_INCLUDE_PATH
 
