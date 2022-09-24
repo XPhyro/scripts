@@ -61,7 +61,7 @@ shift "$((OPTIND - 1))"
 
 case "$optexec" in
     bgs)
-        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
+        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -72,7 +72,7 @@ case "$optexec" in
             ' --
         ;;
     hsetroot)
-        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
+        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -83,7 +83,7 @@ case "$optexec" in
             ' --
         ;;
     xwallpaper)
-        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
+        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -100,7 +100,7 @@ EOF4
             ' --
         ;;
     mpv)
-        find "$optdir" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
+        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "video/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
