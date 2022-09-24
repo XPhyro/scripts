@@ -30,7 +30,7 @@ parseflags() {
             printf "%s\n" "$firstline" \
                 | sed -E "s#^\s*/$firstlineregex#$inverselineregex#"
             tail -n +2 -- "$1" | while IFS= read -r line; do
-                printf "%s\n" "$line" | grep "^\s*$lineregex" \
+                printf "%s\n" "$line" | grep -E "^\s*$lineregex" \
                     || break
             done
         } | sed -En "s#^\s*$lineregex\s*@([A-Z0-9_-]+):?(.*)\$#\1=\"\2\"#p" \
