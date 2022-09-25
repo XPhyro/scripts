@@ -7,6 +7,7 @@ eval "$(evalverbose)"
 execs="'xwallpaper', 'bgs', 'hsetroot' and 'mpv'"
 
 unset optdepth optcount opttime
+defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
 while getopts "D:d:hn:t:x:" OPT; do
     case "$OPT" in
         D)
@@ -20,7 +21,7 @@ while getopts "D:d:hn:t:x:" OPT; do
         h)
             printf "%s" \
 "wallpaper [OPTION...]
-   -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is $((2**31 - 1)).
+   -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is $defaultdepth.
    -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`/{image,video} depending the selected executable.
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'hsetroot'.
@@ -46,7 +47,7 @@ while getopts "D:d:hn:t:x:" OPT; do
 done
 shift "$((OPTIND - 1))"
 
-[ -z "$optdepth" ] && optdepth=$((2**31 - 1))
+[ -z "$optdepth" ] && optdepth="$defaultdepth"
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
 [ -z "$optexec" ] && {
