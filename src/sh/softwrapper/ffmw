@@ -361,7 +361,7 @@ $1"
 
     for i; do
         argv="$argv
-$1"
+$i"
     done
 
     argv="$(printf "%s" "$argv" | tail -n +2)"
