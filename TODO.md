@@ -51,6 +51,12 @@
   for the terminal row/column values to change. Add another option to limit the
   waiting time of the previous action, so it does not end up waiting
   indefinitely.
+- Generalise `vector`:
+  - From `1D->1D` to `ND->MD`.
+    - Maybe even support variadic vectors like: `{{1, 2}, {3}, {4, 5, 6}}`.
+      Values can remain as strings.
+  - Support `key->value` and `index->value` at the same time. Key can just be
+    strings.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -72,6 +78,12 @@
   streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
   with optional pair configuration over `ssh`.
 - Merge `*maps` into a single C/C++ program.
+- After `vector` is generalised, write a shell library using `vector` to parse
+  arguments. Or just create another C/C++ program for this.
+  - Ideally, it would
+    - require very little or no boilerplate code.
+    - support parsing without a loop in the shell script.
+    - output error-checked `eval`able variables similar to `getpath`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
