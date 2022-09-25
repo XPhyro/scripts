@@ -119,6 +119,7 @@ EOF4
                             --hwdec=auto \
                             --hwdec-codecs=all \
                             --vo=gpu \
+                            --profile=gpu-hq \
                             --no-config \
                             --no-input-terminal \
                             --no-input-cursor \
