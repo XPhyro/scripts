@@ -899,10 +899,15 @@ optimize() {
             printf 'No such file [%s], exiting.\n' "$fl"
             exit 1
         }
+        [ "$outfl" = "$fl" ] && {
+            printf 'INFILE and TEMPOUTFILE [%s] cannot be the same.\n' "$fl"
+            exit 1
+        }
         $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 -c:a copy -q:v 0 "file:$outfl" || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
+        [ "$remove" = '1' ] && rm -f -- "$fl"
         [ "$moveorig" = '1' ] && mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
     done
 }
