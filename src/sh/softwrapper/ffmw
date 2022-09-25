@@ -894,18 +894,17 @@ optimise() {
 }
 
 optimize() {
-    printf "%s\n" "$infls" | xargs -d '\n' -n 1 sh -c "
-        i=\"\$1\"
-        [ -f \"\$i\" ] || {
-            printf 'No such file [%s], exiting.\n' \"\$i\"
+    printf "%s\n" "$infls" | while IFS= read -r fl; do
+        [ -f "$fl" ] || {
+            printf 'No such file [%s], exiting.\n' "$fl"
             exit 1
         }
-        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -c:v libx265 -c:a copy -q:v 0 '$outfl' || {
+        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 -c:a copy -q:v 0 "file:$outfl" || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
-        [ '$moveorig' = '1' ] && mv '$mvoverwrite' -- '$outfl' \"\${i%.*}.${outfl##*.}\"
-    " --
+        [ "$moveorig" = '1' ] && mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
+    done
 }
 
 compress() {
