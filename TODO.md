@@ -77,6 +77,9 @@
 - Optimise `dbutil.h` to do less allocations.
   - [ ] Reuse built paths.
 - Rewrite `cast` with size-aware conversion.
+- Rewrite `ffmw`.
+  - Use `vector`.
+  - Use `-nostdin` and `file:` for `ffmpeg`.
 
 ## Other
 - Documentation:
