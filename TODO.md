@@ -84,6 +84,10 @@
     - require very little or no boilerplate code.
     - support parsing without a loop in the shell script.
     - output error-checked `eval`able variables similar to `getpath`.
+- Write an audio waveform visualisation extension (in Lua) for `mpv`.
+  - These could be useful:
+    - <https://web.archive.org/web/20220925075135/https://www.securitronlinux.com/debian-testing/how-to-get-a-nice-waveform-display-with-the-mpv-media-player-on-linux/>
+    - <https://web.archive.org/web/20220925075211/https://gist.github.com/matiaspl/8b1880456d10d582677aadb474d743b6>
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
