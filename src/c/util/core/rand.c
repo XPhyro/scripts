@@ -1,3 +1,6 @@
+/* @LDFLAGS -lbsd
+ */
+
 #define _POSIX_C_SOURCE 200809L
 
 #include <alloca.h>
@@ -38,7 +41,9 @@ void randbuf(void *buf, size_t buflen)
 #else /* ifdef __linux__ */
     arc4random_buf(buf, buflen);
 #endif /* ifndef __linux__ */
-#endif /* ifdef __unix__ */
+#else /* ifdef __unix__ */
+    _Static_assert(false, "not on UNIX, don't know how to generate random numbers.");
+#endif
 }
 
 int main(int argc, char *argv[])
