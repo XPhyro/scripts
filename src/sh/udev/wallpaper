@@ -68,7 +68,7 @@ case "$optexec" in
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
                 bgs -z "$@"
-                printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
         ;;
@@ -79,7 +79,7 @@ case "$optexec" in
             | shufr -U0 \
             | xargs -r0 -n 1 sh -c '
                 hsetroot -cover "$1"
-                printf "%s\n" "$1" > '"$optdir/.current-wallpapers"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
         ;;
@@ -96,7 +96,7 @@ $(xrandr | grep -Fw "connected" | cut -d" " -f1)
 EOF3
 $(printf "%s\n" "$@")
 EOF4
-                printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
         ;;
@@ -139,7 +139,7 @@ EOF3
 $(printf "%s\n" "$@")
 EOF4
 )"
-                printf "%s\n" "$@" > '"$optdir/.current-wallpapers"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 trap clean INT TERM EXIT QUIT
                 sleep '"$opttime"'
                 clean
