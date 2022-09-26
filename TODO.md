@@ -12,6 +12,12 @@
 ## Bugs
 - `acpihandler` does not handle already-off keyboard/touchpad correctly on PROG1
   event.
+- The following `stest` usages yield different results. They should not. The
+  second one yields the correct results. There might be some cache corruption or
+  clean-up issue related to the `libmagic` or `file` (via `fork`/`execlp`)
+  usages.
+  1. `find . -print0 | sort -z | xargs -r0 stest -z -m video -- | sort -z`
+  2. `find . -print0 | sort -z | xargs -r0 -n 1 stest -z -m video -- | sort -z`
 
 ## Features
 - Add the ability to have default arguments via environment variables in
