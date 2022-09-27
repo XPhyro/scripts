@@ -894,6 +894,7 @@ optimise() {
 }
 
 optimize() {
+    lastfl="$(printf "%s\n" "$infls" | tail -n 1)"
     printf "%s\n" "$infls" | while IFS= read -r fl; do
         [ -f "$fl" ] || {
             printf 'No such file [%s], exiting.\n' "$fl"
@@ -909,6 +910,7 @@ optimize() {
         }
         [ "$remove" = '1' ] && rm -f -- "$fl"
         [ "$moveorig" = '1' ] && mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
+        [ "$fl" != "$lastfl" ] && fillline -
     done
 }
 
