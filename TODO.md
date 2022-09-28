@@ -18,6 +18,8 @@
   usages.
   1. `find . -print0 | sort -z | xargs -r0 stest -z -m video -- | sort -z`
   2. `find . -print0 | sort -z | xargs -r0 -n 1 stest -z -m video -- | sort -z`
+- `parseflags` in `.make`, for some files, checks for the whole file instead of
+  halting on seeing a non-commented line or a multi-line comment ending.
 
 ## Features
 - Add the ability to have default arguments via environment variables in
