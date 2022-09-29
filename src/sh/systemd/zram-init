@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -e
+
+assertroot
+
+modprobe -r zram
+modprobe zram
+printf "%s\n" "${ZRAM_INIT_COMP_ALGORITHM:-"lz4"}" > /sys/block/zram0/comp_algorithm
+printf "%sM\n" "${ZRAM_INIT_DISKSIZE:-"$(free -m | grep -F Mem: | awk '{print $2}')"}" > /sys/block/zram0/disksize
+mkswap /dev/zram0
+swapon -p "${ZRAM_INIT_PRIORITY:-32}" /dev/zram0
