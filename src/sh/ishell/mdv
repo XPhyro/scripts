@@ -2,8 +2,17 @@
 
 eval "$(evalverbose)"
 
+execname="${0##*/}"
+vecname="tmp_files"
+
+vector "$execname" "$vecname" new
+
 for i; do
     tmp="$(mktemp --suffix=.html)" # not cleaning after is intentional
     cmark-gfm "$i" > "$tmp"
-    setsid --fork xdg-open "$tmp" &
+    xdg-open "$tmp" &
+    vector "$execname" "$vecname" push_back "$i"
 done
+
+wait
+vector -z "$execname" "$vecname" | xargs -r0 rm -f --
