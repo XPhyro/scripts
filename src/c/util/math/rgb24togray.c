@@ -2,6 +2,7 @@
  */
 
 #define _POSIX_C_SOURCE 200809L
+#define _XOPEN_SOURCE 500
 
 #include <math.h>
 #include <stdint.h>
@@ -136,7 +137,7 @@ int main(int argc, char *argv[])
                     h = acos((r8 - g8 / 2.0 - b8 / 2.0) /
                              sqrt(r8 * r8 + g8 * g8 + b8 * b8 - r8 * g8 - r8 * b8 - g8 * b8));
 
-                    graybuf[grayidx] = (uint8_t)(h);
+                    graybuf[grayidx] = (uint8_t)round(h * (255.0 / M_PI));
                     break;
                 case METHOD_HSV_S:
                     r8 = buf[i];
@@ -148,7 +149,7 @@ int main(int argc, char *argv[])
 
                     s = !M ? 0 : 1 - (double)m / (double)M;
 
-                    graybuf[grayidx] = (uint8_t)(s);
+                    graybuf[grayidx] = (uint8_t)round(s * 255.0);
                     break;
                 case METHOD_HSV_V:
                     r8 = buf[i];
@@ -159,7 +160,7 @@ int main(int argc, char *argv[])
 
                     v = M / 255.0;
 
-                    graybuf[grayidx] = (uint8_t)(v);
+                    graybuf[grayidx] = (uint8_t)round(v * 255.0);
                     break;
                 default:
                     fprintf(stderr, "%s: given method is not implemented\n", execname);
