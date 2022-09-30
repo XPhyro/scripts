@@ -101,7 +101,6 @@ install() {
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 '"$FUNC_PARSEFLAGS"'
-                set -x
                 parseflags "$1"
                 set -e
                 out="${1%.c}"
@@ -132,7 +131,6 @@ install() {
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 '"$FUNC_PARSEFLAGS"'
-                set -x
                 parseflags "$1"
                 set -e
                 out="${1%.cpp}"
@@ -152,7 +150,6 @@ install() {
                 mkdir -p -- "$manprefix/man$section" >&2
                 export section
                 find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
-                    set -x
                     progname="$(basename -- "$1")"
                     manpath="$manprefix/man$section/${progname%.*}.$section"
                     m4 -I"$rootdir" -DVERSION="$shorthash" -DTHIS="$1" "$1" \
