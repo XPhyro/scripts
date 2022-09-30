@@ -18,7 +18,7 @@
 const char *const db_scriptsprefix = "/scripts/";
 const char *const db_locksprefix = "/locks/";
 
-const char *temphome()
+const char *temphome_s(const char *pfx)
 {
     static const char *temphome;
     static bool tmphomeset = false;
@@ -31,10 +31,15 @@ const char *temphome()
         prefix = "/tmp";
 
     tmphomeset = true;
-    return temphome = vstrcat(2, prefix, db_scriptsprefix);
+    return temphome = vstrcat(2, prefix, pfx);
 }
 
-const char *confhome()
+const char *temphome()
+{
+    return temphome_s(db_scriptsprefix);
+}
+
+const char *confhome_s(const char *pfx)
 {
     static const char *confhome;
     static bool confhomeset = false;
@@ -54,13 +59,18 @@ const char *confhome()
     }
 
     confhomeset = true;
-    confhome = vstrcat(2, prefix, db_scriptsprefix);
+    confhome = vstrcat(2, prefix, pfx);
     if (allocedprefix)
         free(prefix);
     return confhome;
 }
 
-const char *cachehome()
+const char *confhome()
+{
+    return confhome_s(db_scriptsprefix);
+}
+
+const char *cachehome_s(const char *pfx)
 {
     static const char *cachehome;
     static bool cachehomeset = false;
@@ -80,15 +90,20 @@ const char *cachehome()
     }
 
     cachehomeset = true;
-    cachehome = vstrcat(2, prefix, db_scriptsprefix);
+    cachehome = vstrcat(2, prefix, pfx);
     if (allocedprefix)
         free(prefix);
     return cachehome;
 }
 
+const char *cachehome()
+{
+    return cachehome_s(db_scriptsprefix);
+}
+
 typedef enum { LCKDB_TEMP, LCKDB_PERS } lckdb_t;
 
-const char *lckhome(lckdb_t type)
+const char *lckhome_s(lckdb_t type, const char *pfx)
 {
     static const char *lckhome;
     static bool lckhomeset = false;
@@ -116,13 +131,18 @@ const char *lckhome(lckdb_t type)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif /* __GNUC__ */
-    prefix = vstrcat(2, s, db_locksprefix);
+    prefix = vstrcat(2, s, pfx);
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif /* __GNUC__ */
 
     lckhomeset = true;
     return lckhome = prefix;
+}
+
+const char *lckhome(lckdb_t type)
+{
+    return lckhome_s(type, db_locksprefix);
 }
 
 char *lckpath(META_NONNULL const char *hash, lckdb_t type, bool mkdir)
