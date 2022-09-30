@@ -2,6 +2,9 @@
 #define HEADER_SCRIPTS_CXX_MACROS
 
 #define COMMA ,
+#define NOOP \
+    do {     \
+    } while (false)
 
 #define DEFINE_DEFAULT_ENUM(NAME, VALS) \
     struct _##NAME##_definition {       \
