@@ -62,6 +62,9 @@ const char *confhome_s(const char *pfx)
     confhome = vstrcat(2, prefix, pfx);
     if (allocedprefix)
         free(prefix);
+
+    rmkdir((char *)confhome, 0755);
+
     return confhome;
 }
 
@@ -93,6 +96,9 @@ const char *cachehome_s(const char *pfx)
     cachehome = vstrcat(2, prefix, pfx);
     if (allocedprefix)
         free(prefix);
+
+    rmkdir((char *)cachehome, 0755);
+
     return cachehome;
 }
 
