@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: dep
       run: |
-        sudo apt -y install shellcheck clang-tools
+        sudo apt -y install shellcheck clang-tools libbsd-dev
         git submodule update --init --recursive
     - name: analyse
       run: |
