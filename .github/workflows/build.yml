@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: dep
       run: |
-        sudo apt -y install libmagic-dev moreutils
+        sudo apt -y install libmagic-dev moreutils libbsd-dev
         git submodule update --init --recursive
     - name: build
       run: |
