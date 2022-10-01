@@ -23,9 +23,11 @@ for i; do
     }
 done
 
+rootpwd="$PWD"
 while true; do
     for i; do
         cd "$i" || exit 1
         main
+        cd "$rootpwd" || exit 1
     done
 done
