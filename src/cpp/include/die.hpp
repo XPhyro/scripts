@@ -5,6 +5,8 @@
 
 extern const char* execname;
 
+namespace xph
+{
 template <typename... Ts>
 [[noreturn]] void die(const Ts&... args);
 
@@ -20,6 +22,7 @@ template <typename... Ts>
     std::cerr << '\n';
     std::exit(EXIT_FAILURE);
 }
+} // namespace xph
 
 #define CAPTURE_EXECNAME()  \
     if (argc)               \

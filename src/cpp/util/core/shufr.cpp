@@ -54,12 +54,12 @@ int main(int argc, char* argv[])
     }
 
     if (lines.empty())
-        die("no lines to repeat");
+        xph::die("no lines to repeat");
 
     if (optuniquemax)
         optunique = lines.size();
     else if (optunique && optunique > lines.size())
-        die("not enough lines to ensure unique sequences of size ", optunique);
+        xph::die("not enough lines to ensure unique sequences of size ", optunique);
 
     std::random_device rdev;
     std::mt19937 rng(rdev());
@@ -164,7 +164,7 @@ void parseargs(int& argc, char**& argv)
                 optdelim = '\0';
                 break;
             default:
-                die("Try '", execname, " -h' for more information.");
+                xph::die("Try '", execname, " -h' for more information.");
         }
     }
 
@@ -173,10 +173,11 @@ void parseargs(int& argc, char**& argv)
 
     if (optrangelow || optrangehigh) {
         if (optargisline)
-            die("cannot combine -e and -i options");
+            xph::die("cannot combine -e and -i options");
         if (argc)
-            die("extra operand ‘", argv[0], "‘\nTry '", execname, " -h' for more information.");
+            xph::die(
+                "extra operand ‘", argv[0], "‘\nTry '", execname, " -h' for more information.");
     }
     if (optrangelow > optrangehigh)
-        die("LO must be less than HI");
+        xph::die("LO must be less than HI");
 }
