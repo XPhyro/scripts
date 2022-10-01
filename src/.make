@@ -276,9 +276,8 @@ analyse() {
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
     find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
-        | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" xargs -r0 -n 1 sh -c '
+        | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 sh -c '
                 '"$FUNC_PARSEFLAGS"'
-                set -x
                 parseflags "$1"
                 scan-build \
                     -analyze-headers --status-bugs $v $view \
