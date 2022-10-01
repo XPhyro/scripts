@@ -25,9 +25,7 @@ done
 
 while true; do
     for i; do
-        (
-            cd "$i" || exit 1
-            main
-        )
+        cd "$i" || exit 1
+        main
     done
 done
