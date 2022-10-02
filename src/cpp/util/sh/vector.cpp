@@ -394,7 +394,7 @@ cache parse_args(int& argc, char**& argv)
                         std::cout.setstate(std::ios_base::failbit);
                     else
                         std::cerr.setstate(std::ios_base::failbit);
-                    optquiet++;
+                    ++optquiet;
                 }
                 break;
             case 'z':
@@ -558,7 +558,7 @@ void push_back(int argc, char* argv[])
         die("vector is at maximum capacity");
 
     for (const auto& line : std::views::counted(argv, argc)) {
-        size++;
+        ++size;
 
         fl.seekg(0, std::ios::beg);
         fl.write(reinterpret_cast<char*>(&size), sizeof(size));
@@ -595,7 +595,7 @@ void emplace_back(int argc, char* argv[])
     redi::ipstream proc(exec_argv, redi::pstreams::pstdout);
     std::string line;
     while (std::getline(proc.out(), line, '\0')) { // TODO: make delimiter configurable
-        size++;
+        ++size;
 
         fl.seekg(0, std::ios::beg);
         fl.write(reinterpret_cast<char*>(&size), sizeof(size));

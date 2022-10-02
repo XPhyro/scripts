@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     if (!optunique || optunique <= 1ul) {
         std::uniform_int_distribution<std::size_t> dist(0u, lines.size() - 1);
         for (std::size_t count = 0; !optcount || count < optcount;
-             std::cout << lines[dist(rng)] << optdelim, count++) {}
+             std::cout << lines[dist(rng)] << optdelim, ++count) {}
     } else {
         std::vector<std::size_t> index_turns(lines.size());
         std::set<std::size_t> inactive_indices;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
         for (const auto&& i : std::views::iota(0u, lines.size()))
             active_indices.push_back(i);
 
-        for (std::size_t count = 0; !optcount || count < optcount; count++) {
+        for (std::size_t count = 0; !optcount || count < optcount; ++count) {
             for (const auto& index : inactive_indices) {
                 if (!--index_turns[index]) {
                     inactive_indices_buffer.insert(index);

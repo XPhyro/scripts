@@ -137,7 +137,7 @@ HEDLEY_NO_RETURN void help()
 
     std::sort(typenames.begin(), typenames.end());
 
-    for (auto it = typenames.begin(); it < typenames.end() - 1; it++)
+    for (auto it = typenames.begin(); it < typenames.end() - 1; ++it)
         std::cout << *it << ", ";
     std::cout << typenames.back()
               << ".\n"
@@ -166,9 +166,9 @@ void castraw(ssize_t n, unsigned char buf[])
 {
     switch (totype) {
         case type::binary:
-            for (ssize_t i = 0; i < n; i++) {
+            for (ssize_t i = 0; i < n; ++i) {
                 auto c = buf[i];
-                for (int b = 0; b < 7; b++) {
+                for (int b = 0; b < 7; ++b) {
                     auto bit = (c & (1 << b)) >> b;
                     std::cout << bit;
                 }
@@ -260,10 +260,10 @@ void caststr(const std::string& val)
                 for (const auto& c : view.substr(i, 8) | std::views::reverse) {
                     switch (c) {
                         case '0':
-                            bits &= ~(static_cast<unsigned char>(1) << bitidx++);
+                            bits &= ~(static_cast<unsigned char>(1) << ++bitidx);
                             break;
                         case '1':
-                            bits |= static_cast<unsigned char>(1) << bitidx++;
+                            bits |= static_cast<unsigned char>(1) << ++bitidx;
                             break;
                         default:
                             std::cerr << execname << ": expected 0 or 1, got '" << c << "'.\n";

@@ -32,8 +32,8 @@ constexpr Titerable&& enumerate(Titerable&& iterable)
 
         void operator++()
         {
-            iteration++;
-            iterator++;
+            ++iteration;
+            ++iterator;
         }
 
         auto operator*() const
