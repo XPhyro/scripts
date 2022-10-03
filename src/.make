@@ -6,6 +6,7 @@ logerrq() {
 }
 
 FUNC_PARSEFLAGS='
+set -x
 parseflags() {
     flags=""
     ldflags=""
@@ -14,25 +15,20 @@ parseflags() {
     if printf "%s\n" "$firstline" | grep -q "^\s*//"; then
         multiline=0
         firstlineregex="/"
-        lineregex="//"
+        lineregex="\/\/"
         inverselineregex="//"
     elif printf "%s\n" "$firstline" | grep -q "^\s*/\*"; then
         multiline=1
         firstlineregex="\*"
-        lineregex="\*?"
+        lineregex="*?"
         inverselineregex=""
     else
         return
     fi
 
     eval "$(
-        {
-            printf "%s\n" "$firstline" \
-                | sed -E "s#^\s*/$firstlineregex#$inverselineregex#"
-            tail -n +2 -- "$1" | while IFS= read -r line; do
-                printf "%s\n" "$line" | grep -E "^\s*$lineregex" \
-                    || break
-            done
+        {   printf "%s\n" "$firstline" | sed -E "s#^\s*/$firstlineregex#$inverselineregex#"
+            tail -n +2 -- "$1" | awk "{if (/^\s*$lineregex/) print; else exit;}"
         } | sed -En "s#^\s*$lineregex\s*@([A-Z0-9_-]+):?(.*)\$#\1=\"\2\"#p" \
           | while IFS= read -r line; do
                 eval "$line"
@@ -242,9 +238,9 @@ analyse() {
     command -v shfmt > /dev/null && {
         printf "%s\n" \
             "" \
-            "==========" \
+            "=====" \
             "shfmt" \
-            "==========" \
+            "=====" \
             ""
 
         shfmt --version
