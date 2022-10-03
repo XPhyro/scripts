@@ -28,56 +28,55 @@
     };                            \
     typedef xph::macros::safe_enum<_##NAME##_definition, int> NAME
 
-namespace xph::macros
-{
-template <typename def, typename inner = typename def::type>
-class safe_enum : public def {
-    typedef inner type;
-    inner val;
+namespace xph::macros {
+    template <typename def, typename inner = typename def::type>
+    class safe_enum : public def {
+        typedef inner type;
+        inner val;
 
-public:
-    safe_enum() {}
+    public:
+        safe_enum() {}
 
-    safe_enum(type v)
-        : val(v)
-    {
-    }
+        safe_enum(type v)
+            : val(v)
+        {
+        }
 
-    type value() const
-    {
-        return val;
-    }
+        type value() const
+        {
+            return val;
+        }
 
-    friend bool operator==(const safe_enum& lhs, const safe_enum& rhs)
-    {
-        return lhs.val == rhs.val;
-    }
+        friend bool operator==(const safe_enum& lhs, const safe_enum& rhs)
+        {
+            return lhs.val == rhs.val;
+        }
 
-    friend bool operator!=(const safe_enum& lhs, const safe_enum& rhs)
-    {
-        return lhs.val != rhs.val;
-    }
+        friend bool operator!=(const safe_enum& lhs, const safe_enum& rhs)
+        {
+            return lhs.val != rhs.val;
+        }
 
-    friend bool operator<(const safe_enum& lhs, const safe_enum& rhs)
-    {
-        return lhs.val < rhs.val;
-    }
+        friend bool operator<(const safe_enum& lhs, const safe_enum& rhs)
+        {
+            return lhs.val < rhs.val;
+        }
 
-    friend bool operator<=(const safe_enum& lhs, const safe_enum& rhs)
-    {
-        return lhs.val <= rhs.val;
-    }
+        friend bool operator<=(const safe_enum& lhs, const safe_enum& rhs)
+        {
+            return lhs.val <= rhs.val;
+        }
 
-    friend bool operator>(const safe_enum& lhs, const safe_enum& rhs)
-    {
-        return lhs.val > rhs.val;
-    }
+        friend bool operator>(const safe_enum& lhs, const safe_enum& rhs)
+        {
+            return lhs.val > rhs.val;
+        }
 
-    friend bool operator>=(const safe_enum& lhs, const safe_enum& rhs)
-    {
-        return lhs.val >= rhs.val;
-    }
-};
+        friend bool operator>=(const safe_enum& lhs, const safe_enum& rhs)
+        {
+            return lhs.val >= rhs.val;
+        }
+    };
 
 #define STRING_SWITCH(VALUE)                     \
     const std::string STRING_SWITCH_LHS = VALUE; \

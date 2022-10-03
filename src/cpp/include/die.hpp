@@ -5,23 +5,22 @@
 
 extern const char* execname;
 
-namespace xph
-{
-template <typename... Ts>
-[[noreturn]] void die(const Ts&... args);
+namespace xph {
+    template <typename... Ts>
+    [[noreturn]] void die(const Ts&... args);
 
-template <typename... Ts>
-[[noreturn]] inline void die(const Ts&... args)
-{
-    std::cerr << execname << ": ";
-    (
-        [&] {
-            std::cerr << args;
-        }(),
-        ...);
-    std::cerr << '\n';
-    std::exit(EXIT_FAILURE);
-}
+    template <typename... Ts>
+    [[noreturn]] inline void die(const Ts&... args)
+    {
+        std::cerr << execname << ": ";
+        (
+            [&] {
+                std::cerr << args;
+            }(),
+            ...);
+        std::cerr << '\n';
+        std::exit(EXIT_FAILURE);
+    }
 } // namespace xph
 
 #define CAPTURE_EXECNAME()  \

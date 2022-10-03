@@ -57,29 +57,28 @@ void assertexists(const std::string path = cachefl);
 void conditional_delim();
 void shell_escape(std::string& str);
 
-namespace vec
-{
-vecsize_t parse_index(const std::string& indexstr);
-std::vector<std::string> parse();
-std::string build_cache_path(const std::string& vecname);
-std::pair<vecsize_t, std::string> read();
-void write(std::vector<std::string> vec);
-vecsize_t read_size();
-void get();
-void init();
-void eval();
-void size();
-void front();
-void back();
-void insert(const std::string&& indexstr, const std::string&& value);
-void erase(const std::string&& indexstr);
-void pop_back(const std::string&& countstr);
-void push_back(int argc, char* argv[]);
-void emplace_back(int argc, char* argv[]);
-void get_index(const std::string&& indexstr);
-void set_index(const std::string&& indexstr, const std::string&& value);
-void set(const std::string&& other);
-void swap(const std::string&& other);
+namespace vec {
+    vecsize_t parse_index(const std::string& indexstr);
+    std::vector<std::string> parse();
+    std::string build_cache_path(const std::string& vecname);
+    std::pair<vecsize_t, std::string> read();
+    void write(std::vector<std::string> vec);
+    vecsize_t read_size();
+    void get();
+    void init();
+    void eval();
+    void size();
+    void front();
+    void back();
+    void insert(const std::string&& indexstr, const std::string&& value);
+    void erase(const std::string&& indexstr);
+    void pop_back(const std::string&& countstr);
+    void push_back(int argc, char* argv[]);
+    void emplace_back(int argc, char* argv[]);
+    void get_index(const std::string&& indexstr);
+    void set_index(const std::string&& indexstr, const std::string&& value);
+    void set(const std::string&& other);
+    void swap(const std::string&& other);
 } // namespace vec
 
 const std::unordered_map<std::string, cache> caches = {
@@ -433,316 +432,315 @@ void shell_escape(std::string& str)
     xph::str::replaceall(str, "'", "'\\''");
 }
 
-namespace vec
-{
-std::pair<vecsize_t, std::string> read()
-{
-    assertexists();
-    std::ifstream fl(cachefl, std::ios::in | std::ios::binary);
-
-    if (!fl)
-        die("could not open cache file for reading");
-
-    vecsize_t size;
-    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
-
-    std::string buf;
+namespace vec {
+    std::pair<vecsize_t, std::string> read()
     {
-        std::ostringstream ss;
-        ss << fl.rdbuf();
-        buf = ss.str();
+        assertexists();
+        std::ifstream fl(cachefl, std::ios::in | std::ios::binary);
+
+        if (!fl)
+            die("could not open cache file for reading");
+
+        vecsize_t size;
+        fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+        std::string buf;
+        {
+            std::ostringstream ss;
+            ss << fl.rdbuf();
+            buf = ss.str();
+        }
+
+        return std::move<std::pair<vecsize_t, std::string>>({ size, buf });
     }
 
-    return std::move<std::pair<vecsize_t, std::string>>({ size, buf });
-}
-
-void write(std::vector<std::string> vec)
-{
-    std::ofstream fl(cachefl, std::ios::out | std::ios::trunc | std::ios::binary);
-
-    if (!fl)
-        die("could not open cache file for writing");
-
-    const vecsize_t size = vec.size();
-    fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
-    std::for_each(vec.begin(), vec.end(), [&fl](std::string& str) {
-        fl.write(str.c_str(), str.length() + 1);
-    });
-}
-
-vecsize_t read_size()
-{
-    assertexists();
-    std::ifstream fl(cachefl, std::ios::in | std::ios::binary);
-
-    if (!fl)
-        die("could not open cache file for reading");
-
-    vecsize_t size;
-    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
-
-    return std::move(size);
-}
-
-vecsize_t parse_index(const std::string& indexstr)
-{
-    std::stringstream ss;
-    ss << indexstr;
-
-    vecsize_t index;
-    ss >> index;
-
-    if (ss.fail())
-        die("index is not a valid integer");
-
-    return std::move(index);
-}
-
-std::vector<std::string> parse()
-{
-    const auto& [size, buf] = read();
-    std::vector<std::string> vec;
-    vec.reserve(size);
-    xph::str::split(vec, buf, indelim);
-    return vec;
-}
-
-std::string build_cache_path(const std::string& vecname)
-{
-    std::string cachefl;
+    void write(std::vector<std::string> vec)
     {
-        std::ostringstream ss;
-        ss << prefix << '/' << givenexecname << '/' << proghash;
-        ss << '/' << (!opthash ? vecname : xph::str::hash(vecname));
-        cachefl = ss.str();
+        std::ofstream fl(cachefl, std::ios::out | std::ios::trunc | std::ios::binary);
+
+        if (!fl)
+            die("could not open cache file for writing");
+
+        const vecsize_t size = vec.size();
+        fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
+        std::for_each(vec.begin(), vec.end(), [&fl](std::string& str) {
+            fl.write(str.c_str(), str.length() + 1);
+        });
     }
-    return cachefl;
-}
 
-void get()
-{
-    for (const auto& [size, buf] = read();
-         const auto&& view : buf | vecview | std::views::take(size))
-        std::cout << view << outdelim;
-}
+    vecsize_t read_size()
+    {
+        assertexists();
+        std::ifstream fl(cachefl, std::ios::in | std::ios::binary);
 
-void init()
-{
-    std::ofstream fl(cachefl, std::ios::out | std::ios::trunc | std::ios::binary);
+        if (!fl)
+            die("could not open cache file for reading");
 
-    if (!fl)
-        die("could not open cache file for writing");
+        vecsize_t size;
+        fl.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-    const vecsize_t size = 0;
-    fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
-}
+        return std::move(size);
+    }
 
-void size()
-{
-    std::cout << read_size();
-    conditional_delim();
-}
+    vecsize_t parse_index(const std::string& indexstr)
+    {
+        std::stringstream ss;
+        ss << indexstr;
 
-void push_back(int argc, char* argv[])
-{
-    assertexists();
-    std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
+        vecsize_t index;
+        ss >> index;
 
-    if (!fl)
-        die("could not open cache file for reading and writing");
+        if (ss.fail())
+            die("index is not a valid integer");
 
-    vecsize_t size;
-    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+        return std::move(index);
+    }
 
-    if (size == std::numeric_limits<vecsize_t>::max())
-        die("vector is at maximum capacity");
+    std::vector<std::string> parse()
+    {
+        const auto& [size, buf] = read();
+        std::vector<std::string> vec;
+        vec.reserve(size);
+        xph::str::split(vec, buf, indelim);
+        return vec;
+    }
 
-    for (const auto& line : std::views::counted(argv, argc)) {
-        ++size;
+    std::string build_cache_path(const std::string& vecname)
+    {
+        std::string cachefl;
+        {
+            std::ostringstream ss;
+            ss << prefix << '/' << givenexecname << '/' << proghash;
+            ss << '/' << (!opthash ? vecname : xph::str::hash(vecname));
+            cachefl = ss.str();
+        }
+        return cachefl;
+    }
 
-        fl.seekg(0, std::ios::beg);
-        fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+    void get()
+    {
+        for (const auto& [size, buf] = read();
+             const auto&& view : buf | vecview | std::views::take(size))
+            std::cout << view << outdelim;
+    }
 
-        fl.seekg(0, std::ios::end);
-        fl.write(line, strlen(line) + 1);
+    void init()
+    {
+        std::ofstream fl(cachefl, std::ios::out | std::ios::trunc | std::ios::binary);
+
+        if (!fl)
+            die("could not open cache file for writing");
+
+        const vecsize_t size = 0;
+        fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    }
+
+    void size()
+    {
+        std::cout << read_size();
+        conditional_delim();
+    }
+
+    void push_back(int argc, char* argv[])
+    {
+        assertexists();
+        std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
+
+        if (!fl)
+            die("could not open cache file for reading and writing");
+
+        vecsize_t size;
+        fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+        if (size == std::numeric_limits<vecsize_t>::max())
+            die("vector is at maximum capacity");
+
+        for (const auto& line : std::views::counted(argv, argc)) {
+            ++size;
+
+            fl.seekg(0, std::ios::beg);
+            fl.write(reinterpret_cast<char*>(&size), sizeof(size));
+
+            fl.seekg(0, std::ios::end);
+            fl.write(line, strlen(line) + 1);
+
+            if (size >= std::numeric_limits<vecsize_t>::max())
+                die("vector is at maximum capacity");
+        }
+    }
+
+    void emplace_back(int argc, char* argv[])
+    {
+        assertexists();
+        std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
+
+        if (!fl)
+            die("could not open cache file for reading and writing");
+
+        vecsize_t size;
+        fl.read(reinterpret_cast<char*>(&size), sizeof(size));
 
         if (size >= std::numeric_limits<vecsize_t>::max())
             die("vector is at maximum capacity");
-    }
-}
 
-void emplace_back(int argc, char* argv[])
-{
-    assertexists();
-    std::fstream fl(cachefl, std::ios::in | std::ios::out | std::ios::binary);
+        // TODO: replace with the following with C++23
+        // auto exec_argv = std::ranges::to<std::vector>(std::views::counted(argv, argc));
+        std::vector<std::string> exec_argv;
+        exec_argv.reserve(argc);
+        for (const auto& arg : std::views::counted(argv, argc))
+            exec_argv.emplace_back(arg);
 
-    if (!fl)
-        die("could not open cache file for reading and writing");
+        redi::ipstream proc(exec_argv, redi::pstreams::pstdout);
+        std::string line;
+        while (std::getline(proc.out(), line, '\0')) { // TODO: make delimiter configurable
+            ++size;
 
-    vecsize_t size;
-    fl.read(reinterpret_cast<char*>(&size), sizeof(size));
+            fl.seekg(0, std::ios::beg);
+            fl.write(reinterpret_cast<char*>(&size), sizeof(size));
 
-    if (size >= std::numeric_limits<vecsize_t>::max())
-        die("vector is at maximum capacity");
+            fl.seekg(0, std::ios::end);
+            fl.write(line.c_str(), line.length() + 1);
 
-    // TODO: replace with the following with C++23
-    // auto exec_argv = std::ranges::to<std::vector>(std::views::counted(argv, argc));
-    std::vector<std::string> exec_argv;
-    exec_argv.reserve(argc);
-    for (const auto& arg : std::views::counted(argv, argc))
-        exec_argv.emplace_back(arg);
+            if (size >= std::numeric_limits<vecsize_t>::max())
+                die("vector is at maximum capacity");
+        }
 
-    redi::ipstream proc(exec_argv, redi::pstreams::pstdout);
-    std::string line;
-    while (std::getline(proc.out(), line, '\0')) { // TODO: make delimiter configurable
-        ++size;
-
-        fl.seekg(0, std::ios::beg);
-        fl.write(reinterpret_cast<char*>(&size), sizeof(size));
-
-        fl.seekg(0, std::ios::end);
-        fl.write(line.c_str(), line.length() + 1);
-
-        if (size >= std::numeric_limits<vecsize_t>::max())
-            die("vector is at maximum capacity");
+        if (proc.eof() && proc.fail())
+            proc.clear();
     }
 
-    if (proc.eof() && proc.fail())
-        proc.clear();
-}
+    void pop_back(const std::string&& countstr)
+    {
+        const auto count = parse_index(countstr);
+        auto vec = parse();
 
-void pop_back(const std::string&& countstr)
-{
-    const auto count = parse_index(countstr);
-    auto vec = parse();
+        if (count > vec.size())
+            die("pop_back count cannot be greater than vector size");
 
-    if (count > vec.size())
-        die("pop_back count cannot be greater than vector size");
+        for ([[maybe_unused]] const auto&& _ : std::views::iota(0u, count)) {
+            std::cout << vec.back();
+            conditional_delim();
 
-    for ([[maybe_unused]] const auto&& _ : std::views::iota(0u, count)) {
+            vec.pop_back();
+        }
+
+        write(vec);
+    }
+
+    void get_index(const std::string&& indexstr)
+    {
+        const auto index = parse_index(indexstr);
+        const auto& [size, buf] = read();
+
+        if (!size || index > size - 1)
+            die("index is out of range");
+
+        auto view = buf | vecview | std::views::drop(index);
+        std::cout << view.front();
+    }
+
+    void set_index(const std::string&& indexstr, const std::string&& value)
+    {
+        const auto index = parse_index(indexstr);
+
+        // TODO: reuse file stream
+        if (const auto size = read_size(); !size || index > size - 1)
+            die("index is out of range");
+
+        // TODO: reuse file stream
+        write(xph::vec::setindex(parse(), index, value));
+    }
+
+    void set(const std::string&& other)
+    {
+        if (other == "NULL" || other == "nullptr") {
+            std::filesystem::remove(cachefl);
+        } else if (other == "" || other == "=") {
+            die("OTHER_VEC_NAME cannot be \"=\" or empty");
+        } else if (other == vecname) {
+            die("OTHER_VEC_NAME cannot be the same as VEC_NAME");
+        } else if (other.contains('/')) {
+            die("OTHER_VEC_NAME cannot contain '/'");
+        } else {
+            const auto otherlckhash = execname + '-' + proghash + '-' + other;
+            lock_database(otherlckhash);
+            const auto othercachefl = build_cache_path(other);
+            assertexists(othercachefl);
+            std::filesystem::copy_file(
+                othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
+            unlock_database(otherlckhash);
+        }
+    }
+
+    void swap(const std::string&& other)
+    {
+        assertexists();
+        if (other == "" || other == "=" || other == "NULL" || other == "nullptr") {
+            die("OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty");
+        } else if (other == vecname) {
+            die("OTHER_VEC_NAME cannot be the same as VEC_NAME");
+        } else if (other.contains('/')) {
+            die("OTHER_VEC_NAME cannot contain '/'");
+        } else {
+            const auto otherlckhash = execname + '-' + proghash + '-' + other;
+            lock_database(otherlckhash);
+            const auto othercachefl = build_cache_path(other);
+            assertexists(othercachefl);
+            xph::sys::swapfile(cachefl, othercachefl);
+            unlock_database(otherlckhash);
+        }
+    }
+
+    void front()
+    {
+        const auto vec = parse();
+        if (vec.empty())
+            die("cannot get front element of empty vector");
+        std::cout << vec.front();
+        conditional_delim();
+    }
+
+    void back()
+    {
+        const auto vec = parse();
+        if (vec.empty())
+            die("cannot get back element of empty vector");
         std::cout << vec.back();
         conditional_delim();
-
-        vec.pop_back();
     }
 
-    write(vec);
-}
+    void insert(const std::string&& indexstr, const std::string&& value)
+    {
+        const auto index = parse_index(indexstr);
+        auto vec = parse();
 
-void get_index(const std::string&& indexstr)
-{
-    const auto index = parse_index(indexstr);
-    const auto& [size, buf] = read();
+        if (index > vec.size())
+            die("index is out of range");
 
-    if (!size || index > size - 1)
-        die("index is out of range");
+        vec.insert(vec.begin() + index, value);
 
-    auto view = buf | vecview | std::views::drop(index);
-    std::cout << view.front();
-}
-
-void set_index(const std::string&& indexstr, const std::string&& value)
-{
-    const auto index = parse_index(indexstr);
-
-    // TODO: reuse file stream
-    if (const auto size = read_size(); !size || index > size - 1)
-        die("index is out of range");
-
-    // TODO: reuse file stream
-    write(xph::vec::setindex(parse(), index, value));
-}
-
-void set(const std::string&& other)
-{
-    if (other == "NULL" || other == "nullptr") {
-        std::filesystem::remove(cachefl);
-    } else if (other == "" || other == "=") {
-        die("OTHER_VEC_NAME cannot be \"=\" or empty");
-    } else if (other == vecname) {
-        die("OTHER_VEC_NAME cannot be the same as VEC_NAME");
-    } else if (other.contains('/')) {
-        die("OTHER_VEC_NAME cannot contain '/'");
-    } else {
-        const auto otherlckhash = execname + '-' + proghash + '-' + other;
-        lock_database(otherlckhash);
-        const auto othercachefl = build_cache_path(other);
-        assertexists(othercachefl);
-        std::filesystem::copy_file(
-            othercachefl, cachefl, std::filesystem::copy_options::overwrite_existing);
-        unlock_database(otherlckhash);
+        write(vec);
     }
-}
 
-void swap(const std::string&& other)
-{
-    assertexists();
-    if (other == "" || other == "=" || other == "NULL" || other == "nullptr") {
-        die("OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty");
-    } else if (other == vecname) {
-        die("OTHER_VEC_NAME cannot be the same as VEC_NAME");
-    } else if (other.contains('/')) {
-        die("OTHER_VEC_NAME cannot contain '/'");
-    } else {
-        const auto otherlckhash = execname + '-' + proghash + '-' + other;
-        lock_database(otherlckhash);
-        const auto othercachefl = build_cache_path(other);
-        assertexists(othercachefl);
-        xph::sys::swapfile(cachefl, othercachefl);
-        unlock_database(otherlckhash);
+    void erase(const std::string&& indexstr)
+    {
+        const auto index = parse_index(indexstr);
+        auto vec = parse();
+
+        if (vec.empty() || index > vec.size() - 1)
+            die("index is out of range");
+
+        vec.erase(vec.begin() + index);
+
+        write(vec);
     }
-}
 
-void front()
-{
-    const auto vec = parse();
-    if (vec.empty())
-        die("cannot get front element of empty vector");
-    std::cout << vec.front();
-    conditional_delim();
-}
-
-void back()
-{
-    const auto vec = parse();
-    if (vec.empty())
-        die("cannot get back element of empty vector");
-    std::cout << vec.back();
-    conditional_delim();
-}
-
-void insert(const std::string&& indexstr, const std::string&& value)
-{
-    const auto index = parse_index(indexstr);
-    auto vec = parse();
-
-    if (index > vec.size())
-        die("index is out of range");
-
-    vec.insert(vec.begin() + index, value);
-
-    write(vec);
-}
-
-void erase(const std::string&& indexstr)
-{
-    const auto index = parse_index(indexstr);
-    auto vec = parse();
-
-    if (vec.empty() || index > vec.size() - 1)
-        die("index is out of range");
-
-    vec.erase(vec.begin() + index);
-
-    write(vec);
-}
-
-void eval()
-{
-    std::cout << "set --";
-    for (auto vec = parse(); auto&& str : vec) {
-        shell_escape(str);
-        std::cout << " '" << str << '\'';
+    void eval()
+    {
+        std::cout << "set --";
+        for (auto vec = parse(); auto&& str : vec) {
+            shell_escape(str);
+            std::cout << " '" << str << '\'';
+        }
     }
-}
 } // namespace vec
