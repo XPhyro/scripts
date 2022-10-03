@@ -12,7 +12,7 @@ IndentGotoLabels: false
 IndentPPDirectives: None
 IndentWidth: 4
 IndentWrappedFunctionNames: false
-NamespaceIndentation: None
+NamespaceIndentation: All
 ObjCBlockIndentWidth: 4
 TabWidth: 4
 UseTab: Never
@@ -53,7 +53,7 @@ BraceWrapping:
   AfterEnum: false
   AfterExternBlock: false
   AfterFunction: true
-  AfterNamespace: true
+  AfterNamespace: false
   AfterObjCDeclaration: false
   AfterStruct: false
   AfterUnion: false
