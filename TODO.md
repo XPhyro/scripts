@@ -96,8 +96,7 @@
     - <https://web.archive.org/web/20220925075211/https://gist.github.com/matiaspl/8b1880456d10d582677aadb474d743b6>
 - Create a shell script or C program similar to `stest` (or just integrate this
   in `stest`) that filters files by EXIF data.
-  - In shell, `exiftool`, and in C,
-  `libexif` could be used.
+  - In shell, `exiftool`, and in C, `libexif` could be used.
     - See <https://stackoverflow.com/questions/14331362/how-to-edit-exif-tag-in-c#comment79954185_30745567>.
   - Another option could be to do the same as the `file` fallback in `stest`.
 
