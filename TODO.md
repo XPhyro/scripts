@@ -99,6 +99,8 @@
   - In shell, `exiftool`, and in C, `libexif` could be used.
     - See <https://stackoverflow.com/questions/14331362/how-to-edit-exif-tag-in-c#comment79954185_30745567>.
   - Another option could be to do the same as the `file` fallback in `stest`.
+- Implement other `std::` stuff such as `std::unordered_map`.
+  - With this, also rename `vector` to `std::vector`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
