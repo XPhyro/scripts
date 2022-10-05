@@ -1,0 +1,114 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+. utility.sh
+
+testexif() {
+    fl="$1"
+    exif="$(exiftool -- "$fl")"
+
+    [ "$optany" -eq 0 ] && {
+        (
+            printf "%s\n" "$keys" | while IFS= read -r key; do
+                printf "%s\n" "$exif" | sed 's/\s*:.*$//' | grep -Fxq -- "$key" || exit 1
+            done
+        ) || return
+    }
+
+    while IFS= read -r flkey <&3 && IFS= read -r flval <&4; do
+        while IFS= read -r key <&5 && IFS= read -r val <&6; do
+            if [ "$optany" -ne 0 ]; then
+                [ -n "$key" ] && [ "$flkey" != "$key" ] && continue
+                [ -n "$val" ] && [ "$flval" != "$val" ] && continue
+                printf "%s\n" "$fl"
+                return
+            else
+                [ -n "$key" ] && [ "$flkey" != "$key" ] && continue
+                [ -n "$val" ] && [ "$flval" != "$val" ] && return
+            fi
+        done 5<<EOF5 6<<EOF6
+$keys
+EOF5
+$vals
+EOF6
+    done 3<<EOF3 4<<EOF4
+$(printf "%s\n" "$exif" | sed 's/\s*:.*$//')
+EOF3
+$(printf "%s\n" "$exif" | awk -F: '
+    {
+        for (i = 2; i < NF; i++)
+            printf("%s:", $i)
+        print $NF
+    }
+' | sed 's/^\s*//')
+EOF4
+    [ "$optany" -eq 0 ] && printf "%s\n" "$fl"
+}
+
+testfile() {
+    fl="$1"
+    shift
+
+    [ ! -e "$fl" ] && return
+    fl="$(realpath -- "$fl")"
+
+    if [ -d "$fl" ]; then
+        find "$fl" -type f | while IFS= read -r i; do
+            testexif "$i" "$@"
+        done
+    else
+        testexif "$fl" "$@"
+    fi
+}
+
+execname="$0"
+
+optany=0
+while getopts "ho" OPT; do
+    case "$OPT" in
+        h)
+            printf "%s" \
+"$execname [OPTION]... [KEY:VAL]...
+Filter files by EXIF data.
+
+Files are read from standard input, delimited by newlines.
+If no KEY:VAL pairs are given, all files are printed.
+
+  -h  show this help and exit
+  -o  file must meet any of the criteria instead of all
+"
+            exit 0
+            ;;
+        o) optany=1;;
+        *) std_logferrq "invalid option given: %s\n" "$OPT";;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ "$#" -eq 0 ] && exec cat <&0
+
+unset keys vals
+for i; do
+    [ -z "$i" ] && continue
+    case "$i" in
+        *"
+"*) std_logerrq "key:val pair cannot contain a newline";;
+        *:*)
+            key="${i%%:*}"
+            val="${i#*:}"
+            keys="$keys$key
+"
+            vals="$vals$val
+"
+            ;;
+        *) std_logferrq "invalid key:val pair given: %s\n" "$i";;
+    esac
+done
+
+keys="${keys%?}"
+vals="${vals%?}"
+
+while IFS= read -r fl; do
+    testfile "$fl"
+done
