@@ -117,6 +117,12 @@
 - Maybe install C/C++ headers?
 - Do not clean C/C++ objects by default and use them to not re-compile unchanged
   translation units.
+- Title commits like `script: description1, description2, ...`. Examples:
+  - `bspwmpad: always prefix title`
+  - `update: fix not releasing lock`
+  - `clplog: ensure locks are atomic, apply code style`
+  - `vector: create`
+    - Not sure about how to title "create" commits, but this seems consistent.
 
 
 # Normal Priority
