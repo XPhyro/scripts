@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+infifo="$(mktempfifo)"
+exec 3<> "$infifo"
+outfifo="$(mktempfifo)"
+exec 4<> "$outfifo"
+
+trap "rm -- '$infifo' '$outfifo'" INT EXIT HUP TERM
+
+yad --notification --listen --image="input-tablet" --text="Manage tablet mode" --no-middle <&3 >&4 &
