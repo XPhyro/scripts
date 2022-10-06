@@ -123,6 +123,10 @@
   - `clplog: ensure locks are atomic, apply code style`
   - `vector: create`
     - Not sure about how to title "create" commits, but this seems consistent.
+  - `vector: rename to std::vector; unordered_map: rename to std::unordered map`
+  - `{vector, unordered_map}: rename to std::{vector, unordered_map}`
+  - `{vector, unordered_map}: rename to std::\1`
+  - `(vector|unordered_map): rename to std::\1`
 
 
 # Normal Priority
