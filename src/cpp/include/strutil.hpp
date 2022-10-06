@@ -107,7 +107,21 @@ namespace xph::str {
 
         str.swap(newstr);
     }
-#endif // if __cplusplus >= 202002L
+
+    constexpr bool starts_with(const std::string& str, const std::string& prefix);
+
+    constexpr inline bool starts_with(const std::string& str, const std::string& prefix)
+    {
+        return str.starts_with(prefix);
+    }
+#else // if __cplusplus >= 202002L
+    constexpr bool starts_with(const std::string& str, const std::string& prefix);
+
+    constexpr inline bool starts_with(const std::string& str, const std::string& prefix)
+    {
+        return str.compare(0, prefix.length(), prefix) == 0;
+    }
+#endif // #else // if __cplusplus >= 202002L
 
     constexpr uint32_t crc32(const std::string_view& str);
 
