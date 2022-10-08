@@ -3,10 +3,15 @@
 
 int main(int argc, char *argv[])
 {
+    int i;
+
     if (argc < 2)
         return EXIT_FAILURE;
 
-    printf("\033]0;%s\007", argv[1]);
+    fputs("\033]0;", stdout);
+    for (i = 1; i < argc - 1; i++)
+        printf("%s ", argv[i]);
+    printf("%s\007", argv[i]);
 
     return EXIT_SUCCESS;
 }
