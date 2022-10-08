@@ -3,9 +3,20 @@
 eval "$(evalverbose)"
 
 case "$#" in
-    0) exit 0;;
-    1) git commit -m "$1";;
-    2) git commit -m "$1" -m "$2";;
+    0)
+        exit 0
+        ;;
+    1)
+        git commit -m "$1"
+        ;;
+    2)
+        if [ -z "$(git diff --name-only --cached)" ] || [ ! -e "$2" ]; then
+            git commit -m "$1" -m "$2"
+        else
+            git add -- "$2"
+            git commit -m "$1"
+        fi
+        ;;
     *)
         m1="$1"
         m2="$2"

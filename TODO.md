@@ -219,8 +219,6 @@
   review the stdout/stderr of the command.
 - In `syncmail`, allow adding temporary and permanent blacklist. If a lock is
   present, do not send a notification for the blacklisted senders/titles/bodies.
-- In `gcm`, if there is no staged files and if 2 arguments are given, assume the
-  second argument is a file.
 - In `latexstp`, allow passing arguments to `bspwmpad`.
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and
