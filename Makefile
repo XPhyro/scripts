@@ -1,5 +1,7 @@
 define HELP_MESSAGE
-Usage: make [OPTION]... TARGET [TARGET]...
+Usage: make [OPTION]... [TARGET]...
+
+If no TARGET is given, help is assumed.
 
      target: description
   =========: ================================================
