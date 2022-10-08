@@ -150,10 +150,6 @@ executed and all executed commands are printed to standard error.
   GCC. Most C/C++ programs should be compatible with any POSIX/ISO-conforming
   compilers. Some programs use non-standard GNU/LLVM extensions.
 
-## Related
-- You can find the scripts I use to install an Arch Linux system (to my liking)
-  [here](https://github.com/XPhyro/archinstall).
-
 ## License
 Unless otherwise stated, all software found in this repository are
 licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

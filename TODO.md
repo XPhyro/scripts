@@ -60,6 +60,11 @@
       Values can remain as strings.
   - Support `key->value` and `index->value` at the same time. Key can just be
     strings.
+- Add support for dynamically queried paths in `getpath`. For instance:
+  - `td` may be `printf "%s\n" TODO*(N) TODO.md | head -n 1` (zsh)
+  - `rdm` may be `printf "%s\n" README*(N) README.md | head -n 1` (zsh)
+  - `lc` may be `find . -mindepth 1 -maxdepth 1 -type f -iname "*license*" -print0 | head -z -n 1 | head -c -2` (sh)
+  
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -93,6 +98,14 @@
     - <https://web.archive.org/web/20220925075211/https://gist.github.com/matiaspl/8b1880456d10d582677aadb474d743b6>
 - Implement other `std::` stuff such as `std::unordered_map`.
   - With this, also rename `vector` to `std::vector`.
+- `breadth-find`: similar to `find -depth`, but does true breadth-first
+  traversal.
+  - Use `find "$dir" -mindepth 1 -maxdepth 1` to progressively iterate over
+    found directories.
+  - Do not simply iteratively increase `-maxdepth` as this will cause `find` to
+    traverse the same directories multiple times. Instead, cache the directories
+    and iterate on them with `-maxdepth 1`.
+  - Or just write a C program?
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
@@ -124,6 +137,7 @@
   - `{vector, unordered_map}: rename to std::{vector, unordered_map}`
   - `{vector, unordered_map}: rename to std::\1`
   - `(vector|unordered_map): rename to std::\1`
+- At this point perhaps rename the repository from `scripts` to `utils`?
 
 
 # Normal Priority
@@ -137,7 +151,6 @@
 - In `tglapp`, `--list=compact` prints stdout and stderr.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the
   current desktop, even if it's in another monitor's focused desktop.
-- `clplog` sometimes does not release the lock, fix.
 
 ## Features
 - In `contexec`, show the output in a `$PAD` and open the editor in the
@@ -236,10 +249,12 @@
   percentage.
 - In `stdutil.h`, min/max/minmax clamped versions add `astrto*` functions.
 - Add `-c` option to select column in `sumsize`.
+- Into the pathfinding suite, add a system for custom
+  aliases/functions/variables depending on the current directory of the user.
+  This could be done by modifying the currently provided `cd` function.
 
 ## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
-- Finish `todo`.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink
   them to the original locations.
@@ -295,15 +310,10 @@
   via arguments).
 - `volauxdefsetarr`: like `volauxdefset`, but moves in predefined volume levels
   (given via arguments).
-- Write a portable version of `rand` using `arc4random_buf`.
-- Write a wrapper script for `xargs` and `xins`: If arguments fit into a single
-  invocation, use `xargs`; else, use `xins`.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
-- In `dotfilesbak{,-sensitive}`, change the author and/or committer of the
-  commits that are made by these scripts.
 - Optimise `bspwmpadinit`'s PID updating with `inotifywait`.
 - Rewrite `brightmute` in a more robust fashion that would not often break.
 - Consider `scrot` in `cpscr`.
@@ -324,23 +334,15 @@
 - Merge `factorise`, `gcd` and `sumbase` into `numsh`.
 
 ## Other
-- Should [README.md](README.md) be rewritten to not include first person
-  language?
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current
   name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is
   interrupted, killed, etc.
 - Add `exit 0` at the end of all applicable scripts.
-- Add explanations under shebangs.
-- Add a file that explains every script. Mention this file in
-  [README.md](README.md).
 - Use `basename` and `dirname` instead of parameter expansions as they correctly
   deal with edge cases. If these edge cases are known not to be present, do use
   parameter expansions.
-- Into the pathfinding suite, add a system for custom
-  aliases/functions/variables depending on the current directory of the user.
-  This could be done by modifying the currently provided `cd` function.
-- Replace `printf` with `printf --`.
+- Replace applicable `printf` invocations with `printf --`.
 - In all scripts that parse arguments, ensure that help printing and other
   actions are done after validating the arguments. If the arguments could not be
   validated, exit with a non-zero code (after printing help if it is given).
@@ -348,23 +350,19 @@
   scripts by allowing the arguments to be immediately validated without
   executing the script (like kdialog, which wraps the real kdialog, validating
   the arguments without doing the action).
-- Scripts that require untrivial root access should not use `sudo`, but force
-  the user to run the script as root. Scripts that require trivial root access
-  should use `sudo` or `sudo -A` depending on whether they are graphical (for
-  instance, if they use `dmenu`) or not.
+- Scripts that do not require parameters from the invoking user should not use
+  `sudo` and should require the script to be run as root (by asserting it
+  actively *if necessary*).
+- Scripts that use `sudo` should use `sudo`/`sudo -A` if it has a CLI/GUI.
 - Register a tray icon using `yad` in applicable scripts.
   - Daemons could benefit well from this.
   - `tglapp` could benefit from this. A single tray icon when right clicked
     should show all `tglapp` applications. For this, a subscription and a server
     (like `lf`'s) system should be implemented.
 - Show errors with `rofi -e "$message"` in applicable headless scripts.
-- Use `getopt` if available. Use `getopts` otherwise. Be sure to check the
-  `parseargs()` of individual scripts to see quirky parsing. Some scripts have
-  non-standard parsing.
-- Use `ulck` instead of manually releasing locks.
+  - Maybe create a helper script for this?
 - Do not print error messages when `get*` fails in scripts as those already
   print errors to stderr.
-- At this point perhaps rename the repository from `scripts` to `utils`?
 
 
 # Low Priority
