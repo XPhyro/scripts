@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+eval "$(evalverbose)"
+
+make() {
+    [ -f Makefile ] && exec execaux "$0" "$@"
+}
+
+make "$@"
+while [ "$PWD" != "/" ]; do
+    cd ..
+    make "$@"
+done
+
+printf "%s\n" "No Makefile found in tree." >&2
+exit 1

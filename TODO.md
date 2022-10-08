@@ -27,8 +27,6 @@
   occupied, check all of the slots for whether each occupier is alive.
 - Do not hardcode paths like `/home/xphyro` in unit tests.
 - In `bspwmpad`, add an option to start in some desktop.
-- Write a script that hard-wraps `make` and implements a `git`-like workflow. In
-  other words, `make` should try `make`ing parents until it finds a `Makefile`.
 - In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
   numbers.
 - Support arbitrary counts of warnings and configurations in `warnbattery`.
