@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+maxdepth="$BREADTH_FIND_MAX_DEPTH"
+[ -z "$maxdepth" ] || [ "$maxdepth" -lt 0 ] && maxdepth=2147483647
+
+depth=1
+while [ "$depth" -le "$maxdepth" ]; do
+    find '.' -mindepth "$depth" -maxdepth "$depth" "$@" | grep -F ''
+    [ "$?" -ne 0 ] && exit 0
+    depth="$((depth + 1))"
+done

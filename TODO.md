@@ -98,14 +98,6 @@
     - <https://web.archive.org/web/20220925075211/https://gist.github.com/matiaspl/8b1880456d10d582677aadb474d743b6>
 - Implement other `std::` stuff such as `std::unordered_map`.
   - With this, also rename `vector` to `std::vector`.
-- `breadth-find`: similar to `find -depth`, but does true breadth-first
-  traversal.
-  - Use `find "$dir" -mindepth 1 -maxdepth 1` to progressively iterate over
-    found directories.
-  - Do not simply iteratively increase `-maxdepth` as this will cause `find` to
-    traverse the same directories multiple times. Instead, cache the directories
-    and iterate on them with `-maxdepth 1`.
-  - Or just write a C program?
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
@@ -114,6 +106,7 @@
 - Rewrite `ffmw`.
   - Use `vector`.
   - Use `-nostdin` and `file:` for `ffmpeg`.
+- Optimise `breadth-find` to not search the same initial depths multiple times.
 
 ## Other
 - Documentation:
