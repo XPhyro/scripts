@@ -64,7 +64,7 @@
   - `td` may be `printf "%s\n" TODO*(N) TODO.md | head -n 1` (zsh)
   - `rdm` may be `printf "%s\n" README*(N) README.md | head -n 1` (zsh)
   - `lc` may be `find . -mindepth 1 -maxdepth 1 -type f -iname "*license*" -print0 | head -z -n 1 | head -c -2` (sh)
-  
+- After `termctl` is created, add other relevant functionality to it.
 
 ## New Scripts
 - Write a daemon that enables having different keyboard layouts for each X
@@ -107,6 +107,8 @@
   - Use `vector`.
   - Use `-nostdin` and `file:` for `ffmpeg`.
 - Optimise `breadth-find` to not search the same initial depths multiple times.
+- Merge [term/\*](src/c/util/term/) into `termctl`.
+  - Make its syntax human-readable like that of `xdotool`.
 
 ## Other
 - Documentation:
