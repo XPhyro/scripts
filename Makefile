@@ -1,6 +1,20 @@
-.DEFAULT_GOAL := noop
+define HELP_MESSAGE
+Usage: make [OPTION]... TARGET [TARGET]...
 
-noop:
+    help         show this help
+    install      install everything
+    uninstall    uninstall everything previously installed
+    test         run tests
+    format       format C/C++ source/header files
+    analyse      statically analyse C source files
+    spell        check for spelling mistakes
+    auto         same as `make format spell analyse install test`
+    clean        ignored
+endef
+export HELP_MESSAGE
+
+help:
+	@printf "%s\n" "$$HELP_MESSAGE"
 
 install: uninstall
 	cd src && ./.make install o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
@@ -24,4 +38,4 @@ auto: format spell analyse install test
 
 clean:
 
-.PHONY: install uninstall test format analyse auto clean
+.PHONY: help install uninstall test format analyse auto clean
