@@ -25,7 +25,6 @@
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
   check if the occupier is alive. If a slot is not requested and all slots are
   occupied, check all of the slots for whether each occupier is alive.
-- Do not hardcode paths like `/home/xphyro` in unit tests.
 - In `bspwmpad`, add an option to start in some desktop.
 - In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
   numbers.
@@ -179,9 +178,6 @@
   and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 - Implement a no-quoting option in `tglapp` like the inverse of the one that
   exists in `mapexec`.
-- `ffmpeg` fails to parse the filename (why does it even parse it?) if it
-  contains one of the following characters `:,`. Make `ffmw` create a symlink
-  pointing to the input file(s) to mitigate the issue.
 - In `tglapp`, add support for different commands depending on whether the
   application is open or not. This would be useful in many scenarios, including
   toggling an application wrapped with `screen`.
