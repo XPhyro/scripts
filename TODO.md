@@ -133,6 +133,7 @@
   - `{vector, unordered_map}: rename to std::\1`
   - `(vector|unordered_map): rename to std::\1`
 - At this point perhaps rename the repository from `scripts` to `utils`?
+- Move `src/{man,tests,.make}/` to the root of the repository.
 
 
 # Normal Priority
