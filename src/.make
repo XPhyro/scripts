@@ -92,6 +92,7 @@ install() {
 
         "$CC" --version
 
+        # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
@@ -122,6 +123,7 @@ install() {
 
         printf "%s\n" "$cxxversion"
 
+        # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -printf "%P\0" \
@@ -137,6 +139,37 @@ install() {
                 '"$CXX"' '"$CXXFLAGS"' $flags "$1" '"$CXXLDFLAGS"' $ldflags -o "$binprefix/$out" \
                     && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
+    )
+
+    (
+        cd c/include
+
+        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            printf "\0%s\0" "$includeprefix/$fl"
+            cp -f -t "$includeprefix" -- "$fl"
+        ' -- >> "$rootdir/src/.installed"
+    )
+
+    (
+        cd cpp/include
+
+        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            printf "\0%s\0" "$includeprefix/$fl"
+            cp -f -t "$includeprefix" -- "$fl"
+        ' -- >> "$rootdir/src/.installed"
+    )
+
+    (
+        printf "%s\0" \
+            "$rootdir/lib/hedley/hedley.h" \
+            "$rootdir/lib/pstreams/pstream.h" \
+            | xargs -r0 -n 1 -P 0 sh -c '
+                fl="$1"
+                printf "\0%s\0" "$includeprefix/${fl##*/}"
+                cp -f -t "$includeprefix" -- "$fl"
+            ' -- >> "$rootdir/src/.installed"
     )
 
     (
@@ -335,10 +368,12 @@ else
     prefix="$HOME/.local"
 fi
 binprefix="$prefix/bin"
+includeprefix="$prefix/include"
 manprefix="$prefix/share/man"
 dataprefix="$prefix/share/scripts"
 
 export prefix
+export includeprefix
 export binprefix
 export manprefix
 
