@@ -377,8 +377,8 @@ export includeprefix
 export binprefix
 export manprefix
 
-mkdir -p -- "$prefix" "$manprefix"
-[ -d "$binprefix" ] && [ -d "$manprefix" ]
+mkdir -p -- "$prefix" "$binprefix" "$includeprefix" "$manprefix" "$dataprefix"
+[ -d "$binprefix" ] && [ -d "$includeprefix" ] && [ -d "$manprefix" ] && [ -d "$dataprefix" ]
 
 cmd="$1"
 shift
