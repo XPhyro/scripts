@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+
+import argparse
+import datetime
+import os
+import sys
+
+import praw
+import psaw
+
+
+def opt_type_uint(val):
+    ival = int(val)
+
+    if ival < 0:
+        raise argparse.ArgumentTypeError(
+            "argument must be a non-negative integer.")
+
+    return ival
+
+
+def opt_type_pint(val):
+    ival = int(val)
+
+    if ival <= 0:
+        raise argparse.ArgumentTypeError(
+            "argument must be a positive integer.")
+
+    return ival
+
+
+def opt_type_date(val):
+    return datetime.datetime.fromisoformat(val).timestamp()
+
+
+def set_opts():
+    global opts
+
+    parser = argparse.ArgumentParser(
+        description="Fetch posts from subreddits.")
+
+    required_group = parser.add_argument_group("required options")
+
+    praw_client_id = os.environ.get("praw_client_id")
+    praw_client_secret = os.environ.get("praw_client_secret")
+    praw_user_agent = os.environ.get("praw_user_agent")
+
+    required_group.add_argument(
+        "--client-id",
+        help="client ID for the Reddit API",
+        default=praw_client_id,
+        required=praw_client_id is None,
+    )
+
+    required_group.add_argument(
+        "--client-secret",
+        help="client secret for the Reddit API",
+        default=praw_client_secret,
+        required=praw_client_secret is None,
+    )
+
+    required_group.add_argument(
+        "--user-agent",
+        help="user agent for the Reddit API",
+        default=praw_user_agent,
+        required=praw_user_agent is None,
+    )
+
+    parser.add_argument(
+        "-A",
+        "--all",
+        help="print all information about submissions. "
+        "recommended to be combined with -z.",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "-a",
+        "--after",
+        help="only query posts after ISO date",
+        type=opt_type_date,
+        default=0,
+    )
+
+    parser.add_argument(
+        "-f",
+        "--force-print",
+        help="print empty lines for failed or empty results",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--hide-options",
+        help="do not echo options",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "-l",
+        "--limit",
+        help="limit the number of queries. "
+        "the total count of returned posts may be less than the limit.",
+        type=opt_type_pint,
+        default=None,
+    )
+
+    parser.add_argument(
+        "-S",
+        "--sort-type",
+        help="TODO",
+        default="score",
+        choices=[
+            # TODO
+        ],
+    )
+
+    parser.add_argument(
+        "-s",
+        "--sort",
+        help="TODO",
+        default="desc",
+        choices=[
+            "asc", "desc",
+        ],
+    )
+
+    parser.add_argument(
+        "-z",
+        "--null",
+        help="line delimiter is null, not newline",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "subreddits",
+        help="subreddits to scrape",
+        nargs="+",
+    )
+
+    opts = parser.parse_args()
+
+
+def loginfo(*args):
+    print(f"{sys.argv[0]}: ", *args, file=sys.stdout,
+          end="\0" if opts.null else "\n")
+
+
+def logerr(*args):
+    print(f"{sys.argv[0]}: ", *args, file=sys.stderr,
+          end="\0" if opts.null else "\n")
+
+
+def main():
+    set_opts()
+
+    if not opts.hide_options:
+        logerr("parsed arguments: ", opts.__dict__)
+
+    reddit = praw.Reddit(
+        client_id=opts.client_id,
+        client_secret=opts.client_secret,
+        user_agent=opts.user_agent,
+    )
+    pushshift = psaw.PushshiftAPI(reddit)
+
+    for subreddit in opts.subreddits:
+        submissions_generator = pushshift.search_submissions(
+            subreddit=subreddit,
+            after=opts.after,
+            sort=opts.sort,
+            sort_type=opts.sort_type,
+            limit=opts.limit,
+        )
+
+        for submission in submissions_generator:
+            if opts.all:
+                loginfo(submission.__dict__)
+            elif opts.force_print or submission.url:
+                loginfo(submission.url)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
