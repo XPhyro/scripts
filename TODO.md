@@ -248,6 +248,8 @@
 - Into the pathfinding suite, add a system for custom
   aliases/functions/variables depending on the current directory of the user.
   This could be done by modifying the currently provided `cd` function.
+- Support more parameters in `reddit-fetch`, see
+  <https://pushshift.io/api-parameters/>.
 
 ## New Scripts
 - Create software-level alternatives to the `bright*` scripts.
