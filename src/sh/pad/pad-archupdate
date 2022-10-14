@@ -2,7 +2,13 @@
 
 eval "$(evalverbose)"
 
-"$PAD" -t "${0##*/}" -- sh -c '
+if [ "$PAD" = "bspwmpad" ]; then
+    extraopts="-g 768x1024"
+else
+    extraopts=
+fi
+
+"$PAD" $extraopts -t "${0##*/}" -- sh -c '
     update > /dev/null 2>&1 &
     time -v yay -Syu || color red "ERROR(s) encountered."
     jobs %% && printf "Waiting for [update].\n"
