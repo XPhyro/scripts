@@ -1,5 +1,5 @@
-[ -z "$HEADER_SCRIPTS_UTILITY_" ] && {
-    HEADER_SCRIPTS_UTILITY_=1
+[ -z "${HEADER_SCRIPTS_UTILITY_+x}" ] && {
+    HEADER_SCRIPTS_UTILITY_=
 
     execname="${0##*/}"
 
