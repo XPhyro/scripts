@@ -3,6 +3,14 @@
 
     execname="${0##*/}"
 
+    std_is_set() {
+        for i; do
+            eval "[ -z "\${$i+x}" ]" && return 1
+        done
+
+        return 0
+    }
+
     std_logferr() {
         fmt="$1"
         shift
