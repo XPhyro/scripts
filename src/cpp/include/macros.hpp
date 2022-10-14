@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_MACROS
-#define HEADER_SCRIPTS_CXX_MACROS
+#ifndef HEADER_SCRIPTS_CXX_MACROS_
+#define HEADER_SCRIPTS_CXX_MACROS_
 
 #define COMMA ,
 
@@ -90,4 +90,4 @@ namespace xph::macros {
 #define STRING_BREAK }
 } // namespace macros
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_MACROS */
+#endif /* ifndef HEADER_SCRIPTS_CXX_MACROS_ */

@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_IOUTIL
-#define HEADER_SCRIPTS_C_IOUTIL
+#ifndef HEADER_SCRIPTS_C_IOUTIL_
+#define HEADER_SCRIPTS_C_IOUTIL_
 
 #ifdef _POSIX_C_SOURCE
 #define BAK_POSIX_C_SOURCE _POSIX_C_SOURCE
@@ -44,4 +44,4 @@ char *getstr(int argc, char *argv[], int delim)
     return NULL;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_IOUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_IOUTIL_ */

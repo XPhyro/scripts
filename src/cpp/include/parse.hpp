@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_CASTUTIL
-#define HEADER_SCRIPTS_CXX_CASTUTIL
+#ifndef HEADER_SCRIPTS_CXX_CASTUTIL_
+#define HEADER_SCRIPTS_CXX_CASTUTIL_
 
 #include <sstream>
 #include <stdexcept>
@@ -49,4 +49,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_CASTUTIL */
+#endif /* ifndef HEADER_SCRIPTS_CXX_CASTUTIL_ */

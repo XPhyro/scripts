@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_MATHUTIL
-#define HEADER_SCRIPTS_C_MATHUTIL
+#ifndef HEADER_SCRIPTS_C_MATHUTIL_
+#define HEADER_SCRIPTS_C_MATHUTIL_
 
 #include <stdbool.h>
 
@@ -13,4 +13,4 @@ bool approxzerof(float x)
     return -1e-6f < x && x < 1e-6f;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_MATHUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_MATHUTIL_ */

@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_DIE
-#define HEADER_SCRIPTS_CXX_DIE
+#ifndef HEADER_SCRIPTS_CXX_DIE_
+#define HEADER_SCRIPTS_CXX_DIE_
 
 #include <iostream>
 
@@ -29,4 +29,4 @@ namespace xph {
     else                    \
         execname = "NULL"
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_DIE */
+#endif /* ifndef HEADER_SCRIPTS_CXX_DIE_ */

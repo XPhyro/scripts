@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_STRUTIL
-#define HEADER_SCRIPTS_CXX_STRUTIL
+#ifndef HEADER_SCRIPTS_CXX_STRUTIL_
+#define HEADER_SCRIPTS_CXX_STRUTIL_
 
 #include <algorithm>
 #include <bitset>
@@ -165,4 +165,4 @@ namespace xph::str {
     }
 } // namespace xph::str
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_STRUTIL */
+#endif /* ifndef HEADER_SCRIPTS_CXX_STRUTIL_ */

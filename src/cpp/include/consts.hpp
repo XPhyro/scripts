@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_CONSTS
-#define HEADER_SCRIPTS_CXX_CONSTS
+#ifndef HEADER_SCRIPTS_CXX_CONSTS_
+#define HEADER_SCRIPTS_CXX_CONSTS_
 
 #include <string>
 
@@ -50,4 +50,4 @@ namespace xph::consts {
     };
 } // namespace xph::consts
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_CONSTS */
+#endif /* ifndef HEADER_SCRIPTS_CXX_CONSTS_ */

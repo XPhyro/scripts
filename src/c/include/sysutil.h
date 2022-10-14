@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_SYSUTIL
-#define HEADER_SCRIPTS_C_SYSUTIL
+#ifndef HEADER_SCRIPTS_C_SYSUTIL_
+#define HEADER_SCRIPTS_C_SYSUTIL_
 
 #ifdef _POSIX_C_SOURCE
 #define BAK_POSIX_C_SOURCE _POSIX_C_SOURCE
@@ -199,4 +199,4 @@ HEDLEY_MALLOC char *dirslash(const char *path)
     return s;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_SYSUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_SYSUTIL_ */

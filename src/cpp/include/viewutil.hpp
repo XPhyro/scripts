@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_VIEWUTIL
-#define HEADER_SCRIPTS_CXX_VIEWUTIL
+#ifndef HEADER_SCRIPTS_CXX_VIEWUTIL_
+#define HEADER_SCRIPTS_CXX_VIEWUTIL_
 
 #include <cstddef>
 #include <iterator>
@@ -60,4 +60,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_VIEWUTIL */
+#endif /* ifndef HEADER_SCRIPTS_CXX_VIEWUTIL_ */

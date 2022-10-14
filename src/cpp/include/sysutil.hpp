@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_SYSUTIL
-#define HEADER_SCRIPTS_CXX_SYSUTIL
+#ifndef HEADER_SCRIPTS_CXX_SYSUTIL_
+#define HEADER_SCRIPTS_CXX_SYSUTIL_
 
 #include <algorithm>
 #include <cerrno>
@@ -54,4 +54,4 @@ namespace xph::sys {
     }
 } // namespace xph::sys
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_SYSUTIL */
+#endif /* ifndef HEADER_SCRIPTS_CXX_SYSUTIL_ */

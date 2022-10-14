@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_STDUTIL
-#define HEADER_SCRIPTS_C_STDUTIL
+#ifndef HEADER_SCRIPTS_C_STDUTIL_
+#define HEADER_SCRIPTS_C_STDUTIL_
 
 #include <errno.h>
 #include <limits.h>
@@ -187,4 +187,4 @@ HEDLEY_MALLOC void *aaligned_alloc(size_t alignment, size_t size)
 }
 #endif /* ifdef _ISOC11_SOURCE */
 
-#endif /* ifndef HEADER_SCRIPTS_C_STDUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_STDUTIL_ */

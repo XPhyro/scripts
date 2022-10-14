@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_VECUTIL
-#define HEADER_SCRIPTS_CXX_VECUTIL
+#ifndef HEADER_SCRIPTS_CXX_VECUTIL_
+#define HEADER_SCRIPTS_CXX_VECUTIL_
 
 #include <cstddef>
 #include <utility>
@@ -47,4 +47,4 @@ namespace xph::vec {
     }
 } // namespace xph::vec
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_VECUTIL */
+#endif /* ifndef HEADER_SCRIPTS_CXX_VECUTIL_ */

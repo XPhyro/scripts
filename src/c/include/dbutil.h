@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_DBUTIL
-#define HEADER_SCRIPTS_C_DBUTIL
+#ifndef HEADER_SCRIPTS_C_DBUTIL_
+#define HEADER_SCRIPTS_C_DBUTIL_
 
 #include <assert.h>
 #include <errno.h>
@@ -245,4 +245,4 @@ bool ulckdb(META_NONNULL const char *hash, lckdb_t type)
     return ret;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_DBUTIL */
+#endif /* ifndef HEADER_SCRIPTS_C_DBUTIL_ */
