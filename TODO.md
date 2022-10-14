@@ -98,6 +98,13 @@
     - <https://web.archive.org/web/20220925075211/https://gist.github.com/matiaspl/8b1880456d10d582677aadb474d743b6>
 - Implement other `std::` stuff such as `std::unordered_map`.
   - With this, also rename `vector` to `std::vector`.
+- Write a script similar to `getpath`, but interactive.
+  - `fzf` could probably work well here.
+  - Should support early-out, similar to most LaTeX compilers.
+    - If the only key starting with `abc` is `abcd`, `abc` should be enough to
+      select `abcd`.
+  - Should support filter & select without confirmation, similar to `lf`'s
+    mapping system.
 
 ## Refactoring / Rewriting / Reworking
 - Optimise `dbutil.h` to do less allocations.
@@ -109,6 +116,7 @@
 - Optimise `breadth-find` to not search the same initial depths multiple times.
 - Merge [term/\*](src/c/util/term/) into `termctl`.
   - Make its syntax human-readable like that of `xdotool`.
+- Make `editpath` and related scripts as easy to use as `_m` and others.
 
 ## Other
 - Documentation:
