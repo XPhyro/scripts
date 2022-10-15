@@ -6,31 +6,38 @@ eval "$(evalverbose)"
 assertroot || exit 1
 
 chosen="$(
-    lsblk -rpo "name,type,size,mountpoint" \
-        | awk '$2=="part"&&$4==""{printf "%s (%s)\n",$1,$3}' \
-        | execmenu -i -p "Drive to mount:" \
-        | cut -d' ' -f1
+    {   mountpoint -q -- /mnt/iPhone || lsusb | grep -Fo "iPhone" | head -n 1
+        lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n",$1,$3}'
+    } | execmenu -i -p "Drive to mount:" | cut -d' ' -f1
 )"
 
 [ -z "$chosen" ] && exit 1
 
-mount "$chosen" 2>/dev/null && exit 0
+if [ "$chosen" = "iPhone" ]; then
+    until idevicepair pair; do
+        sleep 5
+    done
+    mkdir -p -- /mnt/iPhone
+    ifuse -o allow_other,default_permissions /mnt/iPhone
+else
+    mount "$chosen" 2>/dev/null && exit 0
 
-label="$(
-    lsblk -rpo "name,label" \
-    | grep -F "$chosen " \
-    | cut -d' ' -f2- \
-    | xargs -r -n 1 -d '\n' printf -- \
-    | awk '{print(tolower($0))}' \
-    | tr -d '[:blank:]/'
-)"
+    label="$(
+        lsblk -rpo "name,label" \
+        | grep -F "$chosen " \
+        | cut -d' ' -f2- \
+        | xargs -r -n 1 -d '\n' printf -- \
+        | awk '{print(tolower($0))}' \
+        | tr -d '[:blank:]/'
+    )"
 
-mp="/mnt/${label:-"${chosen##*/}"}"
+    mp="/mnt/${label:-"${chosen##*/}"}"
 
-[ -z "$mp" ] && exit 1
-[ -d "$mp" ] || mkdir -p -- "$mp"
+    [ -z "$mp" ] && exit 1
+    [ -d "$mp" ] || mkdir -p -- "$mp"
 
-mount -o gid=users,fmask=113,dmask=002 -- "$chosen" "$mp" && {
-    chown :wheel -- "$mp"
-    chmod 770 -- "$mp"
-}
+    mount -o gid=users,fmask=113,dmask=002 -- "$chosen" "$mp" && {
+        chown :wheel -- "$mp"
+        chmod 770 -- "$mp"
+    }
+fi

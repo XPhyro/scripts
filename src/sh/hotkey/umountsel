@@ -6,6 +6,7 @@ eval "$(evalverbose)"
 assertroot || exit 1
 
 drives="$(
+    mountpoint -q -- "/mnt/iPhone" && printf "%s\n" "/mnt/iPhone"
     mntdrives="$(lsblk -nrpo "mountpoint,size" | grep "^[^[:space:]]" | LC_ALL=C sort -k 1n)"
     fstab="$(sed -e '/^\s*$/d' -e '/^\s*[#\/]/d' /etc/fstab | awk '{print $2}' | LC_ALL=C sort)"
     printf "%s\n" "$mntdrives" | while read -r i j; do
