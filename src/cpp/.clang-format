@@ -116,3 +116,5 @@ SpacesInLineCommentPrefix:
   Maximum: -1
 
 ...
+
+# vim: ft=yaml

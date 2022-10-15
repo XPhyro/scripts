@@ -75,3 +75,5 @@ SpacesInParentheses: false
 SpacesInSquareBrackets: false
 
 ...
+
+# vim: ft=yaml
