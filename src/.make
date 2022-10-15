@@ -234,6 +234,8 @@ unittest() {
 }
 
 format() {
+    find 'py' -type f -executable -print0 | xargs -r0 black --
+
     find 'c' 'cpp' -type f \( -iname "*.c"   -o -iname "*.h" \
                            -o -iname "*.cpp" -o -iname "*.hpp" \) -print0 \
         | sort -z \
