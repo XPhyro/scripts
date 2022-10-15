@@ -7,7 +7,7 @@ logerrq() {
 
 cancompilecpp() {
     if { [ "$CXX" != "g++" ] && [ "$CXX" != "gcc" ]; } \
-        || [ "$("$CXX" --version | head -n 1 | sed 's/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -gt 12 ]; then
+        || [ "$("$CXX" --version | head -n 1 | sed 's/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -ge 12 ]; then
         printf 1
     else
         printf 0
@@ -120,7 +120,7 @@ install() {
     )
         
     (
-        [ "$cancompilecpp" -eq 0 ] || {
+        [ "$cancompilecpp" -ne 0 ] || {
             printf "%s\n" "Not attempting to compile C++ programs as $CXX version is too old."
             exit 0
         }
