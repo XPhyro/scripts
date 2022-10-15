@@ -34,7 +34,7 @@ const char *temphome_s(const char *pfx)
     return temphome = vstrcat(2, prefix, pfx);
 }
 
-const char *temphome()
+const char *temphome(void)
 {
     return temphome_s(db_scriptsprefix);
 }
@@ -68,7 +68,7 @@ const char *confhome_s(const char *pfx)
     return confhome;
 }
 
-const char *confhome()
+const char *confhome(void)
 {
     return confhome_s(db_scriptsprefix);
 }
@@ -102,7 +102,7 @@ const char *cachehome_s(const char *pfx)
     return cachehome;
 }
 
-const char *cachehome()
+const char *cachehome(void)
 {
     return cachehome_s(db_scriptsprefix);
 }
@@ -131,6 +131,9 @@ const char *lckhome_s(lckdb_t type, const char *pfx)
         case LCKDB_PERS:
             s = confhome();
             break;
+        default:
+            assert(false);
+            break;
     }
 
 #ifdef __GNUC__
@@ -151,7 +154,7 @@ const char *lckhome(lckdb_t type)
     return lckhome_s(type, db_locksprefix);
 }
 
-char *lckpath(META_NONNULL const char *hash, lckdb_t type, bool mkdir)
+char *lckpath(const char *hash, lckdb_t type, bool mkdir)
 {
     const char *prefix;
     char *path;
@@ -166,7 +169,7 @@ char *lckpath(META_NONNULL const char *hash, lckdb_t type, bool mkdir)
     return path;
 }
 
-bool lckdb(META_NONNULL const char *hash, lckdb_t type)
+bool lckdb(const char *hash, lckdb_t type)
 {
     char *path;
     bool ret;
@@ -183,7 +186,7 @@ bool lckdb(META_NONNULL const char *hash, lckdb_t type)
     return ret;
 }
 
-bool awaitdb(META_NONNULL const char *hash, lckdb_t type)
+bool awaitdb(const char *hash, lckdb_t type)
 {
     enum {
         eventsize = sizeof(struct inotify_event),
@@ -222,13 +225,13 @@ cleanup:
     return true;
 }
 
-void alckdb(META_NONNULL const char *hash, lckdb_t type)
+void alckdb(const char *hash, lckdb_t type)
 {
     while (!lckdb(hash, type))
         awaitdb(hash, type);
 }
 
-bool ulckdb(META_NONNULL const char *hash, lckdb_t type)
+bool ulckdb(const char *hash, lckdb_t type)
 {
     char *path;
     bool ret;
