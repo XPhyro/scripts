@@ -23,17 +23,19 @@ printf "%s\n" "$changed" \
 printf "%s\n" "$changed" \
     | grep "^src/py/.*[^/]" \
     | while IFS= read -r fl; do
-        realfl="$PWD/$fl"
-        [ -e "$realfl" ] || continue
-        flcontent="$(cat -- "$realfl")"
-        (cd "$(dirname -- "$realfl")" \
-             && black -- "$realfl" \
-             && {
-                 [ -z "$GIT_PRE_COMMIT_NO_ADD" ] \
-                 || [ "$GIT_PRE_COMMIT_NO_ADD" -ne 0 ]
-             } \
-             && git add -- "$realfl"
-        )
-        printf "%s\n" "$flcontent" | cmp -s -- "$realfl" \
-            && printf "Formatted file %s\n" "$(basename -- "$realfl")"
+        [ -x "$fl" ] && {
+            realfl="$PWD/$fl"
+            [ -e "$realfl" ] || continue
+            flcontent="$(cat -- "$realfl")"
+            (cd "$(dirname -- "$realfl")" \
+                 && black -- "$realfl" \
+                 && {
+                     [ -z "$GIT_PRE_COMMIT_NO_ADD" ] \
+                     || [ "$GIT_PRE_COMMIT_NO_ADD" -ne 0 ]
+                 } \
+                 && git add -- "$realfl"
+            )
+            printf "%s\n" "$flcontent" | cmp -s -- "$realfl" \
+                && printf "Formatted file %s\n" "$(basename -- "$realfl")"
+        }
     done
