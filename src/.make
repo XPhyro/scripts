@@ -5,6 +5,15 @@ logerrq() {
     exit 1
 }
 
+cancompilecpp() {
+    if { [ "$CXX" != "g++" ] && [ "$CXX" != "gcc" ]; } \
+        || [ "$("$CXX" --version | head -n 1 | sed 's/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -gt 12 ]; then
+        printf 1
+    else
+        printf 0
+    fi
+}
+
 FUNC_PARSEFLAGS='
 set -x
 parseflags() {
@@ -111,11 +120,8 @@ install() {
     )
         
     (
-        cxxversion="$("$CXX" --version)"
-        [ "$CXX" = "g++" ] \
-            && [ "$(printf "%s\n" "$cxxversion" | head -n 1 | sed 's/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -lt 12 ] \
-            && {
-            printf "%s\n" "Not attempting to compile C++ programs as GCC version is less than 12."
+        [ "$cancompilecpp" -ne 0 ] || {
+            printf "%s\n" "Not attempting to compile C++ programs as $CXX version is too old."
             exit 0
         }
 
@@ -314,9 +320,13 @@ analyse() {
         "==="\
         ""
 
-    "$CXX" --version
-    find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
-        | xargs -r0 -I FILE "$CXX" $CXXFLAGS FILE $CXXLDFLAGS -o "$tmpout"
+    if [ "$cancompilecpp" -eq 0 ]; then
+        printf "%s\n" "Not attempting to analyse C++ headers as $CXX version is too old."
+    else
+        "$CXX" --version
+        find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
+            | xargs -r0 -I FILE "$CXX" $CXXFLAGS FILE $CXXLDFLAGS -o "$tmpout"
+    fi
 
     printf "%s\n" \
         "" \
@@ -485,6 +495,7 @@ CPLUS_INCLUDE_PATH="$PWD/cpp/include:$PWD/c/include:$rootdir/lib/hedley:$rootdir
 export CPLUS_INCLUDE_PATH
 
 ec=0
+cancompilecpp="$(cancompilecpp "$CXX")"
 
 case "$cmd" in
     install) install;;
