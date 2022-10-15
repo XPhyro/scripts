@@ -6,14 +6,15 @@
 [![GitHub Analyse Workflow Status](https://img.shields.io/github/workflow/status/XPhyro/scripts/analyse?style=flat-square&label=analyse)](https://github.com/XPhyro/scripts/actions/workflows/analyse.yml)
 [![GitHub Spell Workflow Status](https://img.shields.io/github/workflow/status/XPhyro/scripts/spell?style=flat-square&label=spell)](https://github.com/XPhyro/scripts/actions/workflows/spell.yml)
 
-
 # scripts
+
 This repository holds a collection of general and specific scripts, utilities
 and libraries for Unix-like operating systems. Almost all scripts are written in
 POSIX Shell, i.e. `sh`; and most non-script utilities and libraries are written
 in C.
 
 ## Installation
+
 To install for your user:
 
 ```sh
@@ -35,6 +36,7 @@ to your `$PATH` with higher priority than the locations of the wrapped scripts.
 Some scripts also require `$PREFIX/share/scripts/include` to be in your path.
 
 ## Uninstallation
+
 If you installed for your user:
 
 ```sh
@@ -52,17 +54,18 @@ You do not need to re-set `$PREFIX` while uninstalling.
 If you altered your `$PATH`, you may also wish to undo it.
 
 ## Usage
+
 See `man COMMAND`, `COMMAND -h` or `COMMAND --help`. Simple programs/scripts do
 not have man pages or help dialogues, either infer usage from their names, or see
 the source code.
 
 ## Notable Scripts and Utilities
+
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset.
 - [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratch pads for
   [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include
-  `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating
-  hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but
+  `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but
   the script was designed with it in mind. There is also
   [dwmpad](src/sh/.archived/dwm/util/dwmpad).
 - [cast](src/cpp/util/ishell/cast.cpp): Cast data between different data types.
@@ -89,16 +92,11 @@ the source code.
 - [maptouch](src/sh/udev/maptouch): Map touchscreen and stylus devices to the
   touch-enabled display. Best used in `.xinitrc` or as a `udev` rule. Here's an
   example rule for Microsoft Surface Pen EYU-000001 and ASUS ROG Flow X13
-  GVE301RC: `ACTION=="change",
-  KERNEL=="hid-0018:04F3:2C82.0002-battery", SUBSYSTEM=="power_supply",
-  DRIVER=="", ENV{MAPTOUCH_ROOT_DEVNAME}="ELAN9008:00 04F3:2C82",
-  ENV{XRH_EDP}="eDP-1", RUN+="/usr/local/bin/maptouch"`.
+  GVE301RC: `ACTION=="change", KERNEL=="hid-0018:04F3:2C82.0002-battery", SUBSYSTEM=="power_supply", DRIVER=="", ENV{MAPTOUCH_ROOT_DEVNAME}="ELAN9008:00 04F3:2C82", ENV{XRH_EDP}="eDP-1", RUN+="/usr/local/bin/maptouch"`.
 - [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a
   path.
 - [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use
-  [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro
-  compose A "<shell-escape>neomuttpick<enter><enter-command>source
-  /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to
+  [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to
   use.
 - [notiflog](src/py/daemon/notiflog): Log notifications on the dbus interface
   `org.freedesktop.Notifications`. Supports locking logging: after initiating
@@ -129,6 +127,7 @@ the source code.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input.
 
 ## Environment Variables
+
 Some scripts use optional or mandatory environment variables for applications.
 Assign either `bspwmpad` or `dwmpad` to `$PAD`, `rofi -dmenu` or `dmenu` to
 `$MENU`, and the respective application will be used. Other used variables
@@ -139,7 +138,8 @@ application-specific options, such as `rofi -font` or `st -d`.
 In all shell scripts, if you set `$SHELL_VERBOSE` to greater than 0, `set -x` is
 executed and all executed commands are printed to standard error.
 
-## Notice
+## Caveats
+
 - Some scripts assume that some of the other scripts are in your `$PATH`.
 - None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU extensions like `sed -i` or `strcasestr` are used.
@@ -152,5 +152,6 @@ executed and all executed commands are printed to standard error.
   compilers. Some programs use non-standard GNU/LLVM extensions.
 
 ## License
+
 Unless otherwise stated, all software found in this repository are
 licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
