@@ -293,6 +293,31 @@ analyse() {
         ec="$((ec | $?))"
     }
 
+    tmpout="$(mktemp)"
+    trap "rm -f -- '$tmpout'" INT EXIT TERM
+
+    printf "%s\n" \
+        "" \
+        "==="\
+        "$CC" \
+        "==="\
+        ""
+
+    "$CC" --version
+    find 'c/include' -mindepth 1 -type f -iname "*.h" -print0 \
+        | xargs -r0 -I FILE "$CC" $CFLAGS FILE $CLDFLAGS -o "$tmpout"
+
+    printf "%s\n" \
+        "" \
+        "==="\
+        "$CXX" \
+        "==="\
+        ""
+
+    "$CXX" --version
+    find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
+        | xargs -r0 -I FILE "$CXX" $CXXFLAGS FILE $CXXLDFLAGS -o "$tmpout"
+
     printf "%s\n" \
         "" \
         "==========" \
@@ -302,21 +327,6 @@ analyse() {
 
     clang --version
     clang-tidy --version
-
-    tmpout="$(mktemp)"
-    trap "rm -f -- '$tmpout'" INT EXIT TERM
-
-    printf "%s\n" \
-        "" \
-        "==="\
-        "gcc" \
-        "==="\
-        ""
-
-    find 'c/include' -mindepth 1 -type f -iname "*.h" -print0 \
-        | xargs -r0 -I FILE "$CC" $CFLAGS FILE $CLDFLAGS -o "$tmpout"
-    find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
-        | xargs -r0 -I FILE "$CXX" $CXXFLAGS FILE $CXXLDFLAGS -o "$tmpout"
 
     find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
         | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 sh -c '
