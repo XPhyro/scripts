@@ -13,8 +13,7 @@ def opt_type_uint(val):
     ival = int(val)
 
     if ival < 0:
-        raise argparse.ArgumentTypeError(
-            "argument must be a non-negative integer.")
+        raise argparse.ArgumentTypeError("argument must be a non-negative integer.")
 
     return ival
 
@@ -23,8 +22,7 @@ def opt_type_pint(val):
     ival = int(val)
 
     if ival <= 0:
-        raise argparse.ArgumentTypeError(
-            "argument must be a positive integer.")
+        raise argparse.ArgumentTypeError("argument must be a positive integer.")
 
     return ival
 
@@ -36,8 +34,7 @@ def opt_type_date(val):
 def set_opts():
     global opts
 
-    parser = argparse.ArgumentParser(
-        description="Fetch posts from subreddits.")
+    parser = argparse.ArgumentParser(description="Fetch posts from subreddits.")
 
     required_group = parser.add_argument_group("required options")
 
@@ -120,7 +117,8 @@ def set_opts():
         help="TODO",
         default="desc",
         choices=[
-            "asc", "desc",
+            "asc",
+            "desc",
         ],
     )
 
@@ -141,13 +139,11 @@ def set_opts():
 
 
 def loginfo(*args):
-    print(f"{sys.argv[0]}: ", *args, file=sys.stdout,
-          end="\0" if opts.null else "\n")
+    print(f"{sys.argv[0]}: ", *args, file=sys.stdout, end="\0" if opts.null else "\n")
 
 
 def logerr(*args):
-    print(f"{sys.argv[0]}: ", *args, file=sys.stderr,
-          end="\0" if opts.null else "\n")
+    print(f"{sys.argv[0]}: ", *args, file=sys.stderr, end="\0" if opts.null else "\n")
 
 
 def main():
