@@ -20,6 +20,8 @@
   usages.
   1. `find . -print0 | sort -z | xargs -r0 stest -z -m video -- | sort -z`
   2. `find . -print0 | sort -z | xargs -r0 -n 1 stest -z -m video -- | sort -z`
+  - _Update_: They now yield the same result. Maybe there is some sort of race
+    condition in the first case?
 
 ## Features
 
