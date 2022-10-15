@@ -1,4 +1,5 @@
-#pragma once_
+#ifndef HEADER_SCRIPTS_CXX_SYSUTIL_
+#define HEADER_SCRIPTS_CXX_SYSUTIL_
 
 #include <chrono>
 #include <string>
@@ -31,3 +32,5 @@ namespace xph {
         return ret;
     }
 } // namespace xph
+
+#endif /* ifndef HEADER_SCRIPTS_CXX_SYSUTIL_ */
