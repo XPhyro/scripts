@@ -106,43 +106,43 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "video/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
-                clean() {
-                    printf "%s\n" "$pids" | while IFS= read -r pid; do
-                        kill "$pid"
-                    done
-                }
+                  clean() {
+                      printf "%s\n" "$pids" | while IFS= read -r pid; do
+                          kill "$pid"
+                      done
+                  }
 
-                pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
-                    xwinwrap -g "$geom" -st -sp -ni -s -nf -b -un -argb -fdt -ov -sub WID -- \
-                        prime-run mpv \
-                            --loop \
-                            --hwdec=auto \
-                            --hwdec-codecs=all \
-                            --vo=gpu \
-                            --profile=gpu-hq \
-                            --no-config \
-                            --no-input-terminal \
-                            --no-input-cursor \
-                            --no-osc \
-                            --no-osd-bar \
-                            --no-input-default-bindings \
-                            --cursor-autohide=no \
-                            --mute=yes \
-                            --stop-screensaver=no \
-                            --panscan=1 \
-                            --wid=WID \
-                            -- "$fl" > /dev/null 2> /dev/null &
-                    printf "%s\n" "$!"
-                done 3<<EOF3 4<<EOF4
+                  pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
+                      xwinwrap -g "$geom" -st -sp -ni -s -nf -b -un -argb -fdt -ov -sub WID -- \
+                          prime-run mpv \
+                              --loop \
+                              --hwdec=auto \
+                              --hwdec-codecs=all \
+                              --vo=gpu \
+                              --profile=gpu-hq \
+                              --no-config \
+                              --no-input-terminal \
+                              --no-input-cursor \
+                              --no-osc \
+                              --no-osd-bar \
+                              --no-input-default-bindings \
+                              --cursor-autohide=no \
+                              --mute=yes \
+                              --stop-screensaver=no \
+                              --panscan=1 \
+                              --wid=WID \
+                              -- "$fl" > /dev/null 2> /dev/null &
+                      printf "%s\n" "$!"
+                  done 3<<EOF3 4<<EOF4
 $(xrandr | sed -n "s/[a-zA-Z0-9_-]\+ connected \(primary \)\?\([0-9]\+x[0-9]\++[0-9]\++[0-9]\+\) (.*$/\2/p")
 EOF3
 $(printf "%s\n" "$@")
 EOF4
 )"
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
-                trap clean INT TERM EXIT QUIT
-                sleep '"$opttime"'
-                clean
+                  printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
+                  trap clean INT TERM EXIT QUIT
+                  sleep '"$opttime"'
+                  clean
             ' --
         ;;
 esac
