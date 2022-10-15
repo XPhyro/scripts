@@ -1,6 +1,7 @@
 # High Priority
 
 ## Security
+
 - `eval`ing `getpath`, `xdotool` and other programs can lead to security
   problems if the scripts are run with elevated permissions. Warn the user and,
   for programs local to this repository, always install the `eval`ed programs as
@@ -10,6 +11,7 @@
   - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
 
 ## Bugs
+
 - `acpihandler` does not handle already-off keyboard/touchpad correctly on PROG1
   event.
 - The following `stest` usages yield different results. They should not. The
@@ -20,6 +22,7 @@
   2. `find . -print0 | sort -z | xargs -r0 -n 1 stest -z -m video -- | sort -z`
 
 ## Features
+
 - Add the ability to have default arguments via environment variables in
   `tglapp`.
 - In `bspwmpad`, if a slot is requested and the requested slot is occupied,
@@ -67,6 +70,7 @@
 - After `termctl` is created, add other relevant functionality to it.
 
 ## New Scripts
+
 - Write a daemon that enables having different keyboard layouts for each X
   client.
 - Finish `registernotif`.
@@ -107,6 +111,7 @@
     mapping system.
 
 ## Refactoring / Rewriting / Reworking
+
 - Optimise `dbutil.h` to do less allocations.
   - [ ] Reuse built paths.
 - Rewrite `cast` with size-aware conversion.
@@ -119,6 +124,7 @@
 - Make `editpath` and related scripts as easy to use as `_m` and others.
 
 ## Other
+
 - Documentation:
   - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
@@ -145,10 +151,10 @@
 - Consider changing the extension of shell headers from `.sh` to `.shh` or
   something similar.
 
-
 # Normal Priority
 
 ## Bugs
+
 - `ffmw decat` does not work as expected. When the time is in format `HH:MM:SS`,
   it seems to work. Maybe it requires this format? If so, add it in the help
   menu.
@@ -159,6 +165,7 @@
   current desktop, even if it's in another monitor's focused desktop.
 
 ## Features
+
 - In `contexec`, show the output in a `$PAD` and open the editor in the
   initialised terminal.
 - Allow `m` to take input files. If an input file is given, mark the file; if
@@ -192,7 +199,7 @@
   installed prompt, and show another prompt with the selected if all or
   in-library is selected).
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
-- Integrate *synctex* in `latexstp`. See
+- Integrate _synctex_ in `latexstp`. See
   [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html)
   and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 - Implement a no-quoting option in `tglapp` like the inverse of the one that
@@ -232,7 +239,7 @@
   `execmenu`.
 - Do not assume a font size in `rofifit`. The new calculation should still be
   generous such that it would not make the same mistake as `rofi` trimming
-  *very* short.
+  _very_ short.
 - In `bspwmpad`, add an option to hide the cursor.
 - In `tglapp`, add an option that disables auto-unlocking, allowing the user to
   review the stdout/stderr of the command.
@@ -262,6 +269,7 @@
   <https://pushshift.io/api-parameters/>.
 
 ## New Scripts
+
 - Create software-level alternatives to the `bright*` scripts.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink
@@ -300,17 +308,16 @@
   then, write a script that would hide/show these nodes per key. Key 0 should be
   similar to the key 0 of `bspwmpad`.
 - Write a script to check an sxhkdrc file (by default
-  `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, *not*
+  `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, _not_
   assuming the modifiers are in a particular order, and print the hotkeys along
   with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through
-  `stat --printf=` if the line starts with ``.
+  `stat --printf=` if the line starts with ` `.
 - Write a `bspwm` & `polybar` script that notifies `polybar` to update master
   status.
-- Write a manager for *suckless*-like software that handles updating to
+- Write a manager for _suckless_-like software that handles updating to
   upstream, applying patches to the fresh copy and building & installing. (or
-  just update master and execute `git rebase --rebase-merges --force-rebase
-  master`)
+  just update master and execute `git rebase --rebase-merges --force-rebase master`)
 - `fillcol`: Like `fillline` and `fillterm`, but for columns. Take a column
   number as input. Do not scroll lines, rather overwrite the screen.
 - `volauxdefset`
@@ -320,6 +327,7 @@
   (given via arguments).
 
 ## Refactoring / Rewriting / Reworking
+
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
 - Optimise `bspwmpadinit`'s PID updating with `inotifywait`.
@@ -329,8 +337,7 @@
   continuous trailing underscores.
 - Make `-fin` options in `ffmw` global as they are used by every non-help
   subcommand.
-- Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN
-  location`. `eval "$#=\"$(getdir $$#)\""` could be used to do so.
+- Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getdir $$#)\""` could be used to do so.
 - Rewrite `getnewname` and `getnewpath` to be compatible with GNU's
   `--backup=numbered`.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary
@@ -342,6 +349,7 @@
 - Merge `factorise`, `gcd` and `sumbase` into `numsh`.
 
 ## Other
+
 - Rename `ffmw` subcommands to more sensible ones. For instance, the current
   name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is
@@ -360,7 +368,7 @@
   the arguments without doing the action).
 - Scripts that do not require parameters from the invoking user should not use
   `sudo` and should require the script to be run as root (by asserting it
-  actively *if necessary*).
+  actively _if necessary_).
 - Scripts that use `sudo` should use `sudo`/`sudo -A` if it has a CLI/GUI.
 - Register a tray icon using `yad` in applicable scripts.
   - Daemons could benefit well from this.
@@ -372,22 +380,24 @@
 - Do not print error messages when `get*` fails in scripts as those already
   print errors to stderr.
 
-
 # Low Priority
 
 ## Features
+
 - Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
-- In `pathfinding/v`, if the file is not found, try finding the file in *a few*
+- In `pathfinding/v`, if the file is not found, try finding the file in _a few_
   depths.
 - In `bright*`, fade the brightness.
 
 ## New Scripts
-- Write a *layout manager* for dwm and/or bspwm. This manager would pop-up some
+
+- Write a _layout manager_ for dwm and/or bspwm. This manager would pop-up some
   sort of window showing (icon-ic) previews of the different available layouts.
   When one is selected, it would change the wm to that layout. You may want to
   use `rofi` or a `dialog` menu.
 
 ## Refactoring / Rewriting / Reworking
+
 - In `weather`, pad the first and last lines to prevent the clashes of the two
   versions. If the whole output is padded, the lines do not look nice. See
   [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html)
