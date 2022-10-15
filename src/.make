@@ -120,7 +120,7 @@ install() {
     )
         
     (
-        [ "$cancompilecpp" -ne 0 ] || {
+        [ "$cancompilecpp" -eq 0 ] || {
             printf "%s\n" "Not attempting to compile C++ programs as $CXX version is too old."
             exit 0
         }
