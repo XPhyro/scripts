@@ -33,8 +33,8 @@ toggletouch() {
 
 togglekbtp() {
     loginfo 'Keyboard and touchpad status set to %s' "$1"
-    xtoggleinput "$1" Keyboard
-    xtoggleinput "$1" Touchpad
+    xtoggleinput "$1" "${ACPIHANDLER_KEYBOARD_REGEX:-Keyboard}"
+    xtoggleinput "$1" "${ACPIHANDLER_TOUCHPAD_REGEX:-Touchpad}"
 }
 
 handleprog1() {
