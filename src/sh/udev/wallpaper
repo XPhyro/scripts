@@ -116,10 +116,6 @@ EOF4
                       xwinwrap -g "$geom" -st -sp -ni -s -nf -b -un -argb -fdt -ov -sub WID -- \
                           prime-run mpv \
                               --loop \
-                              --hwdec=auto \
-                              --hwdec-codecs=all \
-                              --vo=gpu \
-                              --profile=gpu-hq \
                               --no-config \
                               --no-input-terminal \
                               --no-input-cursor \
@@ -131,6 +127,7 @@ EOF4
                               --stop-screensaver=no \
                               --panscan=1 \
                               --wid=WID \
+                              $($WALLPAPER_MPV_ARGS_CMD) \
                               -- "$fl" > /dev/null 2> /dev/null &
                       printf "%s\n" "$!"
                   done 3<<EOF3 4<<EOF4
