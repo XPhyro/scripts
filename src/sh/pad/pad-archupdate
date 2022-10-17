@@ -11,9 +11,9 @@ fi
 "$PAD" $extraopts -t "${0##*/}" -- sh -c '
     update > /dev/null 2>&1 &
     time -v yay -Syu || color red "ERROR(s) encountered."
+    flushterm
     jobs %% && printf "Waiting for [update].\n"
     wait
     color green "All done. Check for errors."
-    flushterm
     readstr
 '
