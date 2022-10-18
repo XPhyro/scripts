@@ -59,9 +59,7 @@ s_indexed=0
 index () {
     [ "$s_indexed" -eq 0 ] || return 0
     s_indexed=1
-    find 'c' 'cpp' -type f \( -iname "*.c" -o -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) -print0 \
-        | xargs -r0 \
-            ctags -R --c++-kinds=+p --fields=+iaS --extras=+q
+    ctags -R --c++-kinds=+p --fields=+iaS --extras=+q .
 }
 
 install() {
