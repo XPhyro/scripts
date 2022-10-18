@@ -51,6 +51,7 @@ inline void lock_database(const std::string&& hash);
 void unlock_database(const std::string& hash);
 inline void unlock_database(const std::string&& hash);
 void unlock_all_databases();
+[[noreturn]] void unkown_syntax();
 [[noreturn]] void die(const std::string& err);
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
@@ -234,12 +235,17 @@ non_variadic:
                 STRING_CASE("find")
                 vec::find({}, {}, argv[1]);
                 STRING_BREAK
+                STRING_DEFAULT
+                unkown_syntax();
+                STRING_BREAK
             } break;
             case 3:
                 if (streq(argv[1], "="))
                     vec::set_index(argv[0], argv[2]);
                 else if (streq(argv[0], "insert"))
                     vec::insert(argv[1], argv[2]);
+                else
+                    unkown_syntax();
                 break;
             case 4: {
                 STRING_SWITCH(argv[0])
@@ -248,9 +254,12 @@ non_variadic:
                           xph::lexical_cast<char*, std::size_t>(argv[2]),
                           argv[3]);
                 STRING_BREAK
+                STRING_DEFAULT
+                unkown_syntax();
+                STRING_BREAK
             } break;
             default:
-                die("unknown syntax");
+                unkown_syntax();
         }
     }
 
@@ -291,6 +300,11 @@ void unlock_all_databases()
         if (!ulckdb(lock.c_str(), lcktype))
             std::cerr << execname << ": could not unlock database " << lock << '\n';
     }
+}
+
+[[noreturn]] void unkown_syntax()
+{
+    die("unkown syntax");
 }
 
 [[noreturn]] void die(const std::string& err)
