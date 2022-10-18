@@ -20,6 +20,9 @@ export HELP_MESSAGE
 help:
 	@printf "%s\n" "$$HELP_MESSAGE"
 
+index:
+	cd src && ./.make index o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
+
 install: uninstall
 	cd src && ./.make install o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
