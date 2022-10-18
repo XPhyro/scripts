@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 
-xprop -id "$1" \
-    '\n$0\n$1\n' WM_CLASS \
-    '\n$0\n' WM_NAME \
-    | sed -n 's/'\''/'\'\"\'\"\''/g;s/^"\(.*\)"$/'\''\1'\''/;2s/^/CLASS=/;3s/^/INSTANCE=/;5s/^/NAME=/;2,3p;5,$p'
+{
+    [ "$#" -gt 0 ] && printf "%s\0" -id "$1"
+    printf "%s\0" \
+        '\n$0\n$1\n' WM_CLASS \
+        '\n$0\n' WM_NAME
+} | xargs -0 xprop \
+  | sed -n 's/'\''/'\'\"\'\"\''/g;s/^"\(.*\)"$/'\''\1'\''/;2s/^/CLASS=/;3s/^/INSTANCE=/;5s/^/NAME=/;2,3p;5,$p'
