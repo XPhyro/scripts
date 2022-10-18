@@ -51,7 +51,7 @@ inline void lock_database(const std::string&& hash);
 void unlock_database(const std::string& hash);
 inline void unlock_database(const std::string&& hash);
 void unlock_all_databases();
-[[noreturn]] void unkown_syntax();
+[[noreturn]] void unknown_syntax();
 [[noreturn]] void die(const std::string& err);
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
@@ -236,7 +236,7 @@ non_variadic:
                 vec::find({}, {}, argv[1]);
                 STRING_BREAK
                 STRING_DEFAULT
-                unkown_syntax();
+                unknown_syntax();
                 STRING_BREAK
             } break;
             case 3:
@@ -245,7 +245,7 @@ non_variadic:
                 else if (streq(argv[0], "insert"))
                     vec::insert(argv[1], argv[2]);
                 else
-                    unkown_syntax();
+                    unknown_syntax();
                 break;
             case 4: {
                 STRING_SWITCH(argv[0])
@@ -255,11 +255,11 @@ non_variadic:
                           argv[3]);
                 STRING_BREAK
                 STRING_DEFAULT
-                unkown_syntax();
+                unknown_syntax();
                 STRING_BREAK
             } break;
             default:
-                unkown_syntax();
+                unknown_syntax();
         }
     }
 
@@ -302,9 +302,9 @@ void unlock_all_databases()
     }
 }
 
-[[noreturn]] void unkown_syntax()
+[[noreturn]] void unknown_syntax()
 {
-    die("unkown syntax");
+    die("unknown syntax");
 }
 
 [[noreturn]] void die(const std::string& err)
