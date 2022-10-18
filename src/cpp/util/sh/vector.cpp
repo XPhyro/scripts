@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <optional>
 #include <ranges>
 #include <set>
 #include <sstream>
@@ -24,6 +25,7 @@
 #include <unistd.h>
 
 // C++ libraries
+#include <lexical_cast.hpp>
 #include <macros.hpp>
 #include <nullable.hpp>
 #include <strutil.hpp>
@@ -66,6 +68,7 @@ namespace vec {
     vecsize_t read_size();
     void get();
     void init();
+    void clear();
     void eval();
     void size();
     void front();
@@ -79,6 +82,8 @@ namespace vec {
     void set_index(const std::string&& indexstr, const std::string&& value);
     void set(const std::string&& other);
     void swap(const std::string&& other);
+    void find(const std::optional<std::size_t> first_index,
+              const std::optional<std::size_t> last_index, const std::string&& value);
 } // namespace vec
 
 const std::unordered_map<std::string, cache> caches = {
@@ -190,6 +195,9 @@ non_variadic:
                 STRING_CASE("new")
                 vec::init();
                 STRING_BREAK
+                STRING_CASE("clear")
+                vec::clear();
+                STRING_BREAK
                 STRING_CASE("eval")
                 vec::eval();
                 STRING_BREAK
@@ -223,6 +231,9 @@ non_variadic:
                 STRING_CASE("erase")
                 vec::erase(argv[1]);
                 STRING_BREAK
+                STRING_CASE("find")
+                vec::find({}, {}, argv[1]);
+                STRING_BREAK
             } break;
             case 3:
                 if (streq(argv[1], "="))
@@ -230,6 +241,14 @@ non_variadic:
                 else if (streq(argv[0], "insert"))
                     vec::insert(argv[1], argv[2]);
                 break;
+            case 4: {
+                STRING_SWITCH(argv[0])
+                STRING_CASE("find")
+                vec::find(xph::lexical_cast<char*, std::size_t>(argv[1]),
+                          xph::lexical_cast<char*, std::size_t>(argv[2]),
+                          argv[3]);
+                STRING_BREAK
+            } break;
             default:
                 die("unknown syntax");
         }
@@ -337,38 +356,46 @@ cache parse_args(int& argc, char**& argv)
                        "   1. new\n"
                        "      1. Initialise vector.\n"
                        "      2. If already initialised, vector is reinitialised.\n"
-                       "   2. eval\n"
+                       "   2. clear\n"
+                       "      1. Clear the contents of the vector.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "   3. eval\n"
                        "      1. Print vector in a format `eval`able by a POSIX shell.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   3. size\n"
+                       "   4. size\n"
                        "      1. Get vector size.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   4. front\n"
+                       "   5. front\n"
                        "      1. Get front element of vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   5. back\n"
+                       "   6. back\n"
                        "      1. Get back element of vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   6. insert [INDEX] [VALUE]\n"
+                       "   7. insert [INDEX] [VALUE]\n"
                        "      1. Insert VALUE at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   7. erase [INDEX]\n"
+                       "   8. erase [INDEX]\n"
                        "      1. Erase value at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   8. push_back [VALUE...]\n"
+                       "   9. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   9. emplace_back [COMMAND] [ARG...]\n"
+                       "  10. emplace_back [COMMAND] [ARG...]\n"
                        "      1. Execute the given command with the given arguments, if any, and push_back its output after removing nulls (\\0).\n"
                        "      2. Vector must have been initialised.\n"
-                       "  10. pop_back [COUNT]?\n"
+                       "  11. pop_back [COUNT]?\n"
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
-                       "  11. swap [OTHER_VEC_NAME]\n"
+                       "  12. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
                        "      2. OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty, or contain '/'.\n"
                        "      3. Vectors must have been initialised.\n"
+                       "  13. find [[FIRST_INDEX] [LAST_INDEX]]? [VALUE]\n"
+                       "      1. Find VALUE in the vector.\n"
+                       "      2. If FIRST_INDEX and LAST_INDEX are given, the search is limited within the range.\n"
+                       "      3. If VALUE is found, its index is printed; otherwise the size of the vector is printed.\n"
+                       "      4. Vector must have been initialised.\n"
                        "\n"
                        "PROG_HASH cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
                        "VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty, or contain '/'.\n"
@@ -535,6 +562,12 @@ namespace vec {
         fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
     }
 
+    void clear()
+    {
+        assertexists();
+        init();
+    }
+
     void size()
     {
         std::cout << read_size();
@@ -689,6 +722,19 @@ namespace vec {
             xph::sys::swapfile(cachefl, othercachefl);
             unlock_database(otherlckhash);
         }
+    }
+
+    void find(const std::optional<std::size_t> first_index,
+              const std::optional<std::size_t> last_index, const std::string&& value)
+    {
+        const auto vec = parse();
+        const auto begin = vec.begin();
+        auto idx = static_cast<std::size_t>(
+            std::find(begin + (first_index ? first_index.value() : 0),
+                      begin + (last_index ? last_index.value() : vec.size()),
+                      value) -
+            begin);
+        std::cout << idx;
     }
 
     void front()
