@@ -52,13 +52,10 @@ parseflags() {
 '
 
 all() {
-    index
+    command -v ctags > /dev/null 2>&1 && index
 }
 
-s_indexed=0
 index () {
-    [ "$s_indexed" -eq 0 ] || return 0
-    s_indexed=1
     ctags -R --c++-kinds=+p --fields=+iaS --extras=+q .
 }
 
