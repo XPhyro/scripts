@@ -490,7 +490,7 @@ export C_INCLUDE_PATH
 
 CXX="g++"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
-          -Wall -Wextra -Werror -Wabi=11 \
+          -Wall -Wextra -Werror -Wabi=12 \
           -Wswitch-default \
           -Wimplicit-fallthrough=5 -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
