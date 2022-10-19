@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+
+. utility.sh
+
+eval "$(evalverbose)"
+
+idvec() {
+    vector "$execname" "seenids" "$@"
+}
+
+kmmap() {
+    unordered_map "$execname" "kms" "$@"
+}
+
+setkm() {
+    printf "%s\n" "keymap: $1" >&2
+    setxkbmap "$1"
+    setxkb "$1"
+}
+
+execname="${0##*/}"
+
+configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/autokblayout/config.sh"
+[ -f "$configfl" ] && . "$configfl"
+
+command -v first_time_setup > /dev/null 2>&1 || \
+    first_time_setup() {
+        :
+    }
+
+idvec new
+kmmap new
+
+oldid="$(bspc query -n focused -N)"
+bspc subscribe node_focus | while IFS=" " read -r _ _ _ ID; do
+    eval "$(xclassname "$ID")" # defines CLASS, INSTANCE and NAME
+
+    std_logerrraw \
+        "class: $CLASS" \
+        "instance: $INSTANCE" \
+        "name: $NAME" \
+        "from node: $oldid" \
+        "to node: $ID"
+
+    km="$(xkb-switch)"
+    kmmap "$oldid" = "$km"
+
+    if ! idvec -q find "$ID"; then
+        (first_time_setup)
+        idvec push_back "$ID"
+    else
+        setkm "$(kmmap "$ID")"
+    fi
+
+    oldid="$ID"
+
+    std_logerrraw ""
+done
