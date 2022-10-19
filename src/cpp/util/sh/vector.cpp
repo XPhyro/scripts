@@ -147,8 +147,8 @@ int main(int argc, char* argv[])
 
     xph::sys::signals({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_sig);
 
-    lock_database(execname + '-' + proghash);
-    lock_database(execname + '-' + proghash + '-' + vecname);
+    lock_database(givenexecname + '-' + proghash);
+    lock_database(givenexecname + '-' + proghash + '-' + vecname);
 
     {
         std::string cachedir;
