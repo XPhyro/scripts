@@ -493,7 +493,7 @@ namespace vec {
             buf = ss.str();
         }
 
-        return std::move<std::pair<vecsize_t, std::string>>({ size, buf });
+        return { size, buf };
     }
 
     void write(std::vector<std::string> vec)
