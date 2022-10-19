@@ -407,7 +407,7 @@ cache parse_args(int& argc, char**& argv)
 void assertexists(const std::string path)
 {
     if (!std::filesystem::exists(path))
-        die("vector is not initialised");
+        die("unordered map is not initialised");
 }
 
 void conditional_delim()
@@ -544,7 +544,7 @@ namespace map {
         fl.read(reinterpret_cast<char*>(&size), sizeof(size));
 
         if (size >= std::numeric_limits<mapsize_t>::max())
-            die("vector is at maximum capacity");
+            die("unordered map is at maximum capacity");
 
         auto map = parse();
         const std::string key = argv[0];
