@@ -272,6 +272,7 @@ analyse() {
             shellcheck \
                 -e SC1003 \
                 -e SC1007 \
+                -e SC1090 \
                 -e SC1091 \
                 -e SC2015 \
                 -e SC2016 \
