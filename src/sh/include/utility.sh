@@ -36,4 +36,10 @@
         done
         exit "${ec:-1}"
     }
+
+    std_logerrraw() {
+        for i; do
+            printf "%s\n" "$i" >&2
+        done
+    }
 }
