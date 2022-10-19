@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 XDG_CURRENT_DESKTOP=KDE exec "$_BROWSER" $_BROWSER_PRE_ARGS "$@" $_BROWSER_POST_ARGS

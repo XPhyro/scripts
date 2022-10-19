@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Get a file and edit it.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 for i; do
     fl="$(getpath -fu -- "$i")" || continue

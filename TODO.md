@@ -114,7 +114,6 @@
 - Merge [term/\*](src/c/util/term/) into `termctl`.
   - Make its syntax human-readable like that of `xdotool`.
 - Make `editpath` and related scripts as easy to use as `_m` and others.
-- Convert `evalverbose` to a shell include.
 
 ## Other
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Download package updates, dump update list and redraw status bar.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 yay -Syuw --noconfirm
 dwmbar-avlsyuset

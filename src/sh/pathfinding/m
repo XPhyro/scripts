@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Mark directory.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 logerrq() {
     printf "[ERROR]: %s\n" "$*"

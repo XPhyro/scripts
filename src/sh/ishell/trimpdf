@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 unset optremovetmp
 while getopts "hr" OPT; do

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Update packages using dmenu.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 ans="$(printf "yes\n%s\nyes" "$(yay -Qu)" | execmenu -i -p "Proceed with installation?")"
 [ "$ans" = "yes" ] || exit 0

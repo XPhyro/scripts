@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Set X keyboard properties.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 km="${1:-"$(xkb-switch)"}"
 

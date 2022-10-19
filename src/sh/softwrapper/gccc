@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 case "$1" in
     c|clean) rm -f -- main.c program;;

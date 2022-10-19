@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 "$PAD" -g 1450x900 -- neomutt

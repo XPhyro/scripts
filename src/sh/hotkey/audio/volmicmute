@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Toggle the mute status of the default pulseaudio source.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 exec pactl set-source-mute "$(voldefsource)" toggle

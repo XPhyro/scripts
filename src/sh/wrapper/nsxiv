@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 preargs="${NSXIV_ARGS_PRE:-"-a0"}"
 postargs="$NSXIV_ARGS_POST"

@@ -8,7 +8,7 @@
 #     volauxcharrdefset + 1 5=95 100=10
 #     volauxcharrdefset - 10 5=1 100=95
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 lck -rq volauxcharrdefset
 

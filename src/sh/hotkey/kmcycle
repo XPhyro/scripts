@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Toggle X keymap.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 setkm() {
     setxkbmap "$1"

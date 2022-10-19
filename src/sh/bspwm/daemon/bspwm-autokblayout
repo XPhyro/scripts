@@ -2,7 +2,7 @@
 
 . utility.sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 idvec() {
     std::vector "$execname" "seenids" "$@"

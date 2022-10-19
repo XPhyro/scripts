@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Toggle the mute status of the default pulseaudio sink.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 exec pactl set-sink-mute "$(voldefsink)" toggle

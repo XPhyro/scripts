@@ -2,7 +2,7 @@
 # Add the following to your neomuttrc:
 # macro compose A "<shell-escape>neomutt-pick<enter><enter-command>source /tmp/neomutt-pick<enter>" "Attach With File Manager"
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 kdialog --getopenfilename "$HOME" --multiple \
     | awk '{print "push <attach-file>"$0"<enter>"}' > "/tmp/neomutt-pick"

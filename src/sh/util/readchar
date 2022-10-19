@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Adapted from https://stackoverflow.com/a/30022297/8403070.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 stty -icanon -echo
 char="$(dd bs=1 count=1 2> /dev/null)" || exit 1

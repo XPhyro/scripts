@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 exec st -n vit -t vit -z "${PAD_VIT_ZOOM:-0}" -e vit

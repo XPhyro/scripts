@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 if [ "$#" -eq 0 ]; then
     less -RN

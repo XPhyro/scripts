@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 bspc query -N -n .hidden.window | while IFS= read -r i; do
     printf "%s: %s\n" "$i" "$(xprop -id "$i" WM_NAME | cut -d\" -f2- | head -c -2)"

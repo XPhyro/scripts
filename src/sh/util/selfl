@@ -3,7 +3,7 @@
 # TODO: Make -d respect -g.
 # TODO: Add support for multiple -e.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 execname="${0##*/}"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Query battery status.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 bat="/sys/class/power_supply/BAT0"
 cap="$(cat "$bat/capacity")"

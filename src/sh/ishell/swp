@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Swap two files.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 fl="$(printf "%s\n" "$1" | sed 's,/*$,,')"
 other="$(printf "%s\n" "$2" | sed 's,/*$,,')"

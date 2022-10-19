@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Query updateable packages.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 l="$(cat ~/.avlsyu)"
 { [ "$l" -gt 0 ] && printf "%s\n" "$l 📦"; } > "$(getpath -du -- statbar)/5_statbaravlsyu"

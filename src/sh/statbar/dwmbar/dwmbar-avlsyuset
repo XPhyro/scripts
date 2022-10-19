@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Dump all packages that can be updated.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 yay -Qu | wc -l > "$HOME/.avlsyu"

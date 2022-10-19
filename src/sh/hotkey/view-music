@@ -7,7 +7,7 @@
 #       based on some custom filtering/sorting, and use that helper script to do
 #       what this script currently does.
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 eval "$(getpath -due -- mu dir 1 "[ERROR]: getpath -du -- failed, aborting.")"
 

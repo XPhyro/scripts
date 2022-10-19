@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-eval "$(evalverbose)"
+. evalverbose.sh
 
 awk '/^¬ / {print substr($0, 3)}' "$(getpath -fu -- mrk)"

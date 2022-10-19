@@ -2,7 +2,7 @@
 
 set -e
 
-[ -n "$POLYBAR" ] && [ "$POLYBAR" -ne 0 ] || eval "$(evalverbose)"
+[ -n "$POLYBAR" ] && [ "$POLYBAR" -ne 0 ] || . evalverbose.sh
 { [ -z "$-" ] || [ -n "${-%%*x*}" ] || { [ -n "$POLYBAR" ] && [ "$POLYBAR" -ne 0 ]; }; } && exec 2> /dev/null
 
 eval "$(
