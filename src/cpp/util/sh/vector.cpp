@@ -45,6 +45,7 @@ typedef std::size_t vecsize_t;
 
 std::set<std::string> acquiredlocks;
 std::string cachefl;
+int exit_code = EXIT_SUCCESS;
 
 void lock_database(const std::string& hash);
 inline void lock_database(const std::string&& hash);
@@ -265,7 +266,7 @@ non_variadic:
 
     unlock_all_databases();
 
-    return EXIT_SUCCESS;
+    return exit_code;
 }
 
 void lock_database(const std::string& hash)
@@ -408,7 +409,7 @@ cache parse_args(int& argc, char**& argv)
                        "  13. find [[FIRST_INDEX] [LAST_INDEX]]? [VALUE]\n"
                        "      1. Find VALUE in the vector.\n"
                        "      2. If FIRST_INDEX and LAST_INDEX are given, the search is limited within the range.\n"
-                       "      3. If VALUE is found, its index is printed; otherwise the size of the vector is printed.\n"
+                       "      3. If VALUE is found, its index is printed; otherwise the size of the vector is printed and a non-zero exit code is returned.\n"
                        "      4. Vector must have been initialised.\n"
                        "\n"
                        "PROG_HASH cannot be \"NULL\", \"nullptr\" or empty, or contain '/'.\n"
@@ -749,6 +750,8 @@ namespace vec {
                       value) -
             begin);
         std::cout << idx;
+        if (idx == vec.size())
+            exit_code = EXIT_FAILURE;
     }
 
     void front()
