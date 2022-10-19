@@ -94,8 +94,6 @@
   - These could be useful:
     - <https://web.archive.org/web/20220925075135/https://www.securitronlinux.com/debian-testing/how-to-get-a-nice-waveform-display-with-the-mpv-media-player-on-linux/>
     - <https://web.archive.org/web/20220925075211/https://gist.github.com/matiaspl/8b1880456d10d582677aadb474d743b6>
-- Implement other `std::` stuff such as `std::unordered_map`.
-  - With this, also rename `vector` to `std::vector`.
 - Write a script similar to `getpath`, but interactive.
   - `fzf` could probably work well here.
   - Should support early-out, similar to most LaTeX compilers.

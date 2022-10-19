@@ -5,11 +5,11 @@
 eval "$(evalverbose)"
 
 idvec() {
-    vector "$execname" "seenids" "$@"
+    std::vector "$execname" "seenids" "$@"
 }
 
 kmmap() {
-    unordered_map "$execname" "kms" "$@"
+    std::unordered_map "$execname" "kms" "$@"
 }
 
 setkm() {
