@@ -138,8 +138,8 @@ def set_opts():
     opts = parser.parse_args()
 
 
-def loginfo(*args):
-    print(f"{sys.argv[0]}: ", *args, file=sys.stdout, end="\0" if opts.null else "\n")
+def lograw(*args):
+    print(*args, file=sys.stdout, end="\0" if opts.null else "\n")
 
 
 def logerr(*args):
@@ -170,9 +170,9 @@ def main():
 
         for submission in submissions_generator:
             if opts.all:
-                loginfo(submission.__dict__)
+                lograw(submission.__dict__)
             elif opts.force_print or submission.url:
-                loginfo(submission.url)
+                lograw(submission.url)
 
 
 if __name__ == "__main__":
