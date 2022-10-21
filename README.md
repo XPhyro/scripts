@@ -63,10 +63,11 @@ the source code.
 
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset.
+- [bspwm-autokblayout](src/sh/bspwm/daemon/bspwm-autokblayout): Automatically switch between keyboard layouts for different windows in [bspwm](https://github.com/baskerville/bspwm).
 - [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratch pads for
-  [bspwm](https://github.com/baskerville/bspwm). For optimum operation, include
-  `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required for operation, but
-  the script was designed with it in mind. There is also
+  bspwm. For optimum operation, include
+  `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required
+  for operation, but the script was designed with it in mind. There is also
   [dwmpad](src/sh/.archived/dwm/util/dwmpad).
 - [cast](src/cpp/util/ishell/cast.cpp): Cast data between different data types.
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
