@@ -93,6 +93,13 @@ def set_opts():
     )
 
     parser.add_argument(
+        "-i",
+        "--print-id",
+        help="print the id instead of the url",
+        action="store_true",
+    )
+
+    parser.add_argument(
         "-l",
         "--limit",
         help="limit the number of queries. "
@@ -172,7 +179,7 @@ def main():
             if opts.all:
                 lograw(submission.__dict__)
             elif opts.force_print or submission.url:
-                lograw(submission.url)
+                lograw(submission.id if opts.print_id else submission.url)
 
 
 if __name__ == "__main__":
