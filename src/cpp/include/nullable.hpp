@@ -5,6 +5,7 @@
 #include <utility>
 
 namespace xph {
+    // std::optional is recommended instead of xph::nullable since C++17
     template <typename T>
     class nullable {
     public:
