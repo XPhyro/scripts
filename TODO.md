@@ -64,6 +64,8 @@
 - After `termctl` is created, add other relevant functionality to it.
 - Support non-absolute values for `-l` and `-p` in `scrolls`.
   - Syntax should support `x%` where `0.0 <= x <= 100.0` or `y` where `y >= 0`.
+- Add new events in `bspwm-autokblayout`:
+  - `on_focused(is_changed)` (`is_changed` is whether the user manually overwrote the automatic state)
 
 ## New Scripts
 
