@@ -43,7 +43,7 @@ void updates(void)
     oldlinesize = linesize;
     linelen = getdelim(&line, &linesize, delim, stdin);
     if (delim && linelen && line[linelen - 1] == delim)
-        line[linelen-- - 1] = '\0';
+        line[--linelen] = '\0';
     textlen = MIN(opttextlen, linelen);
 
     if (linesize > oldlinesize)
