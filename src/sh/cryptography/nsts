@@ -1,0 +1,121 @@
+#!/usr/bin/env sh
+
+. evalverbose.sh
+. utility.sh
+execname="$0"
+
+opt_test_800_22=0
+opt_test_800_90b_iid=0
+opt_test_800_90b_non_iid=0
+opt_bitstream_count=10
+opt_bitstream_length=10
+opt_remove_head=0
+opt_remove_tail=0
+while getopts "AaBbc:H:hl:T:" OPT; do
+    case "$OPT" in
+        A)
+            opt_test_800_22=1
+            opt_test_800_90b_iid=1
+            opt_test_800_90b_non_iid=1
+            ;;
+        a) opt_test_800_22=1;;
+        B) opt_test_800_90b_iid=1;;
+        b) opt_test_800_90b_non_iid=1;;
+        c) opt_bitstream_count="$OPTARG";;
+        H) opt_remove_head="$OPTARG";;
+        h) printf "%s" \
+"Usage: $execname [OPTION]...
+Pass data through NIST tests.
+
+  -A          enable all tests.
+  -a          enable NIST SP 800-22 Rev. 1a tests.
+  -B          enable NIST SP 800-90B IID tests.
+  -b          enable NIST SP 800-90B non-IID tests.
+  -c COUNT    count of bitstreams. default is 10. set to 0 for auto.
+  -H COUNT    remove COUNT bytes from the beginning of the data.
+  -h          display this help and exit.
+  -l LENGTH   length of bitstreams. default is 0. set to 0 for auto.
+  -T COUNT    remove COUNT bytes from the end of the data.
+"
+            ;;
+        l) opt_bitstream_length="$OPTARG";;
+        T) opt_remove_tail="$OPTARG";;
+        *) std_logerrrawq "Try '$execname -h' for more information.";;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ "$opt_bitstream_count" -eq 0 ] || [ "$opt_bitstream_count" -ge 1 ] \
+    || std_logerrq "bitstream count must be a positive integer."
+[ "$opt_bitstream_length" -eq 0 ] || [ "$opt_bitstream_length" -ge 1 ] \
+    || std_logerrq "bitstream length must be a positive integer."
+[ "$opt_bitstream_count" -eq 0 ] && [ "$opt_bitstream_length" -eq 0 ] \
+    && std_logerrq "bitstream count and length cannot be auto at the same time."
+
+testdir="tests"
+[ -d "$testdir" ] || mkdir -- "$testdir" || std_logerrq "could not create test directory."
+tmpdata="$(mktemp)" || std_logerrq "could not create temporary file."
+trap 'rm -rf -- "$tmpdata"' INT TERM EXIT
+for data; do
+    std_log "processing $data."
+
+    tail -c "+$((opt_remove_head + 1))" -- "$data" \
+        | head -c "-$opt_remove_tail" > "$tmpdata"
+
+    (
+        cd "$testdir" || std_logerrq "could not change directory to $testdir. skipping $data."
+        
+        [ "$opt_test_800_22" -ne 0 ] && {
+            mkdir -- "${data##*/}" && cd "${data##*/}" \
+                && mkdir -- \
+                    experiments \
+                    experiments/AlgorithmTesting \
+                    experiments/AlgorithmTesting/Frequency \
+                    experiments/AlgorithmTesting/BlockFrequency \
+                    experiments/AlgorithmTesting/Runs \
+                    experiments/AlgorithmTesting/LongestRun \
+                    experiments/AlgorithmTesting/Rank \
+                    experiments/AlgorithmTesting/FFT \
+                    experiments/AlgorithmTesting/NonOverlappingTemplate \
+                    experiments/AlgorithmTesting/OverlappingTemplate \
+                    experiments/AlgorithmTesting/Universal \
+                    experiments/AlgorithmTesting/LinearComplexity \
+                    experiments/AlgorithmTesting/Serial \
+                    experiments/AlgorithmTesting/ApproximateEntropy \
+                    experiments/AlgorithmTesting/CumulativeSums \
+                    experiments/AlgorithmTesting/RandomExcursions \
+                    experiments/AlgorithmTesting/RandomExcursionsVariant \
+                && ln -s "${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/nsts/templates" "." \
+                || std_logerrq "could not create test directory hierarchy. skipping $data."
+
+            if [ "$opt_bitstream_count" -eq 0 ]; then
+                opt_bitstream_count="$(($(stat --printf="%s" -- "$tmpdata") * 8 / opt_bitstream_length))"
+            elif [ "$opt_bitstream_length" -eq 0 ]; then
+                opt_bitstream_length="$(($(stat --printf="%s" -- "$tmpdata") * 8 / opt_bitstream_count))"
+            fi
+
+            printf "%s\n" \
+                "File: $data" \
+                "Remove Prefix: $opt_remove_head" \
+                "Remove Suffix: $opt_remove_tail" \
+                "Bitstream Count: $opt_bitstream_count" \
+                "Bitstream Length: $opt_bitstream_length" > nist-sts-parameters
+            printf "%s\n" \
+                0 \
+                "$tmpdata" \
+                1 \
+                0 \
+                "$opt_bitstream_count" \
+                1 \
+            | nist-sts "$opt_bitstream_length"
+        }
+
+        [ "$opt_test_800_90b_iid" -ne 0 ] && {
+            ea_iid "$tmpdata" | tee iid
+        }
+
+        [ "$opt_test_800_90b_non_iid" -ne 0 ] && {
+            ea_non_iid "$tmpdata" | tee non_iid
+        }
+    ) || continue
+done
