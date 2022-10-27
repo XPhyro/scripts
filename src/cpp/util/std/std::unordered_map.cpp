@@ -57,6 +57,7 @@ void unlock_all_databases();
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
 cache parse_args(int& argc, char**& argv);
+bool exists(const std::string path = cachefl);
 void assertexists(const std::string path = cachefl);
 void conditional_delim();
 void shell_escape(std::string& str);
@@ -69,12 +70,14 @@ namespace map {
     mapsize_t read_size();
     void get();
     void init();
+    void ensure_init();
     void clear();
     void size();
     void insert(const std::string&& key, const std::string&& value);
     void erase(const std::string&& key);
     void emplace(int argc, char* argv[]);
     void get_key(const std::string&& key);
+    void get_key_or_def(const std::string&& key, const std::string&& def);
     void set_key(const std::string&& key, const std::string&& value);
     void set(const std::string&& other);
     void swap(const std::string&& other);
@@ -187,6 +190,9 @@ non_variadic:
                 STRING_CASE("new")
                 map::init();
                 STRING_BREAK
+                STRING_CASE("ensure")
+                map::ensure_init();
+                STRING_BREAK
                 STRING_CASE("clear")
                 map::clear();
                 STRING_BREAK
@@ -211,17 +217,28 @@ non_variadic:
                 STRING_CASE("find")
                 map::find(argv[1]);
                 STRING_BREAK
+                STRING_CASE("at")
+                map::get_key(argv[1]);
+                STRING_BREAK
                 STRING_DEFAULT
                 unknown_syntax();
                 STRING_BREAK
             } break;
             case 3:
-                if (streq(argv[1], "="))
+                if (streq(argv[1], "=")) {
                     map::set_key(argv[0], argv[2]);
-                else if (streq(argv[0], "insert"))
+                } else {
+                    STRING_SWITCH(argv[0])
+                    STRING_CASE("insert")
                     map::insert(argv[1], argv[2]);
-                else
+                    STRING_BREAK
+                    STRING_CASE("at_or")
+                    map::get_key_or_def(argv[1], argv[2]);
+                    STRING_BREAK
+                    STRING_DEFAULT
                     unknown_syntax();
+                    STRING_BREAK
+                }
                 break;
             default:
                 unknown_syntax();
@@ -334,26 +351,34 @@ cache parse_args(int& argc, char**& argv)
                        "   1. new\n"
                        "      1. Initialise map.\n"
                        "      2. If already initialised, map is reinitialised.\n"
-                       "   2. clear\n"
+                       "   2. ensure\n"
+                       "      1. Initialise map if not already initialised.\n"
+                       "   3. clear\n"
                        "      1. Clear the contents of the map.\n"
                        "      2. Map must have been initialised.\n"
-                       "   3. size\n"
+                       "   4. size\n"
                        "      1. Get map size.\n"
                        "      2. Map must have been initialised.\n"
-                       "   4. insert [KEY] [VALUE]\n"
+                       "   5. at [KEY]\n"
+                       "      1. Get value at KEY.\n"
+                       "      2. Map must have been initialised.\n"
+                       "   6. at_or [KEY] [DEFAULT]\n"
+                       "      1. Get value at KEY or DEFAULT if KEY does not exist.\n"
+                       "      2. Map must have been initialised.\n"
+                       "   7. insert [KEY] [VALUE]\n"
                        "      1. Insert VALUE at KEY.\n"
                        "      2. Map must have been initialised.\n"
-                       "   5. erase [KEY]\n"
+                       "   8. erase [KEY]\n"
                        "      1. Erase value at KEY.\n"
                        "      2. Map must have been initialised.\n"
-                       "   6. emplace [KEY] [COMMAND] [ARG...]\n"
+                       "   9. emplace [KEY] [COMMAND] [ARG...]\n"
                        "      1. Execute the given command with the given arguments, if any, and insert its output after removing nulls (\\0).\n"
                        "      2. Map must have been initialised.\n"
-                       "   7. swap [OTHER_MAP_NAME]\n"
+                       "  10. swap [OTHER_MAP_NAME]\n"
                        "      1. Swap MAP_NAME and OTHER_MAP_NAME.\n"
                        "      2. OTHER_MAP_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty, or contain '/'.\n"
                        "      3. Maps must have been initialised.\n"
-                       "   8. find [VALUE]\n"
+                       "  11. find [VALUE]\n"
                        "      1. Find VALUE in the map.\n"
                        "      2. If VALUE is found, its key is printed; otherwise \"NULL\" is printed and a non-zero exit code is returned.\n"
                        "      3. Map must have been initialised.\n"
@@ -404,9 +429,14 @@ cache parse_args(int& argc, char**& argv)
     return cache;
 }
 
+bool exists(const std::string path)
+{
+    return std::filesystem::exists(path);
+}
+
 void assertexists(const std::string path)
 {
-    if (!std::filesystem::exists(path))
+    if (!exists(path))
         die("unordered map is not initialised");
 }
 
@@ -520,6 +550,12 @@ namespace map {
         fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
     }
 
+    void ensure_init()
+    {
+        if (!exists(cachefl))
+            init();
+    }
+
     void clear()
     {
         assertexists();
@@ -579,6 +615,15 @@ namespace map {
         if (!map.contains(key))
             die("map does not contain key");
         std::cout << map[key];
+    }
+
+    void get_key_or_def(const std::string&& key, const std::string&& def)
+    {
+        auto map = parse();
+        if (map.contains(key))
+            std::cout << map[key];
+        else
+            std::cout << def;
     }
 
     void set_key(const std::string&& key, const std::string&& value)
