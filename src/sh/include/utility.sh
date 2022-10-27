@@ -23,6 +23,12 @@
         done
     }
 
+    std_logerrraw() {
+        for i; do
+            printf "%s\n" "$i" >&2
+        done
+    }
+
     std_logferrq() {
         fmt="$1"
         shift
@@ -37,9 +43,10 @@
         exit "${ec:-1}"
     }
 
-    std_logerrraw() {
+    std_logerrrawq() {
         for i; do
             printf "%s\n" "$i" >&2
         done
+        exit "${ec:-1}"
     }
 }
