@@ -57,6 +57,7 @@ void unlock_all_databases();
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
 cache parse_args(int& argc, char**& argv);
+bool exists(const std::string path = cachefl);
 void assertexists(const std::string path = cachefl);
 void conditional_delim();
 void shell_escape(std::string& str);
@@ -70,6 +71,7 @@ namespace vec {
     vecsize_t read_size();
     void get();
     void init();
+    void ensure_init();
     void clear();
     void eval();
     void size();
@@ -196,6 +198,9 @@ non_variadic:
                 STRING_SWITCH(argv[0])
                 STRING_CASE("new")
                 vec::init();
+                STRING_BREAK
+                STRING_CASE("ensure")
+                vec::ensure_init();
                 STRING_BREAK
                 STRING_CASE("clear")
                 vec::clear();
@@ -371,42 +376,44 @@ cache parse_args(int& argc, char**& argv)
                        "   1. new\n"
                        "      1. Initialise vector.\n"
                        "      2. If already initialised, vector is reinitialised.\n"
-                       "   2. clear\n"
+                       "   2. ensure\n"
+                       "      1. Initialise vector if not already initialised.\n"
+                       "   3. clear\n"
                        "      1. Clear the contents of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   3. eval\n"
+                       "   4. eval\n"
                        "      1. Print vector in a format `eval`able by a POSIX shell.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   4. size\n"
+                       "   5. size\n"
                        "      1. Get vector size.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   5. front\n"
+                       "   6. front\n"
                        "      1. Get front element of vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   6. back\n"
+                       "   7. back\n"
                        "      1. Get back element of vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   7. insert [INDEX] [VALUE]\n"
+                       "   8. insert [INDEX] [VALUE]\n"
                        "      1. Insert VALUE at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   8. erase [INDEX]\n"
+                       "   9. erase [INDEX]\n"
                        "      1. Erase value at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "   9. push_back [VALUE...]\n"
+                       "  10. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "  10. emplace_back [COMMAND] [ARG...]\n"
+                       "  11. emplace_back [COMMAND] [ARG...]\n"
                        "      1. Execute the given command with the given arguments, if any, and push_back its output after removing nulls (\\0).\n"
                        "      2. Vector must have been initialised.\n"
-                       "  11. pop_back [COUNT]?\n"
+                       "  12. pop_back [COUNT]?\n"
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
-                       "  12. swap [OTHER_VEC_NAME]\n"
+                       "  13. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
                        "      2. OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty, or contain '/'.\n"
                        "      3. Vectors must have been initialised.\n"
-                       "  13. find [[FIRST_INDEX] [LAST_INDEX]]? [VALUE]\n"
+                       "  14. find [[FIRST_INDEX] [LAST_INDEX]]? [VALUE]\n"
                        "      1. Find VALUE in the vector.\n"
                        "      2. If FIRST_INDEX and LAST_INDEX are given, the search is limited within the range.\n"
                        "      3. If VALUE is found, its index is printed; otherwise the size of the vector is printed and a non-zero exit code is returned.\n"
@@ -457,9 +464,14 @@ cache parse_args(int& argc, char**& argv)
     return cache;
 }
 
+bool exists(const std::string path)
+{
+    return std::filesystem::exists(path);
+}
+
 void assertexists(const std::string path)
 {
-    if (!std::filesystem::exists(path))
+    if (!exists(path))
         die("vector is not initialised");
 }
 
@@ -575,6 +587,12 @@ namespace vec {
 
         const vecsize_t size = 0;
         fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    }
+
+    void ensure_init()
+    {
+        if (!exists(cachefl))
+            init();
     }
 
     void clear()
