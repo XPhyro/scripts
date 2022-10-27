@@ -11,6 +11,45 @@
         return 0
     }
 
+    std_logf() {
+        fmt="$1"
+        shift
+        printf "%s: $fmt" "$execname" "$@"
+    }
+
+    std_log() {
+        for i; do
+            printf "%s: %s\n" "$execname" "$i"
+        done
+    }
+
+    std_lograw() {
+        for i; do
+            printf "%s\n" "$i"
+        done
+    }
+
+    std_logfq() {
+        fmt="$1"
+        shift
+        printf "%s: $fmt" "$execname" "$@"
+        exit "${ec:-1}"
+    }
+
+    std_logq() {
+        for i; do
+            printf "%s: %s\n" "$execname" "$i"
+        done
+        exit "${ec:-1}"
+    }
+
+    std_lograwq() {
+        for i; do
+            printf "%s\n" "$i"
+        done
+        exit "${ec:-1}"
+    }
+
     std_logferr() {
         fmt="$1"
         shift
