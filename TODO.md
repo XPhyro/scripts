@@ -66,6 +66,8 @@
   - Syntax should support `x%` where `0.0 <= x <= 100.0` or `y` where `y >= 0`.
 - Add new events in `bspwm-autokblayout`:
   - `on_focused(is_changed)` (`is_changed` is whether the user manually overwrote the automatic state)
+- Make the interfaces of `std::*` (mostly) compliant those of C++, even if it duplicates current interfaces.
+- Make `std::*` easier to use in shells with aliases similar to `ensure`.
 
 ## New Scripts
 
@@ -105,6 +107,8 @@
     mapping system.
 - Other `std` utilities:
   - `std::unordered_set`
+  - `std::map`
+  - `std::set`
 
 ## Refactoring / Rewriting / Reworking
 
