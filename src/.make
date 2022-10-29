@@ -135,7 +135,7 @@ install() {
 
         cd cpp
 
-        printf "%s\n" "$cxxversion"
+        "$CXX" --version
 
         # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
@@ -225,13 +225,13 @@ unittest() {
 
                 "$testdir/in" > "$tmpin"
                 eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
-                ec="$((ec | $?))"
+                evalec="$?"
 
                 failstr=
                 "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
                 "$testdir/out" | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
                 testec="$("$testdir/ec")"
-                [ "$ec" -ne "$testec" ] && failstr="Expected exit code $testec, got $ec. $failstr"
+                [ "$evalec" -ne "$testec" ] && failstr="Expected exit code $testec, got $evalec. $failstr"
 
                 [ -n "$failstr" ] \
                     && printf "$C_RED%s: Test %s failed. %s$C_CLR\n" \
