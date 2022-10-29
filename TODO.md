@@ -73,6 +73,7 @@
 - Support printing all vectors, unordered maps, etc. with only program hash
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
   action should occur if no syntax is given.
+- `getpath`: add options to print all keys, values and keys & values.
 
 ## New Scripts
 
