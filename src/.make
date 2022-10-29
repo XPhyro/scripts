@@ -282,6 +282,8 @@ analyse() {
                 -e SC2086 \
                 -e SC2088 \
                 -e SC2188 \
+                -o avoid-nullary-conditions \
+                -o deprecate-which \
                 --
     ec="$((ec | $?))"
 
