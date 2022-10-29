@@ -268,23 +268,7 @@ analyse() {
 
     find 'bash' 'sh' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
-        | xargs -r0 $unbuffer \
-            shellcheck \
-                -e SC1003 \
-                -e SC1007 \
-                -e SC1090 \
-                -e SC1091 \
-                -e SC2015 \
-                -e SC2016 \
-                -e SC2046 \
-                -e SC2059 \
-                -e SC2064 \
-                -e SC2086 \
-                -e SC2088 \
-                -e SC2188 \
-                -o avoid-nullary-conditions \
-                -o deprecate-which \
-                --
+        | xargs -r0 $unbuffer shellcheck --
     ec="$((ec | $?))"
 
     command -v shfmt > /dev/null && {
