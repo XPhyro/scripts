@@ -431,9 +431,18 @@ analyse() {
         ""
 
     printf "%s\n" \
-        "Preparing to analyse Bash and shell scripts and libraries:" \
-        "  Validator: shfmt" \
-        "  Validator version: $(shfmt --version)" \
+        "Preparing to analyse Bash and shell scripts and libraries:"
+
+    if command -v shfmt > /dev/null 2>&1; then
+        printf "%s\n" \
+            "  Validator: shfmt" \
+            "  Validator version: $(shfmt --version)"
+        shfmt=shfmt
+    else
+        shfmt=true
+    fi
+
+    printf "%s\n" \
         "  Analyser: shellcheck" \
         "  Analyser version: $(shellcheck --version | head -n 2 | tail -n 1 | cut -d' ' -f2)" \
         "" \
@@ -441,10 +450,10 @@ analyse() {
 
     find 'bash' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
-        | unbuffer="$unbuffer" xargs -r0 sh -c '
+        | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 sh -c '
             for fl; do
                 printf "  %s\n" "$fl"
-                shfmt -ln bash -- > /dev/null || {
+                "$shfmt" -ln bash -- > /dev/null || {
                     printf "    %s\n" "Invalid syntax."
                     continue
                 }
@@ -454,10 +463,10 @@ analyse() {
     ec="$((ec | $?))"
     find 'sh' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
-        | unbuffer="$unbuffer" xargs -r0 sh -c '
+        | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 sh -c '
             for fl; do
                 printf "  %s\n" "$fl"
-                shfmt -p -- > /dev/null || {
+                "$shfmt" -p -- > /dev/null || {
                     printf "    %s\n" "Invalid syntax."
                     continue
                 }
