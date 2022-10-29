@@ -15,7 +15,7 @@ cancompilecpp() {
 }
 
 FUNC_PARSEFLAGS='
-set -x
+[ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
 parseflags() {
     flags=""
     ldflags=""
@@ -56,10 +56,22 @@ all() {
 }
 
 index () {
+    printf "%s\n" \
+        "=====" \
+        "INDEX" \
+        "=====" \
+        ""
+
     ctags -R --c++-kinds=+p --fields=+iaS --extras=+q .
 }
 
 install() {
+    printf "%s\n" \
+        "=======" \
+        "INSTALL" \
+        "=======" \
+        ""
+
     mkdir -p -- "$binprefix" "$manprefix" "$dataprefix"
     mkdir "$binprefix/wrapper" 2> /dev/null \
         && printf "$C_RED%s %s$C_CLR\n" \
@@ -69,6 +81,9 @@ install() {
         && printf "$C_RED%s %s$C_CLR\n" \
             "There was no $dataprefix/include directory, so it was created for you." \
             "Be sure to add it to your PATH with high priority."
+
+    printf "%s\n" \
+        "Installing Bash, execline, Python and shell scripts:"
 
     for i in bash el py sh; do
         (
@@ -80,16 +95,25 @@ install() {
                                          -not -path "*/include/*" \
                                          -printf "%P\0$binprefix/%f\0" \
                 | tee -a ../.installed \
-                | xargs -r0 -n 2 cp -f --
+                | i="$i" xargs -r0 -n 2 sh -c '
+                    printf "  %s -> %s\n" "$i/$1" "$2"
+                    cp -f -- "$@"
+                ' --
 
             find '.' -mindepth 1 -type f      -executable \
                                          -not -path "*/.archived/*" \
                                               -path "*/wrapper/*" \
                                          -printf "%P\0$binprefix/wrapper/%f\0" \
                 | tee -a ../.installed \
-                | xargs -r0 -n 2 cp -f --
+                | i="$i" xargs -r0 -n 2 sh -c '
+                    printf "  %s -> %s\n" "$i/$1" "$2"
+                    cp -f -- "$@"
+                ' --
         )
     done
+
+    printf "\n%s\n" \
+        "Installing Bash and shell libraries:"
 
     for i in bash sh; do
         (
@@ -100,14 +124,33 @@ install() {
                                               -path "*/include/*" \
                                          -printf "%P\0$dataprefix/include/%f\0" \
                 | tee -a ../.installed \
-                | xargs -r0 -n 2 cp -f --
+                | i="$i" xargs -r0 -n 2 sh -c '
+                    printf "  %s -> %s\n" "$i/$1" "$2"
+                    cp -f -- "$@"
+                ' --
         )
     done
+
+    printf "\n%s\n" \
+        "Preparing to install C programs:"
 
     (
         cd c
 
-        "$CC" --version
+        printf "%s\n" \
+            "  Using C toolchain:" \
+            "    Compiler: $CC" \
+            "    Compiler version: $(
+                {
+                    "$CC" --version 2>&1 \
+                        || "$CC" -v 2>&1 \
+                        || printf "%s\n" "could not be determined"
+                } | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+"
+            )" \
+            "    Global compiler flags: $(printf "%s\n" "$CFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+            "    Global linker flags: $(printf "%s\n" "$CLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+            "" \
+            "Installing C programs:"
 
         # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
@@ -122,20 +165,44 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
+                printf "  %s -> %s\n    Local compiler flags: %s\n    Local linker flags: %s\n" \
+                    "$1" \
+                    "$binprefix/$out" \
+                    "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
+                    "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
                 '"$CC"' '"$CFLAGS"' $flags "$1" '"$CLDFLAGS"' $ldflags -o "$binprefix/$out" \
                     && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
     )
+
+    printf "\n%s\n" \
+        "Preparing to install C++ programs:"
         
     (
+        cd cpp
+
+        printf "%s\n" \
+            "  Using C++ toolchain:" \
+            "    Compiler: $CXX" \
+            "    Compiler version: $(
+                {
+                    "$CXX" --version 2>&1 \
+                        || "$CXX" -v 2>&1 \
+                        || printf "%s\n" "could not be determined"
+                } | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+"
+            )"
+
         [ "$cancompilecpp" -ne 0 ] || {
-            printf "%s\n" "Not attempting to compile C++ programs as $CXX version is too old."
+            printf "%s\n" \
+                "Compiler version is too old. Cannot compile C++ programs."
             exit 0
         }
 
-        cd cpp
-
-        "$CXX" --version
+        printf "%s\n" \
+            "    Global compiler flags: $(printf "%s\n" "$CXXFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+            "    Global linker flags: $(printf "%s\n" "$CXXLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+            "" \
+            "Installing C++ programs:"
 
         # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
@@ -150,10 +217,18 @@ install() {
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
+                printf "  %s -> %s\n    Local compiler flags: %s\n    Local linker flags: %s\n" \
+                    "$1" \
+                    "$binprefix/$out" \
+                    "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
+                    "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
                 '"$CXX"' '"$CXXFLAGS"' $flags "$1" '"$CXXLDFLAGS"' $ldflags -o "$binprefix/$out" \
                     && printf "\0%s\0" "$binprefix/$out" >> ../.installed
             ' --
     )
+
+    printf "\n%s\n" \
+        "Installing C libraries:"
 
     (
         cd c/include
@@ -161,9 +236,13 @@ install() {
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
             printf "\0%s\0" "$includeprefix/$fl"
+            printf "  %s -> %s\n" "$fl" "$includeprefix/$fl" >&2
             cp -f -t "$includeprefix" -- "$fl"
-        ' -- >> "$rootdir/src/.installed"
+        ' -- 2>&1 >> "$rootdir/src/.installed"
     )
+
+    printf "\n%s\n" \
+        "Installing C++ libraries:"
 
     (
         cd cpp/include
@@ -171,9 +250,13 @@ install() {
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
             printf "\0%s\0" "$includeprefix/$fl"
+            printf "  %s -> %s\n" "$fl" "$includeprefix/$fl" >&2
             cp -f -t "$includeprefix" -- "$fl"
-        ' -- >> "$rootdir/src/.installed"
+        ' -- 2>&1 >> "$rootdir/src/.installed"
     )
+
+    printf "\n%s\n" \
+        "Installing external C and C++ libraries:"
 
     (
         printf "%s\0" \
@@ -182,9 +265,13 @@ install() {
             | xargs -r0 -n 1 -P 0 sh -c '
                 fl="$1"
                 printf "\0%s\0" "$includeprefix/${fl##*/}"
+                printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
                 cp -f -t "$includeprefix" -- "$fl"
-            ' -- >> "$rootdir/src/.installed"
+            ' -- 2>&1 >> "$rootdir/src/.installed"
     )
+
+    printf "\n%s\n" \
+        "Installing man pages:"
 
     (
         cd man
@@ -194,21 +281,47 @@ install() {
                 export section
                 find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
                     progname="$(basename -- "$1")"
-                    manpath="$manprefix/man$section/${progname%.*}.$section"
+                   manpath="$manprefix/man$section/${progname%.*}.$section"
+                    printf "  %s -> %s\n" "$section/$progname" "$manpath" >&2
                     m4 -I"$rootdir" -DVERSION="$shorthash" -DTHIS="$1" "$1" \
                         | pandoc --standalone --to man -o "$manpath" >&2
                     printf "\0%s\0" "$manpath"
                 ' --
-            done >> ../.installed
+            done 2>&1 >> ../.installed
     )
 }
 
 uninstall() {
-    xargs -r0 -n 2 sh -c 'printf "%s\0" "$2"' -- < .installed | xargs -r0 rm -f --
+    printf "%s\n" \
+        "=========" \
+        "UNINSTALL" \
+        "=========" \
+        ""
+
+    [ -f .installed ] || {
+        printf "%s\n" \
+            "Nothing to do."
+        return 0
+    }
+
+    printf "%s\n" \
+        "Uninstalling all installed files."
+
+    xargs -r0 -n 2 sh -c 'printf "%s\0" "$2"' -- < .installed | xargs -r0 sh -c '
+        printf "  %s\n" "$@"
+        rm -f -- "$@"
+    ' --
+
     rm -f .installed
 }
 
 unittest() {
+    printf "%s\n" \
+        "====" \
+        "TEST" \
+        "====" \
+        ""
+
     (
         cd tests
 
@@ -217,10 +330,22 @@ unittest() {
         tmperr="$(mktemp)"
         trap "rm -f -- '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
 
+        printf "%s\n" \
+            "Testing scripts and programs:"
+
         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
-            command -v -- "$cmd" > /dev/null 2>&1 || continue
+            printf "%s\n" \
+                "  $cmd:"
+            command -v -- "$cmd" > /dev/null 2>&1 || {
+                printf "%s\n" \
+                    "    Not installed, cannot test."
+                continue
+            }
 
             find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
+                printf "%s" \
+                    "    $testname: "
+
                 testdir="$cmd/$testname"
 
                 "$testdir/in" > "$tmpin"
@@ -233,12 +358,13 @@ unittest() {
                 testec="$("$testdir/ec")"
                 [ "$evalec" -ne "$testec" ] && failstr="Expected exit code $testec, got $evalec. $failstr"
 
-                [ -n "$failstr" ] \
-                    && printf "$C_RED%s: Test %s failed. %s$C_CLR\n" \
-                        "$cmd" \
-                        "$testdir" \
-                        "$failstr" \
-                    || true
+                if [ -n "$failstr" ]; then
+                    printf "%s\n" \
+                        "Failed. $failstr"
+                else
+                    printf "%s\n" \
+                        "Passed."
+                fi
             done
         done | sponge
 
@@ -248,122 +374,219 @@ unittest() {
 }
 
 format() {
-    find 'py' -type f -executable -print0 | xargs -r0 black --
+    printf "%s\n" \
+        "======" \
+        "FORMAT" \
+        "======" \
+        ""
+
+    printf "%s\n" \
+        "Formatting Python source files:"
+
+    find 'py' -type f -executable -print0 | xargs -r0 -n 1 sh -c '
+        fl="$1"
+        printf "  %s\n" "$fl"
+        tmp="$(mktemp)"
+        trap "rm -f -- \"\$tmp\"" INT EXIT TERM
+        cp -f -- "$fl" "$tmp"
+        black -q -- "$fl"
+        if cmp -s -- "$tmp" "$fl"; then
+            printf "    %s\n" \
+                "Nothing to do."
+        else
+            printf "    %s\n" \
+                "Fixed formatting."
+        fi
+        rm -f -- "$tmp"
+    ' --
+
+    printf "\n%s\n" \
+        "Formatting C and C++ source and header files:"
 
     find 'c' 'cpp' -type f \( -iname "*.c"   -o -iname "*.h" \
                            -o -iname "*.cpp" -o -iname "*.hpp" \) -print0 \
-        | sort -z \
-        | xargs -r0 clang-format -i --style=file --
+        | xargs -r0 -n 1 sh -c '
+            fl="$1"
+            printf "  %s\n" "$fl"
+            tmp="$(mktemp)"
+            trap "rm -f -- \"\$tmp\"" INT EXIT TERM
+            cp -f -- "$fl" "$tmp"
+            clang-format -i --style=file -- "$fl"
+            if cmp -s -- "$tmp" "$fl"; then
+                printf "    %s\n" \
+                    "Nothing to do."
+            else
+                printf "    %s\n" \
+                    "Fixed formatting."
+            fi
+            rm -f -- "$tmp"
+        ' --
 }
 
 analyse() {
     printf "%s\n" \
-        "" \
-        "==========" \
-        "shellcheck" \
-        "==========" \
+        "========" \
+        "ANALYSE" \
+        "========" \
         ""
 
-    shellcheck --version
+    printf "%s\n" \
+        "Preparing to analyse Bash and shell scripts and libraries:" \
+        "  Validator: shfmt" \
+        "  Validator version: $(shfmt --version)" \
+        "  Analyser: shellcheck" \
+        "  Analyser version: $(shellcheck --version | head -n 2 | tail -n 1 | cut -d' ' -f2)" \
+        "" \
+        "Analysing Bash and shell scripts and libraries:"
 
-    find 'bash' 'sh' -mindepth 1 -type f -executable \
+    find 'bash' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -print0 \
-        | xargs -r0 $unbuffer shellcheck --
+        | unbuffer="$unbuffer" xargs -r0 sh -c '
+            for fl; do
+                printf "  %s\n" "$fl"
+                shfmt -ln bash -- > /dev/null || {
+                    printf "    %s\n" "Invalid syntax."
+                    continue
+                }
+                $unbuffer shellcheck -- "$fl" 2>&1 | sed "s/^/    /"
+            done
+        ' --
     ec="$((ec | $?))"
-
-    command -v shfmt > /dev/null && {
-        printf "%s\n" \
-            "" \
-            "=====" \
-            "shfmt" \
-            "=====" \
-            ""
-
-        shfmt --version
-
-        find 'sh' -mindepth 1 -type f -executable \
-            -not -path "*/.archived/*" -print0 \
-            | xargs -r0 $unbuffer \
-                shfmt -p -- > /dev/null
-        ec="$((ec | $?))"
-
-        find 'bash' -mindepth 1 -type f -executable \
-            -not -path "*/.archived/*" -print0 \
-            | xargs -r0 $unbuffer \
-                shfmt -ln bash -- > /dev/null
-        ec="$((ec | $?))"
-    }
+    find 'sh' -mindepth 1 -type f -executable \
+        -not -path "*/.archived/*" -print0 \
+        | unbuffer="$unbuffer" xargs -r0 sh -c '
+            for fl; do
+                printf "  %s\n" "$fl"
+                shfmt -p -- > /dev/null || {
+                    printf "    %s\n" "Invalid syntax."
+                    continue
+                }
+                $unbuffer shellcheck -- "$fl" 2>&1 | sed "s/^/    /"
+            done
+        ' --
+    ec="$((ec | $?))"
 
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
     printf "%s\n" \
         "" \
-        "==="\
-        "$CC" \
-        "==="\
-        ""
+        "Preparing to analyse C header and source files:" \
+        "  Compiler: $CC" \
+        "  Compiler version: $(
+            {
+                "$CC" --version 2>&1 \
+                    || "$CC" -v 2>&1 \
+                    || printf "%s\n" "could not be determined"
+            } | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+"
+        )" \
+        "  Global compiler flags: $(printf "%s\n" "$CFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+        "  Global linker flags: $(printf "%s\n" "$CLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+        "  Analyser: clang-tidy" \
+        "  Analyser version: $(clang-tidy --version | head -n 2 | tail -n 1 | cut -d' ' -f5)" \
+        "  Analyser complementary compiler: clang" \
+        "  Analyser complementary compiler version: $(clang --version | head -n 1 | cut -d' ' -f3)" \
+        "" \
+        "Analysing C headers:"
 
-    "$CC" --version
     find 'c/include' -mindepth 1 -type f -iname "*.h" -print0 \
-        | xargs -r0 -I FILE "$CC" $CFLAGS FILE $CLDFLAGS -o "$tmpout"
+        | CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 sh -c '
+            for fl; do
+                printf "  %s\n" "$fl"
+                "$CC" $CFLAGS "$fl" $CLDFLAGS -o "$tmpout" \
+                    || printf "    %s\n" "Does not compile."
+            done
+        ' --
 
-    printf "%s\n" \
-        "" \
-        "==="\
-        "$CXX" \
-        "==="\
-        ""
-
-    if [ "$cancompilecpp" -eq 0 ]; then
-        printf "%s\n" "Not attempting to analyse C++ headers as $CXX version is too old."
-    else
-        "$CXX" --version
-        find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
-            | xargs -r0 -I FILE "$CXX" $CXXFLAGS FILE $CXXLDFLAGS -o "$tmpout"
-    fi
-
-    printf "%s\n" \
-        "" \
-        "==========" \
-        "scan-build" \
-        "==========" \
-        ""
-
-    clang --version
-    clang-tidy --version
+    printf "\n%s\n" \
+        "Analysing C source files:"
 
     find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
         | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
-                scan-build \
-                    -analyze-headers --status-bugs $v $view \
-                    -maxloop "$m" -no-failure-reports \
-                    --use-cc="$(command -v "$CC")" \
-                    "$CC" $CFLAGS $flags "$1" $CLDFLAGS $ldflags -o "$tmpout"
+                printf "  %s\n    Local compiler flags: %s\n    Local linker flags %s\n" \
+                    "$1" \
+                    "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
+                    "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
+                err="$(
+                    scan-build \
+                        -analyze-headers --status-bugs $v $view \
+                        -maxloop "$m" -no-failure-reports \
+                        --use-cc="$(command -v "$CC")" \
+                        "$CC" $CFLAGS $flags "$1" $CLDFLAGS $ldflags -o "$tmpout" 2>&1 > /dev/null
+                )"
+                [ -z "$err" ] || {
+                    printf "%s\n" "    Analyser output:"
+                    printf "%s\n" "$err" | sed "s/^/      /"
+                }
             ' --
     ec="$((ec | $?))"
-    # TODO: re-enable this after clang implements c++2b ranges
-    # find 'cpp' -mindepth 1 -type f -iname "*.cpp" -print0 \
-    #     | xargs -r0 -I FILE \
-    #         scan-build -analyze-headers --status-bugs \
-    #             $v $view -maxloop "$m" -no-failure-reports \
-    #             "$CXX" $CXXFLAGS 'FILE' $CXXLDFLAGS -o "$tmpout" || ec="$?"
-    # ec="$((ec | $?))"
+
+    printf "%s\n" \
+        "" \
+        "Preparing to analyse C++ header and source files:" \
+        "  Compiler: $CXX" \
+        "  Compiler version: $(
+            {
+                "$CXX" --version 2>&1 \
+                    || "$CXX" -v 2>&1 \
+                    || printf "%s\n" "could not be determined"
+            } | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+"
+        )"
+
+    if [ "$cancompilecpp" -eq 0 ]; then
+            printf "%s\n" \
+                "Compiler version is too old. Cannot analyse C++ header files."
+    else
+        printf "%s\n" \
+            "  Compiler flags: $(printf "%s\n" "$CXXFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+            "  Linker flags: $(printf "%s\n" "$CXXLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+            "" \
+            "Analysing C++ headers:"
+
+            find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
+                | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 sh -c '
+                    for fl; do
+                        printf "  %s\n" "$fl"
+                        "$CXX" $CXXFLAGS "$fl" $CXXLDFLAGS -o "$tmpout" \
+                            || printf "    %s\n" "Does not compile."
+                    done
+                ' --
+    fi
+
+    printf "\n%s\n" \
+        "Analysis of C++23 source files is not fully supported by the analyser. Cannot analyse C++ source files."
 
     rm -f -- "$tmpout"
 }
 
 spell() {
+    printf "%s\n" \
+        "=====" \
+        "SPELL" \
+        "=====" \
+        ""
+
     (
         cd .. || exit 1
-        find . -mindepth 1 -maxdepth 1 \( -not -name ".git" -a -not -name "lib" \) -print0 \
-            | xargs -r0 codespell --builtin "clear,rare,informal" -L "ans,ba,erformance" --
+
+        printf "\n%s\n" \
+            "Checking files and files in directories for spelling mistakes:"
+        find '.' -mindepth 1 -maxdepth 1 \( -not -name ".git" -a -not -name "lib" \) -print0 \
+            | xargs -r0 sh -c '
+                for fl; do
+                    printf "  %s" "$fl"
+                    [ -d "$fl" ] && printf "/"
+                    printf "\n"
+                    codespell --builtin "clear,rare,informal" -L "ans,ba,erformance" -- "$fl"
+                done
+            ' --
     )
 }
 
-set -ex
+set -e
+[ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
 
 cd ..
 rootdir="$PWD"
