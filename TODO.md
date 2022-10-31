@@ -162,6 +162,7 @@
 - Move `src/{man,tests,.make}/` to the root of the repository.
 - Consider changing the extension of shell headers from `.sh` to `.shh` or
   something similar.
+- Maybe install C/C++ libraries to a subdirectory like `$PREFIX/include/xph`?
 
 # Normal Priority
 
