@@ -117,6 +117,8 @@
   - `std::unordered_set`
   - `std::map`
   - `std::set`
+- Write an init script to switch `nm-applet` ethernet presets depending on the
+  network.
 
 ## Refactoring / Rewriting / Reworking
 
