@@ -74,6 +74,8 @@
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
   action should occur if no syntax is given.
 - `getpath`: add options to print all keys, values and keys & values.
+- In `latexstp`, do not recompile if the only changes are line additions whose
+  first characters are `%`.
 
 ## New Scripts
 
