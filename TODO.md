@@ -128,11 +128,12 @@
 - Merge [term/\*](src/c/util/term/) into `termctl`.
   - Make its syntax human-readable like that of `xdotool`.
 - Make `editpath` and related scripts as easy to use as `_m` and others.
-- Rewrite the pathfinding suite with `std::unordered_map`.
+- Rewrite the pathfinding suite with `std::unordered_map`, or with the
+  to-be-implemented C/C++ `std` base library.
 - Create a base C (or C++, depending on what features are required or heavily
-  used) library for creating other `std` utilities such as `std::vector` and
-  `std::unordered_map`, then refactor `std::vector` and `std::unordered_map`
-  using that library.
+  used (though C is preferred for future-compatibility)) library for creating
+  other `std` utilities such as `std::vector` and `std::unordered_map`, then
+  refactor `std::vector` and `std::unordered_map` using that library.
 
 ## Other
 
