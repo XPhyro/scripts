@@ -1,9 +1,11 @@
 // C++
 #include <algorithm>
 #include <bitset>
+#include <cstdint>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <ranges>
 #include <sstream>
 #include <string>
@@ -16,10 +18,15 @@
 
 // libraries
 #include <consts.hpp>
+#include <die.hpp>
 #include <strutil.hpp>
+#include <tuple_hash.hpp>
 
-// third party
-#include <hedley.h>
+static_assert(PIPE_BUF % 8 == 0);
+static_assert(sizeof(char) == 1 && sizeof(unsigned char) == 1);
+static_assert(std::numeric_limits<float>::is_iec559);
+static_assert(std::numeric_limits<double>::is_iec559);
+static_assert(std::endian::native == std::endian::little);
 
 enum class type {
     character,
@@ -27,33 +34,82 @@ enum class type {
     octal,
     decimal,
     hexadecimal,
-    integer,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+    int8,
+    int16,
+    int32,
+    int64,
+    bitset,
+    float32,
+    float64,
+    float128,
     binary,
-    floating_point,
-    raw_binary,
 };
 
-HEDLEY_NO_RETURN void help();
-HEDLEY_NO_RETURN void invalidargs(const std::string& err);
-HEDLEY_NO_RETURN void invalidcast();
-void castraw(ssize_t n, unsigned char* buf);
-void castint(const std::string& val);
-void castfloat(const std::string& val);
-void caststr(const std::string& val);
-void castchar(const std::string& val);
+[[noreturn]] void help();
+[[noreturn]] void invalidargs(const std::string& err);
+void cast_bitset_to_binary();
+void cast_binary_to_bitset();
+void cast_binary_to_uint8();
+void cast_binary_to_uint16();
+void cast_binary_to_uint32();
+void cast_binary_to_uint64();
+void cast_binary_to_int8();
+void cast_binary_to_int16();
+void cast_binary_to_int32();
+void cast_binary_to_int64();
+void cast_binary_to_float32();
+void cast_binary_to_float64();
+void cast_binary_to_float128();
 
 const std::unordered_map<std::string, type> types = {
-    { "char", type::character }, { "str", type::string },           { "oct", type::octal },
-    { "dec", type::decimal },    { "hex", type::hexadecimal },      { "int", type::integer },
-    { "bin", type::binary },     { "float", type::floating_point }, { "raw", type::raw_binary },
+  // {"char",      type::character  },
+  // { "string",   type::string     },
+  // { "oct",      type::octal      },
+  // { "dec",      type::decimal    },
+  // { "hex",      type::hexadecimal},
+    {"uint8",     type::uint8   },
+    { "uint16",   type::uint16  },
+    { "uint32",   type::uint32  },
+    { "uint64",   type::uint64  },
+    { "int8",     type::int8    },
+    { "int16",    type::int16   },
+    { "int32",    type::int32   },
+    { "int64",    type::int64   },
+    { "float32",  type::float32 },
+    { "float64",  type::float64 },
+    { "float128", type::float128},
+    { "bit",      type::bitset  },
+    { "bitset",   type::bitset  },
+    { "byte",     type::binary  },
+    { "raw",      type::binary  },
+    { "bin",      type::binary  },
 };
 
-std::string execname, fromtypename, totypename;
-type fromtype, totype;
+const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = {
+    {{ type::bitset, type::binary },    cast_bitset_to_binary  },
+    { { type::binary, type::bitset },   cast_binary_to_bitset  },
+    { { type::binary, type::uint8 },    cast_binary_to_uint8   },
+    { { type::binary, type::uint16 },   cast_binary_to_uint16  },
+    { { type::binary, type::uint32 },   cast_binary_to_uint32  },
+    { { type::binary, type::uint64 },   cast_binary_to_uint64  },
+    { { type::binary, type::int8 },     cast_binary_to_int8    },
+    { { type::binary, type::int16 },    cast_binary_to_int16   },
+    { { type::binary, type::int32 },    cast_binary_to_int32   },
+    { { type::binary, type::int64 },    cast_binary_to_int64   },
+    { { type::binary, type::float32 },  cast_binary_to_float32 },
+    { { type::binary, type::float64 },  cast_binary_to_float64 },
+    { { type::binary, type::float128 }, cast_binary_to_float128},
+};
+
+const char* execname;
 
 int main(int argc, char* argv[])
 {
-    execname = argv[0];
+    CAPTURE_EXECNAME();
 
     for (int i; (i = getopt(argc, argv, "h")) != -1;) {
         switch (i) {
@@ -70,62 +126,32 @@ int main(int argc, char* argv[])
     if (argc < 2)
         invalidargs(xph::consts::str::empty);
 
+    std::function<void()> func;
     try {
-        fromtype = types.at(fromtypename = xph::str::makelower(std::string(argv[0])));
-        totype = types.at(totypename = xph::str::makelower(std::string(argv[1])));
+        auto fromtype = types.at(xph::str::makelower(std::string(argv[0])));
+        auto totype = types.at(xph::str::makelower(std::string(argv[1])));
+        func = funcs.at({ fromtype, totype });
     } catch (const std::out_of_range& e) {
-        invalidargs("invalid type given");
+        invalidargs("invalid type or type pair given");
     }
 
     argv += 2;
     argc -= 2;
 
-    std::function<void(std::string)> func;
-    switch (fromtype) {
-        case type::character:
-            func = castchar;
-            break;
-        case type::string:
-            func = caststr;
-            break;
-        case type::floating_point:
-            func = castfloat;
-            break;
-        default:
-            func = castint;
-            break;
-    }
+    if (argc)
+        invalidargs("extra operands given");
 
-    if (argc) {
-        auto args = std::views::counted(argv, argc);
-        std::ranges::for_each(args.begin(), args.end(), func);
-    } else {
-        // TODO: fix this mess
-        if (fromtype == type::raw_binary) {
-            unsigned char buf[4096];
-            ssize_t n;
-            while ((n = read(STDIN_FILENO, buf, sizeof(buf))) > 0)
-                castraw(n, buf);
-        } else if (fromtype == type::binary && totype == type::raw_binary) {
-            unsigned char buf[8];
-            ssize_t n;
-            while ((n = read(STDIN_FILENO, buf, sizeof(buf))) > 0) {
-                unsigned char c = 0;
-                for (const auto&& i : std::views::iota(0, n - 1))
-                    c |= (buf[i] & 1) << i;
-                write(STDOUT_FILENO, &c, sizeof(c));
-            }
-        } else {
-            for (std::string s; std::cin >> s;)
-                func(s);
-        }
-    }
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    std::ios_base::sync_with_stdio(false);
+
+    func();
 }
 
-HEDLEY_NO_RETURN void help()
+[[noreturn]] void help()
 {
     std::cout << "Usage: " << execname
-              << " [OPTION...] [FROM_TYPE] [TO_TYPE] [VALUE...]\n"
+              << " [OPTION...] [FROM_TYPE] [TO_TYPE]\n"
                  "Cast types to types.\n"
                  "\n"
                  "Valid types are: ";
@@ -139,173 +165,183 @@ HEDLEY_NO_RETURN void help()
 
     for (auto it = typenames.begin(); it < typenames.end() - 1; ++it)
         std::cout << *it << ", ";
-    std::cout << typenames.back()
-              << ".\n"
-                 "\n"
+    std::cout << typenames.back() << ".\n";
+
+    // TODO: print possible pairs
+
+    std::cout << "\n"
+                 "Options\n"
                  "  -h        display this help and exit\n";
 
     std::exit(EXIT_SUCCESS);
 }
 
-HEDLEY_NO_RETURN void invalidargs(const std::string& err)
+[[noreturn]] void invalidargs(const std::string& err)
 {
     if (!err.empty())
         std::cerr << err << '\n';
-    std::cerr << "Try '" << execname << " -h' for more information.\n";
-    std::exit(EXIT_FAILURE);
+    xph::die("Try '", execname, " -h' for more information.\n");
 }
 
-HEDLEY_NO_RETURN void invalidcast()
+void cast_bitset_to_binary()
 {
-    std::cerr << execname << ": given cast of `" << fromtypename << "` to `" << totypename
-              << "` is not supported.\n";
-    std::exit(EXIT_FAILURE);
-}
+    char buf[8];
+    ssize_t n;
 
-void castraw(ssize_t n, unsigned char buf[])
-{
-    switch (totype) {
-        case type::binary:
-            for (ssize_t i = 0; i < n; ++i) {
-                auto c = buf[i];
-                for (int b = 0; b < 7; ++b) {
-                    auto bit = (c & (1 << b)) >> b;
-                    std::cout << bit;
-                }
-            }
-            break;
-        default:
-            invalidcast();
+    while ((n = read(STDIN_FILENO, buf, 8)) > 0) {
+        if (n != 8)
+            xph::die("could not read 8 ASCII bits");
+        char c = 0;
+        for (const auto&& i : std::views::iota(0, n - 1))
+            c |= (buf[i] & 1) << i;
+        write(STDOUT_FILENO, &c, sizeof(c));
     }
 }
 
-void castint(const std::string& val)
+// FIXME: this function's output is sometimes wrong
+void cast_binary_to_bitset()
 {
-    static std::stringstream ss;
-    long long ll;
+    unsigned char inbuf[PIPE_BUF];
+    // TODO: use an outbuf[PIPE_BUF * 8]
+    ssize_t nread;
 
-    ss.str("");
-    ss.clear();
-
-    ss << val;
-    ss >> ll;
-
-    switch (totype) {
-        case type::character:
-            std::cout << static_cast<char>(ll);
-            break;
-        case type::string:
-            std::cout << static_cast<char>(ll) << '\n';
-            break;
-        case type::octal:
-            std::cout << std::oct << ll << '\n';
-            break;
-        case type::decimal:
-        case type::integer:
-            std::cout << std::dec << ll << '\n';
-            break;
-        case type::hexadecimal:
-            std::cout << std::hex << ll << '\n';
-            break;
-        case type::binary:
-            std::cout << std::bitset<8 * sizeof(ll)>(ll);
-            break;
-        case type::raw_binary:
-            write(STDOUT_FILENO, &ll, sizeof(ll));
-            break;
-        default:
-            invalidcast();
-    }
-}
-
-void castfloat(const std::string& val)
-{
-    static std::stringstream ss;
-    double f;
-
-    ss.str("");
-    ss.clear();
-
-    ss << val;
-    ss >> f;
-
-    switch (totype) {
-        case type::raw_binary:
-            write(STDOUT_FILENO, &f, sizeof(f));
-            break;
-        default:
-            invalidcast();
-    }
-}
-
-void caststr(const std::string& val)
-{
-    static unsigned char bits = 0;
-    static int bitidx = 0;
-
-    switch (totype) {
-        case type::character:
-            castchar(val);
-            break;
-        case type::string:
-            std::cout << val << '\n';
-            break;
-        case type::binary:
-            castchar(val);
-            std::cout << '\n';
-            break;
-        case type::raw_binary: {
-            std::string_view view{ val };
-            for (size_t i = 0; i < view.length(); i += 8) {
-                for (const auto& c : view.substr(i, 8) | std::views::reverse) {
-                    switch (c) {
-                        case '0':
-                            bits &= ~(static_cast<unsigned char>(1) << ++bitidx);
-                            break;
-                        case '1':
-                            bits |= static_cast<unsigned char>(1) << ++bitidx;
-                            break;
-                        default:
-                            std::cerr << execname << ": expected 0 or 1, got '" << c << "'.\n";
-                            std::exit(EXIT_FAILURE);
-                    }
-                    if (bitidx == 8) {
-                        bitidx = 0;
-                        std::cout << bits;
-                    }
-                }
-            }
-        } break;
-        default:
-            invalidcast();
-    }
-}
-
-void castchar(const std::string& val)
-{
-    for (const auto& c : val) {
-        switch (totype) {
-            case type::character:
-                std::cout << c;
-                break;
-            case type::string:
-                std::cout << c << '\n';
-                break;
-            case type::octal:
-                std::cout << std::oct << static_cast<int>(c) << '\n';
-                break;
-            case type::decimal:
-            case type::integer:
-                std::cout << std::dec << static_cast<int>(c) << '\n';
-                break;
-            case type::hexadecimal:
-                std::cout << std::hex << static_cast<int>(c) << '\n';
-                break;
-            case type::binary:
-                std::cout << std::bitset<8>(c);
-                break;
-            default:
-                invalidcast();
+    while ((nread = read(STDIN_FILENO, inbuf, PIPE_BUF)) > 0) {
+        for (ssize_t i = 0; i < nread; ++i) {
+            auto c = inbuf[i];
+            for (int b = 0; b < 8; ++b)
+                putchar(((c & (1 << b)) >> b) + '0');
         }
+    }
+}
+
+void cast_binary_to_uint8()
+{
+    uint8_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_uint16()
+{
+    uint16_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_uint32()
+{
+    uint32_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_uint64()
+{
+    uint64_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_int8()
+{
+    int8_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_int16()
+{
+    int16_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_int32()
+{
+    int32_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_int64()
+{
+    int64_t buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_float32()
+{
+    float buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_float64()
+{
+    double buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
+    }
+}
+
+void cast_binary_to_float128()
+{
+    long double buf;
+    ssize_t n;
+
+    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (n != sizeof(buf))
+            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << buf << '\n';
     }
 }
