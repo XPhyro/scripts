@@ -60,69 +60,62 @@ enum class type {
 [[noreturn]] void invalidargs(const std::string& err);
 void cast_bitset_to_character();
 void cast_character_to_bitset();
-template <typename T>
-void cast_character_to_primitive(auto converter);
-template <typename T>
-void cast_character_to_dec();
-template <typename T>
-void cast_character_to_float_hex();
-template <typename T>
-void cast_character_to_int_hex();
-template <typename T>
-void cast_character_to_int_oct();
+template <typename T, auto converter>
+void cast_character_to_primitive();
 
 const std::unordered_map<std::string, type> types = {
-    {"char",         type::character  },
-    { "float32",     type::float32    },
-    { "float64",     type::float64    },
-    { "float128",    type::float128   },
-    { "hex8",        type::hex8       },
-    { "hex16",       type::hex16      },
-    { "hex32",       type::hex32      },
-    { "hex64",       type::hex64      },
-    { "hexfloat32",  type::hexfloat32 },
-    { "hexfloat64",  type::hexfloat64 },
-    { "hexfloat128", type::hexfloat128},
-    { "int8",        type::int8       },
-    { "int16",       type::int16      },
-    { "int32",       type::int32      },
-    { "int64",       type::int64      },
-    { "oct8",        type::oct8       },
-    { "oct16",       type::oct16      },
-    { "oct32",       type::oct32      },
-    { "oct64",       type::oct64      },
-    { "uint8",       type::uint8      },
-    { "uint16",      type::uint16     },
-    { "uint32",      type::uint32     },
-    { "uint64",      type::uint64     },
-    { "bit",         type::bitset     },
+    { "char", type::character },
+    { "float32", type::float32 },
+    { "float64", type::float64 },
+    { "float128", type::float128 },
+    { "hex8", type::hex8 },
+    { "hex16", type::hex16 },
+    { "hex32", type::hex32 },
+    { "hex64", type::hex64 },
+    { "hexfloat32", type::hexfloat32 },
+    { "hexfloat64", type::hexfloat64 },
+    { "hexfloat128", type::hexfloat128 },
+    { "int8", type::int8 },
+    { "int16", type::int16 },
+    { "int32", type::int32 },
+    { "int64", type::int64 },
+    { "oct8", type::oct8 },
+    { "oct16", type::oct16 },
+    { "oct32", type::oct32 },
+    { "oct64", type::oct64 },
+    { "uint8", type::uint8 },
+    { "uint16", type::uint16 },
+    { "uint32", type::uint32 },
+    { "uint64", type::uint64 },
+    { "bit", type::bitset },
 };
 
 const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = {
-    {{ type::bitset, type::character },       cast_bitset_to_character                },
-    { { type::character, type::bitset },      cast_character_to_bitset                },
-    { { type::character, type::float32 },     cast_character_to_dec<float>            },
-    { { type::character, type::float64 },     cast_character_to_dec<double>           },
-    { { type::character, type::float128 },    cast_character_to_dec<long double>      },
-    { { type::character, type::hex8 },        cast_character_to_int_hex<int8_t>       },
-    { { type::character, type::hex16 },       cast_character_to_int_hex<int16_t>      },
-    { { type::character, type::hex32 },       cast_character_to_int_hex<int32_t>      },
-    { { type::character, type::hex64 },       cast_character_to_int_hex<int64_t>      },
-    { { type::character, type::hexfloat32 },  cast_character_to_float_hex<float>      },
-    { { type::character, type::hexfloat64 },  cast_character_to_float_hex<double>     },
-    { { type::character, type::hexfloat128 }, cast_character_to_float_hex<long double>},
-    { { type::character, type::int8 },        cast_character_to_dec<int8_t>           },
-    { { type::character, type::int16 },       cast_character_to_dec<int16_t>          },
-    { { type::character, type::int32 },       cast_character_to_dec<int32_t>          },
-    { { type::character, type::int64 },       cast_character_to_dec<int64_t>          },
-    { { type::character, type::oct8 },        cast_character_to_int_oct<int8_t>       },
-    { { type::character, type::oct16 },       cast_character_to_int_oct<int16_t>      },
-    { { type::character, type::oct32 },       cast_character_to_int_oct<int32_t>      },
-    { { type::character, type::oct64 },       cast_character_to_int_oct<int64_t>      },
-    { { type::character, type::uint8 },       cast_character_to_dec<uint8_t>          },
-    { { type::character, type::uint16 },      cast_character_to_dec<uint16_t>         },
-    { { type::character, type::uint32 },      cast_character_to_dec<uint32_t>         },
-    { { type::character, type::uint64 },      cast_character_to_dec<uint64_t>         },
+    { { type::bitset, type::character }, cast_bitset_to_character },
+    { { type::character, type::bitset }, cast_character_to_bitset },
+    { { type::character, type::float32 }, cast_character_to_primitive<float, std::dec> },
+    { { type::character, type::float64 }, cast_character_to_primitive<double, std::dec> },
+    { { type::character, type::float128 }, cast_character_to_primitive<long double, std::dec> },
+    { { type::character, type::hex8 }, cast_character_to_primitive<int8_t, std::hex> },
+    { { type::character, type::hex16 }, cast_character_to_primitive<int16_t, std::hex> },
+    { { type::character, type::hex32 }, cast_character_to_primitive<int32_t, std::hex> },
+    { { type::character, type::hex64 }, cast_character_to_primitive<int64_t, std::hex> },
+    { { type::character, type::hexfloat32 }, cast_character_to_primitive<float, std::hexfloat> },
+    { { type::character, type::hexfloat64 }, cast_character_to_primitive<double, std::hexfloat> },
+    { { type::character, type::hexfloat128 },
+      cast_character_to_primitive<long double, std::hexfloat> },
+    { { type::character, type::int8 }, cast_character_to_primitive<int8_t, std::dec> },
+    { { type::character, type::int16 }, cast_character_to_primitive<int16_t, std::dec> },
+    { { type::character, type::int32 }, cast_character_to_primitive<int32_t, std::dec> },
+    { { type::character, type::int64 }, cast_character_to_primitive<int64_t, std::dec> },
+    { { type::character, type::oct8 }, cast_character_to_primitive<int8_t, std::oct> },
+    { { type::character, type::oct16 }, cast_character_to_primitive<int16_t, std::oct> },
+    { { type::character, type::oct32 }, cast_character_to_primitive<int32_t, std::oct> },
+    { { type::character, type::oct64 }, cast_character_to_primitive<int64_t, std::oct> },
+    { { type::character, type::uint8 }, cast_character_to_primitive<uint8_t, std::dec> },
+    { { type::character, type::uint16 }, cast_character_to_primitive<uint16_t, std::dec> },
+    { { type::character, type::uint32 }, cast_character_to_primitive<uint32_t, std::dec> },
+    { { type::character, type::uint64 }, cast_character_to_primitive<uint64_t, std::dec> },
 };
 
 const char* execname;
@@ -245,8 +238,8 @@ void cast_character_to_bitset()
     }
 }
 
-template <typename T>
-void cast_character_to_x(auto converter)
+template <typename T, auto converter>
+void cast_character_to_primitive()
 {
     T buf;
     ssize_t n;
@@ -256,28 +249,4 @@ void cast_character_to_x(auto converter)
             xph::die("could not read ", sizeof(buf), " bytes for the specified type");
         std::cout << converter << buf << '\n';
     }
-}
-
-template <typename T>
-void cast_character_to_dec()
-{
-    cast_character_to_x<T>(std::dec);
-}
-
-template <typename T>
-void cast_character_to_float_hex()
-{
-    cast_character_to_x<T>(std::hexfloat);
-}
-
-template <typename T>
-void cast_character_to_int_hex()
-{
-    cast_character_to_x<T>(std::hex);
-}
-
-template <typename T>
-void cast_character_to_int_oct()
-{
-    cast_character_to_x<T>(std::oct);
 }
