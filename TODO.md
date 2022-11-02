@@ -78,6 +78,9 @@
 - `getpath`: add options to print all keys, values and keys & values.
 - In `latexstp`, do not recompile if the only changes are line additions whose
   first characters are `%`.
+- Support `fzf` in `selfl`.
+  - By default, automatically determine whether to use `fzf` or `$MENU`
+    depending on `[ -t 0 ]`.
 
 ## New Scripts
 
