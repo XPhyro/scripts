@@ -37,10 +37,7 @@ namespace xph::macros {
     public:
         safe_enum() {}
 
-        safe_enum(type v)
-            : val(v)
-        {
-        }
+        safe_enum(type v) : val(v) {}
 
         type value() const
         {

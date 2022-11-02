@@ -359,7 +359,11 @@ bool intnisfilter(const int *s, int (*func)(int), size_t n)
     return true;
 }
 
-char *astrncatbuf(char *buf, size_t bufsize, const char **sptr, size_t n, const size_t *sizes,
+char *astrncatbuf(char *buf,
+                  size_t bufsize,
+                  const char **sptr,
+                  size_t n,
+                  const size_t *sizes,
                   size_t totsize)
 {
     size_t i, j, idx, ssize;

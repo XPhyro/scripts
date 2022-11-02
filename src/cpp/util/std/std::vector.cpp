@@ -87,13 +87,17 @@ namespace vec {
     void set(const std::string&& other);
     void swap(const std::string&& other);
     void find(const std::optional<std::size_t> first_index,
-              const std::optional<std::size_t> last_index, const std::string&& value);
+              const std::optional<std::size_t> last_index,
+              const std::string&& value);
 } // namespace vec
 
 const std::unordered_map<std::string, cache> caches = {
-    { "t", cache::temporary },    { "tmp", cache::temporary },
-    { "temp", cache::temporary }, { "temporary", cache::temporary },
-    { "p", cache::persistent },   { "persistent", cache::persistent },
+    {         "t",  cache::temporary},
+    {       "tmp",  cache::temporary},
+    {      "temp",  cache::temporary},
+    { "temporary",  cache::temporary},
+    {         "p", cache::persistent},
+    {"persistent", cache::persistent},
 };
 constexpr const char indelim = '\0';
 constexpr const auto vecview = xph::str::splitview(indelim);
@@ -758,7 +762,8 @@ namespace vec {
     }
 
     void find(const std::optional<std::size_t> first_index,
-              const std::optional<std::size_t> last_index, const std::string&& value)
+              const std::optional<std::size_t> last_index,
+              const std::string&& value)
     {
         const auto vec = parse();
         const auto begin = vec.begin();

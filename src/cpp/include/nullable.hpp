@@ -16,15 +16,9 @@ namespace xph {
             value = t;
         }
 
-        nullable(T& t)
-            : value(t)
-        {
-        }
+        nullable(T& t) : value(t) {}
 
-        nullable(T&& t)
-            : value(t)
-        {
-        }
+        nullable(T&& t) : value(t) {}
 
         nullable operator=(const T& other)
         {

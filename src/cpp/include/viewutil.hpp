@@ -19,10 +19,7 @@ namespace xph {
             Titerator iterator;
 
         public:
-            iterator_t(Titerator&& iterator)
-                : iterator(iterator)
-            {
-            }
+            iterator_t(Titerator&& iterator) : iterator(iterator) {}
 
             bool operator!=(const iterator_t& other) const
             {

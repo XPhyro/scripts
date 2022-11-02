@@ -51,8 +51,8 @@ namespace xph::str {
                });
     }
 
-    constexpr inline std::vector<std::string> split(const std::string& str, char delim,
-                                                    bool ignoreend = true);
+    constexpr inline std::vector<std::string>
+    split(const std::string& str, char delim, bool ignoreend = true);
 
     constexpr std::vector<std::string> split(const std::string& str, char delim, bool ignoreend)
     {
@@ -69,7 +69,8 @@ namespace xph::str {
     }
 
     constexpr std::vector<std::string> split(std::vector<std::string>& tokens,
-                                             const std::string& str, char delim,
+                                             const std::string& str,
+                                             char delim,
                                              bool ignoreend = true);
 
     constexpr inline std::vector<std::string>
@@ -89,8 +90,8 @@ namespace xph::str {
 
     constexpr void replaceall(std::string& str, const std::string&& from, const std::string&& to);
 
-    constexpr inline void replaceall(std::string& str, const std::string&& from,
-                                     const std::string&& to)
+    constexpr inline void
+    replaceall(std::string& str, const std::string&& from, const std::string&& to)
     {
         std::string newstr;
         newstr.reserve(str.length());
