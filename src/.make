@@ -588,7 +588,7 @@ spell() {
                     printf "  %s" "$fl"
                     [ -d "$fl" ] && printf "/"
                     printf "\n"
-                    codespell --builtin "clear,rare,informal" -L "ans,ba,erformance" -- "$fl"
+                    codespell -e --builtin "clear,rare,informal" -L "ans,ba,erformance" -- "$fl"
                 done
             ' --
     )
