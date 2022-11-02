@@ -37,7 +37,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: false
 
 BinPackArguments: false
-BinPackParameters: true
+BinPackParameters: false
 
 BreakBeforeBinaryOperators: None
 BreakBeforeTernaryOperators: false

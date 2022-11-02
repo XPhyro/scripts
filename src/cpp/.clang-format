@@ -18,6 +18,7 @@ TabWidth: 4
 UseTab: Never
 
 AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
@@ -40,7 +41,8 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 
 BinPackArguments: false
-BinPackParameters: true
+BinPackParameters: false
+PackConstructorInitializers: CurrentLine
 
 QualifierAlignment: Left
 ReferenceAlignment: Left
