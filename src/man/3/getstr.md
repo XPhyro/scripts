@@ -1,4 +1,4 @@
-% GETSTR(3) getstr VERSION | Library Functions
+% GETSTR(3) getstr VERSION | Library Functions Manual
 changequote(`{{{', `}}}')%
 % syscmd({{{date --date=@"$({ git log -1 --pretty="format:%ct%n" '}}}THIS{{{'; date +"%s"; } | head -n 1)" +"%Y-%m-%d %H:%M:%S"}}})
 undefine({{{VERSION}}})
@@ -7,7 +7,6 @@ undefine({{{THIS}}})
 # NAME
 
 **fgetstr**, **getstr** — delimited string input
-
 
 # SYNOPSIS
 
@@ -18,7 +17,6 @@ char *fgetstr(FILE *stream, int delim);
 char *getstr(int argc, char *argv[], int delim);
 ```
 
-
 # DESCRIPTION
 
 `fgetstr()` is an easy-to-use wrapper for `getdelim(3)`.
@@ -26,28 +24,23 @@ char *getstr(int argc, char *argv[], int delim);
 `getstr()` is similar to `fgetstr()`. If `argc` is not 0, it gathers input from
 `argv`. Otherwise, it gathers input using `fgetstr()` on `stdin`.
 
-
 # RETURN VALUE
 
 On success, `fgetstr()` and `getstr()` return a line of string.
 
 Both functions return `NULL` on failure.
 
-
 # ERRORS
 
 Not used.
-
 
 # CONFORMING TO
 
 Conforms to nothing. Requires a POSIX.1-2008-compatible compiler.
 
-
 # NOTES
 
 `fgetstr()` and `getstr()` should not be used together on `stdin`.
-
 
 # EXAMPLES
 
@@ -92,22 +85,18 @@ int main(int argc, char *argv[])
 }
 ```
 
-
 # AUTHOR
 
 Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
-
 
 # BUGS & ISSUES
 
 Report at <https://github.com/XPhyro/scripts/issues> or
 <https://codeberg.org/XPhyro/scripts/issues>.
 
-
 # COPYRIGHT
 
 include({{{LICENSE}}})
-
 
 # SEE ALSO
 

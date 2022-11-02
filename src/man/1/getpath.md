@@ -1,4 +1,4 @@
-% GETPATH(1) getpath VERSION | User Commands
+% GETPATH(1) getpath VERSION | User Commands Manual
 changequote(`{{{', `}}}')%
 % syscmd({{{date --date=@"$({ git log -1 --pretty="format:%ct%n" '}}}THIS{{{'; date +"%s"; } | head -n 1)" +"%Y-%m-%d %H:%M:%S"}}})
 undefine({{{VERSION}}})
@@ -8,12 +8,10 @@ undefine({{{THIS}}})
 
 **getpath** — get paths based on keycodes
 
-
 # SYNOPSIS
 
 | **getpath** \[OPTION...\] \[KEYCODE...\]
 | **getpath** -e \[OPTION...\] \[KEYCODE...\] \[VARNAME\] \[EXITCODE\]? \[ERRMSG\]?
-
 
 # DESCRIPTION
 
@@ -24,60 +22,57 @@ EXITCODE and ERRMSG are optional and respectively default to 1 and NULL. Unless
 of -df must be given. Only the last occurrence of any of -nsu is considered. By
 default, -n is selected.
 
-
 # OPTIONS
 
 ## Generic
 
 -h
-:   display help dialog and exit
+: display help dialog and exit
 
 ## Search Modes
 
 -b
-:   if -d and -f are given, output both if matched
+: if -d and -f are given, output both if matched
 
 -d
-:   search directory database
+: search directory database
 
 -f
-:   search file database
+: search file database
 
 ## Safety Modes
 
 -n
-:   select normal mode: create parent elements of the path
+: select normal mode: create parent elements of the path
 
 -s
-:   select safe mode: create all elements of the path
+: select safe mode: create all elements of the path
 
 -u
-:   select unsafe mode: create none of the elements of the path
+: select unsafe mode: create none of the elements of the path
 
 ## General Output Control
 
 -e
-:   make output `eval`able by a POSIX-compatible shell
+: make output `eval`able by a POSIX-compatible shell
 
 -z
-:   line delimiter is NUL, not newline
+: line delimiter is NUL, not newline
 
 -0
-:   line delimiter is NUL, not newline
-
+: line delimiter is NUL, not newline
 
 # FILES
 
 `$PREFIX/scripts/pathfinding/files-container/`
 
-:   File database.
+: File database.
 
 `$PREFIX/scripts/pathfinding/directories-container/`
 
-:   Directory database.
+: Directory database.
 
 See ENVIRONMENT section for `$PREFIX`.
-
 
 # ENVIRONMENT
 
@@ -90,22 +85,18 @@ See ENVIRONMENT section for `$PREFIX`.
 3. `$HOME/.config`, if `$HOME` is not set, the home directory is queried via
    `getpwuid(getuid())->pw_dir`
 
-
 # AUTHOR
 
 Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
-
 
 # BUGS & ISSUES
 
 Report at <https://github.com/XPhyro/scripts/issues> or
 <https://codeberg.org/XPhyro/scripts/issues>.
 
-
 # COPYRIGHT
 
 include({{{LICENSE}}})
-
 
 # SEE ALSO
 
