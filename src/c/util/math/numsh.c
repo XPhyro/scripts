@@ -71,7 +71,7 @@ DECLREDUCE(sum);
 function functions[] = {
     FUNCMAP(acos),    FUNCMAP(asin),   FUNCMAP(atan),
     FUNCMAP(cbrt),    FUNCMAP(ceil),   FUNCMAP(cos),
-    FUNCMAP(cosh),    FUNCMAP(exp),    { .name = "abs", .func = map_fabs, .type = FUNCTYPE_MAP },
+    FUNCMAP(cosh),    FUNCMAP(exp),    {.name = "abs", .func = map_fabs, .type = FUNCTYPE_MAP},
     FUNCMAP(floor),   FUNCMAP(log),    FUNCMAP(log10),
     FUNCMAP(log2),    FUNCMAP(pow),    FUNCMAP(round),
     FUNCMAP(sin),     FUNCMAP(sinh),   FUNCMAP(sqrt),

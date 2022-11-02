@@ -27,10 +27,14 @@ int main(int argc, char *argv[])
     char *buf;
     size_t bufsize;
     const divn_t divs[8] = {
-        { .div = 3, .name = "Fizz" },      { .div = 5, .name = "Buzz" },
-        { .div = 7, .name = "Wizz" },      { .div = 11, .name = "Triss" },
-        { .div = 13, .name = "Yennefer" }, { .div = 17, .name = "Mario" },
-        { .div = 19, .name = "Claire" },   { .div = 23, .name = "Peach" },
+        {.div = 3,   .name = "Fizz"    },
+        { .div = 5,  .name = "Buzz"    },
+        { .div = 7,  .name = "Wizz"    },
+        { .div = 11, .name = "Triss"   },
+        { .div = 13, .name = "Yennefer"},
+        { .div = 17, .name = "Mario"   },
+        { .div = 19, .name = "Claire"  },
+        { .div = 23, .name = "Peach"   },
     };
     const char *execname = argv[0];
 

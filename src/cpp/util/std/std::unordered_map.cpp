@@ -85,12 +85,12 @@ namespace map {
 } // namespace map
 
 const std::unordered_map<std::string, cache> caches = {
-    {         "t",  cache::temporary},
-    {       "tmp",  cache::temporary},
-    {      "temp",  cache::temporary},
-    { "temporary",  cache::temporary},
-    {         "p", cache::persistent},
-    {"persistent", cache::persistent},
+    {"t",           cache::temporary },
+    { "tmp",        cache::temporary },
+    { "temp",       cache::temporary },
+    { "temporary",  cache::temporary },
+    { "p",          cache::persistent},
+    { "persistent", cache::persistent},
 };
 constexpr const char indelim = '\0';
 constexpr const auto vecview = xph::str::splitview(indelim);
