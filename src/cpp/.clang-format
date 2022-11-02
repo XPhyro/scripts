@@ -18,7 +18,7 @@ TabWidth: 4
 UseTab: Never
 
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Left
+AlignArrayOfStructures: None # ideally we want Left, but it does some weird stuff in nests
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
