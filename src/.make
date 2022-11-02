@@ -83,9 +83,9 @@ install() {
             "Be sure to add it to your PATH with high priority."
 
     printf "%s\n" \
-        "Installing Bash, execline, Python and shell scripts:"
+        "Installing Bash, execline, Python, Perl and shell scripts:"
 
-    for i in bash el py sh; do
+    for i in bash el py pl sh; do
         (
             cd "$i"
 
