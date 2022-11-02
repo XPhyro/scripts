@@ -29,80 +29,97 @@ static_assert(std::numeric_limits<double>::is_iec559);
 static_assert(std::endian::native == std::endian::little);
 
 enum class type {
+    bitset,
     character,
-    string,
-    octal,
-    decimal,
-    hexadecimal,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
+    float32,
+    float64,
+    float128,
+    hex8,
+    hex16,
+    hex32,
+    hex64,
+    hexfloat32,
+    hexfloat64,
+    hexfloat128,
     int8,
     int16,
     int32,
     int64,
-    bitset,
-    float32,
-    float64,
-    float128,
-    binary,
+    oct8,
+    oct16,
+    oct32,
+    oct64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
 };
 
 [[noreturn]] void help();
 [[noreturn]] void invalidargs(const std::string& err);
-void cast_bitset_to_binary();
-void cast_binary_to_bitset();
-void cast_binary_to_uint8();
-void cast_binary_to_uint16();
-void cast_binary_to_uint32();
-void cast_binary_to_uint64();
-void cast_binary_to_int8();
-void cast_binary_to_int16();
-void cast_binary_to_int32();
-void cast_binary_to_int64();
-void cast_binary_to_float32();
-void cast_binary_to_float64();
-void cast_binary_to_float128();
+void cast_bitset_to_character();
+void cast_character_to_bitset();
+template <typename T>
+void cast_character_to_primitive();
+template <typename T>
+void cast_character_to_float_hex();
+template <typename T>
+void cast_character_to_int_hex();
+template <typename T>
+void cast_character_to_int_oct();
 
 const std::unordered_map<std::string, type> types = {
-  // {"char",      type::character  },
-  // { "string",   type::string     },
-  // { "oct",      type::octal      },
-  // { "dec",      type::decimal    },
-  // { "hex",      type::hexadecimal},
-    {"uint8",     type::uint8   },
-    { "uint16",   type::uint16  },
-    { "uint32",   type::uint32  },
-    { "uint64",   type::uint64  },
-    { "int8",     type::int8    },
-    { "int16",    type::int16   },
-    { "int32",    type::int32   },
-    { "int64",    type::int64   },
-    { "float32",  type::float32 },
-    { "float64",  type::float64 },
-    { "float128", type::float128},
-    { "bit",      type::bitset  },
-    { "bitset",   type::bitset  },
-    { "byte",     type::binary  },
-    { "raw",      type::binary  },
-    { "bin",      type::binary  },
+    {"char",         type::character  },
+    { "float32",     type::float32    },
+    { "float64",     type::float64    },
+    { "float128",    type::float128   },
+    { "hex8",        type::hex8       },
+    { "hex16",       type::hex16      },
+    { "hex32",       type::hex32      },
+    { "hex64",       type::hex64      },
+    { "hexfloat32",  type::hexfloat32 },
+    { "hexfloat64",  type::hexfloat64 },
+    { "hexfloat128", type::hexfloat128},
+    { "int8",        type::int8       },
+    { "int16",       type::int16      },
+    { "int32",       type::int32      },
+    { "int64",       type::int64      },
+    { "oct8",        type::oct8       },
+    { "oct16",       type::oct16      },
+    { "oct32",       type::oct32      },
+    { "oct64",       type::oct64      },
+    { "uint8",       type::uint8      },
+    { "uint16",      type::uint16     },
+    { "uint32",      type::uint32     },
+    { "uint64",      type::uint64     },
+    { "bit",         type::bitset     },
 };
 
 const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = {
-    {{ type::bitset, type::binary },    cast_bitset_to_binary  },
-    { { type::binary, type::bitset },   cast_binary_to_bitset  },
-    { { type::binary, type::uint8 },    cast_binary_to_uint8   },
-    { { type::binary, type::uint16 },   cast_binary_to_uint16  },
-    { { type::binary, type::uint32 },   cast_binary_to_uint32  },
-    { { type::binary, type::uint64 },   cast_binary_to_uint64  },
-    { { type::binary, type::int8 },     cast_binary_to_int8    },
-    { { type::binary, type::int16 },    cast_binary_to_int16   },
-    { { type::binary, type::int32 },    cast_binary_to_int32   },
-    { { type::binary, type::int64 },    cast_binary_to_int64   },
-    { { type::binary, type::float32 },  cast_binary_to_float32 },
-    { { type::binary, type::float64 },  cast_binary_to_float64 },
-    { { type::binary, type::float128 }, cast_binary_to_float128},
+    {{ type::bitset, type::character },       cast_bitset_to_character                },
+    { { type::character, type::bitset },      cast_character_to_bitset                },
+    { { type::character, type::float32 },     cast_character_to_primitive<float>      },
+    { { type::character, type::float64 },     cast_character_to_primitive<double>     },
+    { { type::character, type::float128 },    cast_character_to_primitive<long double>},
+    { { type::character, type::hex8 },        cast_character_to_int_hex<int8_t>       },
+    { { type::character, type::hex16 },       cast_character_to_int_hex<int16_t>      },
+    { { type::character, type::hex32 },       cast_character_to_int_hex<int32_t>      },
+    { { type::character, type::hex64 },       cast_character_to_int_hex<int64_t>      },
+    { { type::character, type::hexfloat32 },  cast_character_to_float_hex<float>      },
+    { { type::character, type::hexfloat64 },  cast_character_to_float_hex<double>     },
+    { { type::character, type::hexfloat128 }, cast_character_to_float_hex<long double>},
+    { { type::character, type::int8 },        cast_character_to_primitive<int8_t>     },
+    { { type::character, type::int16 },       cast_character_to_primitive<int16_t>    },
+    { { type::character, type::int32 },       cast_character_to_primitive<int32_t>    },
+    { { type::character, type::int64 },       cast_character_to_primitive<int64_t>    },
+    { { type::character, type::oct8 },        cast_character_to_int_oct<int8_t>       },
+    { { type::character, type::oct16 },       cast_character_to_int_oct<int16_t>      },
+    { { type::character, type::oct32 },       cast_character_to_int_oct<int32_t>      },
+    { { type::character, type::oct64 },       cast_character_to_int_oct<int64_t>      },
+    { { type::character, type::uint8 },       cast_character_to_primitive<uint8_t>    },
+    { { type::character, type::uint16 },      cast_character_to_primitive<uint16_t>   },
+    { { type::character, type::uint32 },      cast_character_to_primitive<uint32_t>   },
+    { { type::character, type::uint64 },      cast_character_to_primitive<uint64_t>   },
 };
 
 const char* execname;
@@ -183,7 +200,7 @@ int main(int argc, char* argv[])
     xph::die("Try '", execname, " -h' for more information.\n");
 }
 
-void cast_bitset_to_binary()
+void cast_bitset_to_character()
 {
     char buf[8];
     ssize_t n;
@@ -199,7 +216,7 @@ void cast_bitset_to_binary()
 }
 
 // FIXME: this function's output is sometimes wrong
-void cast_binary_to_bitset()
+void cast_character_to_bitset()
 {
     unsigned char inbuf[PIPE_BUF];
     // TODO: use an outbuf[PIPE_BUF * 8]
@@ -214,9 +231,10 @@ void cast_binary_to_bitset()
     }
 }
 
-void cast_binary_to_uint8()
+template <typename T>
+void cast_character_to_primitive()
 {
-    uint8_t buf;
+    T buf;
     ssize_t n;
 
     while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
@@ -226,122 +244,41 @@ void cast_binary_to_uint8()
     }
 }
 
-void cast_binary_to_uint16()
+template <typename T>
+void cast_character_to_float_hex()
 {
-    uint16_t buf;
+    T buf;
     ssize_t n;
 
     while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
         if (n != sizeof(buf))
             xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
+        std::cout << std::hexfloat << buf << '\n';
     }
 }
 
-void cast_binary_to_uint32()
+template <typename T>
+void cast_character_to_int_hex()
 {
-    uint32_t buf;
+    T buf;
     ssize_t n;
 
     while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
         if (n != sizeof(buf))
             xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
+        std::cout << std::hex << buf << '\n';
     }
 }
 
-void cast_binary_to_uint64()
+template <typename T>
+void cast_character_to_int_oct()
 {
-    uint64_t buf;
+    T buf;
     ssize_t n;
 
     while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
         if (n != sizeof(buf))
             xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_int8()
-{
-    int8_t buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_int16()
-{
-    int16_t buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_int32()
-{
-    int32_t buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_int64()
-{
-    int64_t buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_float32()
-{
-    float buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_float64()
-{
-    double buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
-    }
-}
-
-void cast_binary_to_float128()
-{
-    long double buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
+        std::cout << std::oct << buf << '\n';
     }
 }
