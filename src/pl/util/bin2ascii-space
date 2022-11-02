@@ -1,0 +1,3 @@
+#!/usr/bin/env -S perl -lp
+
+$_=unpack"B*"
