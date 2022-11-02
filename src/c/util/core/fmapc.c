@@ -25,22 +25,12 @@ int main(int argc, char *argv[])
     const char sep = '=';
     enum { binsize = 16, bufsize = 4096 };
     const binmapping_t binmappings[binsize] = {
-        {.key = '0',  .val = 0 },
-        { .key = '1', .val = 1 },
-        { .key = '2', .val = 2 },
-        { .key = '3', .val = 3 },
-        { .key = '4', .val = 4 },
-        { .key = '5', .val = 5 },
-        { .key = '6', .val = 6 },
-        { .key = '7', .val = 7 },
-        { .key = '8', .val = 8 },
-        { .key = '9', .val = 9 },
-        { .key = 'a', .val = 10},
-        { .key = 'b', .val = 11},
-        { .key = 'c', .val = 12},
-        { .key = 'd', .val = 13},
-        { .key = 'e', .val = 14},
-        { .key = 'f', .val = 15},
+        { .key = '0', .val = 0 },  { .key = '1', .val = 1 },  { .key = '2', .val = 2 },
+        { .key = '3', .val = 3 },  { .key = '4', .val = 4 },  { .key = '5', .val = 5 },
+        { .key = '6', .val = 6 },  { .key = '7', .val = 7 },  { .key = '8', .val = 8 },
+        { .key = '9', .val = 9 },  { .key = 'a', .val = 10 }, { .key = 'b', .val = 11 },
+        { .key = 'c', .val = 12 }, { .key = 'd', .val = 13 }, { .key = 'e', .val = 14 },
+        { .key = 'f', .val = 15 },
     };
     unsigned char buf[bufsize];
     char *s;
