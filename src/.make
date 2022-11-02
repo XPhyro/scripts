@@ -55,12 +55,12 @@ all() {
     ! command -v ctags > /dev/null 2>&1 || index
 }
 
-index () {
+index() {
     printf "%s\n" \
         "=====" \
         "INDEX" \
         "=====" \
-        ""
+        "Indexing all source files."
 
     ctags -R --c++-kinds=+p --fields=+iaS --extras=+q .
 }
@@ -69,8 +69,7 @@ install() {
     printf "%s\n" \
         "=======" \
         "INSTALL" \
-        "=======" \
-        ""
+        "======="
 
     mkdir -p -- "$binprefix" "$manprefix" "$dataprefix"
     mkdir "$binprefix/wrapper" 2> /dev/null \
@@ -295,8 +294,7 @@ uninstall() {
     printf "%s\n" \
         "=========" \
         "UNINSTALL" \
-        "=========" \
-        ""
+        "========="
 
     [ -f .installed ] || {
         printf "%s\n" \
@@ -319,8 +317,7 @@ unittest() {
     printf "%s\n" \
         "====" \
         "TEST" \
-        "====" \
-        ""
+        "===="
 
     (
         cd tests
@@ -377,8 +374,7 @@ format() {
     printf "%s\n" \
         "======" \
         "FORMAT" \
-        "======" \
-        ""
+        "======"
 
     printf "%s\n" \
         "Formatting Python source files:"
@@ -427,8 +423,7 @@ analyse() {
     printf "%s\n" \
         "========" \
         "ANALYSE" \
-        "========" \
-        ""
+        "========"
 
     printf "%s\n" \
         "Preparing to analyse Bash and shell scripts and libraries:"
@@ -574,13 +569,12 @@ spell() {
     printf "%s\n" \
         "=====" \
         "SPELL" \
-        "=====" \
-        ""
+        "====="
 
     (
         cd .. || exit 1
 
-        printf "\n%s\n" \
+        printf "%s\n" \
             "Checking files and files in directories for spelling mistakes:"
         find '.' -mindepth 1 -maxdepth 1 \( -not -name ".git" -a -not -name "lib" \) -print0 \
             | xargs -r0 sh -c '
