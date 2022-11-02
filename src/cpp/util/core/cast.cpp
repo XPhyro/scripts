@@ -60,7 +60,9 @@ enum class type {
 void cast_bitset_to_character();
 void cast_character_to_bitset();
 template <typename T>
-void cast_character_to_primitive();
+void cast_character_to_primitive(auto converter);
+template <typename T>
+void cast_character_to_dec();
 template <typename T>
 void cast_character_to_float_hex();
 template <typename T>
@@ -98,9 +100,9 @@ const std::unordered_map<std::string, type> types = {
 const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = {
     {{ type::bitset, type::character },       cast_bitset_to_character                },
     { { type::character, type::bitset },      cast_character_to_bitset                },
-    { { type::character, type::float32 },     cast_character_to_primitive<float>      },
-    { { type::character, type::float64 },     cast_character_to_primitive<double>     },
-    { { type::character, type::float128 },    cast_character_to_primitive<long double>},
+    { { type::character, type::float32 },     cast_character_to_dec<float>            },
+    { { type::character, type::float64 },     cast_character_to_dec<double>           },
+    { { type::character, type::float128 },    cast_character_to_dec<long double>      },
     { { type::character, type::hex8 },        cast_character_to_int_hex<int8_t>       },
     { { type::character, type::hex16 },       cast_character_to_int_hex<int16_t>      },
     { { type::character, type::hex32 },       cast_character_to_int_hex<int32_t>      },
@@ -108,18 +110,18 @@ const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = 
     { { type::character, type::hexfloat32 },  cast_character_to_float_hex<float>      },
     { { type::character, type::hexfloat64 },  cast_character_to_float_hex<double>     },
     { { type::character, type::hexfloat128 }, cast_character_to_float_hex<long double>},
-    { { type::character, type::int8 },        cast_character_to_primitive<int8_t>     },
-    { { type::character, type::int16 },       cast_character_to_primitive<int16_t>    },
-    { { type::character, type::int32 },       cast_character_to_primitive<int32_t>    },
-    { { type::character, type::int64 },       cast_character_to_primitive<int64_t>    },
+    { { type::character, type::int8 },        cast_character_to_dec<int8_t>           },
+    { { type::character, type::int16 },       cast_character_to_dec<int16_t>          },
+    { { type::character, type::int32 },       cast_character_to_dec<int32_t>          },
+    { { type::character, type::int64 },       cast_character_to_dec<int64_t>          },
     { { type::character, type::oct8 },        cast_character_to_int_oct<int8_t>       },
     { { type::character, type::oct16 },       cast_character_to_int_oct<int16_t>      },
     { { type::character, type::oct32 },       cast_character_to_int_oct<int32_t>      },
     { { type::character, type::oct64 },       cast_character_to_int_oct<int64_t>      },
-    { { type::character, type::uint8 },       cast_character_to_primitive<uint8_t>    },
-    { { type::character, type::uint16 },      cast_character_to_primitive<uint16_t>   },
-    { { type::character, type::uint32 },      cast_character_to_primitive<uint32_t>   },
-    { { type::character, type::uint64 },      cast_character_to_primitive<uint64_t>   },
+    { { type::character, type::uint8 },       cast_character_to_dec<uint8_t>          },
+    { { type::character, type::uint16 },      cast_character_to_dec<uint16_t>         },
+    { { type::character, type::uint32 },      cast_character_to_dec<uint32_t>         },
+    { { type::character, type::uint64 },      cast_character_to_dec<uint64_t>         },
 };
 
 const char* execname;
@@ -232,7 +234,7 @@ void cast_character_to_bitset()
 }
 
 template <typename T>
-void cast_character_to_primitive()
+void cast_character_to_x(auto converter)
 {
     T buf;
     ssize_t n;
@@ -240,45 +242,30 @@ void cast_character_to_primitive()
     while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
         if (n != sizeof(buf))
             xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << buf << '\n';
+        std::cout << converter << buf << '\n';
     }
+}
+
+template <typename T>
+void cast_character_to_dec()
+{
+    cast_character_to_x<T>(std::dec);
 }
 
 template <typename T>
 void cast_character_to_float_hex()
 {
-    T buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << std::hexfloat << buf << '\n';
-    }
+    cast_character_to_x<T>(std::hexfloat);
 }
 
 template <typename T>
 void cast_character_to_int_hex()
 {
-    T buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << std::hex << buf << '\n';
-    }
+    cast_character_to_x<T>(std::hex);
 }
 
 template <typename T>
 void cast_character_to_int_oct()
 {
-    T buf;
-    ssize_t n;
-
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
-        std::cout << std::oct << buf << '\n';
-    }
+    cast_character_to_x<T>(std::oct);
 }
