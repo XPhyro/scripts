@@ -1,6 +1,7 @@
 // C++
 #include <algorithm>
 #include <bitset>
+#include <cassert>
 #include <cstdint>
 #include <cstdlib>
 #include <functional>
@@ -176,17 +177,28 @@ int main(int argc, char* argv[])
                  "Valid types are: ";
 
     std::vector<std::string> typenames;
+    std::unordered_map<type, std::string> reverse_types;
     typenames.reserve(types.size());
-    for (const auto& [name, _] : types)
+    reverse_types.reserve(types.size());
+    for (const auto& [name, type] : types) {
         typenames.push_back(name);
-
+        assert(!reverse_types.contains(type));
+        reverse_types.insert({ type, name });
+    }
     std::sort(typenames.begin(), typenames.end());
 
     for (auto it = typenames.begin(); it < typenames.end() - 1; ++it)
         std::cout << *it << ", ";
-    std::cout << typenames.back() << ".\n";
+    std::cout << typenames.back()
+              << ".\n"
+                 "\n"
+                 "Valid casts are:\n";
 
-    // TODO: print possible pairs
+    for (const auto& [pair, _] : funcs) {
+        auto from = reverse_types[std::get<0>(pair)];
+        auto to = reverse_types[std::get<1>(pair)];
+        std::cout << "  " << from << " -> " << to << '\n';
+    }
 
     std::cout << "\n"
                  "Options\n"
