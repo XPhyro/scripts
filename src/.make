@@ -5,6 +5,21 @@ logerrq() {
     exit 1
 }
 
+getrealuser() {
+    ppid="$PPID"
+    self="$(id -un)"
+    while ppid="$(ps -o ppid= -p "$ppid" | tr -d '[:space:]')"; do
+        owner="$(ps -o user= -p "$ppid")" || {
+            printf "%s" "$self"
+            return
+        }
+        [ "$owner" != "$self" ] && {
+            printf "%s" "$owner"
+            return
+        }
+    done
+}
+
 cancompilecpp() {
     if { [ "$CXX" != "g++" ] && [ "$CXX" != "gcc" ]; } \
         || [ "$("$CXX" --version | head -n 1 | sed 's/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -ge 12 ]; then
@@ -287,6 +302,25 @@ install() {
                     printf "\0%s\0" "$manpath"
                 ' --
             done 2>&1 >> ../.installed
+    )
+
+    printf "\n%s\n" \
+        "Installing systemd services:"
+
+    (
+        cd systemd
+        for dir in root user; do
+            case "$dir" in
+                root) pfx=/usr/local/lib/systemd/system;;
+                user) pfx="$realhome/.config/systemd/user";;
+            esac
+            for fl in "$dir"/*; do
+                printf "  %s -> %s\n" "$fl" "$pfx/${fl##*/}" >&2
+                m4 -I"$rootdir" -DHOME="$realhome" -DBIN_PREFIX="$binprefix" \
+                    -DDATA_PREFIX="$dataprefix" "$fl" > "$pfx/${fl##*/}"
+                [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/${fl##*/}"
+            done
+        done
     )
 }
 
@@ -620,8 +654,12 @@ if [ -n "$PREFIX" ]; then
     prefix="$PREFIX"
 elif isroot; then
     prefix="/usr/local"
+    realuser="$(getrealuser)"
+    realhome="$(getent passwd "$realuser" | cut -d: -f6)"
 else
     prefix="$HOME/.local"
+    realuser="$(id -un)"
+    realhome="$HOME"
 fi
 binprefix="$prefix/bin"
 includeprefix="$prefix/include"
