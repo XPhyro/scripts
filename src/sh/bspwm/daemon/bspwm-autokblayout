@@ -33,14 +33,10 @@ kmmap new
 
 oldid="$(bspc query -n focused -N)"
 bspc subscribe node_focus | while IFS=" " read -r _ _ _ ID; do
-    eval "$(xclassname "$ID")" # defines CLASS, INSTANCE and NAME
-
-    std_logerrraw \
-        "class: $CLASS" \
-        "instance: $INSTANCE" \
-        "name: $NAME" \
-        "from node: $oldid" \
-        "to node: $ID"
+    xclassname="$(xclassname "$ID")"
+    std_logerrraw "$xclassname" "FROM='$oldid'" "TO='$ID'"
+    [ -z "$xclassname" ] && continue
+    eval "$xclassname" # defines CLASS, INSTANCE and NAME
 
     km="$(xkb-switch)"
     kmmap "$oldid" = "$km"
