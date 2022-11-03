@@ -310,15 +310,28 @@ install() {
     (
         cd systemd
         for dir in root user; do
+            printf "  %s\n" "$dir:"
             case "$dir" in
                 root) pfx=/usr/local/lib/systemd/system;;
-                user) pfx="$realhome/.config/systemd/user";;
+                user)
+                    if [ "$realuser" = "root" ]; then
+                        pfx=/usr/local/lib/systemd/system
+                    else
+                        pfx="$realhome/.config/systemd/user"
+                    fi
+                    ;;
             esac
+            [ -d "$pfx" ] || {
+                printf "  %s\n" \
+                    "Skipping installation of $dir systemd services as $pfx does not exist or is not a directory."
+                continue
+            }
             for fl in "$dir"/*; do
-                printf "  %s -> %s\n" "$fl" "$pfx/${fl##*/}" >&2
+                flname="${fl##*/}"
+                printf "    %s -> %s\n" "$flname" "$pfx/$flname" >&2
                 m4 -I"$rootdir" -DHOME="$realhome" -DBIN_PREFIX="$binprefix" \
-                    -DDATA_PREFIX="$dataprefix" "$fl" > "$pfx/${fl##*/}"
-                [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/${fl##*/}"
+                    -DDATA_PREFIX="$dataprefix" "$fl" > "$pfx/$flname"
+                [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/$flname"
             done
         done
     )
