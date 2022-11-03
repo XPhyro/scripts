@@ -289,6 +289,12 @@ install() {
 
     (
         cd man
+
+        command -v pandoc > /dev/null 2>&1 || {
+            printf "%s\n" '  `pandoc` is not installed, cannot generate man pages.'
+            exit 0
+        }
+
         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" \
             | while IFS= read -r section; do
                 mkdir -p -- "$manprefix/man$section" >&2
@@ -311,6 +317,7 @@ install() {
         cd systemd
         for dir in root user; do
             printf "  %s\n" "$dir:"
+
             case "$dir" in
                 root) pfx=/usr/local/lib/systemd/system;;
                 user)
@@ -321,11 +328,13 @@ install() {
                     fi
                     ;;
             esac
+
             [ -d "$pfx" ] || {
                 printf "    %s\n" \
                     "Skipping installation of $dir systemd services as $pfx does not exist or is not a directory."
                 continue
             }
+
             for fl in "$dir"/*; do
                 flname="${fl##*/}"
                 printf "    %s -> %s\n" "$flname" "$pfx/$flname" >&2
