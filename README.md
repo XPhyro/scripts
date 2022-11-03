@@ -114,6 +114,10 @@ the source code.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
 - [shufr](src/cpp/util/core/shufr.cpp): Like `shuf -r`, but supports outputting
   unique sequences.
+- [std::unordered_map](src/cpp/util/std/std::unordered_map.cpp): Wrapper for
+  `std::unordered_map<std::string, std::string>` for shells.
+- [std::vector](src/cpp/util/std/std::vector.cpp): Wrapper for
+  `std::vector<std::string>` for shells.
 - [stest](src/c/util/core/stest.c): Filter a list of files by properties. This
   is a superset of the `stest` included with suckless' `dmenu`.
 - [sumsize](src/c/util/core/sumsize.c): Sum human readable or raw sizes.
@@ -121,8 +125,6 @@ the source code.
   hash codes. Originally written for toggling applications with the same hotkey
   via `sxhkd`.
 - [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`.
-- [vector](src/cpp/util/sh/vector.cpp): Wrapper for `std::vector<std::string>`
-  for use in POSIX shells.
 - [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX
   shell.
 - [xins](src/sh/util/xins): Like `xargs` but for standard input.
