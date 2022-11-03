@@ -1,30 +1,4 @@
 #!/usr/bin/env sh
-#
-# Replace USERNAME with your username in the following unit file and copy it to
-# ~/.config/systemd/user/warnbattery.service.
-#
-##
-# [Unit]
-# Description=When battery is low, play audio and send notification.
-# Wants=sound.target
-# After=sound.target
-# After=graphical.target
-# 
-# [Service]
-# Type=simple
-# Restart=always
-# RestartSec=180
-# ExecStart=/usr/local/bin/warnbattery
-# Environment=PATH=/usr/bin:/usr/local/bin
-# Environment=GETPATH_CONFIG_HOME=/home/USERNAME/.config
-# Environment=DISPLAY=:0
-# Environment=WARNBATTERY_LOW_THRESHOLD=20
-# Environment=WARNBATTERY_CRITICAL_THRESHOLD=10
-# Environment=WARNBATTERY_UPDATE_PERIOD=90
-# 
-# [Install]
-# WantedBy=default.target
-##
 
 getcapacity() {
     cat "$battery/capacity"
