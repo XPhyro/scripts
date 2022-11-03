@@ -20,6 +20,7 @@
 // libraries
 #include <consts.hpp>
 #include <die.hpp>
+#include <lexical_cast.hpp>
 #include <strutil.hpp>
 #include <tuple_hash.hpp>
 
@@ -46,6 +47,7 @@ enum class type {
     int16,
     int32,
     int64,
+    intx,
     oct8,
     oct16,
     oct32,
@@ -54,16 +56,21 @@ enum class type {
     uint16,
     uint32,
     uint64,
+    uintx,
 };
 
 [[noreturn]] void help();
-[[noreturn]] void invalidargs(const std::string& err);
-void cast_bitset_to_character();
-void cast_character_to_bitset();
+[[noreturn]] void invalid_args(const std::string& err);
+void assert_argc(int n, int argc);
+void cast_bitset_to_character(int& argc, char**& argv);
+void cast_character_to_bitset(int& argc, char**& argv);
 template <typename T, auto converter>
-void cast_character_to_primitive();
+void cast_character_to_primitive(int& argc, char**& argv);
+template <typename T, auto converter>
+void cast_character_to_xintx(int& argc, char**& argv);
 
 const std::unordered_map<std::string, type> types = {
+    { "bit", type::bitset },
     { "char", type::character },
     { "float32", type::float32 },
     { "float64", type::float64 },
@@ -79,6 +86,7 @@ const std::unordered_map<std::string, type> types = {
     { "int16", type::int16 },
     { "int32", type::int32 },
     { "int64", type::int64 },
+    { "intx", type::intx },
     { "oct8", type::oct8 },
     { "oct16", type::oct16 },
     { "oct32", type::oct32 },
@@ -87,10 +95,10 @@ const std::unordered_map<std::string, type> types = {
     { "uint16", type::uint16 },
     { "uint32", type::uint32 },
     { "uint64", type::uint64 },
-    { "bit", type::bitset },
+    { "uintx", type::uintx },
 };
 
-const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = {
+const std::unordered_map<std::tuple<type, type>, std::function<void(int&, char**&)>> funcs = {
     { { type::bitset, type::character }, cast_bitset_to_character },
     { { type::character, type::bitset }, cast_character_to_bitset },
     { { type::character, type::float32 }, cast_character_to_primitive<float, std::dec> },
@@ -108,6 +116,7 @@ const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = 
     { { type::character, type::int16 }, cast_character_to_primitive<int16_t, std::dec> },
     { { type::character, type::int32 }, cast_character_to_primitive<int32_t, std::dec> },
     { { type::character, type::int64 }, cast_character_to_primitive<int64_t, std::dec> },
+    { { type::character, type::intx }, cast_character_to_xintx<intmax_t, std::dec> },
     { { type::character, type::oct8 }, cast_character_to_primitive<int8_t, std::oct> },
     { { type::character, type::oct16 }, cast_character_to_primitive<int16_t, std::oct> },
     { { type::character, type::oct32 }, cast_character_to_primitive<int32_t, std::oct> },
@@ -116,6 +125,7 @@ const std::unordered_map<std::tuple<type, type>, std::function<void()>> funcs = 
     { { type::character, type::uint16 }, cast_character_to_primitive<uint16_t, std::dec> },
     { { type::character, type::uint32 }, cast_character_to_primitive<uint32_t, std::dec> },
     { { type::character, type::uint64 }, cast_character_to_primitive<uint64_t, std::dec> },
+    { { type::character, type::uintx }, cast_character_to_xintx<uintmax_t, std::dec> },
 };
 
 const char* execname;
@@ -129,7 +139,7 @@ int main(int argc, char* argv[])
             case 'h':
                 help();
             default:
-                invalidargs(xph::consts::str::empty);
+                invalid_args(xph::consts::str::empty);
         }
     }
 
@@ -137,34 +147,32 @@ int main(int argc, char* argv[])
     argc -= optind;
 
     if (argc < 2)
-        invalidargs(xph::consts::str::empty);
+        invalid_args(xph::consts::str::empty);
 
-    std::function<void()> func;
+    using func_t = typename std::decay<decltype((*funcs.begin()).second)>::type;
+    func_t func;
     try {
         auto fromtype = types.at(xph::str::makelower(std::string(argv[0])));
         auto totype = types.at(xph::str::makelower(std::string(argv[1])));
         func = funcs.at({ fromtype, totype });
     } catch (const std::out_of_range& e) {
-        invalidargs("invalid type or type pair given");
+        invalid_args("invalid type or type pair given");
     }
 
     argv += 2;
     argc -= 2;
 
-    if (argc)
-        invalidargs("extra operands given");
-
     std::cin.tie(nullptr);
     std::cout.tie(nullptr);
     std::ios_base::sync_with_stdio(false);
 
-    func();
+    func(argc, argv);
 }
 
 [[noreturn]] void help()
 {
     std::cout << "Usage: " << execname
-              << " [OPTION...] [FROM_TYPE] [TO_TYPE]\n"
+              << " [OPTION...] [FROM_TYPE] [TO_TYPE] [CAST_ARGS...]\n"
                  "Cast types to types.\n"
                  "\n"
                  "Valid types are: ";
@@ -193,38 +201,53 @@ int main(int argc, char* argv[])
         std::cout << "  " << from << " -> " << to << '\n';
     }
 
+    const char* endianness = std::endian::native == std::endian::little ? "little" : "big";
     std::cout << "\n"
+                 "All casts are assumed to be from "
+              << endianness << "-endian to " << endianness
+              << "-endian.\n"
+                 "\n"
                  "Options\n"
                  "  -h        display this help and exit\n";
 
     std::exit(EXIT_SUCCESS);
 }
 
-[[noreturn]] void invalidargs(const std::string& err)
+[[noreturn]] void invalid_args(const std::string& err)
 {
     if (!err.empty())
         std::cerr << err << '\n';
     xph::die("Try '", execname, " -h' for more information.\n");
 }
 
-void cast_bitset_to_character()
+void assert_argc(int n, int argc)
 {
-    char buf[8];
-    ssize_t n;
+    if (argc != n)
+        xph::die("expected ", n, " cast arguments, got ", argc);
+}
 
-    while ((n = read(STDIN_FILENO, buf, 8)) > 0) {
-        if (n != 8)
+void cast_bitset_to_character(int& argc, [[maybe_unused]] char**& argv)
+{
+    assert_argc(0, argc);
+
+    char buf[8];
+    ssize_t nread;
+
+    while ((nread = read(STDIN_FILENO, buf, 8)) > 0) {
+        if (nread != 8)
             xph::die("could not read 8 ASCII bits");
         char c = 0;
-        for (const auto&& i : std::views::iota(0, n - 1))
+        for (const auto&& i : std::views::iota(0, nread - 1))
             c |= (buf[i] & 1) << i;
         write(STDOUT_FILENO, &c, sizeof(c));
     }
 }
 
 // FIXME: this function's output is sometimes wrong
-void cast_character_to_bitset()
+void cast_character_to_bitset(int& argc, [[maybe_unused]] char**& argv)
 {
+    assert_argc(0, argc);
+
     unsigned char inbuf[PIPE_BUF];
     // TODO: use an outbuf[PIPE_BUF * 8]
     ssize_t nread;
@@ -239,14 +262,42 @@ void cast_character_to_bitset()
 }
 
 template <typename T, auto converter>
-void cast_character_to_primitive()
+void cast_character_to_primitive(int& argc, [[maybe_unused]] char**& argv)
 {
-    T buf;
-    ssize_t n;
+    assert_argc(0, argc);
 
-    while ((n = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (n != sizeof(buf))
+    T buf;
+    ssize_t nread;
+
+    while ((nread = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
+        if (nread != sizeof(buf))
             xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        std::cout << converter << buf << '\n';
+    }
+}
+
+template <typename T, auto converter>
+void cast_character_to_xintx(int& argc, char**& argv)
+{
+    assert_argc(1, argc);
+
+    T buf;
+    size_t nbyte = xph::lexical_cast<decltype(*argv), decltype(nbyte)>(argv[0]);
+
+    if (!nbyte || nbyte > sizeof(buf))
+        xph::die("cannot cast to ",
+                 nbyte,
+                 "-byte",
+                 nbyte == 1 ? "" : "s",
+                 "-long integers. minimum supported is 0. maximum supported is ",
+                 sizeof(buf),
+                 '.');
+
+    ssize_t nread;
+    buf = 0;
+    while ((nread = read(STDIN_FILENO, &buf, nbyte)) > 0) {
+        if (static_cast<size_t>(nread) != nbyte)
+            xph::die("could not read ", nbyte, " bytes for the specified type");
         std::cout << converter << buf << '\n';
     }
 }
