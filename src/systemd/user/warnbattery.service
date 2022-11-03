@@ -1,0 +1,20 @@
+[Unit]
+Description=When battery is low, play audio and send notification.
+Wants=sound.target
+After=sound.target
+After=graphical.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=180
+ExecStart=BIN_PREFIX/warnbattery
+Environment=PATH=/usr/bin:BIN_PREFIX:DATA_PREFIX/include
+Environment=GETPATH_CONFIG_HOME=HOME/.config
+Environment=DISPLAY=:0
+Environment=WARNBATTERY_LOW_THRESHOLD=20
+Environment=WARNBATTERY_CRITICAL_THRESHOLD=10
+Environment=WARNBATTERY_UPDATE_PERIOD=90
+
+[Install]
+WantedBy=default.target
