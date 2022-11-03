@@ -322,7 +322,7 @@ install() {
                     ;;
             esac
             [ -d "$pfx" ] || {
-                printf "  %s\n" \
+                printf "    %s\n" \
                     "Skipping installation of $dir systemd services as $pfx does not exist or is not a directory."
                 continue
             }
