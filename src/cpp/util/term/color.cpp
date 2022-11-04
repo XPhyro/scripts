@@ -2,10 +2,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include <die.hpp>
+#include <exec_info.hpp>
 #include <strutil.hpp>
 
 const std::unordered_map<std::string, std::string> colors = {
@@ -19,19 +22,21 @@ const std::unordered_map<std::string, std::string> colors = {
 
 const std::string clear_color = "\x1b[0m";
 
+DEFINE_EXEC_INFO();
+
 int main(int argc, char* argv[])
 {
-    const char* execname = argv[0];
+    xph::gather_exec_info(argc, argv);
 
-    if (argc < 2) {
-        std::cerr << execname << ": no argument given" << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
+    if (argc < 2)
+        xph::die("no argument given");
 
     try {
         std::cout << colors.at(xph::str::makelower(argv[1]));
     } catch (const std::out_of_range& e) {
-        std::cerr << execname << ": incorrect color given. color must be one of: ";
+        std::ostringstream oss;
+
+        oss << "incorrect color given. color must be one of: ";
 
         std::vector<std::string> color_names;
         color_names.reserve(colors.size());
@@ -41,10 +46,10 @@ int main(int argc, char* argv[])
         std::sort(color_names.begin(), color_names.end());
 
         for (const auto& color_name : color_names | std::views::take(color_names.size() - 1))
-            std::cerr << color_name << ", ";
-        std::cerr << color_names.back() << '.' << std::endl;
+            oss << color_name << ", ";
+        oss << color_names.back() << '.';
 
-        std::exit(EXIT_FAILURE);
+        xph::die(oss.str());
     }
 
     if (argc == 2)
