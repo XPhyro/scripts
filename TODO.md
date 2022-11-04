@@ -124,6 +124,8 @@
   - `std::set`
 - Write an init script to switch `nm-applet` ethernet presets depending on the
   network.
+- Create two logging libraries that support colors (with automatic `isatty`
+  detection) for C and C++ separately, using C and C++ streams respectively.
 
 ## Refactoring / Rewriting / Reworking
 
