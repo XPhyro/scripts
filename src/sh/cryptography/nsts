@@ -37,6 +37,7 @@ Pass data through NIST tests.
   -l LENGTH   length of bitstreams. default is 0. set to 0 for auto.
   -T COUNT    remove COUNT bytes from the end of the data.
 "
+            exit 0
             ;;
         l) opt_bitstream_length="$OPTARG";;
         T) opt_remove_tail="$OPTARG";;
