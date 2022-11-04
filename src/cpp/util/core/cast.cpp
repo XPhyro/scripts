@@ -20,6 +20,7 @@
 // libraries
 #include <consts.hpp>
 #include <die.hpp>
+#include <exec_info.hpp>
 #include <lexical_cast.hpp>
 #include <strutil.hpp>
 #include <tuple_hash.hpp>
@@ -128,11 +129,11 @@ const std::unordered_map<std::tuple<type, type>, std::function<void(int&, char**
     { { type::character, type::uintx }, cast_character_to_xintx<uintmax_t, std::dec> },
 };
 
-const char* execname;
+DEFINE_EXEC_INFO();
 
 int main(int argc, char* argv[])
 {
-    CAPTURE_EXECNAME();
+    xph::gather_exec_info(argc, argv);
 
     for (int i; (i = getopt(argc, argv, "h")) != -1;) {
         switch (i) {
@@ -171,7 +172,7 @@ int main(int argc, char* argv[])
 
 [[noreturn]] void help()
 {
-    std::cout << "Usage: " << execname
+    std::cout << "Usage: " << xph::exec_name
               << " [OPTION...] [FROM_TYPE] [TO_TYPE] [CAST_ARGS...]\n"
                  "Cast types to types.\n"
                  "\n"
@@ -217,7 +218,7 @@ int main(int argc, char* argv[])
 {
     if (!err.empty())
         std::cerr << err << '\n';
-    xph::die("Try '", execname, " -h' for more information.\n");
+    xph::die("Try '", xph::exec_name, " -h' for more information.\n");
 }
 
 void assert_argc(int n, int argc)

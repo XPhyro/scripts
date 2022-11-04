@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-extern const char* execname;
+#include <exec_info.hpp>
 
 namespace xph {
     template <typename... Ts>
@@ -12,7 +12,7 @@ namespace xph {
     template <typename... Ts>
     [[noreturn]] inline void die(const Ts&... args)
     {
-        std::cerr << execname << ": ";
+        std::cerr << xph::exec_name << ": ";
         (
             [&] {
                 std::cerr << args;
@@ -22,11 +22,5 @@ namespace xph {
         std::exit(EXIT_FAILURE);
     }
 } // namespace xph
-
-#define CAPTURE_EXECNAME()  \
-    if (argc)               \
-        execname = argv[0]; \
-    else                    \
-        execname = "NULL"
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_DIE_ */

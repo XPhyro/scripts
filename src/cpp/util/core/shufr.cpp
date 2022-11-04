@@ -14,6 +14,7 @@
 #include <unistd.h>
 
 #include <die.hpp>
+#include <exec_info.hpp>
 #include <nullable.hpp>
 #include <parse.hpp>
 
@@ -23,11 +24,11 @@ char optdelim = '\n';
 bool optargisline = false, optuniquemax = false;
 xph::nullable<std::size_t> optrangelow, optrangehigh, optcount, optunique;
 
-const char* execname;
+DEFINE_EXEC_INFO();
 
 int main(int argc, char* argv[])
 {
-    CAPTURE_EXECNAME();
+    xph::gather_exec_info(argc, argv);
 
     parseargs(argc, argv);
 
@@ -115,13 +116,13 @@ void parseargs(int& argc, char**& argv)
                 break;
             case 'h':
                 std::cout
-                    << "Usage: " << execname
+                    << "Usage: " << xph::exec_name
                     << " [OPTION]... [FILE]...\n"
                        "       "
-                    << execname
+                    << xph::exec_name
                     << " -e [OPTION]... [ARG]...\n"
                        "       "
-                    << execname
+                    << xph::exec_name
                     << " -i LO-HI [OPTION]...\n"
                        "Repeatedly write a random permutation of the input lines to standard output.\n"
                        "\n"
@@ -164,7 +165,7 @@ void parseargs(int& argc, char**& argv)
                 optdelim = '\0';
                 break;
             default:
-                xph::die("Try '", execname, " -h' for more information.");
+                xph::die("Try '", xph::exec_name, " -h' for more information.");
         }
     }
 
@@ -175,8 +176,11 @@ void parseargs(int& argc, char**& argv)
         if (optargisline)
             xph::die("cannot combine -e and -i options");
         if (argc)
-            xph::die(
-                "extra operand ‘", argv[0], "‘\nTry '", execname, " -h' for more information.");
+            xph::die("extra operand ‘",
+                     argv[0],
+                     "‘\nTry '",
+                     xph::exec_name,
+                     " -h' for more information.");
     }
     if (optrangelow > optrangehigh)
         xph::die("LO must be less than HI");
