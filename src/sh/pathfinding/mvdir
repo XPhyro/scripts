@@ -2,7 +2,7 @@
 # Usage: mvloc location file1 ... fileN
 # Equivalent to: mv file1 ... fileN "$(getpath -ds -- location)"
 
-. evalverbose.sh
+. shellverbose.sh
 
 eval "$(getpath -dse -- "$1" dir 1 "[ERROR]: getpath -ds -- failed, aborting.")"
 

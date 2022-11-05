@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 cd "$1" || {
     printf "No such directory [%s], exiting.\n" "$1" >&2

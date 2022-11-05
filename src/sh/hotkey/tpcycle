@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Cycle touchpad status.
 
-. evalverbose.sh
+. shellverbose.sh
 
 tpid="$(xinput --list | grep -o 'Touchpad\s\+.*id=[0-9]\+' | grep -o '[0-9]\+$')"
 xinput "$(

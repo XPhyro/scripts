@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 printf "$@"
 exec equals "$(readchar)" Y y

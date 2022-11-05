@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Sync mails as a daemon (though it does not fork out).
 
-. evalverbose.sh
+. shellverbose.sh
 
 interval="${*:-"180s"}"
 

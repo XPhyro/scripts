@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Like xargs but for standard input.
 
-. evalverbose.sh
+. shellverbose.sh
 
 execname=${0##*/}
 

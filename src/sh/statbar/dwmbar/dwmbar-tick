@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Redraw status bar every minute.
 
-. evalverbose.sh
+. shellverbose.sh
 
 statbarset
 statbaravlsyutick &

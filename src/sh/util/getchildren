@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 getchildren() {
     children="$(pgrep -P "$1")"

@@ -10,7 +10,7 @@
 #
 # bspwm is not required for operation, but the script was designed with it in mind.
 
-. evalverbose.sh
+. shellverbose.sh
 
 execname="${0##*/}"
 

@@ -6,7 +6,7 @@
 #       dumped into a file), or check for non-printable characters and do not log if it has
 #       non-printable characters.
 
-. evalverbose.sh
+. shellverbose.sh
 
 logfl="$(readlink -m -- "$(getpath -f -- clplog)")"
 bakdir="$(readlink -m -- "$(getpath -ds -- clplogbak)")"

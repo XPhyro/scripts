@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Query X keymap.
 
-. evalverbose.sh
+. shellverbose.sh
 
 printf "%s\n" "$(xkb-switch) ⌨" > "$(getpath -du -- statbar)/3_statbarkm"

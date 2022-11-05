@@ -2,7 +2,7 @@
 
 . utility.sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 idvec() {
     std::vector "$execname" "seenids" "$@"

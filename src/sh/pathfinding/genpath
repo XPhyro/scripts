@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 logerr() {
     printf "%s: %s\n" "${0##*/}" "$i" >&2

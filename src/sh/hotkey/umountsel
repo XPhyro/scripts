@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # A dmenu prompt to unmount drives. Drives included in /etc/fstab are excluded.
 
-. evalverbose.sh
+. shellverbose.sh
 
 assertroot || exit 1
 

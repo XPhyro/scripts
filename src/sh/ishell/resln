@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Resolve recursive symlinks into a direct symlink.
 
-. evalverbose.sh
+. shellverbose.sh
 
 # TODO: If the symlink was relative, leave the resolved symlink relative.
 

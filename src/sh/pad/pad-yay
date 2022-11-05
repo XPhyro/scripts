@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 "$PAD" -- sh -c '
     if yay -Syu; then

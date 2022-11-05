@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 w -oush | while IFS= read -r w; do
     user="$(printf "%s\n" "$w" | awk '{print $1}')"

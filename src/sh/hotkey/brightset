@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Set the brightness of the screen(s?). This only affects the laptop screen on my system.
 
-. evalverbose.sh
+. shellverbose.sh
 
 lck -rq xbacklight
 

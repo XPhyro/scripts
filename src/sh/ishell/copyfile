@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Copy a file respecting its type.
 
-. evalverbose.sh
+. shellverbose.sh
 
 lck -rq clplog && xclip "$1" -se c -t "$(file -b --mime-type -- "$1")"

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Kill all processes named the selected string.
 
-. evalverbose.sh
+. shellverbose.sh
 
 ps -A --sort=-pcpu \
     | awk '{print $4}' \

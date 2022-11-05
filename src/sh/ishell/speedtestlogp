@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Print logged results of speedtestlog.
 
-. evalverbose.sh
+. shellverbose.sh
 
 eval "$(getpath -fe -- stl fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 pingav="0.0"

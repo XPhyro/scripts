@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 if [ -e "$XDG_CACHE_HOME/bspwm/.follows.lck" ]; then
     follows=false

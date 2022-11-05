@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Adapted from https://superuser.com/a/992924/1157070.
 
-. evalverbose.sh
+. shellverbose.sh
 
 eval "$(xdotool getwindowfocus getwindowgeometry --shell)"
 

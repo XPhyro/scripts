@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 tmp="$(mktemp)"
 cp -f -- /dev/stdin "$tmp"

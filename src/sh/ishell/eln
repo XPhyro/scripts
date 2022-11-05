@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Edit given links.
 
-. evalverbose.sh
+. shellverbose.sh
 
 clean() {
     rm -f -- "$tmpfl" "$origtmpfl" 2> /dev/null

@@ -56,7 +56,7 @@ main() {
         }
 }
 
-. evalverbose.sh
+. shellverbose.sh
 eval "$(getpath -dse -- warnbattery confdir 1 "$0: getpath: config directory [warnbattery] is not configured")"
 
 battery="${WARNBATTERY_BATTERY:-"$(find /sys/class/power_supply/ -mindepth 1 -maxdepth 1 -type l -print0 \

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 exec awk -- '{print strftime("%a %Y-%m-%d %H:%M:%S", $1)}' "$@"

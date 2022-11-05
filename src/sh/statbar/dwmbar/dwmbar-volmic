@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Query mute status of default pulseaudio source.
 
-. evalverbose.sh
+. shellverbose.sh
 
 stat="$(pacmd list-sources | grep -A 30 "name: <$(voldefsource)>")"
 

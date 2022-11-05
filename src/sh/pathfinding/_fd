@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 fd --min-depth 1 --type d | fzf --preview "ls --color=always {}"

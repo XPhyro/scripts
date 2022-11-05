@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 menu="$(getmenu)"
 sig="$(printf "STOP\nCONT\n" | $menu -i -p "Suspend process:")"

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 bspc query -N -n ."$1" | grep -Fxq "$2"

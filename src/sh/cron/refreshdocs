@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Refresh documents. Designed to be used with cron.
 
-. evalverbose.sh
+. shellverbose.sh
 
 while IFS=\; read -r evaldir dir cmd; do
     [ "$(printf "%s" "$evaldir" | cut -c1)" = "#" ] && continue

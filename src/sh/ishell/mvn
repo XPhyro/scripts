@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Force move without overwriting.
 
-. evalverbose.sh
+. shellverbose.sh
 
 mv -n -- "$1" "$(getnewpath "$2")"

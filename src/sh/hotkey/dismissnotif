@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 # shellcheck disable=SC2046
 xdotool mousemove $(

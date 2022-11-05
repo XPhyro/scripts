@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 loc="$(getpath -d -- "$1")" || exit $?
 exec realpath -P -- "${loc:?}"

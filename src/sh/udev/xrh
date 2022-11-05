@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Adjust displays with xrandr.
 
-. evalverbose.sh
+. shellverbose.sh
 
 xr="$(xrandr)"
 hdmic="$(printf "%s" "$xr" | grep -o "$XRH_HDMI connected")"

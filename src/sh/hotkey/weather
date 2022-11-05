@@ -2,7 +2,7 @@
 # Show weather forecast.
 # Designed to be used with $PAD.
 
-. evalverbose.sh
+. shellverbose.sh
 
 v1="$(mktemp)"
 v2="$(mktemp)"

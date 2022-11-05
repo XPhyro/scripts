@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 {   [ "$(dunstctl is-paused)" = "true" ] && printf "%s\n" "📮"
 } > "$(getpath -du -- statbar)/7.7_statbarnotif"

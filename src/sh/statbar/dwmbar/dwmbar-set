@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Draw status bar.
 
-. evalverbose.sh
+. shellverbose.sh
 
 xsetroot -name "$(
     find "$(getpath -ds -- statbar)" -mindepth 1 -maxdepth 1 -type f \

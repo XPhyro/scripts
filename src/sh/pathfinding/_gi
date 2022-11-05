@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # TODO: Include "$(getpath -f -- fls)". If the selection is a file, print its directory.
 
-. evalverbose.sh
+. shellverbose.sh
 
 fzf --preview "printf '%s\n' {}
                    | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}'

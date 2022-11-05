@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. evalverbose.sh
+. shellverbose.sh
 
 state="$(bspc config pointer_follows_focus | END= fmaps false=true true=false)"
 bspc config pointer_follows_focus "$state"

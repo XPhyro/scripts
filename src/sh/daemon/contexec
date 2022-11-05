@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Execute a file every time it is modified.
 
-. evalverbose.sh
+. shellverbose.sh
 
 execname="${0##*/}"
 

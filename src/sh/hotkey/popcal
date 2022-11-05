@@ -3,7 +3,7 @@
 # and compute the difference between that date and today (i.e. date minus today)).
 # Designed to work as a scratchpad for dwm with st, hence the shortened name pop-up calendar.
 
-. evalverbose.sh
+. shellverbose.sh
 
 printf "\n"
 cal -3

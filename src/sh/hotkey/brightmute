@@ -16,7 +16,7 @@ unmute() {
     val="0"
 }
 
-. evalverbose.sh
+. shellverbose.sh
 
 eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 

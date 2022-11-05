@@ -2,7 +2,7 @@
 # Query unread mails.
 # Adapted from LukeSmith/voidrice.
 
-. evalverbose.sh
+. shellverbose.sh
 
 unread="$(
     find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/INBOX/new/* -type f 2>/dev/null \

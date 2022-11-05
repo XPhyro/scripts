@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # xph-open assignments.
 
-. evalverbose.sh
+. shellverbose.sh
 
 eval "$(getpath -de -- ass dir 1 "[ERROR]: getpath -d -- failed, aborting.")"
 # shellcheck disable=SC2154

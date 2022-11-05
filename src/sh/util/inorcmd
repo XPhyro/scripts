@@ -2,7 +2,7 @@
 # Pipe stdin to stdout if present and non-empty, else
 # evaluate the given arguments and output its stdout.
 
-. evalverbose.sh
+. shellverbose.sh
 
 if [ ! -t 0 ]; then
     stdinfl="$(mktemp)"
