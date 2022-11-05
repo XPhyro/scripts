@@ -1,23 +1,20 @@
 #!/usr/bin/env sh
 
 . shellverbose.sh
+. utility.sh
 
 mark="$1"
 
-while IFS= read -r i; do
-    mrk="$(printf "%s\n" "$i" | awk '{print $1}')"
-    [ "$mrk" = "$mark" ] && {
-        val="$(printf "%s\n" "$i" | sed 's/^[^ ]\+\s\+//' | expandpath)"
+while IFS=" " read -r key val; do
+    [ "$key" = "$mark" ] && {
+        val="$(expandpath -- "$val")"
 
-        if [ ! -e "$val" ] ; then
-            printf "Mark has invalid value: [%s]\n" "$val" >&2
-            exit 1
-        fi
+        [ ! -e "$val" ] && std_logerrq "Mark has an invalid value: $val\n"
 
-        if [ ! -d "$val" ]; then
-            "$EDITOR" "$val" >&2
+        if [ -d "$val" ]; then
+            printf "%s\n" "$val"
         else
-            printf "%s\n" "$(printf "%s\n" "$i" | sed 's/^[^ ]\+\s\+//' | expandpath)"
+            "$EDITOR" "$val" >&2
         fi
 
         exit 0
