@@ -1,9 +1,27 @@
 #!/usr/bin/env sh
 
+_xprop() {
+    id="$1"
+    expected_lc="${2:-0}"
+    shift 2
+    out="$(
+        {
+            [ -n "$id" ] && printf "%s\0" -id "$id"
+            printf "%s\0" "$@"
+        } | xargs -0 xprop | tail -n +2
+    )"
+    if [ -z "$out" ]; then
+        i=0
+        while [ "$i" -lt "$expected_lc" ]; do
+            printf '""\n'
+            : "$((i += 1))"
+        done
+    else
+        printf "%s\n" "$out"
+    fi
+}
+
 {
-    [ "$#" -gt 0 ] && printf "%s\0" -id "$1"
-    printf "%s\0" \
-        '\n$0\n$1\n' WM_CLASS \
-        '\n$0\n' WM_NAME
-} | xargs -0 xprop \
-  | sed -n 's/'\''/'\'\"\'\"\''/g;s/^"\(.*\)"$/'\''\1'\''/;2s/^/CLASS=/;3s/^/INSTANCE=/;5s/<field not available>//;5s/^/NAME=/;2,3p;5,$p'
+    _xprop "$1" 2 '\n$0\n$1\n' WM_CLASS
+    _xprop "$1" 1 '\n$0\n' WM_NAME
+} | sed -n 's/'\''/'\'\"\'\"\''/g;s/^"\(.*\)"$/'\''\1'\''/;1s/^/CLASS=/;2s/^/INSTANCE=/;3s/<field not available>//;3s/^/NAME=/;1,3p'
