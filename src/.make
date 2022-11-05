@@ -337,7 +337,7 @@ install() {
 
             for fl in "$dir"/*; do
                 flname="${fl##*/}"
-                printf "    %s -> %s\n" "$flname" "$pfx/$flname" >&2
+                printf "    %s -> %s\n" "$flname" "$pfx/$flname"
                 m4 -I"$rootdir" -DHOME="$realhome" -DBIN_PREFIX="$binprefix" \
                     -DDATA_PREFIX="$dataprefix" "$fl" > "$pfx/$flname"
                 [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/$flname"
