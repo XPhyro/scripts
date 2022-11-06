@@ -69,8 +69,8 @@
     - `has_different_km`: whether the user manually overwrote the automatic state
     - `has_different_name`: whether the name of the window is different from
       the last time it was focused
-- Make the interfaces of `std::*` (mostly) compliant those of C++, even if it
-  duplicates current interfaces.
+- Make the interfaces of `std::*` (mostly) compliant with those of C++, even if
+  it duplicates current interfaces.
 - Make `std::*` easier to use in shells with aliases similar to `ensure`.
 - Support printing all vectors, unordered maps, etc. with only program hash
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
