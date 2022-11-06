@@ -499,9 +499,12 @@ analyse() {
         "" \
         "Analysing Bash and shell scripts and libraries:"
 
-    find 'bash' -mindepth 1 -type f -executable \
-        -not -path "*/.archived/*" -print0 \
-        | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 sh -c '
+    {
+        find 'bash' -mindepth 1 -type f -executable \
+            -not -path "*/.archived/*" -not -path "*/include/*" -print0
+        find 'bash' -mindepth 1 -type f -iname "*.sh" \
+            -not -path "*/.archived/*" -path "*/include/*" -print0
+    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 sh -c '
             for fl; do
                 printf "  %s\n" "$fl"
                 "$shfmt" -ln bash -- > /dev/null || {
@@ -512,6 +515,7 @@ analyse() {
             done
         ' --
     ec="$((ec | $?))"
+
     {
         find 'sh' -mindepth 1 -type f -executable \
             -not -path "*/.archived/*" -not -path "*/include/*" -print0
