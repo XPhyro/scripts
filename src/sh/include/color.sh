@@ -1,3 +1,5 @@
+# shellcheck disable=SC2034
+
 [ -z "${HEADER_SCRIPTS_COLOR_+x}" ] && {
     HEADER_SCRIPTS_COLOR_=
 
