@@ -81,6 +81,9 @@
 - Support `fzf` in `selfl`.
   - By default, automatically determine whether to use `fzf` or `$MENU`
     depending on `[ -t 0 ]`.
+- In `latexstp`, support watching multiple files or directories.
+  - Automatically watch other `.tex` files in the directory that the main file
+    is located in.
 
 ## New Scripts
 
