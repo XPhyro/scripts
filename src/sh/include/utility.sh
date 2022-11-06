@@ -5,7 +5,7 @@
 
     std_is_set() {
         for i; do
-            eval "[ -z "\${$i+x}" ]" && return 1
+            eval '[ -z "${'"$i"'+x}" ]' && return 1
         done
 
         return 0
