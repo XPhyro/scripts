@@ -129,6 +129,10 @@
   network.
 - Create two logging libraries that support colors (with automatic `isatty`
   detection) for C and C++ separately, using C and C++ streams respectively.
+- Create a script that makes `dotnet format` easier to use.
+  - It should be able to find the project/solution files and pass them to `dotnet format`.
+  - It should handle special cases for Unity.
+  - It should support both formatting all files in the solution and formatting only the files passed via the command-line (or also stdin?).
 
 ## Refactoring / Rewriting / Reworking
 
