@@ -133,6 +133,7 @@
   - It should be able to find the project/solution files and pass them to `dotnet format`.
   - It should handle special cases for Unity.
   - It should support both formatting all files in the solution and formatting only the files passed via the command-line (or also stdin?).
+- Write a script that converts `cbr` to `pdf` and uses a PDF viewer to open to temporary file.
 
 ## Refactoring / Rewriting / Reworking
 
