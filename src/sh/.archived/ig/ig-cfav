@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# Count files in the directory coded igf.
-
-find "$(getloc igf)" -type l | grep -E "\.jpg|\.mp4" | sed -e '/json/d' -e 's/.*\///' -e 's/.*\///' | uniq | sed -e 's/_20[1-2][0-9]-[0-9][0-9]-[0-9][0-9]_.*//' -e '/\.jpg$/d' | sort | uniq -c | sort -snrk 1,1
