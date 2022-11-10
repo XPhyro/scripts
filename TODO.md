@@ -14,6 +14,8 @@
 
 - `acpihandler` does not handle already-off keyboard/touchpad correctly on PROG1
   event.
+- In `editpath`, the given path is not escaped, even if it is known to be a path not to be `wordexp`ed. Use `shell-escape` to escape the given path before adding it to the database if the path is known to be a path.
+  - Perhaps also add a flag to signal no-escaping, and escape by default?
 
 ## Features
 
