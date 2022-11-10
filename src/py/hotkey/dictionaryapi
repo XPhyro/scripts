@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
 
 
-from sys import argv
-import json
 import requests
+import sys
 
 
-for arg in argv[1:]:
-    print(f"{arg}: ", end="")
+def main() -> int:
+    for arg in sys.argv[1:]:
+        print(f"{arg}: ", end="")
 
-    try:
-        print(
-            requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{arg}")
-            .json()[0]["meanings"][0]["definitions"][0]["definition"]
-            .strip()
-        )
-    except Exception:
-        print("Not found")
+        try:
+            print(
+                requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{arg}")
+                .json()[0]["meanings"][0]["definitions"][0]["definition"]
+                .strip()
+            )
+        except Exception:
+            print("Not found")
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

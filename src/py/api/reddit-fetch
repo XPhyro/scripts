@@ -10,7 +10,7 @@ import praw
 import psaw
 
 
-def opt_type_uint(val):
+def opt_type_uint(val) -> int:
     ival = int(val)
 
     if ival < 0:
@@ -19,7 +19,7 @@ def opt_type_uint(val):
     return ival
 
 
-def opt_type_pint(val):
+def opt_type_pint(val) -> int:
     ival = int(val)
 
     if ival <= 0:
@@ -28,11 +28,11 @@ def opt_type_pint(val):
     return ival
 
 
-def opt_type_date(val):
+def opt_type_date(val) -> float:
     return datetime.datetime.fromisoformat(val).timestamp()
 
 
-def set_opts():
+def set_opts() -> None:
     global opts
 
     parser = argparse.ArgumentParser(description="Fetch posts from subreddits.")
@@ -146,15 +146,15 @@ def set_opts():
     opts = parser.parse_args()
 
 
-def lograw(*args):
+def lograw(*args) -> None:
     print(*args, file=sys.stdout, end="\0" if opts.null else "\n")
 
 
-def logerr(*args):
+def logerr(*args) -> None:
     print(f"{sys.argv[0]}: ", *args, file=sys.stderr, end="\0" if opts.null else "\n")
 
 
-def main():
+def main() -> int:
     set_opts()
 
     if not opts.hide_options:
@@ -181,6 +181,8 @@ def main():
                 lograw(submission.__dict__)
             elif opts.force_print or submission.url:
                 lograw(submission.id if opts.print_id else submission.url)
+
+    return 0
 
 
 if __name__ == "__main__":

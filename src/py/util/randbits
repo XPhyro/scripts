@@ -3,13 +3,15 @@
 
 
 from secrets import randbits
-from sys import argv
+import sys
 
 
-def main():
-    for i in argv[1:]:
+def main() -> int:
+    for i in sys.argv[1:]:
         print(hex(randbits(int(i)))[2:])
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

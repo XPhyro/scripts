@@ -5,7 +5,7 @@ from math import floor
 from os import rmdir
 from os.path import isdir
 from subprocess import run
-from sys import stderr
+from sys import stderr, exit as stderr, sysexit
 from time import time
 
 from dbus import SessionBus
@@ -13,7 +13,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository.GLib import MainLoop
 
 
-def setfilepaths():
+def setfilepaths() -> None:
     global logfilepath
     global blacklogfilepath
     global lockdirpath
@@ -27,7 +27,7 @@ def setfilepaths():
 
     if not logfilepath:
         print("`getpath -fu -- notiflog` failed, exiting.", file=stderr)
-        exit(1)
+        sysexit(1)
 
     blacklogfilepath = run(
         ["getpath", "-fu", "--", "notiflogblack"], capture_output=True
@@ -36,7 +36,7 @@ def setfilepaths():
 
     if not blacklogfilepath:
         print("`getpath -fu -- notiflogblack` failed, exiting.", file=stderr)
-        exit(1)
+        sysexit(1)
 
     lockdirpath = run(
         ["lck", "-p", "--", "notiflog"], capture_output=True
@@ -45,20 +45,22 @@ def setfilepaths():
 
     if not lockdirpath:
         print("`lck -p -- notiflog` failed, exiting.", file=stderr)
-        exit(1)
+        sysexit(1)
 
     logfile = open(logfilepath, "a")
     blacklogfile = open(blacklogfilepath, "a")
 
 
-def isblacklisted(appname, id, appicon, summary, body, actions, hints, expiretimeout):
+def isblacklisted(
+    appname, id, appicon, summary, body, actions, hints, expiretimeout
+) -> bool:
     # TODO: Parse a configuration file
     if appname == "Brave" and body[0:3] == " \n\n":
         return True
     return False
 
 
-def log(file, summary, body):
+def log(file, summary, body) -> None:
     # "The point of this is to disallow convoluted code" says the author of PEP 498
     newline = "\n"
     linefeed = "\r"
@@ -70,7 +72,7 @@ def log(file, summary, body):
     file.flush()
 
 
-def filternotif(bus, message):
+def filternotif(bus, message) -> None:
     try:
         appname, id, appicon, summary, body, actions, hints, expiretimeout = [
             str(arg) for arg in message.get_args_list()
@@ -105,7 +107,7 @@ def filternotif(bus, message):
         print(f"Caught exception: {repr(e)}")
 
 
-def main():
+def main() -> int:
     setfilepaths()
 
     try:
@@ -127,6 +129,8 @@ def main():
 
     logfile.close()
     blacklogfile.close()
+
+    return 0
 
 
 if __name__ == "__main__":
