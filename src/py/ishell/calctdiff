@@ -17,7 +17,7 @@ def main() -> int:
             i = input("Enter date: ")
         except (EOFError, KeyboardInterrupt):
             return 0
-        s = re.sub("\s|[-/_|,.]", "", i)
+        s = re.sub(r"\s|[-/_|,.]", "", i)
         try:
             date = dt(int(s[:-4]), int(s[-4:-2]), int(s[-2:]))
             now = dt.now()
