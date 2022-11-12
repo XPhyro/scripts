@@ -86,6 +86,10 @@
 - In `latexstp`, support watching multiple files or directories.
   - Automatically watch other `.tex` files in the directory that the main file
     is located in.
+- Support anonymous (non-numbered) pads in `bspwmpad`.
+- In `bspwmpad`, if floating, center the window respecting `window_gap` and
+  status bar.
+  - Also support manual offsets.
 
 ## New Scripts
 
