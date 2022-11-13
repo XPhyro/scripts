@@ -24,11 +24,9 @@ def main() -> int:
             date = dt(int(s[:-4]), int(s[-4:-2]), int(s[-2:]))
         except ValueError:
             print("Input is invalid.")
-
             if args.exit_on_error:
                 return 1
-            else:
-                continue
+            continue
 
         now = dt.now()
         print(

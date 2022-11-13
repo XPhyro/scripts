@@ -5,12 +5,16 @@ from math import floor
 from os import rmdir
 from os.path import isdir
 from subprocess import run
-from sys import stderr, exit as stderr, sysexit
 from time import time
+import locale
+import sys
 
 from dbus import SessionBus
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository.GLib import MainLoop
+
+
+preferredencoding = locale.getpreferredencoding()
 
 
 def setfilepaths() -> None:
@@ -21,38 +25,59 @@ def setfilepaths() -> None:
     global blacklogfile
 
     logfilepath = run(
-        ["getpath", "-fu", "--", "notiflog"], capture_output=True
+        ["getpath", "-fu", "--", "notiflog"],
+        capture_output=True,
+        check=True,
     ).stdout.decode("utf-8")
     print(f"Found log file: {logfilepath}")
 
     if not logfilepath:
-        print("`getpath -fu -- notiflog` failed, exiting.", file=stderr)
-        sysexit(1)
+        print("`getpath -fu -- notiflog` failed, exiting.", file=sys.stderr)
+        sys.exit(1)
 
     blacklogfilepath = run(
-        ["getpath", "-fu", "--", "notiflogblack"], capture_output=True
+        ["getpath", "-fu", "--", "notiflogblack"],
+        capture_output=True,
+        check=True,
     ).stdout.decode("utf-8")
     print(f"Found blacklisted log file: {blacklogfilepath}")
 
     if not blacklogfilepath:
-        print("`getpath -fu -- notiflogblack` failed, exiting.", file=stderr)
-        sysexit(1)
+        print("`getpath -fu -- notiflogblack` failed, exiting.", file=sys.stderr)
+        sys.exit(1)
 
     lockdirpath = run(
-        ["lck", "-p", "--", "notiflog"], capture_output=True
+        ["lck", "-p", "--", "notiflog"],
+        capture_output=True,
+        check=True,
     ).stdout.decode("utf-8")[:-1]
     print(f"Found lock directory: {lockdirpath}")
 
     if not lockdirpath:
-        print("`lck -p -- notiflog` failed, exiting.", file=stderr)
-        sysexit(1)
+        print("`lck -p -- notiflog` failed, exiting.", file=sys.stderr)
+        sys.exit(1)
 
-    logfile = open(logfilepath, "a")
-    blacklogfile = open(blacklogfilepath, "a")
+    logfile = open(
+        logfilepath,
+        "a",
+        encoding=preferredencoding,
+    )
+    blacklogfile = open(
+        blacklogfilepath,
+        "a",
+        encoding=preferredencoding,
+    )
 
 
 def isblacklisted(
-    appname, id, appicon, summary, body, actions, hints, expiretimeout
+    appname,
+    appid,
+    appicon,
+    summary,
+    body,
+    actions,
+    hints,
+    expiretimeout,
 ) -> bool:
     # TODO: Parse a configuration file
     if appname == "Brave" and body[0:3] == " \n\n":
@@ -74,7 +99,7 @@ def log(file, summary, body) -> None:
 
 def filternotif(bus, message) -> None:
     try:
-        appname, id, appicon, summary, body, actions, hints, expiretimeout = [
+        appname, appid, appicon, summary, body, actions, hints, expiretimeout = [
             str(arg) for arg in message.get_args_list()
         ]
 
@@ -84,18 +109,26 @@ def filternotif(bus, message) -> None:
             f"Summary:\n{summary}\n"
             f"Body:\n{body}\n"
             f"App Name: {appname}\n"
-            f"ID: {id}\n"
+            f"App ID: {appid}\n"
             f"App Icon: {appicon}\n"
             f"Expire Timeout: {expiretimeout}\n"
         )
 
         if isblacklisted(
-            appname, id, appicon, summary, body, actions, hints, expiretimeout
+            appname,
+            appid,
+            appicon,
+            summary,
+            body,
+            actions,
+            hints,
+            expiretimeout,
         ):
             print(
-                "Notification blacklisted, logging to blacklist file and closing dunst view"
+                "Notification blacklisted, logging to "
+                "blacklist file and closing dunst view"
             )
-            run(["dunstctl", "close"])
+            run(["dunstctl", "close"], check=False)
             log(blacklogfile, summary, body)
         elif not isdir(lockdirpath):
             print("Logging notification")
@@ -114,8 +147,9 @@ def main() -> int:
         rmdir(lockdirpath)
     except FileNotFoundError:
         pass
-    except Exception as e:
-        print(f"Caught exception: {repr(e)}")
+    except OSError:
+        print("Lock directory is not empty, exiting.", file=sys.stderr)
+        sys.exit(1)
 
     DBusGMainLoop(set_as_default=True)
 
