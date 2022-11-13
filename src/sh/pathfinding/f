@@ -9,7 +9,7 @@ main() {
             | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
                   --preview-window 'right,60%,wrap'
     )" && [ -n "$fl" ] || exit 0
-    (cd -- "$(dirname -- "$fl")" && "$EDITOR" -- "$(basename "$fl")")
+    "$EDITOR" -- "$fl"
 }
 
 [ "$#" -eq 0 ] && while true; do
