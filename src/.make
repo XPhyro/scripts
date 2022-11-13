@@ -533,6 +533,24 @@ analyse() {
         ' --
     ec="$((ec | $?))"
 
+    printf "%s\n" \
+        "" \
+        "Preparing to analyse Python scripts:" \
+        "  Analyser: pylint" \
+        "  Analyser versions:" \
+        "$(pylint --version | sed 's/^/    /')" \
+        "" \
+        "Analysing Python scripts:"
+
+    find 'py' -mindepth 1 -type f -executable \
+        -not -path "*/.archived/*" -not -path "*/include/*" -print0 \
+        | xargs -r0 sh -c '
+            for fl; do
+                printf "  %s\n" "$fl"
+                pylint --rcfile py/.pylintrc -- "$fl"
+            done
+        ' --
+
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
 
