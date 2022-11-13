@@ -9,7 +9,12 @@ cmd="$1"
 shift
 case "$cmd" in
     astyle)
-        astyle --mode=cs --project=.astylerc "$@"
+        if [ "$#" -ne 0 ]; then
+            astyle --mode=cs --project=.astylerc "$@"
+        else
+            find Assets/Scripts -type f -iname "*.cs" -print0 \
+                | xargs -r0 astyle --mode=cs --project=.astylerc
+        fi
         ;;
     dotnet)
         project="${PWD##*/}"
