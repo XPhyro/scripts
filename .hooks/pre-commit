@@ -23,7 +23,7 @@ printf "%s\n" "$changed" \
 printf "%s\n" "$changed" \
     | grep "^src/py/.*[^/]" \
     | while IFS= read -r fl; do
-        [ -x "$fl" ] && {
+        [ ! -x "$fl" ] || {
             realfl="$PWD/$fl"
             [ -e "$realfl" ] || continue
             flcontent="$(cat -- "$realfl")"
