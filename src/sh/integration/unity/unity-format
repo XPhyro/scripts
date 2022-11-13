@@ -5,9 +5,14 @@ until [ -f "ProjectSettings/ProjectVersion.txt" ]; do
     cd ..
 done
 
-if [ -f ".astylerc" ]; then
-    astyle --mode=cs --project=.astylerc "$@"
-else
-    project="${PWD##*/}"
-    dotnet format "$project.csproj" "$@"
-fi
+cmd="$1"
+shift
+case "$cmd" in
+    astyle)
+        astyle --mode=cs --project=.astylerc "$@"
+        ;;
+    dotnet)
+        project="${PWD##*/}"
+        dotnet format "$project.csproj" "$@"
+        ;;
+esac
