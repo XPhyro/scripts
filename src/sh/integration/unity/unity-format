@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+until [ -f "ProjectSettings/ProjectVersion.txt" ]; do
+    [ "$PWD" = "/" ] && exit 1
+    cd ..
+done
+
+if [ -f ".astylerc" ]; then
+    astyle --mode=cs --project=.astylerc "$@"
+else
+    project="${PWD##*/}"
+    dotnet format "$project.csproj" "$@"
+fi
