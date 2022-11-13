@@ -699,16 +699,18 @@ stats() {
 
     find 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \) -exec cat -- {} \; > "$tmp"
     cloc="$(wc -l < "$tmp")"
+    csloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     find 'cpp' -mindepth 1 -type f \( -iname "*.cpp" -o -iname "*.hpp" \) -exec cat -- {} \; > "$tmp"
     cpploc="$(wc -l < "$tmp")"
+    cppsloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     find 'systemd' -mindepth 1 -type f -iname "*.service" -exec cat -- {} \; > "$tmp"
     systemdloc="$(wc -l < "$tmp")"
     systemdsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     totalloc="$((bashloc + elloc + pyloc + plloc + shloc + cloc + cpploc + systemdloc))"
-    totalsloc="$((bashsloc + elsloc + pysloc + plsloc + shsloc + cloc + cpploc + systemdsloc))"
+    totalsloc="$((bashsloc + elsloc + pysloc + plsloc + shsloc + csloc + cppsloc + systemdsloc))"
 
     printf "%s\n" \
         "Lines of Code:" \
@@ -728,8 +730,8 @@ stats() {
         "  Python:   $pysloc" \
         "  Perl:     $plsloc" \
         "  shell:    $shsloc" \
-        "  C:        -" \
-        "  C++:      -" \
+        "  C:        $csloc" \
+        "  C++:      $cppsloc" \
         "  systemd:  $systemdsloc" \
         "  Total:    $totalsloc"
 }
