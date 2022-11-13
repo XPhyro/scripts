@@ -13,6 +13,7 @@ If no TARGET is given, help is assumed.
     analyse: statically analyse C source files
       spell: check for spelling mistakes
        auto: same as `make format spell analyse install test`
+      stats: print code statistics
       clean: ignored
 endef
 export HELP_MESSAGE
@@ -41,8 +42,13 @@ analyse:
 spell:
 	@cd src && ./.make spell o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
-auto: format spell analyse install test
+stats:
+	@cd src && ./.make stats o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
+
+statistics: stats
+
+auto: format spell analyse install test index stats
 
 clean:
 
-.PHONY: help install uninstall test format analyse auto clean
+.PHONY: help install uninstall test format analyse spell stats statistics auto clean

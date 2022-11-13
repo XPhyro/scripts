@@ -669,6 +669,71 @@ spell() {
     )
 }
 
+stats() {
+    printf "%s\n" \
+        "==========" \
+        "STATISTICS" \
+        "=========="
+
+    tmp="$(mktemp)"
+
+    find 'bash' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
+    bashloc="$(wc -l < "$tmp")"
+    bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    find 'el' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
+    elloc="$(wc -l < "$tmp")"
+    elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    find 'py' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
+    pyloc="$(wc -l < "$tmp")"
+    pysloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    find 'pl' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
+    plloc="$(wc -l < "$tmp")"
+    plsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    find 'sh' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
+    shloc="$(wc -l < "$tmp")"
+    shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    find 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \) -exec cat -- {} \; > "$tmp"
+    cloc="$(wc -l < "$tmp")"
+
+    find 'cpp' -mindepth 1 -type f \( -iname "*.cpp" -o -iname "*.hpp" \) -exec cat -- {} \; > "$tmp"
+    cpploc="$(wc -l < "$tmp")"
+
+    find 'systemd' -mindepth 1 -type f -iname "*.service" -exec cat -- {} \; > "$tmp"
+    systemdloc="$(wc -l < "$tmp")"
+    systemdsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    totalloc="$((bashloc + elloc + pyloc + plloc + shloc + cloc + cpploc + systemdloc))"
+    totalsloc="$((bashsloc + elsloc + pysloc + plsloc + shsloc + cloc + cpploc + systemdsloc))"
+
+    printf "%s\n" \
+        "Lines of Code:" \
+        "  Bash:     $bashloc" \
+        "  execline: $elloc" \
+        "  Python:   $pyloc" \
+        "  Perl:     $plloc" \
+        "  shell:    $shloc" \
+        "  C:        $cloc" \
+        "  C++:      $cpploc" \
+        "  systemd:  $systemdloc" \
+        "  Total:    $totalloc" \
+        "" \
+        "Source Lines of Code:" \
+        "  Bash:     $bashsloc" \
+        "  execline: $elsloc" \
+        "  Python:   $pysloc" \
+        "  Perl:     $plsloc" \
+        "  shell:    $shsloc" \
+        "  C:        -" \
+        "  C++:      -" \
+        "  systemd:  $systemdsloc" \
+        "  Total:    $totalsloc"
+}
+
 set -e
 [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
 
@@ -813,6 +878,7 @@ case "$cmd" in
     format) format;;
     analyse) analyse;;
     spell) spell;;
+    stats) stats;;
     *) logerrq "Unkown target given: %s." "$1";;
 esac
 
