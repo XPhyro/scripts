@@ -90,6 +90,7 @@
 - In `bspwmpad`, if floating, center the window respecting `window_gap` and
   status bar.
   - Also support manual offsets.
+- Support globbing and regex in `exif-filter`.
 
 ## New Scripts
 
