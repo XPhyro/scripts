@@ -112,6 +112,8 @@ EOF4
                       done
                   }
 
+                  mpvargs="$(eval "$WALLPAPER_MPV_ARGS_CMD")"
+
                   pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
                       xwinwrap -g "$geom" -st -sp -ni -s -nf -b -un -argb -fdt -ov -sub WID -- \
                           prime-run mpv \
@@ -127,7 +129,7 @@ EOF4
                               --stop-screensaver=no \
                               --panscan=1 \
                               --wid=WID \
-                              $($WALLPAPER_MPV_ARGS_CMD) \
+                              $mpvargs \
                               -- "$fl" > /dev/null 2> /dev/null &
                       printf "%s\n" "$!"
                   done 3<<EOF3 4<<EOF4
