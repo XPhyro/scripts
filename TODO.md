@@ -12,9 +12,11 @@
 
 ## Bugs
 
-- `acpihandler` does not handle already-off keyboard/touchpad correctly on PROG1
-  event.
-- In `editpath`, the given path is not escaped, even if it is known to be a path not to be `wordexp`ed. Use `shell-escape` to escape the given path before adding it to the database if the path is known to be a path.
+- `acpihandler` does not handle already-off keyboard/touchpad correctly on
+  PROG1 event.
+- In `editpath`, the given path is not escaped, even if it is known to be a
+  path not to be `wordexp`ed. Use `shell-escape` to escape the given path
+  before adding it to the database if the path is known to be a path.
   - Perhaps also add a flag to signal no-escaping, and escape by default?
 
 ## Features
@@ -68,7 +70,8 @@
   - Syntax should support `x%` where `0.0 <= x <= 100.0` or `y` where `y >= 0`.
 - Add new events in `bspwm-autokblayout`:
   - `on_focused(has_different_km, has_different_name)`
-    - `has_different_km`: whether the user manually overwrote the automatic state
+    - `has_different_km`: whether the user manually overwrote the automatic
+      state
     - `has_different_name`: whether the name of the window is different from
       the last time it was focused
 - Make the interfaces of `std::*` (mostly) compliant with those of C++, even if
@@ -137,10 +140,13 @@
 - Create two logging libraries that support colors (with automatic `isatty`
   detection) for C and C++ separately, using C and C++ streams respectively.
 - Create a script that makes `dotnet format` easier to use.
-  - It should be able to find the project/solution files and pass them to `dotnet format`.
+  - It should be able to find the project/solution files and pass them to
+    `dotnet format`.
   - It should handle special cases for Unity.
-  - It should support both formatting all files in the solution and formatting only the files passed via the command-line (or also stdin?).
-- Write a script that converts `cbr` to `pdf` and uses a PDF viewer to open to temporary file.
+  - It should support both formatting all files in the solution and formatting
+    only the files passed via the command-line (or also stdin?).
+- Write a script that converts CBR to PDF and uses a PDF viewer to open the
+  temporary file.
 
 ## Refactoring / Rewriting / Reworking
 
