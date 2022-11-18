@@ -713,6 +713,11 @@ stats() {
     totalsloc="$((bashsloc + elsloc + pysloc + plsloc + shsloc + csloc + cppsloc + systemdsloc))"
 
     printf "%s\n" \
+        "Git:" \
+        "  First commit:  $(git log --reverse | head -n 3 | tail -n 1 | sed 's/^Date:\s*//')" \
+        "  Last commit:   $(git log | head -n 3 | tail -n 1 | sed 's/^Date:\s*//')" \
+        "  Total commits: $(git rev-list --all --count)" \
+        "" \
         "Lines of Code:" \
         "  Bash:     $bashloc" \
         "  execline: $elloc" \
