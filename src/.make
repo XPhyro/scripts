@@ -876,7 +876,10 @@ export CPLUS_INCLUDE_PATH
 ec=0
 cancompilecpp="$(cancompilecpp "$CXX")"
 
-all
+case "$cmd" in
+    index) :;;
+    *) all;;
+esac
 
 case "$cmd" in
     index) index;;
