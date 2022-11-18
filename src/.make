@@ -676,6 +676,7 @@ stats() {
         "=========="
 
     tmp="$(mktemp)"
+    trap 'rm -f "$tmp"' INT QUIT TERM EXIT
 
     find 'bash' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
     bashloc="$(wc -l < "$tmp")"
