@@ -742,8 +742,8 @@ stats() {
         "  Total:    $totalsloc"
 }
 
-set -e
 [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
+set -e
 
 cd ..
 rootdir="$PWD"
