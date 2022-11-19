@@ -39,3 +39,7 @@ printf "%s\n" "$changed" \
                 && printf "Formatted file %s\n" "$(basename -- "$realfl")"
         }
     done
+
+year="$(date '+%Y')"
+grep -Fq -- "2020-$year" LICENSE \
+    || printf "\033[0;31m%s\033[0m\n" "Please update the year in the license header."
