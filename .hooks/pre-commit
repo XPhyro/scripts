@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+RED='\033[0;31m'
+NC='\033[0m'
+
 changed="$(git diff --cached --name-only)"
 
 printf "%s\n" "$changed" \
@@ -42,4 +45,5 @@ printf "%s\n" "$changed" \
 
 year="$(date '+%Y')"
 grep -Fq -- "2020-$year" LICENSE \
-    || printf "\033[0;31m%s\033[0m\n" "Please update the year in the license header."
+    || printf "$RED%s$NC\n" \
+        "Please update the year in the license header."
