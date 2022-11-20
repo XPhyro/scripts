@@ -17,7 +17,7 @@ UEBERZUG_FIFO="$fifodir/ueberzug-$$"
 mkfifo -- "$UEBERZUG_FIFO"
 trap 'cleanup' EXIT INT TERM HUP QUIT
 
-ueberzug layer < "$UEBERZUG_FIFO" &
+ueberzug -s layer < "$UEBERZUG_FIFO" &
 exec 3> "$UEBERZUG_FIFO"
 
 export UEBERZUG_FIFO
