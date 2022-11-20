@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+if [ -n "$UEBERZUG_FIFO" ]; then
+    jq -cn \
+        --arg action remove \
+        --arg identifier PREVIEW \
+        '{
+            action: $action,
+            identifier: $identifier,
+        }' > "$UEBERZUG_FIFO"
+fi

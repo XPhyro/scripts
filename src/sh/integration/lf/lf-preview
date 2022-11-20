@@ -1,0 +1,92 @@
+#!/usr/bin/env sh
+
+# TODO: svg preview does not work, fix.
+# TODO: scope.sh does not handle on-demand files such as /proc/*. create a
+#       scope script with support for these, a simpler API and without image
+#       support (which is handled here).
+# TODO: add support for CBR files.
+
+preview_image() {
+    if [ -n "$DISPLAY" ]; then
+        jq -cn \
+            --arg action add \
+            --arg identifier PREVIEW \
+            --arg x "$4" \
+            --arg y "$5" \
+            --arg width "$(($2 - 1))" \
+            --arg height "$(($3 - 1))" \
+            --arg scaler fit_contain \
+            --arg path "$1" \
+            '{
+                action: $action,
+                identifier: $identifier,
+                x: $x,
+                y: $y,
+                width: $width,
+                height: $height,
+                scaler: $scaler,
+                path: $path,
+            }' > "$UEBERZUG_FIFO"
+        exit 1
+    else
+        chafa "$1" -s "${4}x${5}"
+    fi
+}
+
+scope() {
+    timeout 5 \
+        "${XDG_CONFIG_HOME:-$HOME/.config}/ranger/scope.sh" \
+            "$(realpath -P -- "$1")" \
+            "$2" \
+            "" \
+            "$thumbfl" \
+            "True"
+}
+
+main() {
+    [ -d "$XDG_CACHE_HOME/lf/preview.lck" ] && {
+        scope "$@"
+        exit 1
+    }
+
+    realfl="$(realpath -P -- "$1")"
+    thumbdir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/thumbnails"
+    thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
+
+    case "$(file --mime-type --brief -- "$(realpath -P -- "$1")")" in
+        application/pdf)
+            [ -f "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
+            preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            ;;
+        application/epub+zip)
+            [ -f "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
+            preview_image "$thumbfl" "$2" "$3" "$4" "$5"
+            ;;
+        video/*)
+            [ -f "$thumbfl.jpg" ] || ffmpegthumbnailer -i "$1" -o "$thumbfl.jpg" -s 0 -q 5
+            preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            ;;
+        image/heic)
+            [ -f "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"
+            preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            ;;
+        image/*)
+            preview_image "$@"
+            ;;
+        text/plain)
+            [ -f "$thumbfl" ] \
+                || sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
+            if [ -s "$thumbfl" ]; then
+                preview_image "$thumbfl" "$2" "$3" "$4" "$5"
+            else
+                scope "$@"
+            fi
+            ;;
+        *)
+            scope "$@"
+            ;;
+    esac
+}
+
+main "$@"
+exit 0
