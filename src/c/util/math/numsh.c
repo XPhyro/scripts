@@ -67,6 +67,7 @@ DECLMAP(nonzero);
 DECLREDUCE(max);
 DECLREDUCE(min);
 DECLREDUCE(sum);
+DECLREDUCE(mean);
 
 function functions[] = {
     FUNCMAP(acos),    FUNCMAP(asin),   FUNCMAP(atan),
@@ -79,6 +80,7 @@ function functions[] = {
     FUNCMAP(nonzero),
 
     FUNCREDUCE(max),  FUNCREDUCE(min), FUNCREDUCE(sum),
+    FUNCREDUCE(mean),
 };
 
 HEDLEY_NO_RETURN void die(const char *fmt, ...)
@@ -392,5 +394,16 @@ bool reduce_sum(int argc, double *argv, double *kwargv, double *result)
     for (i = 0; i < argc; sum += argv[i++]) {}
 
     *result = sum;
+    return true;
+}
+
+bool reduce_mean(int argc, double *argv, double *kwargv, double *result)
+{
+    int i;
+    double sum = 0;
+
+    for (i = 0; i < argc; sum += argv[i++]) {}
+
+    *result = sum / argc;
     return true;
 }
