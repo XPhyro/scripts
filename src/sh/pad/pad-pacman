@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+"$PAD" -- sh -c '
+    if [ "$(id -u)" = "0" ]; then
+        pacman() command pacman "$@"
+    else
+        pacman() sudo pacman "$@"
+    fi
+
+    if pacman -Syu; then
+        color green "All done."
+    else
+        color red "ERROR(s) encountered."
+    fi
+    flushterm
+    readstr
+'
