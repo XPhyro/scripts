@@ -23,11 +23,11 @@ namespace xph::str {
 
     std::unique_ptr<std::string> inline getlower(const std::string str)
     {
-        auto dup = new std::string(str);
+        auto dup = std::unique_ptr<std::string>{ new std::string(str) };
         std::transform(dup->begin(), dup->end(), dup->begin(), [](unsigned char c) {
             return std::tolower(c);
         });
-        return std::make_unique<std::string>(*dup);
+        return dup;
     }
 
 #if __cplusplus >= 202002L
