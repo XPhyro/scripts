@@ -8,13 +8,13 @@
 #include <hedley.h>
 
 namespace xph::chrono {
-    template <typename T>
+    template <class Trep, class Tperiod = std::ratio<1>>
     std::chrono::duration<std::int64_t>
-    duration_cast_auto(const std::chrono::duration<T>& duration);
+    duration_cast_auto(const std::chrono::duration<Trep, Tperiod>& duration);
 
-    template <typename T>
-    std::chrono::duration<std::int64_t> inline duration_cast_auto(
-        const std::chrono::duration<T>& duration)
+    template <class Trep, class Tperiod>
+    std::chrono::duration<std::int64_t>
+    duration_cast_auto(const std::chrono::duration<Trep, Tperiod>& duration)
     {
 #define XPH_CHRONO_GET_AUTO_PREFIX_IMPL_COMP <
 #define XPH_CHRONO_GET_AUTO_PREFIX_IMPL(UNIT, THRESHOLD)             \
