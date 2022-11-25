@@ -81,8 +81,6 @@
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
   action should occur if no syntax is given.
 - `getpath`: add options to print all keys, values and keys & values.
-- In `latexd`, do not recompile if the only changes are line additions whose
-  first characters are `%`.
 - Support `fzf` in `selfl`.
   - By default, automatically determine whether to use `fzf` or `$MENU`
     depending on `[ -t 0 ]`.
@@ -342,18 +340,8 @@
   hashmaps. Currently `getdir`, `getfl` and other scripts use directory/file
   structures as a workaround. This script would need to perform at least as well
   as the workaround, if not better, and be convenient to use.
-- Write a library-ish thing to make it easy for scripts, especially those in
-  terminal file managers, to implement short-term smart thrash functionality
-  that is considerate of the disk usage of the thrash.
 - Timer, chronometer, alarm.
 - Implement a crop subcommand in `ffmw`.
-- Write a version of `v` (from .zshrc) that has keys as in the pathfinding suite
-  depending on the directory. Say, one executes `vm t dotfilesbak-tick` in
-  `"$HOME/.dotfiles"`. When they execute `"$scriptname" t`, `dotfilesbak-tick`
-  is opened with `"$EDITOR"`. Alternatively, this behaviour could be integrated
-  in the currently existing mark functionality either by prioritising
-  directory-specific marks or by making the user prepend the key by a character,
-  say \_.
 - Write a script similar to `bspwmpad` that would register/deregister the
   focused node if the key (1-9) is empty, else it will deregister that key;
   then, write a script that would hide/show these nodes per key. Key 0 should be
@@ -364,11 +352,6 @@
   with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through
   `stat --printf=` if the line starts with ` `.
-- Write a `bspwm` & `polybar` script that notifies `polybar` to update master
-  status.
-- Write a manager for _suckless_-like software that handles updating to
-  upstream, applying patches to the fresh copy and building & installing. (or
-  just update master and execute `git rebase --rebase-merges --force-rebase master`)
 - `fillcol`: Like `fillline` and `fillterm`, but for columns. Take a column
   number as input. Do not scroll lines, rather overwrite the screen.
 - `volauxdefset`
