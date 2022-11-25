@@ -84,7 +84,7 @@ the source code.
   pairs.
 - [kdialog](src/sh/wrapper/kdialog): Wrapper for KDE's `kdialog` to trick
   applications into using `lf` as the file picker.
-- [latexstp](src/sh/daemon/latexstp): Basically `latexmk` but sucks less and is
+- [latexd](src/sh/daemon/latexd): Basically `latexmk` but sucks less and is
   more minimal.
 - [mapexec](src/sh/util/mapexec): Open standard input in `$EDITOR` and execute
   commands against all, modified, unmodified or wiped lines synchronously or
