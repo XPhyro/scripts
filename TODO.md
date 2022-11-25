@@ -81,12 +81,12 @@
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
   action should occur if no syntax is given.
 - `getpath`: add options to print all keys, values and keys & values.
-- In `latexstp`, do not recompile if the only changes are line additions whose
+- In `latexd`, do not recompile if the only changes are line additions whose
   first characters are `%`.
 - Support `fzf` in `selfl`.
   - By default, automatically determine whether to use `fzf` or `$MENU`
     depending on `[ -t 0 ]`.
-- In `latexstp`, support watching multiple files or directories.
+- In `latexd`, support watching multiple files or directories.
   - Automatically watch other `.tex` files in the directory that the main file
     is located in.
 - Support anonymous (non-numbered) pads in `bspwmpad`.
@@ -225,7 +225,7 @@
 - In `contexec`, show the execution count in the header.
 - In `bspwmpad`, allow setting the font size (not the whole font). This would be
   useful in scripts/programs like `weather`, `neomutt`, etc.
-- Add options in `latexstp` to not open the source/output files.
+- Add options in `latexd` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed,
   open the editor in the current terminal and execute the file in a `$PAD`.
 - Add an option in `bspwmpad` that would skip the acquisition of a lock if all
@@ -250,7 +250,7 @@
   installed prompt, and show another prompt with the selected if all or
   in-library is selected).
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
-- Integrate _synctex_ in `latexstp`. See
+- Integrate _synctex_ in `latexd`. See
   [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html)
   and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 - Implement a no-quoting option in `tglapp` like the inverse of the one that
@@ -296,7 +296,7 @@
   review the stdout/stderr of the command.
 - In `syncmail`, allow adding temporary and permanent blacklist. If a lock is
   present, do not send a notification for the blacklisted senders/titles/bodies.
-- In `latexstp`, allow passing arguments to `bspwmpad`.
+- In `latexd`, allow passing arguments to `bspwmpad`.
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and
   replacing it. This function should require a valid and non-zero `-n` to be
