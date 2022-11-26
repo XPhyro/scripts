@@ -24,7 +24,7 @@ help:
 index:
 	@cd src && ./.make index o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
-install: uninstall
+install:
 	@cd src && ./.make install o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 uninstall:
