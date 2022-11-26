@@ -176,13 +176,13 @@ install() {
                 set -e
                 out="${1%.c}"
                 out="${out##*/}"
-                [ "$binprefix/$out" -ot "$1" ] || {
+                if [ -f "$binprefix/$out" ] && [ "$binprefix/$out" -nt "$1" ]; then
                     printf "  %s -> %s\n    %s\n" \
                         "$1" \
                         "$binprefix/$out" \
                         "Already up-to-date."
                     exit 0
-                }
+                fi
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
@@ -235,13 +235,13 @@ install() {
                 set -e
                 out="${1%.cpp}"
                 out="${out##*/}"
-                [ "$binprefix/$out" -ot "$1" ] || {
+                if [ -f "$binprefix/$out" ] && [ "$binprefix/$out" -nt "$1" ]; then
                     printf "  %s -> %s\n    %s\n" \
                         "$1" \
                         "$binprefix/$out" \
                         "Already up-to-date."
                     exit 0
-                }
+                fi
                 case "$1" in
                     */wrapper/*) out="wrapper/$out";;
                 esac
