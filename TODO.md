@@ -174,9 +174,6 @@
     beginning of the file.
   - Install man pages as compressed with `gzip`.
 - Add `cppcheck` to analyse target in `.make`.
-- Maybe install C/C++ headers?
-- Do not clean C/C++ objects by default and use them to not re-compile unchanged
-  translation units.
 - Title commits like `script: description1, description2, ...`. Examples:
   - `bspwmpad: always prefix title`
   - `update: fix not releasing lock`
