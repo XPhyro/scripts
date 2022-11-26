@@ -209,6 +209,7 @@
 - In `tglapp`, `--list=compact` prints stdout and stderr.
 - In `bspwm-flwall`, do not follow if the node added or removed is not in the
   current desktop, even if it's in another monitor's focused desktop.
+- `.make`: `.installed` grows indefinitely unless `uninstall` is issued, fix.
 
 ## Features
 
