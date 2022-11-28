@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+. utility.sh
+
+for ln; do
+    [ -L "$ln" ] || {
+        std_logerr "no such symlink: $ln"
+        continue
+    }
+    realpath="$(realpath -- "$ln")"
+    rm -f -- "$ln"
+    ln -sf -- "$realpath" "$ln"
+done
