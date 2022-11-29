@@ -9,33 +9,38 @@ ping -c 1 speedtest.net > /dev/null 2>&1 || {
     exit 1
 }
 
-printf "%s\n" "Testing..."
+printf "%s" "Testing..."
 
-result="$( speedtest || {
-    printf "%s\n" "Test failed, exiting."
+! result="$(speedtest)" || [ -z "$result" ] && {
+    printf "\n%s\n" "Test failed, exiting."
     exit 1
-} )"
+}
 
-log="$(
-    date +%s
-);$(
-    printf "%s\n" "$result" | grep -F "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//'
-);$(
-    printf "%s\n" "$result" | grep -F "Hosted by"    | sed -e 's/Hosted by //' -e 's/:.*//'
-);$(
-    printf "%s\n" "$result" | grep -F "Hosted by"    | awk '{print $(NF - 1)" "$NF}'
-);$(
-    printf "%s\n" "$result" | grep -F "Download:"    | awk '{print $2" "$3}'
-);$(
-    printf "%s\n" "$result" | grep -F "Upload:"      | awk '{print $2" "$3}'
+timestamp="$(date +%s)"
+isp="$(printf "%s\n" "$result" | grep -F "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//')"
+host="$(printf "%s\n" "$result" | grep -F "Hosted by"    | sed -e 's/Hosted by //' -e 's/:.*//')"
+latency="$(printf "%s\n" "$result" | grep -F "Hosted by"    | awk '{print $(NF - 1)" "$NF}')"
+download="$(printf "%s\n" "$result" | grep -F "Download:"    | awk '{print $2" "$3}'
 )"
+upload="$(printf "%s\n" "$result" | grep -F "Upload:"      | awk '{print $2" "$3}')"
 
-printf "\n%s\n" "$log" | sed 's/;/\n/g'
-printf "\n\nLogging results...\n"
+printf "\n\n"
+printf "%s\n" \
+    "Timestamp: $timestamp" \
+    "ISP: $isp" \
+    "Host: $host" \
+    "Latency: $latency" \
+    "Download: $download" \
+    "Upload: $upload"
+
+printf "\nLogging results..."
 
 eval "$(getpath -fe -- stl fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 
-# shellcheck disable=SC2154
-printf "%s\n" "$log" >> "$fl"
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT INT QUIT TERM HUP
 
-printf "%s\n" "Done."
+# shellcheck disable=SC2154
+printf "%s\n" "$timestamp;$isp;$host;$latency;$download;$upload" >> "$fl"
+
+printf "\nDone.\n"
