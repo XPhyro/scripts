@@ -163,6 +163,7 @@
   used (though C is preferred for future-compatibility)) library for creating
   other `std` utilities such as `std::vector` and `std::unordered_map`, then
   refactor `std::vector` and `std::unordered_map` using that library.
+- Merge `assert.hpp` and `die.hpp` into a single header.
 
 ## Other
 
