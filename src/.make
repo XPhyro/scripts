@@ -260,7 +260,7 @@ install() {
 
     (
         cd c/include
-        mkdir -- "$includeprefix/xph"
+        [ -d "$includeprefix/xph" ] || mkdir -- "$includeprefix/xph"
 
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
