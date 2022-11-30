@@ -21,6 +21,16 @@ namespace xph {
         std::cerr << '\n';
         std::exit(EXIT_FAILURE);
     }
+
+    template <typename... Ts>
+    void die_if(bool condition, const Ts&... args);
+
+    template <typename... Ts>
+    inline void die_if(bool condition, const Ts&... args)
+    {
+        if (condition)
+            die(args...);
+    }
 } // namespace xph
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_DIE_ */
