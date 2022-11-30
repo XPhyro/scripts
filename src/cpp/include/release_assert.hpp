@@ -7,10 +7,10 @@
 
 namespace xph {
     template <typename... Ts>
-    void assert(bool condition, const Ts&... args);
+    void release_assert(bool condition, const Ts&... args);
 
     template <typename... Ts>
-    inline void assert(bool condition, const Ts&... args)
+    inline void release_assert(bool condition, const Ts&... args)
     {
         if (condition)
             return;
