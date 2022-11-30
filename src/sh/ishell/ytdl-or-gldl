@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+
+ytdl() {
+    url="$1"
+    shift
+    command ytdl "$@" -- "$url"
+}
+
+gldl() {
+    url="$1"
+    shift
+    command gldl "$@" -- "$url"
+}
+
+while IFS= read -r url; do
+    case "$url" in
+        ""|"#"*) continue;;
+        "@ytdl"*) ytdl "${url#"@ytdl"}" "$@";;
+        "@gldl"*) gldl "${url#"@gldl"}" "$@";;
+        *) ytdl "$url" "$@" || gldl "$url" "$@";;
+    esac
+done
