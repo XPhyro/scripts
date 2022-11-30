@@ -260,12 +260,13 @@ install() {
 
     (
         cd c/include
+        mkdir -- "$includeprefix/xph"
 
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
-            printf "\0%s\0" "$includeprefix/$fl"
-            printf "  %s -> %s\n" "$fl" "$includeprefix/$fl" >&2
-            cp -f -t "$includeprefix" -- "$fl"
+            printf "\0%s\0" "$includeprefix/xph/$fl"
+            printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
+            cp -f -t "$includeprefix/xph" -- "$fl"
         ' -- 2>&1 >> "$rootdir/src/.installed"
     )
 
@@ -277,9 +278,9 @@ install() {
 
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
-            printf "\0%s\0" "$includeprefix/$fl"
-            printf "  %s -> %s\n" "$fl" "$includeprefix/$fl" >&2
-            cp -f -t "$includeprefix" -- "$fl"
+            printf "\0%s\0" "$includeprefix/xph/$fl"
+            printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
+            cp -f -t "$includeprefix/xph" -- "$fl"
         ' -- 2>&1 >> "$rootdir/src/.installed"
     )
 
