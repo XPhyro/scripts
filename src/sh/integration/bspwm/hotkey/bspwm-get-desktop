@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+[ "$#" -ne 1 ] && exit 1
+
+offset="$1"
+desktops="$(bspc query -D --names -m .focused)"
+desktop_count="$(printf "%s\n" "$desktops" | wc -l)"
+focused_desktop="$(bspc query -D --names -d .focused)"
+focused_desktop_index="$(
+    i=0
+    printf "%s\n" "$desktops" | while IFS= read -r desktop; do
+        [ "$desktop" = "$focused_desktop" ] && {
+            printf "%s" "$i"
+            break
+        }
+        : "$((i += 1))"
+    done
+)"
+
+printf "%s\n" "$desktops" \
+    | head -n "$(((focused_desktop_index + offset + desktop_count) % desktop_count + 1))" \
+    | tail -n 1
