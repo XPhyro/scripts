@@ -238,7 +238,7 @@ void cast_bitset_to_character(int& argc, [[maybe_unused]] char**& argv)
         if (nread != 8)
             xph::die("could not read 8 ASCII bits");
         char c = 0;
-        for (const auto&& i : std::views::iota(0, nread - 1))
+        for (const auto&& i : std::views::iota(0, nread))
             c |= (buf[i] & 1) << i;
         write(STDOUT_FILENO, &c, sizeof(c));
     }
