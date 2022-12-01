@@ -112,11 +112,11 @@ for data; do
         }
 
         [ "$opt_test_800_90b_iid" -ne 0 ] && {
-            ea_iid "$tmpdata" | tee iid
+            ea_iid -avi "$tmpdata" | tee iid
         }
 
         [ "$opt_test_800_90b_non_iid" -ne 0 ] && {
-            ea_non_iid "$tmpdata" | tee non_iid
+            ea_non_iid -avi "$tmpdata" | tee non_iid
         }
     ) || continue
 done
