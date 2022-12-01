@@ -173,6 +173,10 @@
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
   - Install man pages as compressed with `gzip`.
+  - Examples in the repository
+    - `sxhkd` examples for hotkey scripts
+    - Script/excerpt examples for utilities & libraries
+    - etc.
 - Add `cppcheck` to analyse target in `.make`.
 - Title commits like `script: description1, description2, ...`. Examples:
   - `bspwmpad: always prefix title`
