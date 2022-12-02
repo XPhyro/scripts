@@ -675,7 +675,7 @@ analyse() {
     (cd c && eval "
         find . \( -iname '*.c' -o -iname '*.h' \) -print0 \
             | xargs -r0 $unbuffer cppcheck \
-                --enable=warning,performance,portability \
+                --enable=warning,performance,portability,information \
                 --quiet --inline-suppr -j\"$(nproc)\" \
                 --force --error-exitcode=1 --max-ctu-depth=16 \
                 --platform=unix64 --std=c99 -Iinclude \
@@ -687,7 +687,7 @@ analyse() {
     (cd cpp && eval "
         find . \( -iname '*.cpp' -o -iname '*.hpp' \) -print0 \
             | xargs -r0 $unbuffer cppcheck \
-                --enable=all \
+                --enable=warning,style,information \
                 --quiet --inline-suppr -j\"$(nproc)\" \
                 --force --error-exitcode=1 --max-ctu-depth=16 \
                 --platform=unix64 --std=c++23 -Iinclude \
