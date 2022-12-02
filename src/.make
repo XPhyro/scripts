@@ -519,14 +519,16 @@ analyse() {
             -not -path "*/.archived/*" -not -path "*/include/*" -print0
         find 'bash' -mindepth 1 -type f -iname "*.sh" \
             -not -path "*/.archived/*" -path "*/include/*" -print0
-    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 sh -c '
+    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 -n 16 -P 0 sh -c '
             for fl; do
-                printf "  %s\n" "$fl"
-                "$shfmt" -ln bash -- > /dev/null || {
-                    printf "    %s\n" "Invalid syntax."
-                    continue
-                }
-                $unbuffer shellcheck -- "$fl" 2>&1 | sed "s/^/    /"
+                (
+                    printf "  %s\n" "$fl"
+                    "$shfmt" -ln bash -- > /dev/null || {
+                        printf "    %s\n" "Invalid syntax."
+                        continue
+                    }
+                    $unbuffer shellcheck -- "$fl" 2>&1 | sed "s/^/    /"
+                ) | sponge
             done
         ' --
     ec="$((ec | $?))"
@@ -536,15 +538,16 @@ analyse() {
             -not -path "*/.archived/*" -not -path "*/include/*" -print0
         find 'sh' -mindepth 1 -type f -iname "*.sh" \
             -not -path "*/.archived/*" -path "*/include/*" -print0
-    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 sh -c '
-            for fl; do
+    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            (
                 printf "  %s\n" "$fl"
                 "$shfmt" -p -- > /dev/null || {
                     printf "    %s\n" "Invalid syntax."
                     continue
                 }
                 $unbuffer shellcheck -- "$fl" 2>&1 | sed "s/^/    /"
-            done
+            ) | sponge
         ' --
     ec="$((ec | $?))"
 
@@ -559,11 +562,12 @@ analyse() {
 
     find 'py' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -not -path "*/include/*" -print0 \
-        | xargs -r0 sh -c '
-            for fl; do
+        | xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            (
                 printf "  %s\n" "$fl"
                 pylint --rcfile py/.pylintrc --score=false -- "$fl" | sed "s/^/    /"
-            done
+            ) | sponge
         ' --
 
     tmpout="$(mktemp)"
@@ -590,12 +594,13 @@ analyse() {
         "Analysing C headers:"
 
     find 'c/include' -mindepth 1 -type f -iname "*.h" -print0 \
-        | CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 sh -c '
-            for fl; do
+        | CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            (
                 printf "  %s\n" "$fl"
                 "$CC" $CFLAGS "$fl" $CLDFLAGS -o "$tmpout" \
                     || printf "    %s\n" "Does not compile."
-            done
+            ) | sponge
         ' --
 
     printf "\n%s\n" \
