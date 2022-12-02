@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <hedley.h>
+
 #include <meta.h>
 #include <strutil.h>
 #include <sysutil.h>
@@ -115,9 +117,6 @@ const char *lckhome_s(lckdb_t type, const char *pfx)
     static bool lckhomeset = false;
     char *prefix;
     const char *s;
-#ifndef __GNUC__
-    s = NULL;
-#endif /* !__GNUC__ */
 
     assert(type == LCKDB_TEMP || type == LCKDB_PERS);
 
@@ -132,18 +131,11 @@ const char *lckhome_s(lckdb_t type, const char *pfx)
             s = confhome();
             break;
         default:
-            assert(false);
+            HEDLEY_UNREACHABLE();
             break;
     }
 
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif /* __GNUC__ */
     prefix = vstrcat(2, s, pfx);
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif /* __GNUC__ */
 
     lckhomeset = true;
     return lckhome = prefix;
@@ -192,6 +184,7 @@ bool awaitdb(const char *hash, lckdb_t type)
         eventsize = sizeof(struct inotify_event),
         buflen = (eventsize + 16) * 1024,
     };
+
     int length, fd, wd, i;
     char buf[buflen], *path;
 
