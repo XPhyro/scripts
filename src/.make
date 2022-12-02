@@ -651,17 +651,39 @@ analyse() {
             "Analysing C++ headers:"
 
             find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
-                | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 sh -c '
-                    for fl; do
+                | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P 0 sh -c '
+                    fl="$1"
+                    (
                         printf "  %s\n" "$fl"
                         "$CXX" $CXXFLAGS "$fl" $CXXLDFLAGS -o "$tmpout" \
                             || printf "    %s\n" "Does not compile."
-                    done
+                    ) | sponge
                 ' --
     fi
 
     printf "\n%s\n" \
         "Analysis of C++23 source files is not fully supported by this analyser. Cannot analyse C++ source files."
+
+    printf "%s\n" \
+        "" \
+        "Preparing to analyse C and C++ header and source files:" \
+        "  Analyser: cppcheck" \
+        "  Analyser version: $(cppcheck --version | cut -d' ' -f2)" \
+        ""
+
+    printf "%s\n" "Analysing C header and source files:"
+    (cd c && eval "$unbuffer cppcheck --enable=all --quiet --inline-suppr -j\"$(nproc)\" \
+        --force --error-exitcode=1 --max-ctu-depth=16 $C_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS \
+        --platform=unix64 --std=c99 $C_INCLUDE_FLAGS '.'" 2>&1 \
+        | sed 's/^/  /')
+    ec="$((ec | $?))"
+
+    printf "%s\n" "Analysing C++ header and source files:"
+    (cd cpp && eval "$unbuffer cppcheck --enable=all --quiet --inline-suppr -j\"$(nproc)\" \
+        --force --error-exitcode=1 --max-ctu-depth=16 $CXX_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS \
+        --platform=unix64 --std=c++23 $CXX_INCLUDE_FLAGS '.'" 2>&1 \
+        | sed 's/^/  /')
+    ec="$((ec | $?))"
 
     rm -f -- "$tmpout"
 }
@@ -867,6 +889,7 @@ for i; do
 done
 
 CC="gcc"
+C_INCLUDE_FLAGS="-Iinclude -I'$rootdir/lib/hedley'"
 CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wall -Wextra -Werror -Wabi=11 \
        -Wno-unused-parameter -Wno-unused-result -Wswitch-default \
@@ -874,12 +897,14 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -ffp-contract=on -fassociative-math -ffast-math -flto \
-       -Iinclude -I'$rootdir/lib/hedley'"
+       $C_INCLUDE_FLAGS"
 CLDFLAGS=""
 C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
 export C_INCLUDE_PATH
 
 CXX="g++"
+CXX_INCLUDE_FLAGS="-Iinclude -I'$rootdir/src/c/include' \
+                   -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=12 \
           -Wswitch-default \
@@ -888,11 +913,15 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
           -ffp-contract=on -fassociative-math -ffast-math -flto \
           -fpermissive -fvtable-verify=none \
-          -Iinclude -I'$rootdir/src/c/include' \
-          -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
+          $CXX_INCLUDE_FLAGS"
 CXXLDFLAGS=""
 CPLUS_INCLUDE_PATH="$PWD/cpp/include:$PWD/c/include:$rootdir/lib/hedley:$rootdir/lib/pstreams"
 export CPLUS_INCLUDE_PATH
+
+C_CPPCHECK_SUPPRESS="--suppress=variableScope"
+CXX_CPPCHECK_SUPPRESS=""
+CPPCHECK_SUPPRESS="--suppress=missingIncludeSystem \
+                   --suppress=ConfigurationNotChecked"
 
 ec=0
 cancompilecpp="$(cancompilecpp "$CXX")"
