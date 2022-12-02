@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HEADER_SCRIPTS_CXX_LOG_
+#define HEADER_SCRIPTS_CXX_LOG_
 
 #include <cstddef>
 #include <cstdlib>
@@ -191,3 +192,5 @@ namespace xph {
         }
     };
 } // namespace xph
+
+#endif /* ifndef HEADER_SCRIPTS_CXX_LOG_ */
