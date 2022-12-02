@@ -223,8 +223,7 @@ int main(int argc, char* argv[])
 
 void assert_argc(int n, int argc)
 {
-    if (argc != n)
-        xph::die("expected ", n, " cast arguments, got ", argc);
+    xph::die_if(argc != n, "expected ", n, " cast arguments, got ", argc);
 }
 
 void cast_bitset_to_character(int argc, [[maybe_unused]] char** argv)
@@ -235,8 +234,7 @@ void cast_bitset_to_character(int argc, [[maybe_unused]] char** argv)
     ssize_t nread;
 
     while ((nread = read(STDIN_FILENO, buf, 8)) > 0) {
-        if (nread != 8)
-            xph::die("could not read 8 ASCII bits");
+        xph::die_if(nread != 8, "could not read 8 ASCII bits");
         char c = 0;
         for (const auto&& i : std::views::iota(0, nread))
             c |= (buf[i] & 1) << i;
@@ -271,8 +269,8 @@ void cast_character_to_primitive(int argc, [[maybe_unused]] char** argv)
     ssize_t nread;
 
     while ((nread = read(STDIN_FILENO, &buf, sizeof(buf))) > 0) {
-        if (nread != sizeof(buf))
-            xph::die("could not read ", sizeof(buf), " bytes for the specified type");
+        xph::die_if(
+            nread != sizeof(buf), "could not read ", sizeof(buf), " bytes for the specified type");
         std::cout << converter << buf << '\n';
     }
 }
@@ -285,20 +283,22 @@ void cast_character_to_xintx(int argc, char** argv)
     T buf;
     size_t nbyte = xph::lexical_cast<decltype(*argv), decltype(nbyte)>(argv[0]);
 
-    if (!nbyte || nbyte > sizeof(buf))
-        xph::die("cannot cast to ",
-                 nbyte,
-                 "-byte",
-                 nbyte == 1 ? "" : "s",
-                 "-long integers. minimum supported is 0. maximum supported is ",
-                 sizeof(buf),
-                 '.');
+    xph::die_if(!nbyte || nbyte > sizeof(buf),
+                "cannot cast to ",
+                nbyte,
+                "-byte",
+                nbyte == 1 ? "" : "s",
+                "-long integers. minimum supported is 0. maximum supported is ",
+                sizeof(buf),
+                '.');
 
     ssize_t nread;
     buf = 0;
     while ((nread = read(STDIN_FILENO, &buf, nbyte)) > 0) {
-        if (static_cast<size_t>(nread) != nbyte)
-            xph::die("could not read ", nbyte, " bytes for the specified type");
+        xph::die_if(static_cast<size_t>(nread) != nbyte,
+                    "could not read ",
+                    nbyte,
+                    " bytes for the specified type");
         std::cout << converter << buf << '\n';
     }
 }
