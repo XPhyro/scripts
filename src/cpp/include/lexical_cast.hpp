@@ -9,7 +9,8 @@ namespace xph {
     template <typename Targ, typename Tret>
     inline Tret lexical_cast(const Targ& arg)
     {
-        std::istringstream ss(arg);
+        std::stringstream ss;
+        ss << arg;
         Tret ret;
         ss >> ret;
         return ret;
@@ -26,54 +27,7 @@ namespace xph {
 
     inline std::string lexical_cast(const bool& arg)
     {
-        std::ostringstream ss;
-        ss << std::boolalpha << arg;
-        return ss.str();
-    }
-
-    inline std::string lexical_cast(const int& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const long& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const long long& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const unsigned& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const unsigned long& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const unsigned long long& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const float& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const double& arg)
-    {
-        return std::to_string(arg);
-    }
-
-    inline std::string lexical_cast(const long double& arg)
-    {
-        return std::to_string(arg);
+        return arg ? "true" : "false";
     }
 } // namespace xph
 
