@@ -7,6 +7,7 @@
 #include <functional>
 #include <ios>
 #include <memory>
+#include <numeric>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -122,9 +123,9 @@ namespace xph::str {
 
     constexpr inline uint32_t crc32(const std::string_view& str)
     {
-        uint32_t crc = ~0;
-        for (auto&& c : str)
-            crc = (crc >> 8) ^ consts::zlib_crc_table[(crc ^ c) & ~0];
+        uint32_t crc = std::accumulate(str.begin(), str.end(), ~0, [](uint32_t crc, char c) {
+            return (crc >> 8) ^ consts::zlib_crc_table[(crc ^ c) & ~0];
+        });
         return crc ^ ~0;
     }
 
