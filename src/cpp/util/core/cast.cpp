@@ -63,12 +63,12 @@ enum class type {
 [[noreturn]] void help();
 [[noreturn]] void invalid_args(const std::string& err);
 void assert_argc(int n, int argc);
-void cast_bitset_to_character(int& argc, char**& argv);
-void cast_character_to_bitset(int& argc, char**& argv);
+void cast_bitset_to_character(int argc, char** argv);
+void cast_character_to_bitset(int argc, char** argv);
 template <typename T, auto converter>
-void cast_character_to_primitive(int& argc, char**& argv);
+void cast_character_to_primitive(int argc, char** argv);
 template <typename T, auto converter>
-void cast_character_to_xintx(int& argc, char**& argv);
+void cast_character_to_xintx(int argc, char** argv);
 
 const std::unordered_map<std::string, type> types = {
     { "bit", type::bitset },
@@ -99,7 +99,7 @@ const std::unordered_map<std::string, type> types = {
     { "uintx", type::uintx },
 };
 
-const std::unordered_map<std::tuple<type, type>, std::function<void(int&, char**&)>> funcs = {
+const std::unordered_map<std::tuple<type, type>, std::function<void(int, char**)>> funcs = {
     { { type::bitset, type::character }, cast_bitset_to_character },
     { { type::character, type::bitset }, cast_character_to_bitset },
     { { type::character, type::float32 }, cast_character_to_primitive<float, std::dec> },
@@ -227,7 +227,7 @@ void assert_argc(int n, int argc)
         xph::die("expected ", n, " cast arguments, got ", argc);
 }
 
-void cast_bitset_to_character(int& argc, [[maybe_unused]] char**& argv)
+void cast_bitset_to_character(int argc, [[maybe_unused]] char** argv)
 {
     assert_argc(0, argc);
 
@@ -245,7 +245,7 @@ void cast_bitset_to_character(int& argc, [[maybe_unused]] char**& argv)
 }
 
 // FIXME: this function's output is sometimes wrong
-void cast_character_to_bitset(int& argc, [[maybe_unused]] char**& argv)
+void cast_character_to_bitset(int argc, [[maybe_unused]] char** argv)
 {
     assert_argc(0, argc);
 
@@ -263,7 +263,7 @@ void cast_character_to_bitset(int& argc, [[maybe_unused]] char**& argv)
 }
 
 template <typename T, auto converter>
-void cast_character_to_primitive(int& argc, [[maybe_unused]] char**& argv)
+void cast_character_to_primitive(int argc, [[maybe_unused]] char** argv)
 {
     assert_argc(0, argc);
 
@@ -278,7 +278,7 @@ void cast_character_to_primitive(int& argc, [[maybe_unused]] char**& argv)
 }
 
 template <typename T, auto converter>
-void cast_character_to_xintx(int& argc, char**& argv)
+void cast_character_to_xintx(int argc, char** argv)
 {
     assert_argc(1, argc);
 
