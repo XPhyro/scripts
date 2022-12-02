@@ -562,7 +562,7 @@ analyse() {
         | xargs -r0 sh -c '
             for fl; do
                 printf "  %s\n" "$fl"
-                pylint --rcfile py/.pylintrc -- "$fl"
+                pylint --rcfile py/.pylintrc --score=false -- "$fl" | sed "s/^/    /"
             done
         ' --
 
@@ -656,7 +656,7 @@ analyse() {
     fi
 
     printf "\n%s\n" \
-        "Analysis of C++23 source files is not fully supported by the analyser. Cannot analyse C++ source files."
+        "Analysis of C++23 source files is not fully supported by this analyser. Cannot analyse C++ source files."
 
     rm -f -- "$tmpout"
 }
