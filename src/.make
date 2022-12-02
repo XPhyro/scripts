@@ -672,16 +672,26 @@ analyse() {
         ""
 
     printf "%s\n" "Analysing C header and source files:"
-    (cd c && eval "$unbuffer cppcheck --enable=all --quiet --inline-suppr -j\"$(nproc)\" \
-        --force --error-exitcode=1 --max-ctu-depth=16 $C_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS \
-        --platform=unix64 --std=c99 $C_INCLUDE_FLAGS '.'" 2>&1 \
+    (cd c && eval "
+        find . \( -iname '*.c' -o -iname '*.h' \) -print0 \
+            | xargs -r0 $unbuffer cppcheck \
+                --enable=warning,performance,portability \
+                --quiet --inline-suppr -j\"$(nproc)\" \
+                --force --error-exitcode=1 --max-ctu-depth=16 \
+                --platform=unix64 --std=c99 -Iinclude \
+                $C_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS" 2>&1 \
         | sed 's/^/  /')
     ec="$((ec | $?))"
 
-    printf "%s\n" "Analysing C++ header and source files:"
-    (cd cpp && eval "$unbuffer cppcheck --enable=all --quiet --inline-suppr -j\"$(nproc)\" \
-        --force --error-exitcode=1 --max-ctu-depth=16 $CXX_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS \
-        --platform=unix64 --std=c++23 $CXX_INCLUDE_FLAGS '.'" 2>&1 \
+    printf "\n%s\n" "Analysing C++ header and source files:"
+    (cd cpp && eval "
+        find . \( -iname '*.cpp' -o -iname '*.hpp' \) -print0 \
+            | xargs -r0 $unbuffer cppcheck \
+                --enable=all \
+                --quiet --inline-suppr -j\"$(nproc)\" \
+                --force --error-exitcode=1 --max-ctu-depth=16 \
+                --platform=unix64 --std=c++23 -Iinclude \
+                $CXX_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS" 2>&1 \
         | sed 's/^/  /')
     ec="$((ec | $?))"
 
@@ -919,9 +929,13 @@ CPLUS_INCLUDE_PATH="$PWD/cpp/include:$PWD/c/include:$rootdir/lib/hedley:$rootdir
 export CPLUS_INCLUDE_PATH
 
 C_CPPCHECK_SUPPRESS="--suppress=variableScope"
-CXX_CPPCHECK_SUPPRESS=""
+CXX_CPPCHECK_SUPPRESS="--suppress=noExplicitConstructor"
 CPPCHECK_SUPPRESS="--suppress=missingIncludeSystem \
-                   --suppress=ConfigurationNotChecked"
+                   --suppress=ConfigurationNotChecked \
+                   --suppress=invalidPrintfArgType_uint \
+                   --suppress=shadowFunction \
+                   --suppress=shadowVariable \
+                   --suppress=unusedFunction"
 
 ec=0
 cancompilecpp="$(cancompilecpp "$CXX")"
