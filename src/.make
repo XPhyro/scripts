@@ -679,7 +679,7 @@ analyse() {
                 --quiet --inline-suppr -j\"$(nproc)\" \
                 --force --error-exitcode=1 --max-ctu-depth=16 \
                 --platform=unix64 --std=c99 -Iinclude \
-                $C_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS" 2>&1 \
+                $CPPCHECK_SUPPRESS $C_CPPCHECK_SUPPRESS" 2>&1 \
         | sed 's/^/  /')
     ec="$((ec | $?))"
 
@@ -691,7 +691,7 @@ analyse() {
                 --quiet --inline-suppr -j\"$(nproc)\" \
                 --force --error-exitcode=1 --max-ctu-depth=16 \
                 --platform=unix64 --std=c++23 -Iinclude \
-                $CXX_CPPCHECK_SUPPRESS $CPPCHECK_SUPPRESS" 2>&1 \
+                $CPPCHECK_SUPPRESS $CXX_CPPCHECK_SUPPRESS" 2>&1 \
         | sed 's/^/  /')
     ec="$((ec | $?))"
 
@@ -930,7 +930,8 @@ export CPLUS_INCLUDE_PATH
 
 C_CPPCHECK_SUPPRESS="--suppress=variableScope"
 CXX_CPPCHECK_SUPPRESS="--suppress=noExplicitConstructor"
-CPPCHECK_SUPPRESS="--suppress=missingIncludeSystem \
+CPPCHECK_SUPPRESS="--suppress=unmatchedSuppression:\* \
+                   --suppress=missingIncludeSystem \
                    --suppress=ConfigurationNotChecked \
                    --suppress=invalidPrintfArgType_uint \
                    --suppress=shadowFunction \
