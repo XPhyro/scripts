@@ -19,9 +19,9 @@
 #include <consts.hpp>
 
 namespace xph::str {
-    std::unique_ptr<std::string> getlower(const std::string str);
+    std::unique_ptr<std::string> getlower(const std::string& str);
 
-    std::unique_ptr<std::string> inline getlower(const std::string str)
+    std::unique_ptr<std::string> inline getlower(const std::string& str)
     {
         auto dup = std::unique_ptr<std::string>{ new std::string(str) };
         std::transform(dup->begin(), dup->end(), dup->begin(), [](unsigned char c) {
@@ -58,11 +58,8 @@ namespace xph::str {
     {
         std::vector<std::string> tokens;
 
-        for (auto&& token : str | splitview(delim))
-            tokens.push_back(token);
-
-        // TODO: could use `| std::views::drop_last(static_cast<int>(ignoreend && *str.end() == delim))` with C++23
-        if (ignoreend && *str.end() == delim)
+        std::ranges::copy(str | splitview(delim), std::back_inserter(tokens));
+        if (ignoreend && str.back() == delim)
             tokens.pop_back();
 
         return tokens;
@@ -78,10 +75,7 @@ namespace xph::str {
     {
         auto initsize = tokens.size();
 
-        for (auto&& token : str | splitview(delim))
-            tokens.push_back(token);
-
-        // TODO: could use `| std::views::drop_last(static_cast<int>(ignoreend && *str.end() == delim))` with C++23
+        std::ranges::copy(str | splitview(delim), std::back_inserter(tokens));
         if (ignoreend && str.back() == delim && tokens.size() != initsize)
             tokens.pop_back();
 

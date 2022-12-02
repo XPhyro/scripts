@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <fstream>
@@ -35,8 +36,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> lines;
     if (optargisline) {
         lines.reserve(argc);
-        for (const auto& arg : std::views::counted(argv, argc))
-            lines.emplace_back(arg);
+        std::ranges::copy(std::views::counted(argv, argc), std::back_inserter(lines));
     } else if (optrangelow && optrangehigh) {
         for (std::ostringstream ss;
              const auto& i : std::views::iota(static_cast<std::size_t>(optrangelow),
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     std::random_device rdev;
     std::mt19937 rng(rdev());
 
-    if (!optunique || optunique <= 1ul) {
+    if (optunique <= 1ul) {
         std::uniform_int_distribution<std::size_t> dist(0u, lines.size() - 1);
         for (std::size_t count = 0; !optcount || count < optcount;
              std::cout << lines[dist(rng)] << optdelim, ++count) {}
@@ -75,8 +75,7 @@ int main(int argc, char* argv[])
         std::set<std::size_t> inactive_indices_buffer;
         std::vector<std::size_t> active_indices;
         active_indices.reserve(lines.size());
-        for (const auto&& i : std::views::iota(0u, lines.size()))
-            active_indices.push_back(i);
+        std::ranges::copy(std::views::iota(0u, lines.size()), std::back_inserter(active_indices));
 
         for (std::size_t count = 0; !optcount || count < optcount; ++count) {
             for (const auto& index : inactive_indices) {

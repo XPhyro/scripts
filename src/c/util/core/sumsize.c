@@ -31,6 +31,7 @@ typedef unsigned long long int sum_t;
 enum {
     pfxsize = 5,
 };
+
 const sum_t decpfx[pfxsize] = {
     PREFIX_KILO, PREFIX_MEGA, PREFIX_GIGA, PREFIX_TERA, PREFIX_PETA,
 };
@@ -238,6 +239,7 @@ int main(int argc, char *argv[])
         }
         div = sum / (long double)maxpfx;
         s = vstrcat(3, "%.", optfig, "Lf%c%s\n");
+        // cppcheck-suppress negativeIndex
         printf(s, div, upperpfx[i], optdec ? "B" : "iB");
     }
 

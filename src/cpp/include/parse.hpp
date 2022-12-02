@@ -27,7 +27,7 @@ namespace xph {
             throw std::runtime_error(
                 "given string is not parseable to type T"); // TODO: replace with format_error when <format> is available>
 
-        return std::move(t);
+        return t;
     }
 
     template <typename T>
@@ -45,7 +45,7 @@ namespace xph {
     template <typename T>
     [[nodiscard]] inline T parse(const std::string_view&& s)
     {
-        return std::move(_parse<T>(s));
+        return _parse<T>(s);
     }
 } // namespace xph
 

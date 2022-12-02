@@ -57,8 +57,8 @@ void unlock_all_databases();
 [[noreturn]] void terminate(int ec = EXIT_SUCCESS);
 void handle_sig(int sig);
 cache parse_args(int& argc, char**& argv);
-bool exists(const std::string path = cachefl);
-void assertexists(const std::string path = cachefl);
+bool exists(const std::string& path = cachefl);
+void assertexists(const std::string& path = cachefl);
 void conditional_delim();
 void shell_escape(std::string& str);
 
@@ -465,12 +465,12 @@ cache parse_args(int& argc, char**& argv)
     return cache;
 }
 
-bool exists(const std::string path)
+bool exists(const std::string& path)
 {
     return std::filesystem::exists(path);
 }
 
-void assertexists(const std::string path)
+void assertexists(const std::string& path)
 {
     if (!exists(path))
         die("vector is not initialised");
@@ -534,7 +534,7 @@ namespace vec {
         vecsize_t size;
         fl.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-        return std::move(size);
+        return size;
     }
 
     vecsize_t parse_index(const std::string& indexstr)
@@ -548,7 +548,7 @@ namespace vec {
         if (ss.fail())
             die("index is not a valid integer");
 
-        return std::move(index);
+        return index;
     }
 
     std::vector<std::string> parse()
@@ -654,8 +654,7 @@ namespace vec {
         // auto exec_argv = std::ranges::to<std::vector>(std::views::counted(argv, argc));
         std::vector<std::string> exec_argv;
         exec_argv.reserve(argc);
-        for (const auto& arg : std::views::counted(argv, argc))
-            exec_argv.emplace_back(arg);
+        std::ranges::copy(std::views::counted(argv, argc), std::back_inserter(exec_argv));
 
         redi::ipstream proc(exec_argv, redi::pstreams::pstdout);
         std::string line;
