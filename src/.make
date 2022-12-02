@@ -868,7 +868,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wimplicit-fallthrough=5 -Wno-sign-compare \
        -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
-       -ffp-contract=on -fassociative-math -ffast-math \
+       -ffp-contract=on -fassociative-math -ffast-math -flto \
        -Iinclude -I'$rootdir/lib/hedley'"
 CLDFLAGS=""
 C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
@@ -881,7 +881,8 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wimplicit-fallthrough=5 -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
-          -fpermissive -ffp-contract=on -fassociative-math -ffast-math \
+          -ffp-contract=on -fassociative-math -ffast-math -flto \
+          -fpermissive -fvtable-verify=none \
           -Iinclude -I'$rootdir/src/c/include' \
           -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
 CXXLDFLAGS=""
