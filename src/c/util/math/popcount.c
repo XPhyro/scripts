@@ -21,22 +21,8 @@ int main(int argc, char *argv[])
 #if defined(__GNUC__) || defined(__clang__)
             popcount += __builtin_popcount(c & 0xff);
 #else
-            if (c & 0x01)
-                popcount++;
-            if (c & 0x02)
-                popcount++;
-            if (c & 0x04)
-                popcount++;
-            if (c & 0x08)
-                popcount++;
-            if (c & 0x10)
-                popcount++;
-            if (c & 0x20)
-                popcount++;
-            if (c & 0x40)
-                popcount++;
-            if (c & 0x80)
-                popcount++;
+            popcount += c & 0x01 + c & 0x02 + c & 0x04 + c & 0x08 + c & 0x10 + c & 0x20 + c &
+                        0x40 + c & 0x80;
 #endif
         }
     }
