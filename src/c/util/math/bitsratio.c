@@ -5,36 +5,45 @@
 
 int main(int argc, char *argv[])
 {
-    ssize_t nread, totread, readone, i;
+    ssize_t nread, i;
+    size_t totread, popcount;
     char buf[PIPE_BUF];
+#if defined(__GNUC__) || defined(__clang__)
+    unsigned int c;
+#else
     char c;
+#endif
 
-    readone = 0;
+    popcount = 0;
     totread = 0;
     while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0) {
         totread += nread * 8;
         for (i = 0; i < nread; i++) {
             c = buf[i];
+#if defined(__GNUC__) || defined(__clang__)
+            popcount += __builtin_popcount(c & 0xff);
+#else
             if (c & 0x01)
-                readone++;
+                popcount++;
             if (c & 0x02)
-                readone++;
+                popcount++;
             if (c & 0x04)
-                readone++;
+                popcount++;
             if (c & 0x08)
-                readone++;
+                popcount++;
             if (c & 0x10)
-                readone++;
+                popcount++;
             if (c & 0x20)
-                readone++;
+                popcount++;
             if (c & 0x40)
-                readone++;
+                popcount++;
             if (c & 0x80)
-                readone++;
+                popcount++;
+#endif
         }
     }
 
-    printf("%f\n", readone / (double)totread);
+    printf("%f\n", popcount / (double)totread);
 
     return 0;
 }
