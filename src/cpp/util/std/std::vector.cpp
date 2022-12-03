@@ -1,6 +1,7 @@
 // C++
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
@@ -41,7 +42,7 @@
 
 enum class cache { temporary, persistent };
 
-typedef std::size_t vecsize_t;
+typedef std::uint64_t vecsize_t;
 
 std::set<std::string> acquiredlocks;
 std::string cachefl;
