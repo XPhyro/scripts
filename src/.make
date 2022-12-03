@@ -316,7 +316,7 @@ install() {
                 export section
                 find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
                     progname="$(basename -- "$1")"
-                   manpath="$manprefix/man$section/${progname%.*}.$section"
+                    manpath="$manprefix/man$section/${progname%.*}.$section"
                     printf "  %s -> %s\n" "$section/$progname" "$manpath" >&2
                     m4 -I"$rootdir" -DVERSION="$shorthash" -DTHIS="$1" "$1" \
                         | pandoc --standalone --to man -o "$manpath" >&2
