@@ -358,6 +358,16 @@ install() {
                 [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/$flname"
             done
         done
+
+        printf "\n%s\n" \
+            "Reloading systemd services:"
+        if isroot; then
+            printf "  %s\n" "root"
+            systemctl daemon-reload
+        else
+            printf "  %s\n" "$realuser"
+            systemctl --user daemon-reload
+        fi
     )
 }
 
