@@ -1,7 +1,7 @@
 #ifndef HEADER_SCRIPTS_CXX_AUTO_TIMER_
 #define HEADER_SCRIPTS_CXX_AUTO_TIMER_
 
-#include <log.hpp>
+#include <logger.hpp>
 
 namespace xph {
     class AutoTimer {
