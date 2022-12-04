@@ -11,9 +11,9 @@
 
 #include <unistd.h>
 
-#include <xph/exec_info.hpp>
-#include <xph/macros.hpp>
-#include <xph/tictoc.hpp>
+#include <exec_info.hpp>
+#include <macros.hpp>
+#include <tictoc.hpp>
 
 namespace xph {
     using log_level_underlying_t = int;
