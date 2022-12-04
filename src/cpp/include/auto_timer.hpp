@@ -4,18 +4,18 @@
 #include <logger.hpp>
 
 namespace xph {
-    class AutoTimer {
+    class auto_timer {
     private:
-        std::shared_ptr<Logger> m_logger;
+        std::shared_ptr<logger> m_logger;
         const xph::log_level km_log_level = xph::log_level::k_verbose;
 
         const std::string km_identifier;
         bool dumped;
 
     public:
-        inline AutoTimer() = delete;
+        inline auto_timer() = delete;
 
-        inline AutoTimer(std::shared_ptr<Logger> logger, const std::string& identifier)
+        inline auto_timer(std::shared_ptr<logger> logger, const std::string& identifier)
             : m_logger(logger)
             , km_identifier(identifier)
             , dumped(false)
@@ -23,7 +23,7 @@ namespace xph {
             xph::tic(km_identifier);
         }
 
-        inline ~AutoTimer()
+        inline ~auto_timer()
         {
             manual_dump();
         }

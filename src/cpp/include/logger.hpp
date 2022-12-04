@@ -48,7 +48,7 @@ namespace xph {
 
     const std::string_view get_log_level_name(log_level level);
 
-    class Logger {
+    class logger {
     private:
         xph::log_level m_log_level;
 
@@ -69,12 +69,12 @@ namespace xph {
 #endif
             ;
 
-        inline Logger() : m_log_level(kg_default_log_level)
+        inline logger() : m_log_level(kg_default_log_level)
         {
             NOOP();
         }
 
-        inline Logger(xph::log_level log_level) : m_log_level(log_level)
+        inline logger(xph::log_level log_level) : m_log_level(log_level)
         {
             NOOP();
         }
