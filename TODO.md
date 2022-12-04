@@ -92,6 +92,7 @@
   status bar.
   - Also support manual offsets.
 - Support globbing and regex in `exif-filter`.
+- Support mounting/unmounting Android devices in `mountsel`/`umountsel`.
 
 ## New Scripts
 
