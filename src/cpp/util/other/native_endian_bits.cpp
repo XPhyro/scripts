@@ -1,12 +1,11 @@
 #include <bitset>
-#include <cstdint>
 #include <iostream>
-#include <limits>
+#include <ranges>
 
 int main()
 {
-    for (std::uintmax_t i = 0; i < std::numeric_limits<std::uintmax_t>::max(); ++i)
-        std::cout << std::bitset<sizeof(std::uintmax_t) * 8>(i) << '\n';
+    for (const auto&& i : std::ranges::iota_view(0ull, ~0ull))
+        std::cout << std::bitset<sizeof(i) * 8>(i) << '\n';
 
     return 0;
 }
