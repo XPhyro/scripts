@@ -88,6 +88,8 @@
   - Automatically watch other `.tex` files in the directory that the main file
     is located in.
 - Support anonymous (non-numbered) pads in `bspwmpad`.
+  - In `latexd`, if `$TABBED_XID` is set and non-empty, use request an
+    anonymous pad.
 - In `bspwmpad`, if floating, center the window respecting `window_gap` and
   status bar.
   - Also support manual offsets.
