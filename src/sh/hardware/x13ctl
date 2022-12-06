@@ -48,7 +48,16 @@ Only use syncing on initialisation, such as on boot or at the beginning of xinit
             case "$OPTARG" in
                 sync) printf "%s" "$(asusctl -k | cut -d' ' -f5 | fmaps 0=Off 1=Low 2=Med 3=High 48=Off 49=Low 50=Med 51=High)" > "$kbfl";;
                 get) cat -- "$kbfl";;
-                get-polybar) printf "%s %s\n" "🚦" "$(cat -- "$kbfl")";;
+                get-polybar)
+                    case "$(cat -- "$kbfl")" in
+                        Off) emoji=🇴;;
+                        Low) emoji=🇱;;
+                        Med) emoji=🇲;;
+                        High) emoji=🇭;;
+                        *) exit 1;;
+                    esac
+                    printf "%s %s\n" "🚦" "$emoji"
+                    ;;
                 *)
                     if [ "$OPTARG" = "next" ]; then
                         OPTARG="$(DEF=Low fmaps Low=Med Med=High High=Off < "$kbfl")"
@@ -73,7 +82,15 @@ Only use syncing on initialisation, such as on boot or at the beginning of xinit
             case "$OPTARG" in
                 sync) printf "%s" "$(asusctl profile -p | cut -d' ' -f4)" > "$proffl";;
                 get) cat -- "$proffl";;
-                get-polybar) printf "%s %s\n" "🍀" "$(cat -- "$proffl")";;
+                get-polybar)
+                    case "$(cat -- "$proffl")" in
+                        Quiet) emoji=🇶;;
+                        Balanced) emoji=🇧;;
+                        Performance) emoji=🇵;;
+                        *) exit 1;;
+                    esac
+                    printf "%s %s\n" "🍀" "$emoji"
+                    ;;
                 *)
                     if [ "$OPTARG" = "next" ]; then
                         OPTARG="$(DEF=Quiet fmaps Quiet=Balanced Balanced=Performance < "$proffl")"
