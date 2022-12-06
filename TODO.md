@@ -320,6 +320,7 @@
   This could be done by modifying the currently provided `cd` function.
 - Support more parameters in `reddit-fetch`, see
   <https://pushshift.io/api-parameters/>.
+- In `rgb24togray`, add `METHOD_HSL_L`.
 
 ## New Scripts
 
@@ -417,6 +418,7 @@
   - Maybe create a helper script for this?
 - Do not print error messages when `get*` fails in scripts as those already
   print errors to stderr.
+- Rename `rgb24togray` to be more sensible to its features.
 
 # Low Priority
 
