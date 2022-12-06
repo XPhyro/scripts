@@ -9,7 +9,7 @@ If no TARGET is given, help is assumed.
     install: install everything
   uninstall: uninstall everything previously installed
        test: run tests
-     format: format C/C++ source/header files
+     format: format C, C++ and Python source/header files
     analyse: statically analyse C source files
       spell: check for spelling mistakes
        auto: same as `make format spell analyse install test`
