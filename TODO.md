@@ -320,7 +320,7 @@
   This could be done by modifying the currently provided `cd` function.
 - Support more parameters in `reddit-fetch`, see
   <https://pushshift.io/api-parameters/>.
-- In `rgb24togray`, add `METHOD_HSL_L`.
+- In `rgb24togray`, add `METHOD_HSL_S` and `METHOD_HSL_L`.
 
 ## New Scripts
 
