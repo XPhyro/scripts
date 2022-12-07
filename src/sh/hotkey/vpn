@@ -2,6 +2,16 @@
 
 . shellverbose.sh
 
+. utility.sh
+
+configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/vpn/config.sh"
+if [ -f "$configfl" ]; then
+    . "$configfl"
+    hasconfig=1
+else
+    hasconfig=0
+fi
+
 unset optstatus
 while getopts "hsv:" OPT; do
     case "$OPT" in
@@ -11,12 +21,12 @@ while getopts "hsv:" OPT; do
    -h      Print help message and exit.
    -s      Print detailed status before initialisation.
    -v VPN  Set the VPN executable to use to VPN.
-"
+" >&2
             exit 0
             ;;
         s) optstatus=1;;
         v) VPN="$OPTARG";;
-        *) printf "Invalid option given: %s\n" "$OPT"; exit 1;;
+        *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
     esac
 done
 shift "$((OPTIND - 1))"
@@ -39,10 +49,10 @@ shift "$((OPTIND - 1))"
     )"
 
     if [ -z "$possiblevpns" ]; then
-        printf "Could not find any VPNs. Enter the name of the command: "
+        printf "Could not find any VPNs. Enter the name of the command: " >&2
         VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
     else
-        printf "%s\n" "Select the VPN command:" "  0 Enter manually" "$possiblevpns"
+        printf "%s\n" "Select the VPN command:" "  0 Enter manually" "$possiblevpns" >&2
         selc="$(printf "%s\n" "$possiblevpns" | wc -l)"
         sel="$(
             if [ "$selc" -lt 10 ]; then
@@ -53,12 +63,12 @@ shift "$((OPTIND - 1))"
         )"
 
         [ -n "$(printf "%s\n" "$sel" | tr -d '[:digit:]')" ] && {
-            printf "You must enter the number before the command.\n\n"
+            printf "You must enter the number before the command.\n\n" >&2
             exec "$0" "$@"
         }
 
         if [ "$sel" -eq 0 ]; then
-            printf "Enter the name of the command: "
+            printf "Enter the name of the command: " >&2
             VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
         elif [ "$sel" -lt "$((selc + 1))" ]; then
             VPN="$(
@@ -67,13 +77,13 @@ shift "$((OPTIND - 1))"
                     | tail -c +"$((${#sel} + 4))"
             )"
         else
-            printf "You entered an invalid number.\n\n"
+            printf "You entered an invalid number.\n\n" >&2
             exec "$0" "$@"
         fi
     fi
 }
 
-printf "Selected VPN: "
+printf "Selected VPN: " >&2
 color yellow "$VPN"
 { "$VPN" --help || "$VPN" --version; } > /dev/null || exit 1
 
@@ -85,7 +95,7 @@ if pgrep -u root openvpn > /dev/null 2>&1; then
     fi
 else
     if [ -n "$optstatus" ]; then
-        printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)"
+        printf "IP Address: %s\n" "$(curl ipinfo.io/ip 2> /dev/null)" >&2
     else
         color red "No OpenVPN connections exist."
     fi
@@ -93,26 +103,92 @@ fi
 
 flushterm
 
-while true; do
-    fillline "―"
-    printf "\n"
-    case "$(readchar)" in
-        c) printf "Enter country code: "; "$VPN" c --cc "$(readstr)";;
-        d) "$VPN" disconnect;;
-        f) "$VPN" connect --fastest;;
-        i) "$VPN" connect;;
-        r) "$VPN" reconnect;;
-        s) "$VPN" status;;
-        q) printf "\r\033[A\033[2K"; exit 0;;
-        *) printf "%s" \
-"c) connect to specific country
-d) disconnect
-f) connect to fastest
-r) reconnect
-i) connect interactively
-s) status
-q) quit
-*) print this
-";;
+[ "$hasconfig" -eq 0 ] && {
+    case "$VPN" in
+        protonvpn-cli)
+            on_char_read() {
+                case "$1" in
+                    c)
+                        printf "Enter country code: " >&2
+                        protonvpn-cli c --cc "$(readstr)"
+                        ;;
+                    d) protonvpn-cli d;;
+                    f) protonvpn-cli c -f;;
+                    i) protonvpn-cli c;;
+                    k)
+                        protonvpn-cli ks --"$(
+                            while :; do
+                                printf "%s\n" "Killswitch [o/k/p]: " >&2
+                                case "$(readchar)" in
+                                    o) printf off;;
+                                    k) printf on;;
+                                    p) printf permanent;;
+                                    *) continue;;
+                                esac
+                                break
+                            done
+                        )"
+                        ;;
+                    l) protonvpn-cli config -l;;
+                    n)
+                        protonvpn-cli ns --"$(
+                            while :; do
+                                printf "%s\n" "Netshield [o/m/a]: " >&2
+                                case "$(readchar)" in
+                                    o) printf off;;
+                                    m) printf malware;;
+                                    a) printf ads-malware;;
+                                    *) continue;;
+                                esac
+                                break
+                            done
+                        )"
+                        ;;
+                    q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
+                    r) protonvpn-cli r;;
+                    s) protonvpn-cli s;;
+                    *)
+                        printf "%s\n" \
+                           "c) connect to specific country" \
+                           "d) disconnect" \
+                           "f) connect to fastest" \
+                           "i) connect interactively" \
+                           "k) configure killswitch" \
+                           "l) list configuration" \
+                           "n) configure netshield" \
+                           "q) quit" \
+                           "r) reconnect" \
+                           "s) status" \
+                           "*) print this" >&2
+                        ;;
+                esac
+            }
+            ;;
+        *)
+            on_char_read() {
+                case "$1" in
+                    c) "$VPN" connect;;
+                    d) "$VPN" disconnect;;
+                    r) "$VPN" reconnect;;
+                    s) "$VPN" status;;
+                    q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
+                    *)
+                        printf "%s\n" \
+                           "c) connect" \
+                           "d) disconnect" \
+                           "r) reconnect" \
+                           "s) status" \
+                           "q) quit" \
+                           "*) print this" >&2
+                        ;;
+                esac
+            }
+            ;;
     esac
+}
+
+while :; do
+    fillline "―" >&2
+    printf "\n" >&2
+    on_char_read "$(readchar)"
 done
