@@ -83,10 +83,10 @@ namespace xph::str {
         return tokens;
     }
 
-    constexpr void replaceall(std::string& str, const std::string&& from, const std::string&& to);
+    constexpr void replaceall(std::string& str, const std::string& from, const std::string& to);
 
     constexpr inline void
-    replaceall(std::string& str, const std::string&& from, const std::string&& to)
+    replaceall(std::string& str, const std::string& from, const std::string& to)
     {
         std::string newstr;
         newstr.reserve(str.length());
