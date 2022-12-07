@@ -5,19 +5,55 @@ logerrq() {
     exit 1
 }
 
+get_polybar_val_c() {
+    cat -- "$batlimfl"
+    printf "%%"
+}
+
+get_polybar_val_k() {
+    case "$(cat -- "$kbfl")" in
+        Off)  printf "%s" "🇴";;
+        Low)  printf "%s" "🇱";;
+        Med)  printf "%s" "🇲";;
+        High) printf "%s" "🇭";;
+        *) exit 1;;
+    esac
+}
+
+get_polybar_val_p() {
+    case "$(cat -- "$proffl")" in
+        Quiet)       printf "%s" "🇶";;
+        Balanced)    printf "%s" "🇧";;
+        Performance) printf "%s" "🇵";;
+        *) exit 1;;
+    esac
+}
+
+get_polybar_c() {
+    printf "%s %s\n" "♻" "$(get_polybar_val_c)"
+}
+
+get_polybar_k() {
+    printf "%s %s\n" "🚦" "$(get_polybar_val_k)"
+}
+
+get_polybar_p() {
+    printf "%s %s\n" "🍀" "$(get_polybar_val_p)"
+}
+
 eval "$(getpath -dse -- x13ctl cachedir 1 "$0: \`getpath -ds x13ctl\` failed")"
 # shellcheck disable=SC2154
 batlimfl="$cachedir/batterylimit"
 proffl="$cachedir/perfprofile"
 kbfl="$cachedir/keyboardbrightness"
 
-while getopts "c:hk:p:" OPT; do
+while getopts "c:f:hk:p:" OPT; do
     case "$OPT" in
         c)
             case "$OPTARG" in
                 sync) asusctl -c "$(cat -- "$batlimfl")";;
                 get) cat -- "$batlimfl";;
-                get-polybar) printf "%s %s%%\n" "♻" "$(cat -- "$batlimfl")";;
+                get-polybar) get_polybar_c;;
                 *)
                     case "$OPTARG" in
                         next) OPTARG="$(DEF=100 fmaps $X13CTL_BATTERY_NEXT_FMAPS < "$batlimfl")";;
@@ -31,6 +67,19 @@ while getopts "c:hk:p:" OPT; do
                     ;;
             esac
             ;;
+        f)
+            format="$OPTARG"
+            printf "%s" "$format" \
+                | replace "%ec" "$(get_polybar_val_c)" \
+                | replace "%ek" "$(get_polybar_val_k)" \
+                | replace "%ep" "$(get_polybar_val_p)" \
+                | replace "%pc" "$(get_polybar_c)" \
+                | replace "%pk" "$(get_polybar_k)" \
+                | replace "%pp" "$(get_polybar_p)" \
+                | replace "%c"  "$(cat -- "$batlimfl")" \
+                | replace "%k"  "$(cat -- "$kbfl")" \
+                | replace "%p"  "$(cat -- "$proffl")"
+            ;;
         h)
             printf "%s" \
 "$0 [OPTION...]
@@ -38,6 +87,7 @@ while getopts "c:hk:p:" OPT; do
 Only use syncing on initialisation, such as on boot or at the beginning of xinit.
 
    -c LIMIT     get or set charging limit. accepted LIMITs are {sync, get, get-polybar, prev, next, {20..100}}.
+   -f FORMAT    print values according to FORMAT. %c, %k and %p are replaced with the get command of their respective flags; %ec, %ek and %ep are replaced with the get-polybar command of their respective flags without the header; and %pc, %pk and %pp are replaced with the get-polybar command of their respective flags with the header.
    -h           display help dialog and exit
    -k LEVEL     get or set keyboard light brightness. accepted LEVELs are {sync, get, get-polybar, prev, next, {0, 48, o, {O, o}ff}, {1, 49, l, {L, l}ow}, {2, 50, m, {M, m}ed, {M, m}edium}, {3, 51, h, {H, h}igh}}.
    -p PROFILE   get or set performance profile. accepted PROFILEs are {sync, get, get-polybar, prev, next, {I, |, 0, q, {Q, q}uiet}, {II, ||, 1, b, {B, b}alanced}, {III, |||, 2, p, {P, p}erformance}}.
@@ -48,16 +98,7 @@ Only use syncing on initialisation, such as on boot or at the beginning of xinit
             case "$OPTARG" in
                 sync) printf "%s" "$(asusctl -k | cut -d' ' -f5 | fmaps 0=Off 1=Low 2=Med 3=High 48=Off 49=Low 50=Med 51=High)" > "$kbfl";;
                 get) cat -- "$kbfl";;
-                get-polybar)
-                    case "$(cat -- "$kbfl")" in
-                        Off) emoji=🇴;;
-                        Low) emoji=🇱;;
-                        Med) emoji=🇲;;
-                        High) emoji=🇭;;
-                        *) exit 1;;
-                    esac
-                    printf "%s %s\n" "🚦" "$emoji"
-                    ;;
+                get-polybar) get_polybar_k;;
                 *)
                     if [ "$OPTARG" = "next" ]; then
                         OPTARG="$(DEF=Low fmaps Low=Med Med=High High=Off < "$kbfl")"
@@ -82,15 +123,7 @@ Only use syncing on initialisation, such as on boot or at the beginning of xinit
             case "$OPTARG" in
                 sync) printf "%s" "$(asusctl profile -p | cut -d' ' -f4)" > "$proffl";;
                 get) cat -- "$proffl";;
-                get-polybar)
-                    case "$(cat -- "$proffl")" in
-                        Quiet) emoji=🇶;;
-                        Balanced) emoji=🇧;;
-                        Performance) emoji=🇵;;
-                        *) exit 1;;
-                    esac
-                    printf "%s %s\n" "🍀" "$emoji"
-                    ;;
+                get-polybar) get_polybar_p;;
                 *)
                     if [ "$OPTARG" = "next" ]; then
                         OPTARG="$(DEF=Quiet fmaps Quiet=Balanced Balanced=Performance < "$proffl")"
