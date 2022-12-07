@@ -41,6 +41,16 @@ get_polybar_p() {
     printf "%s %s\n" "🍀" "$(get_polybar_val_p)"
 }
 
+replace() {
+    if command -v replace > /dev/null 2>&1; then
+        command replace "$@"
+    elif command -v std::string > /dev/null 2>&1; then
+        command std::string replace_all "$@"
+    else
+        logerrq "could not find a suitable command to construct FORMAT for -f option"
+    fi
+}
+
 eval "$(getpath -dse -- x13ctl cachedir 1 "$0: \`getpath -ds x13ctl\` failed")"
 # shellcheck disable=SC2154
 batlimfl="$cachedir/batterylimit"
