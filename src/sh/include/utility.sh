@@ -29,6 +29,10 @@
         done
     }
 
+    std_logfraw() {
+        printf "$@"
+    }
+
     std_logfq() {
         fmt="$1"
         shift
@@ -50,6 +54,11 @@
         exit "${ec:-1}"
     }
 
+    std_logfrawq() {
+        printf "$@"
+        exit "${ec:-1}"
+    }
+
     std_logferr() {
         fmt="$1"
         shift
@@ -66,6 +75,10 @@
         for i; do
             printf "%s\n" "$i" >&2
         done
+    }
+
+    std_logferrraw() {
+        printf "$@" >&2
     }
 
     std_logferrq() {
@@ -86,6 +99,11 @@
         for i; do
             printf "%s\n" "$i" >&2
         done
+        exit "${ec:-1}"
+    }
+
+    std_logferrrawq() {
+        printf "$@" >&2
         exit "${ec:-1}"
     }
 }
