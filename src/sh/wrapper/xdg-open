@@ -11,7 +11,8 @@ unset XDG_CURRENT_DESKTOP
             if [ -e "$1" ]; then
                 arg="$(realpath -P -- "$1")"
                 [ ! -s "$1" ] || {
-                    ft="$(file --mime-type --brief "$arg")" \
+                    [ "${1##*.}" != "html" ] \
+                    && ft="$(file --mime-type --brief "$arg")" \
                     && [ "$ft" != "text/html" ] \
                     && [ "${ft%%/*}" = "text" ]
                 } && exec "$EDITOR" -- "$1"
