@@ -3,7 +3,7 @@
 # This was written as a more robust alternative to latexmk
 # as it seemed to fail and/or get stuck quite a lot.
 #
-# TODO: Limit CPU usage of ${LATEX_ENGINE:-"xelatex"}. ([cpulimit ... -- ${LATEX_ENGINE:-"xelatex"} ...] did not work)
+# TODO: Limit CPU usage of $latex_engine. ([cpulimit ... -- $latex_engine ...] did not work)
 # TODO: Should child latexstps be spawned for every positional argument?
 #       Should only one positional argument be accepted?
 #       Should the first positional argument be considered the source file
@@ -98,6 +98,19 @@ $fls"
 
 setdefargs() {
     cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}/latexstp"
+    if [ -n "$LATEX_ENGINE" ]; then
+        latex_engine="$LATEX_ENGINE"
+    elif command -v lualatex > /dev/null 2>&1; then
+        latex_engine="lualatex"
+    elif command -v xelatex > /dev/null 2>&1; then
+        latex_engine="xelatex"
+    elif command -v pdflatex > /dev/null 2>&1; then
+        latex_engine="pdflatex"
+    elif command -v latex > /dev/null 2>&1; then
+        latex_engine="latex"
+    else
+        logerrq "No LaTeX engine found, exiting."
+    fi
 }
 
 processargs() {
@@ -138,17 +151,17 @@ printcompile() {
     [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat -- '$srchashfl' 2> /dev/null)\" ] && return 0
 
     # Adapted from https://tex.stackexchange.com/a/8792/199300
-    ${LATEX_ENGINE:-"xelatex"} $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl' || {
+    $latex_engine $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl' || {
         cleanaux
-        ${LATEX_ENGINE:-"xelatex"} $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl' || return 1
+        $latex_engine $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl' || return 1
     }
     [ -f '$srcfl.pytxcode' ] && pythontex -- '$srcfl'
     bibtex -- '$srcfl'
     biber -- '$srcfl'
     makeindex '$srcfl'.idx 2> /dev/null
     # makeindex -s style.gls ...
-    ${LATEX_ENGINE:-"xelatex"} $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
-    ${LATEX_ENGINE:-"xelatex"} $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
+    $latex_engine $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
+    $latex_engine $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
 
     printf '%s\n' \"\$srchash\" > '$srchashfl'
     "
