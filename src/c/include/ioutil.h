@@ -1,21 +1,10 @@
 #ifndef HEADER_SCRIPTS_C_IOUTIL_
 #define HEADER_SCRIPTS_C_IOUTIL_
 
-#ifdef _POSIX_C_SOURCE
-#define BAK_POSIX_C_SOURCE_ _POSIX_C_SOURCE
-#undef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
-#undef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE BAK_POSIX_C_SOURCE_
-#undef BAK_POSIX_C_SOURCE_
-#else /* ifdef _POSIX_C_SOURCE */
-#define _POSIX_C_SOURCE 200809L
-#include <stdio.h>
-#undef _POSIX_C_SOURCE
-#endif /* ifndef _POSIX_C_SOURCE */
 #include <sys/types.h>
 
+#if _POSIX_C_SOURCE >= 200809L
 char *fgetstr(FILE *stream, int delim)
 {
     static char *line = NULL;
@@ -40,5 +29,6 @@ char *getstr(int argc, char *argv[], int delim)
 
     return fgetstr(stdin, delim);
 }
+#endif /* #if _POSIX_C_SOURCE >= 200809L */
 
 #endif /* ifndef HEADER_SCRIPTS_C_IOUTIL_ */

@@ -1,6 +1,7 @@
-#include <stdio.h>
+#define _POSIX_C_SOURCE 200809L
 
 #include <ioutil.h>
+#include <stdio.h>
 #include <sysutil.h>
 
 int main(int argc, char *argv[])

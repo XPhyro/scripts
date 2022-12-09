@@ -17,6 +17,16 @@ char *fgetstr(FILE *stream, int delim);
 char *getstr(int argc, char *argv[], int delim);
 ```
 
+Feature Test Macro Requirements
+
+```c
+fgetstr(), getstr():
+    Since glibc 2.10:
+        _POSIX_C_SOURCE >= 200809L
+    Before glibc 2.10:
+        _GNU_SOURCE
+```
+
 # DESCRIPTION
 
 `fgetstr()` is an easy-to-use wrapper for `getdelim(3)`.
