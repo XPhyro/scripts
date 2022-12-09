@@ -946,7 +946,8 @@ CPPCHECK_SUPPRESS="--suppress=unmatchedSuppression:\* \
                    --suppress=invalidPrintfArgType_uint \
                    --suppress=shadowFunction \
                    --suppress=shadowVariable \
-                   --suppress=unusedFunction"
+                   --suppress=unusedFunction \
+                   --suppress=uninitvar"
 
 ec=0
 cancompilecpp="$(cancompilecpp "$CXX")"
