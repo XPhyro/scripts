@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    printf("%zd\n", popcount);
+    printf("%zu\n", popcount);
 
     return 0;
 }
