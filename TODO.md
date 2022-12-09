@@ -166,6 +166,9 @@
   used (though C is preferred for future-compatibility)) library for creating
   other `std` utilities such as `std::vector` and `std::unordered_map`, then
   refactor `std::vector` and `std::unordered_map` using that library.
+- Rewrite `tglapp` in C++, Go or Rust.
+  - Much easier to support the other to-dos regarding `tglapp` in one of these
+    languages rather than in shell.
 
 ## Other
 
