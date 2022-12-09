@@ -101,8 +101,6 @@ else
     fi
 fi
 
-flushterm
-
 [ "$hasconfig" -eq 0 ] && {
     case "$VPN" in
         protonvpn-cli)
