@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+main() {
+    set -e
+
+    last_mix="$(headsetcontrol -mc)"
+
+    while :; do
+        sleep 2
+
+        mix="$(headsetcontrol -mc)"
+
+        { [ "$last_mix" = 128 ] || [ "$mix" = 128 ]; } && [ "$last_mix" != "$mix" ] && \
+            playerctl -a play-pause
+
+        last_mix="$mix"
+    done
+}
+
+while :; do
+    (main)
+    sleep 5
+done
