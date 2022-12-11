@@ -27,8 +27,13 @@ fi
 
 hasconfig || update() {
     # shellcheck disable=SC2154
-    { [ "$last_mix" = 128 ] || [ "$mix" = 128 ]; } && [ "$last_mix" != "$mix" ] && \
-        playerctl -a play-pause
+    [ "$last_mix" != "$mix" ] && {
+        if [ "$mix" = 128 ]; then
+            playerctl -a pause
+        elif [ "$last_mix" = 128 ]; then
+            playerctl -a play
+        fi
+    }
 }
 
 while :; do
