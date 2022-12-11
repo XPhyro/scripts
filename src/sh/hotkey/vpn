@@ -192,5 +192,5 @@ hasconfig || {
 while :; do
     fillline "―" >&2
     printf "\n" >&2
-    on_char_read "$(readchar)"
+    on_char_read "$(readchar)" || flushterm
 done
