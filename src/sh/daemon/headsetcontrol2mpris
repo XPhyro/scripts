@@ -1,23 +1,53 @@
 #!/usr/bin/env sh
 
-main() {
-    set -e
+. shellverbose.sh
 
-    last_mix="$(headsetcontrol -mc)"
+. utility.sh # unused, included for external configs
 
-    while :; do
-        sleep 2
+get_headsetcontrol_eval() {
+    { headsetcontrol -b -m || sudo headsetcontrol -b -m; } 2> /dev/null \
+        | grep -E '(Battery|Chat-Mix):\s+([0-9]+|Charging)' \
+        | tr -d ' -' \
+        | tr ':' '=' \
+        | tr -d '%' \
+        | sed 's/^ChatMix/mix/;s/^Battery/battery/'
+}
 
-        mix="$(headsetcontrol -mc)"
+configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/headsetcontrol2mpris/config.sh"
+if [ -f "$configfl" ]; then
+    . "$configfl"
+    hasconfig() {
+        true
+    }
+else
+    hasconfig() {
+        false
+    }
+fi
 
-        { [ "$last_mix" = 128 ] || [ "$mix" = 128 ]; } && [ "$last_mix" != "$mix" ] && \
-            playerctl -a play-pause
-
-        last_mix="$mix"
-    done
+hasconfig || update() {
+    # shellcheck disable=SC2154
+    { [ "$last_mix" = 128 ] || [ "$mix" = 128 ]; } && [ "$last_mix" != "$mix" ] && \
+        playerctl -a play-pause
 }
 
 while :; do
-    (main)
+    (
+        set -e
+
+        eval "$(get_headsetcontrol_eval | sed 's/^/last_/')"
+
+        while :; do
+            sleep 2
+
+            eval "$(get_headsetcontrol_eval)"
+
+            (update) || :
+
+            last_mix="$mix"
+            # shellcheck disable=SC2034,SC2154
+            last_battery="$battery"
+        done
+    )
     sleep 5
 done
