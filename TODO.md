@@ -148,6 +148,10 @@
     only the files passed via the command-line (or also stdin?).
 - Write a script that converts CBR to PDF and uses a PDF viewer to open the
   temporary file.
+- Create a shell header, that, if included, makes the current script reload if
+  the script file is touched.
+  - Similar to `polybar`, `picom`, etc.
+  - Use this header in daemons like `headsetcontrol2mpris`.
 
 ## Refactoring / Rewriting / Reworking
 
