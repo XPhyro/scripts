@@ -916,6 +916,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wimplicit-fallthrough=5 -Wno-sign-compare \
        -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
        -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
+       -Wshadow-compatible-local \
        -ffp-contract=on -fassociative-math -ffast-math -flto \
        $C_INCLUDE_FLAGS"
 CLDFLAGS=""
@@ -931,6 +932,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wimplicit-fallthrough=5 -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
+          -Wshadow-compatible-local \
           -ffp-contract=on -fassociative-math -ffast-math -flto \
           -fpermissive -fvtable-verify=none \
           $CXX_INCLUDE_FLAGS"
