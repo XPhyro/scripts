@@ -1,0 +1,4 @@
+#!/usr/bin/env -S awk -f
+# Like `uniq`, but can work with unordered input.
+
+!seen[$0]++
