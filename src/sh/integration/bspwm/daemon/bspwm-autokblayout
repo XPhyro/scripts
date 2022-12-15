@@ -18,15 +18,23 @@ setkm() {
     setxkb "$1"
 }
 
+ensure_defined() {
+    for i; do
+        command -v "$i" >/dev/null 2>&1 || eval "$i() :"
+    done
+}
+
 execname="${0##*/}"
 
 configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/autokblayout/config.sh"
 [ -f "$configfl" ] && . "$configfl"
 
-command -v first_time_setup > /dev/null 2>&1 || \
-    first_time_setup() {
-        :
-    }
+ensure_defined \
+    pre_query \
+    post_query \
+    first_time_setup \
+    pre_update \
+    post_update
 
 idvec new
 kmmap new
@@ -38,14 +46,18 @@ bspc subscribe node_focus | while IFS=" " read -r _ _ _ ID; do
     [ -z "$xclassname" ] && continue
     eval "$xclassname" # defines CLASS, INSTANCE and NAME
 
+    (pre_query)
     km="$(xkb-switch)"
+    (post_query)
     kmmap "$oldid" = "$km"
 
     if ! idvec -q find "$ID"; then
         (first_time_setup)
         idvec push_back "$ID"
     else
+        (pre_update)
         setkm "$(kmmap "$ID")"
+        (post_update)
     fi
 
     oldid="$ID"
