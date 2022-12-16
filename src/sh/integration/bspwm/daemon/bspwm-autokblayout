@@ -2,9 +2,12 @@
 
 . utility.sh
 
+. meta.sh
+
 . shellverbose.sh
 
 idvec() {
+    # shellcheck disable=SC2154
     std::vector "$execname" "seenids" "$@"
 }
 
@@ -18,18 +21,10 @@ setkm() {
     setxkb "$1"
 }
 
-ensure_defined() {
-    for i; do
-        command -v "$i" >/dev/null 2>&1 || eval "$i() :"
-    done
-}
-
-execname="${0##*/}"
-
 configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/autokblayout/config.sh"
 [ -f "$configfl" ] && . "$configfl"
 
-ensure_defined \
+std_ensure_defined \
     pre_query \
     post_query \
     first_time_setup \
