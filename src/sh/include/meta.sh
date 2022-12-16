@@ -1,6 +1,14 @@
 [ -z "${HEADER_SCRIPTS_META_+x}" ] && {
     HEADER_SCRIPTS_META_=
 
+    std_is_set() {
+        for i; do
+            eval '[ -z "${'"$i"'+x}" ]' && return 1
+        done
+
+        return 0
+    }
+
     std_ensure_defined() {
         __ec=0
         for i; do
