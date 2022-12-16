@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-. utility.sh
+. io.sh
+. shellverbose.sh
 
 playerctl -l | while IFS= read -r player; do
     std_log "Stopping player $player."

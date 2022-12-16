@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
+. io.sh
 . shellverbose.sh
-
-. utility.sh
 
 testexif() {
     fl="$1"
@@ -62,14 +61,12 @@ testfile() {
     fi
 }
 
-execname="$0"
-
 optany=0
 while getopts "ho" OPT; do
     case "$OPT" in
         h)
             printf "%s" \
-"$execname [OPTION]... [KEY:VAL]...
+"$execpath [OPTION]... [KEY:VAL]...
 Filter files by EXIF data.
 
 Files are read from standard input, delimited by newlines.

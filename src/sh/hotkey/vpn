@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
+. execinfo.sh
+. io.sh
 . shellverbose.sh
-
-. utility.sh
 
 configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/vpn/config.sh"
 if [ -f "$configfl" ]; then
@@ -21,7 +21,7 @@ while getopts "hsv:" OPT; do
     case "$OPT" in
         h)
             printf "%s" \
-"vpn [OPTION...]
+"$execname [OPTION...]
    -h      Print help message and exit.
    -s      Print detailed status before initialisation.
    -v VPN  Set the VPN executable to use to VPN.

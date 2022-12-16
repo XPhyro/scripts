@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
+. io.sh
 . shellverbose.sh
-. utility.sh
 
 mark="$1"
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
+. io.sh
 . shellverbose.sh
-
-. utility.sh
 
 for ln; do
     [ -L "$ln" ] || {

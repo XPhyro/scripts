@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
+. execinfo.sh
+. io.sh
 . shellverbose.sh
-. utility.sh
-execname="$0"
 
 opt_test_800_22=0
 opt_test_800_90b_iid=0

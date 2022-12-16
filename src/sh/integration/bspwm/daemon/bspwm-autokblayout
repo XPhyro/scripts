@@ -1,9 +1,8 @@
 #!/usr/bin/env sh
 
-. utility.sh
-
+. execinfo.sh
+. io.sh
 . meta.sh
-
 . shellverbose.sh
 
 idvec() {
