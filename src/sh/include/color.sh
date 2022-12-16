@@ -3,34 +3,34 @@
 [ -z "${HEADER_SCRIPTS_COLOR_+x}" ] && {
     HEADER_SCRIPTS_COLOR_=
 
-    clr() {
+    std_clr() {
         printf "$2$1$NC"
     }
 
-    clrl() {
-        clr "$1\n" "$2"
+    std_clrl() {
+        std_clr "$1\n" "$2"
     }
 
-    BLACK='\033[0;30m'
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    ORANGE='\033[0;33m'
-    BLUE='\033[0;34m'
-    PURPLE='\033[0;35m'
-    CYAN='\033[0;36m'
-    LGRAY='\033[0;37m'
-    DGRAY='\033[1;30m'
-    LRED='\033[1;31m'
-    LGREEN='\033[1;32m'
-    YELLOW='\033[1;33m'
-    LBLUE='\033[1;34m'
-    LPURPLE='\033[1;35m'
-    LCYAN='\033[1;36m'
-    WHITE='\033[1;37m'
-    NC='\033[0m'
+    std_black='\033[0;30m'
+    std_red='\033[0;31m'
+    std_green='\033[0;32m'
+    std_orange='\033[0;33m'
+    std_blue='\033[0;34m'
+    std_purple='\033[0;35m'
+    std_cyan='\033[0;36m'
+    std_lgray='\033[0;37m'
+    std_dgray='\033[1;30m'
+    std_lred='\033[1;31m'
+    std_lgreen='\033[1;32m'
+    std_yellow='\033[1;33m'
+    std_lblue='\033[1;34m'
+    std_lpurple='\033[1;35m'
+    std_lcyan='\033[1;36m'
+    std_white='\033[1;37m'
+    std_nc='\033[0m'
 
-    WS="    "
-    WSS="$WS$WS"
-    WSSS="$WSS$WS"
-    WSSSS="$WSSS$WS"
+    std_ws="    "
+    std_wss="$WS$WS"
+    std_wsss="$WSS$WS"
+    std_wssss="$WSSS$WS"
 }
