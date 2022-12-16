@@ -1,7 +1,7 @@
 [ -z "${HEADER_SCRIPTS_UTILITY_+x}" ] && {
     HEADER_SCRIPTS_UTILITY_=
 
-    execname="${0##*/}"
+    . execinfo.sh
 
     std_logf() {
         fmt="$1"
