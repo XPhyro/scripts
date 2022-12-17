@@ -97,9 +97,9 @@ install() {
             "Be sure to add it to your PATH with high priority."
 
     printf "%s\n" \
-        "Installing Bash, execline, Python, Perl and shell scripts:"
+        "Installing AWK, Bash, execline, Python, Perl and shell scripts:"
 
-    for i in bash el py pl sh; do
+    for i in awk bash el py pl sh; do
         (
             cd "$i"
 
