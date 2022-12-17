@@ -146,7 +146,7 @@ hasconfig || {
                             done
                         )"
                         ;;
-                    q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
+                    ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
                     r) protonvpn-cli r;;
                     s) protonvpn-cli s;;
                     *)
@@ -173,7 +173,7 @@ hasconfig || {
                     d) "$VPN" disconnect;;
                     r) "$VPN" reconnect;;
                     s) "$VPN" status;;
-                    q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
+                    ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
                     *)
                         printf "%s\n" \
                            "c) connect" \
