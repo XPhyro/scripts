@@ -93,7 +93,7 @@ color yellow "$VPN"
 
 if pgrep -u root openvpn > /dev/null 2>&1; then
     if [ -n "$optstatus" ]; then
-        execvpn status
+        "$VPN" status
     else
         color green "An OpenVPN connection exists."
     fi
