@@ -149,6 +149,15 @@ hasconfig || {
                     ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
                     r) protonvpn-cli r;;
                     s) protonvpn-cli s;;
+                    t)
+                        if pgrep -u root openvpn > /dev/null 2>&1; then
+                            protonvpn-cli ks --off
+                            protonvpn-cli d
+                        else
+                            protonvpn-cli r
+                            protonvpn-cli ks --permanent
+                        fi
+                        ;;
                     *)
                         printf "%s\n" \
                            "c) connect to specific country" \
@@ -173,6 +182,13 @@ hasconfig || {
                     d) "$VPN" disconnect;;
                     r) "$VPN" reconnect;;
                     s) "$VPN" status;;
+                    t)
+                        if pgrep -u root openvpn > /dev/null 2>&1; then
+                            "$VPN" disconnect
+                        else
+                            "$VPN" reconnect
+                        fi
+                        ;;
                     ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
                     *)
                         printf "%s\n" \
