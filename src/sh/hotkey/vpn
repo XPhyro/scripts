@@ -167,9 +167,10 @@ hasconfig || {
                            "k) configure killswitch" \
                            "l) list configuration" \
                            "n) configure netshield" \
-                           "q) quit" \
                            "r) reconnect" \
                            "s) status" \
+                           "t) toggle connection and killswitch" \
+                           "^D | q) quit" \
                            "*) print this" >&2
                         ;;
                 esac
@@ -196,7 +197,8 @@ hasconfig || {
                            "d) disconnect" \
                            "r) reconnect" \
                            "s) status" \
-                           "q) quit" \
+                           "t) toggle connection" \
+                           "^D | q) quit" \
                            "*) print this" >&2
                         ;;
                 esac
