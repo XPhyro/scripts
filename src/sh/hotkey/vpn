@@ -109,6 +109,12 @@ hasconfig || {
     case "$VPN" in
         protonvpn|protonvpn-cli)
             on_char_read() {
+                printf "\n"
+
+                case "$1" in
+                    ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
+                esac
+
                 case "$1" in
                     c)
                         printf "Enter country code: " >&2
@@ -146,7 +152,6 @@ hasconfig || {
                             done
                         )"
                         ;;
-                    ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
                     r) protonvpn-cli r;;
                     s) protonvpn-cli s;;
                     t)
@@ -173,7 +178,9 @@ hasconfig || {
                            "^D | q) quit" \
                            "*) print this" >&2
                         ;;
-                esac
+                esac | sed '/^$/d'
+
+                printf "\n"
             }
             ;;
         *)
