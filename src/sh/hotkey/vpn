@@ -107,7 +107,7 @@ fi
 
 hasconfig || {
     case "$VPN" in
-        protonvpn-cli)
+        protonvpn|protonvpn-cli)
             on_char_read() {
                 case "$1" in
                     c)
