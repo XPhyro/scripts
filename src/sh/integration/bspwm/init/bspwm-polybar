@@ -2,7 +2,10 @@
 
 . shellverbose.sh
 
-killall -u "$(id -un)" polybar
+user="$(id -un)"
+killall -u "$user" polybar
+sleep 0.2
+killall -9 -w -u "$user" polybar
 
 mons="$(bspc query -M --names)"
 firstmon="$(printf "%s\n" "$mons" | head -n 1)"
