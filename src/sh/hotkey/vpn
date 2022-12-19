@@ -166,18 +166,18 @@ hasconfig || {
                         ;;
                     *)
                         printf "%s\n" \
-                           "c) connect to specific country" \
-                           "d) disconnect" \
-                           "f) connect to fastest" \
-                           "i) connect interactively" \
-                           "k) configure killswitch" \
-                           "l) list configuration" \
-                           "n) configure netshield" \
-                           "r) reconnect" \
-                           "s) status" \
-                           "t) toggle connection and killswitch" \
+                           "     c) connect to specific country" \
+                           "     d) disconnect" \
+                           "     f) connect to fastest" \
+                           "     i) connect interactively" \
+                           "     k) configure killswitch" \
+                           "     l) list configuration" \
+                           "     n) configure netshield" \
+                           "     r) reconnect" \
+                           "     s) status" \
+                           "     t) toggle connection and killswitch" \
                            "^D | q) quit" \
-                           "*) print this" >&2
+                           "     *) print this" >&2
                         ;;
                 esac | sed '/^$/d'
 
@@ -201,13 +201,13 @@ hasconfig || {
                     ''|q) ec=0 std_logfrawq "\r\033[A\033[2K\r\033[A\033[2K" >&2;;
                     *)
                         printf "%s\n" \
-                           "c) connect" \
-                           "d) disconnect" \
-                           "r) reconnect" \
-                           "s) status" \
-                           "t) toggle connection" \
+                           "     c) connect" \
+                           "     d) disconnect" \
+                           "     r) reconnect" \
+                           "     s) status" \
+                           "     t) toggle connection" \
                            "^D | q) quit" \
-                           "*) print this" >&2
+                           "     *) print this" >&2
                         ;;
                 esac
             }
