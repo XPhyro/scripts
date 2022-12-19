@@ -173,6 +173,8 @@
 - Rewrite `tglapp` in C++, Go or Rust.
   - Much easier to support the other to-dos regarding `tglapp` in one of these
     languages rather than in shell.
+- Export `align()` from `std::string` to `strutil.h` and use it from the
+  header.
 
 ## Other
 
