@@ -6,6 +6,7 @@
     std_logf() {
         __fmt="$1"
         shift
+        # shellcheck disable=SC2154
         printf "%s: $__fmt" "$execname" "$@"
     }
 
