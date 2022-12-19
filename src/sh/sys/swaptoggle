@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
 
 . shellverbose.sh
+. sudo.sh
 
-unset sudo
-[ "$(id -u)" != 0 ] && sudo="${SUDO:-sudo}"
-
-$sudo swapoff -a
-$sudo swapon -a
-$sudo swapon /dev/zram0
+std_sudo swapoff -a
+std_sudo swapon -a
+std_sudo swapon /dev/zram0
