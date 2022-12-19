@@ -12,9 +12,17 @@
     std_ensure_defined() {
         __ec=0
         for __i; do
-            command -v "$__i" > /dev/null 2>&1 || eval "$__i() :" || __ec=1
+            command -v -- "$__i" > /dev/null 2>&1 || eval "$__i() :" || __ec=1
         done
 
         return "$__ec"
+    }
+
+    std_has_command() {
+        for __i; do
+            command -v -- "$__i" > /dev/null 2>&1 || return 1
+        done
+
+        return 0
     }
 }
