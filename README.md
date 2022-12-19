@@ -2,9 +2,9 @@
 [![Codeberg](https://img.shields.io/badge/Codeberg-2185D0?style=flat-square&logo=codeberg&logoColor=F2F8FC)](https://codeberg.org/XPhyro/scripts)
 [![CodeFactor](https://www.codefactor.io/repository/github/xphyro/scripts/badge?style=flat-square)](https://www.codefactor.io/repository/github/xphyro/scripts)
 [![Lines of Code](https://img.shields.io/tokei/lines/github/XPhyro/scripts?color=red&style=flat-square)](src)
-[![GitHub Build Workflow Status](https://img.shields.io/github/actions/workflow/status/XPhyro/scripts/workflows/build.yml?branch=master&style=flat-square&label=build%20%26%20test)](https://github.com/XPhyro/scripts/actions/workflows/build.yml)
-[![GitHub Analyse Workflow Status](https://img.shields.io/github/actions/workflow/status/XPhyro/scripts/workflows/analyse.yml?branch=master&style=flat-square&label=analyse)](https://github.com/XPhyro/scripts/actions/workflows/analyse.yml)
-[![GitHub Spell Workflow Status](https://img.shields.io/github/actions/workflow/status/XPhyro/scripts/workflows/spell.yml?branch=master&style=flat-square&label=spell)](https://github.com/XPhyro/scripts/actions/workflows/spell.yml)
+[![GitHub Build Workflow Status](https://img.shields.io/github/actions/workflow/status/XPhyro/scripts/build.yml?branch=master&style=flat-square&label=build%20%26%20test)](https://github.com/XPhyro/scripts/actions/workflows/build.yml)
+[![GitHub Analyse Workflow Status](https://img.shields.io/github/actions/workflow/status/XPhyro/scripts/analyse.yml?branch=master&style=flat-square&label=analyse)](https://github.com/XPhyro/scripts/actions/workflows/analyse.yml)
+[![GitHub Spell Workflow Status](https://img.shields.io/github/actions/workflow/status/XPhyro/scripts/spell.yml?branch=master&style=flat-square&label=spell)](https://github.com/XPhyro/scripts/actions/workflows/spell.yml)
 
 # scripts
 
