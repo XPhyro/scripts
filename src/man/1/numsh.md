@@ -19,8 +19,7 @@ Do mathematical calculations on all given numbers.
 With no NUMBER, read standard input. Empty lines are ignored when reading
 standard input.
 
-Option -f is required. If FUNC requires additional arguments, option -o must be
-given exactly as many times as required.
+If FUNC requires additional arguments, option -o must be given respectively.
 
 # OPTIONS
 
