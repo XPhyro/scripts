@@ -15,7 +15,7 @@
 
 DEFINE_EXEC_INFO();
 
-std::string get_input(int& argc, char**& argv);
+std::string get_input(int argc, const char* const* const argv);
 void align(int& argc, char**& argv);
 void replace_all(int& argc, char**& argv);
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-std::string get_input(int& argc, char**& argv)
+std::string get_input(int argc, const char* const* const argv)
 {
     std::stringstream ss;
 

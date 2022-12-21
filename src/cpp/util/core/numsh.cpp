@@ -168,8 +168,10 @@ int main(int argc, char* argv[])
         );
 
     std::vector<double> nums;
-    for (const auto& arg : std::views::counted(argv, argc))
-        nums.push_back(xph::lexical_cast<char*, double>(arg));
+    std::ranges::copy(std::views::counted(argv, argc) | std::views::transform([&](const auto& arg) {
+                          return xph::lexical_cast<char*, double>(arg);
+                      }),
+                      std::back_inserter(nums));
 
     for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs))
         func.function(func_argv, nums);
