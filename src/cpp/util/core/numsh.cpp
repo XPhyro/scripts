@@ -190,127 +190,127 @@ namespace func {
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::acos(num);
+            num = std::acos(num);
     }
 
     void asin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::asin(num);
+            num = std::asin(num);
     }
 
     void atan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::atan(num);
+            num = std::atan(num);
     }
 
     void cbrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::cbrt(num);
+            num = std::cbrt(num);
     }
 
     void ceil([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::ceil(num);
+            num = std::ceil(num);
     }
 
     void cos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::cos(num);
+            num = std::cos(num);
     }
 
     void cosh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::cosh(num);
+            num = std::cosh(num);
     }
 
     void exp([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::exp(num);
+            num = std::exp(num);
     }
 
     void fabs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::fabs(num);
+            num = std::fabs(num);
     }
 
     void floor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::floor(num);
+            num = std::floor(num);
     }
 
     void log([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::log(num);
+            num = std::log(num);
     }
 
     void log10([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::log10(num);
+            num = std::log10(num);
     }
 
     void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::log2(num);
+            num = std::log2(num);
     }
 
     void pow(std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::pow(num, argv[0]);
+            num = std::pow(num, argv[0]);
     }
 
     void round([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::round(num);
+            num = std::round(num);
     }
 
     void sin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::sin(num);
+            num = std::sin(num);
     }
 
     void sinh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::sinh(num);
+            num = std::sinh(num);
     }
 
     void sqrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::sqrt(num);
+            num = std::sqrt(num);
     }
 
     void tan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::tan(num);
+            num = std::tan(num);
     }
 
     void tanh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::tanh(num);
+            num = std::tanh(num);
     }
 
     void trunc([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
-            num = ::trunc(num);
+            num = std::trunc(num);
     }
 
     void nonzero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
