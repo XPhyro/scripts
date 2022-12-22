@@ -19,7 +19,9 @@ Do mathematical calculations on all given numbers.
 With no NUMBER, read standard input. Empty lines are ignored when reading
 standard input.
 
-If FUNC requires additional arguments, option -o must be given respectively.
+With no FUNC, don't modify numbers.
+
+If FUNC requires additional arguments, option -p must be given respectively.
 
 # OPTIONS
 
@@ -36,7 +38,7 @@ If FUNC requires additional arguments, option -o must be given respectively.
 -f FUNC
 : function to pass numbers through
 
--o ARG
+-p ARG
 : pass additional arguments to FUNC. must be given after -f, can be given
 multiple times.
 
