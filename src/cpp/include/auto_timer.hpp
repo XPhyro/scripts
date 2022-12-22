@@ -41,36 +41,36 @@ namespace xph {
             if (auto duration = xph::toc(km_identifier).count(); !duration) {
                 return;
             } else {
-                if (duration > 31'556'952'000'000'000) {
-                    scaled_duration = duration / 31'556'952'000'000'000.0l;
-                    unit = "y";
-                } else if (duration > 2'629'746'000'000'000) {
-                    scaled_duration = duration / 2'629'746'000'000'000.0l;
-                    unit = "m";
-                } else if (duration > 604'800'000'000'000) {
-                    scaled_duration = duration / 604'800'000'000'000.0l;
-                    unit = "w";
-                } else if (duration > 86'400'000'000'000) {
-                    scaled_duration = duration / 86'400'000'000'000.0l;
-                    unit = "d";
-                } else if (duration > 3'600'000'000'000) {
-                    scaled_duration = duration / 3'600'000'000'000.0l;
-                    unit = "h";
-                } else if (duration > 60'000'000'000) {
-                    scaled_duration = duration / 60'000'000'000.0l;
-                    unit = "m";
-                } else if (duration > 1'000'000'000) {
-                    scaled_duration = duration / 1'000'000'000.0l;
-                    unit = "s";
-                } else if (duration > 1'000'000) {
-                    scaled_duration = duration / 1'000'000.0l;
-                    unit = "ms";
-                } else if (duration > 1'000) {
-                    scaled_duration = duration / 1'000.0l;
-                    unit = "us";
-                } else {
+                if (duration < 1'000) {
                     scaled_duration = duration;
                     unit = "ns";
+                } else if (duration < 1'000'000) {
+                    scaled_duration = duration / 1'000.0l;
+                    unit = "us";
+                } else if (duration < 1'000'000'000) {
+                    scaled_duration = duration / 1'000'000.0l;
+                    unit = "ms";
+                } else if (duration < 60'000'000'000) {
+                    scaled_duration = duration / 1'000'000'000.0l;
+                    unit = "s";
+                } else if (duration < 3'600'000'000'000) {
+                    scaled_duration = duration / 60'000'000'000.0l;
+                    unit = "m";
+                } else if (duration < 86'400'000'000'000) {
+                    scaled_duration = duration / 3'600'000'000'000.0l;
+                    unit = "h";
+                } else if (duration < 604'800'000'000'000) {
+                    scaled_duration = duration / 86'400'000'000'000.0l;
+                    unit = "d";
+                } else if (duration < 2'629'746'000'000'000) {
+                    scaled_duration = duration / 604'800'000'000'000.0l;
+                    unit = "w";
+                } else if (duration < 31'556'952'000'000'000) {
+                    scaled_duration = duration / 2'629'746'000'000'000.0l;
+                    unit = "m";
+                } else {
+                    scaled_duration = duration / 31'556'952'000'000'000.0l;
+                    unit = "y";
                 }
             }
 
