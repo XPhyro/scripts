@@ -172,10 +172,15 @@ int main(int argc, char* argv[])
         );
 
     std::vector<double> nums;
-    std::ranges::copy(std::views::counted(argv, argc) | std::views::transform([&](const auto& arg) {
-                          return xph::lexical_cast<char*, double>(arg);
-                      }),
-                      std::back_inserter(nums));
+    if (argc) {
+        std::ranges::copy(std::views::counted(argv, argc) |
+                              std::views::transform([&](const auto& arg) {
+                                  return xph::lexical_cast<char*, double>(arg);
+                              }),
+                          std::back_inserter(nums));
+    } else {
+        for (double num; std::cin >> num; nums.push_back(num)) {}
+    }
 
     for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs))
         func.function(func_argv, nums);
