@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <numeric>
 #include <optional>
 #include <ranges>
@@ -58,6 +59,7 @@ namespace func {
     DECL_FUNC(min);
     DECL_FUNC(sum);
     DECL_FUNC(mean);
+    DECL_FUNC(gcd);
 } // namespace func
 
 struct function {
@@ -96,6 +98,7 @@ std::unordered_map<std::string_view, function> functions = {
     { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
     { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
     { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
+    { "gcd", { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
 };
 
 int main(int argc, char* argv[])
@@ -176,6 +179,7 @@ int main(int argc, char* argv[])
 
     for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs))
         func.function(func_argv, nums);
+
     for (const auto& num : nums)
         std::cout << num << '\n';
 
@@ -332,5 +336,28 @@ namespace func {
     void mean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         nums = { std::accumulate(nums.begin(), nums.end(), 0.0) / nums.size() };
+    }
+
+    void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        double min = std::numeric_limits<double>::max(), max = std::numeric_limits<double>::min();
+
+        for (double num : nums) {
+            num = std::abs(num);
+            if (num < min)
+                min = num;
+            if (num > max)
+                max = num;
+        }
+
+        class gcd_impl final {
+        public:
+            static inline std::uintmax_t gcd_pair(std::uintmax_t min, std::uintmax_t max)
+            {
+                return !max ? min : gcd_pair(max, min % max);
+            }
+        };
+
+        nums = { static_cast<double>(gcd_impl::gcd_pair(std::abs(min), std::abs(max))) };
     }
 } // namespace func
