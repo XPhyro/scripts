@@ -23,8 +23,7 @@
 
 #include <die.hpp>
 #include <lexical_cast.hpp>
-
-#include <mathutil.h>
+#include <mathutil.hpp>
 
 DEFINE_EXEC_INFO();
 
@@ -320,7 +319,7 @@ namespace func {
 
     void nonzero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        std::erase_if(nums, [](double num) { return ::approxzero(num); });
+        std::erase_if(nums, [](double num) { return xph::approx_zero(num); });
     }
 
     void max([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
