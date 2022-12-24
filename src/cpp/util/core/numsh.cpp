@@ -363,7 +363,7 @@ namespace func {
 
     void min([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { *std::min(nums.begin(), nums.end()) };
+        nums = { *std::min_element(nums.begin(), nums.end()) };
     }
 
     void sum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
