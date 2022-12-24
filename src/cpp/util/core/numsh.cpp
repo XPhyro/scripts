@@ -113,7 +113,9 @@ int main(int argc, char* argv[])
     std::vector<function> sel_funcs;
     std::vector<std::vector<double>> func_argvs;
 
-    for (int i; (i = getopt(argc, argv, "f:hLp:")) != -1;) {
+    bool opt_multi = false;
+
+    for (int i; (i = getopt(argc, argv, "f:hLmp:")) != -1;) {
         switch (i) {
             case 'f': {
                 if (!sel_funcs.empty() && func_argvs.back().size() < sel_funcs.back().min_argc)
@@ -143,6 +145,7 @@ int main(int argc, char* argv[])
                        "  -f  FUNC  function to pass numbers through. pass -L to see the list.\n"
                        "  -h        display this help and exit\n"
                        "  -L        list all supported functions and exit\n"
+                       "  -m        do not chain functions, output multiple results instead\n"
                        "  -p  ARG   pass additional arguments to FUNC. this option can be\n"
                        "            given multiple times, and has to be given after -f.\n";
                 return EXIT_SUCCESS;
@@ -152,6 +155,10 @@ int main(int argc, char* argv[])
                     std::cout << name << ":\n\t" << func.description << '\n';
 
                 return EXIT_SUCCESS;
+            }
+            case 'm': {
+                opt_multi = true;
+                break;
             }
             case 'p': {
                 if (auto& func_argv = func_argvs.back(); func_argv.size() == func_argv.capacity())
@@ -187,11 +194,22 @@ int main(int argc, char* argv[])
         for (double num; std::cin >> num; nums.push_back(num)) {}
     }
 
-    for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs))
-        func.function(func_argv, nums);
+    if (!opt_multi) {
+        for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs))
+            func.function(func_argv, nums);
 
-    for (const auto& num : nums)
-        std::cout << num << '\n';
+        for (const auto& num : nums)
+            std::cout << num << '\n';
+    } else {
+        for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs)) {
+            auto nums_dup = nums;
+
+            func.function(func_argv, nums_dup);
+
+            for (const auto& num : nums_dup)
+                std::cout << num << '\n';
+        }
+    }
 
     return 0;
 }
