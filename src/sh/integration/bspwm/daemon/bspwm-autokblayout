@@ -40,18 +40,18 @@ bspc subscribe node_focus | while IFS=" " read -r _ _ _ ID; do
     [ -z "$xclassname" ] && continue
     eval "$xclassname" # defines CLASS, INSTANCE and NAME
 
-    (pre_query)
-    km="$(xkb-switch)"
-    (post_query)
-    kmmap "$oldid" = "$km"
+    pre_query
+    KEYMAP="$(xkb-switch)"
+    post_query
+    kmmap "$oldid" = "$KEYMAP"
 
     if ! idvec -q find "$ID"; then
-        (first_time_setup)
+        first_time_setup
         idvec push_back "$ID"
     else
-        (pre_update)
+        pre_update
         setkm "$(kmmap "$ID")"
-        (post_update)
+        post_update
     fi
 
     oldid="$ID"
