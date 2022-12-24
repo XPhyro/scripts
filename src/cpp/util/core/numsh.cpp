@@ -52,12 +52,15 @@ namespace func {
     DECL_FUNC(tanh);
     DECL_FUNC(trunc);
 
+    DECL_FUNC(zero);
     DECL_FUNC(nonzero);
+    DECL_FUNC(count);
 
     DECL_FUNC(max);
     DECL_FUNC(min);
     DECL_FUNC(sum);
     DECL_FUNC(mean);
+    DECL_FUNC(std);
     DECL_FUNC(gcd);
 } // namespace func
 
@@ -92,11 +95,14 @@ std::unordered_map<std::string_view, function> functions = {
     { "tan", { "Map all elements to their tan. See `man 3 tan`.", func::tan, 0, 0 } },
     { "tanh", { "Map all elements to their tanh. See `man 3 tanh`.", func::tanh, 0, 0 } },
     { "trunc", { "Map all elements to their trunc. See `man 3 trunc`.", func::trunc, 0, 0 } },
+    { "zero", { "Reduce to zero elements.", func::zero, 0, 0 } },
     { "nonzero", { "Reduce to non-zero elements.", func::nonzero, 0, 0 } },
+    { "count", { "Reduce to count of elements.", func::count, 0, 0 } },
     { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
     { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
     { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
     { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
+    { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
     { "gcd", { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
 };
 
@@ -317,9 +323,19 @@ namespace func {
             num = std::trunc(num);
     }
 
+    void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        std::erase_if(nums, [](double num) { return !xph::approx_zero(num); });
+    }
+
     void nonzero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         std::erase_if(nums, [](double num) { return xph::approx_zero(num); });
+    }
+
+    void count([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        nums = { static_cast<double>(nums.size()) };
     }
 
     void max([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
@@ -340,6 +356,19 @@ namespace func {
     void mean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         nums = { std::accumulate(nums.begin(), nums.end(), 0.0) / nums.size() };
+    }
+
+    void std([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        double mean = std::accumulate(nums.begin(), nums.end(), 0.0) / nums.size();
+        nums = { std::sqrt(std::accumulate(nums.begin(),
+                                           nums.end(),
+                                           0.0,
+                                           [&](double accum, double num) {
+                                               double diff = num - mean;
+                                               return accum + diff * diff;
+                                           }) /
+                           (nums.size() - 1)) };
     }
 
     void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
