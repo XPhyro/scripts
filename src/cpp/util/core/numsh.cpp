@@ -54,8 +54,8 @@ namespace func {
 
     DECL_FUNC(zero);
     DECL_FUNC(nonzero);
-    DECL_FUNC(count);
 
+    DECL_FUNC(count);
     DECL_FUNC(max);
     DECL_FUNC(min);
     DECL_FUNC(sum);
