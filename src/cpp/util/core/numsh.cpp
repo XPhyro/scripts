@@ -1,9 +1,7 @@
 // @LDFLAGS -lboost_system
 
-// TODO: read stdin
 // TODO: sort -L alphabetically
 // TODO: enforce stuff in man page and help dialog
-// TODO: do not enforce "-f must be given"
 
 #include <cmath>
 #include <cstddef>
