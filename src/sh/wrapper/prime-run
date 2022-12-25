@@ -1,7 +1,12 @@
 #!/usr/bin/env sh
 
-if [ -z "$PRIME_RUN_STATE_FILE" ] || [ -e "$PRIME_RUN_STATE_FILE" ]; then
-    exec execaux "$0" "$@"
-else
+if lshw -C display 2>&1 | grep -Fq 'Advanced Micro Devices'; then
+    export DRI_PRIME=1
     exec "$@"
+else
+    if [ -z "$PRIME_RUN_STATE_FILE" ] || [ -e "$PRIME_RUN_STATE_FILE" ]; then
+        exec execaux "$0" "$@"
+    else
+        exec "$@"
+    fi
 fi
