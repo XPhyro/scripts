@@ -1,0 +1,9 @@
+[Unit]
+Description=Initialise zram.
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/zram-init
+
+[Install]
+WantedBy=default.target
