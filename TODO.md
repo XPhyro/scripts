@@ -343,8 +343,11 @@
     - Support "static" files, where those files are owned by a system and may
       not be shared.
     - If we do not support static files, or more than two systems with partial
-      sharing, these should be easily achievable with git branches. Otherwise a
-      directory structure with a flags hashmap would be necessary.
+      sharing, these should be easily achievable with git branches. Otherwise,
+      possible implementations could be:
+      - A directory structure with a flags hashmap,
+      - A directory structure with the shared files being symlinked,
+      - Etc.
 - Write `getfls` and `getdirs` that support multiple arguments unlike `getfl`
   and `getdir`. This might also be integrated in `getfl` and `getdir` in a
   lightweight manner.
