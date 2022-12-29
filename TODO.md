@@ -95,6 +95,8 @@
   - Also support manual offsets.
 - Support globbing and regex in `exif-filter`.
 - Support mounting/unmounting Android devices in `mountsel`/`umountsel`.
+- `exif-filter`: support custom filter functions in place of the default
+  `[ -n "$val" ] && [ "$flval" != "$val" ]`.
 
 ## New Scripts
 
