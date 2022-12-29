@@ -23,7 +23,7 @@ while getopts "D:d:hn:t:x:" OPT; do
             printf "%s" \
 "$execname [OPTION...]
    -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is $defaultdepth.
-   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`/{image,video} depending the selected executable.
+   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`/{image,video} depending on the selected executable.
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'hsetroot'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
