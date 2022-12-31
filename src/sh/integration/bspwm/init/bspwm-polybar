@@ -7,7 +7,7 @@ killall -u "$user" polybar
 sleep 0.2
 killall -9 -w -u "$user" polybar
 
-mons="$(bspc query -M --names)"
+mons="$(xrandr --listmonitors | tail -n +2 | awk '{print $NF}')"
 firstmon="$(printf "%s\n" "$mons" | head -n 1)"
 defsink="$(voldefsink)"
 auxsink="$(volauxsink)"
