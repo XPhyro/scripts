@@ -894,6 +894,8 @@ optimise() {
 }
 
 optimize() {
+    size_pre="$(printf "%s\n" "$infls" | xargs -r -d '\n' du -bcL -- | tail -n 1 | cut -d'	' -f1)"
+
     lastfl="$(printf "%s\n" "$infls" | tail -n 1)"
     printf "%s\n" "$infls" | while IFS= read -r fl; do
         [ -f "$fl" ] || {
@@ -912,6 +914,14 @@ optimize() {
         [ "$moveorig" = '1' ] && mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
         [ "$fl" != "$lastfl" ] && fillline -
     done
+
+    size_post="$(printf "%s\n" "$infls" | xargs -r -d '\n' du -bcL -- | tail -n 1 | cut -d'	' -f1)"
+    size_diff="$((size_post - size_pre))"
+    printf "%s\n" \
+        "Size Statistics"
+        "  Before: $(printf "%s\n" "$size_pre" | sumsize -f 3)" \
+        "  After: $(printf "%s\n" "$size_post" | sumsize -f 3)" \
+        "  Difference: $(printf "%s\n" "$size_diff" | sumsize -f 3)"
 }
 
 compress() {
