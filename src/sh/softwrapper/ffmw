@@ -308,6 +308,8 @@ parseargs() {
 
     mvoverwrite="${overwrite:-"-i"}"
     [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
+
+    libx265_opts="$(grep -Fq 'avx512' /proc/cpuinfo && printf "%s " -x265-params asm=avx512)"
 }
 
 parseargs_optimise() {
@@ -906,7 +908,7 @@ optimize() {
             printf 'INFILE and TEMPOUTFILE [%s] cannot be the same.\n' "$fl"
             exit 1
         }
-        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 -c:a copy -q:v 0 "file:$outfl" || {
+        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -q:v 0 "file:$outfl" || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
@@ -928,7 +930,7 @@ compress() {
     printf "%s\n" "$infls"
     # printf "%s\n" "$infls" | while IFS= read -r i; do
     #     [ -f "$i" ] || printferrq "No such file [%s], exiting.\n" "$i"
-    #     $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
+    #     $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$i" -safe 0 -preset "$preset" -crf "$factor" -c:v libx265 $libx265_opts -c:a copy "$outfl" || printferrq "ffmpeg failed, exiting.\n"
     #     mv -f -- "$outfl" "${i%.*}.${outfl##*.}"
     # done
     # TODO: For some reason the upper while loop does not continue after the first iteration, fix.
@@ -938,7 +940,7 @@ compress() {
             printf 'No such file [%s], exiting.\n' \"\$i\"
             exit 1
         }
-        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 -c:a copy '$outfl' || {
+        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 $libx265_opts -c:a copy '$outfl' || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
@@ -983,12 +985,12 @@ concat() {
 
 crop() {
     if [ "$accurate" = "1" ]; then
-        codec="libx265"
+        codec="libx265 $libx265_opts"
     else
         codec="copy"
     fi
 
-    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v "$codec" -c:a copy "$outfl" \
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v $codec -c:a copy "$outfl" \
         || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
