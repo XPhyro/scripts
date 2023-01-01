@@ -3,6 +3,7 @@
 . shellverbose.sh
 
 tmp="$(mktemp)"
+trap 'rm -f -- "$tmp"' EXIT INT QUIT TERM
 cp -f -- /dev/stdin "$tmp"
 stdl="$(wc -l < "$tmp")"
 
