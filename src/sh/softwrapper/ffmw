@@ -918,7 +918,7 @@ optimize() {
     size_post="$(printf "%s\n" "$infls" | xargs -r -d '\n' du -bcL -- | tail -n 1 | cut -d'	' -f1)"
     size_diff="$((size_post - size_pre))"
     printf "%s\n" \
-        "Size Statistics"
+        "Size Statistics" \
         "  Before: $(printf "%s\n" "$size_pre" | sumsize -f 3)" \
         "  After: $(printf "%s\n" "$size_post" | sumsize -f 3)" \
         "  Difference: $(printf "%s\n" "$size_diff" | sumsize -f 3)"
