@@ -899,7 +899,7 @@ optimize() {
     size_pre="$(printf "%s\n" "$infls" | xargs -r -d '\n' du -bcL -- | tail -n 1 | cut -d'	' -f1)"
 
     lastfl="$(printf "%s\n" "$infls" | tail -n 1)"
-    printf "%s\n" "$infls" | while IFS= read -r fl; do
+    proc_fls="$(printf "%s\n" "$infls" | while IFS= read -r fl; do
         [ -f "$fl" ] || {
             printf 'No such file [%s], exiting.\n' "$fl"
             exit 1
@@ -908,17 +908,22 @@ optimize() {
             printf 'INFILE and TEMPOUTFILE [%s] cannot be the same.\n' "$fl"
             exit 1
         }
-        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -q:v 0 "file:$outfl" || {
+        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -q:v 0 "file:$outfl" >&2 || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
         [ "$remove" = '1' ] && rm -f -- "$fl"
-        [ "$moveorig" = '1' ] && mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
+        if [ "$moveorig" = '1' ]; then
+            mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
+            printf "%s\n" "${fl%.*}.${outfl##*.}"
+        else
+            printf "%s\n" "$outfl"
+        fi
         [ "$fl" != "$lastfl" ] && fillline -
-    done
+    done | uniqs)"
 
-    size_post="$(printf "%s\n" "$infls" | xargs -r -d '\n' du -bcL -- | tail -n 1 | cut -d'	' -f1)"
-    size_diff="$((size_post - size_pre))"
+    size_post="$(printf "%s\n" "$proc_fls" | xargs -r -d '\n' du -bcL -- | tail -n 1 | cut -d'	' -f1)"
+    size_diff="$((size_pre - size_post))"
     printf "%s\n" \
         "Size Statistics" \
         "  Before: $(printf "%s\n" "$size_pre" | sumsize -f 3)" \
