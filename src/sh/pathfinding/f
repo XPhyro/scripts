@@ -12,7 +12,7 @@ main() {
     "$EDITOR" -- "$fl"
 }
 
-[ "$#" -eq 0 ] && while true; do
+[ "$#" -eq 0 ] && while :; do
     main
 done
 
@@ -24,7 +24,7 @@ for i; do
 done
 
 rootpwd="$PWD"
-while true; do
+while :; do
     for i; do
         cd "$i" || exit 1
         main

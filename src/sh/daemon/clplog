@@ -15,7 +15,7 @@ oldclp="$lastclp"
 
 lck -uq clplog
 
-while true; do
+while :; do
     clipnotify
 
     lck -uq clplog && continue

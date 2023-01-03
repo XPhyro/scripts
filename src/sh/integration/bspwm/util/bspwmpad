@@ -192,7 +192,7 @@ main() {
         notify-send -t 2000 "bspwmpad" "Waiting for lock acquisition..." &
 
         lck="$(
-            while true; do
+            while :; do
                 i="$(inotifywait -q -e "delete" --format "%f" -- "$lckdir")"
                 [ -n "$optnumber" ] && [ "$i" != "$optnumber" ] && continue
                 mkdir -- "$lckdir/$i" 2> /dev/null && {

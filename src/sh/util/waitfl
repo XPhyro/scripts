@@ -2,7 +2,7 @@
 
 . shellverbose.sh
 
-while true; do
+while :; do
     for i; do
         [ -e "$i" ] || {
             sleep 0.05

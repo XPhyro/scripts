@@ -76,7 +76,7 @@ printf "%s=%s\n" \
 triggeredlow=0
 triggeredcritical=0
 main
-while true; do
+while :; do
     sleep "$period"
     main
 done

@@ -2,7 +2,7 @@
 
 . shellverbose.sh
 
-while true; do
+while :; do
     i=-1
     while [ "$((i += 1))" -lt "${2:-"3"}" ]; do
         mpv -no-config -- "${3:-"/usr/share/sounds/freedesktop/stereo/dialog-warning.oga"}"

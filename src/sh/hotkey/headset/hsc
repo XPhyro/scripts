@@ -7,7 +7,7 @@ headsetcontrol > /dev/null || {
     exit 1
 }
 
-while true; do
+while :; do
     case "$(readchar)" in
         b) headsetcontrol -b;;
         i) printf "Value (i): " >&2; headsetcontrol -i "$(readstr)";;

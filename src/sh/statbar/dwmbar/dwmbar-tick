@@ -14,7 +14,7 @@ done
 
 sleep 1s
 
-while true; do
+while :; do
     dwmbar-set &
     sleep 1m
 done

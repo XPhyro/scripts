@@ -11,7 +11,7 @@ elif [ ! -t 0 ]; then
 fi
 
 size="$(du -b -- "$tmp")"
-while true; do
+while :; do
     perl -p -e 'chomp if eof' -- "$tmp" | sponge -- "$tmp"
     newsize="$(du -b -- "$tmp")"
     [ "$size" = "$newsize" ] && {

@@ -2,7 +2,7 @@
 
 . shellverbose.sh
 
-while true; do
+while :; do
     fifo="$(mktemp -u)"
     mkfifo -- "$fifo" && {
         printf "%s\n" "$fifo"

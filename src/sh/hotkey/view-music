@@ -20,7 +20,7 @@ fl="$(
         | $menu -i -l 20 -p "Select sheet music:"
 )" || exit 1
 
-while true; do
+while :; do
     n="$(: | $menu -p "How many to open:")" || exit 1
     [ -z "$n" ] && {
         n=1

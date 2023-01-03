@@ -248,7 +248,7 @@ main() {
             printf "%s%s\n" "$printinitpwd" "$(realpath --relative-to="$initpwd" -- "$PWD/$sel")"
         fi
     else
-        while true; do
+        while :; do
             [ -d "$sel" ] && cdsafe "$sel"
 
             if [ -n "$showhidden" ]; then

@@ -120,7 +120,7 @@ processargs() {
     srchashfl="$cachedir$(realpath -- "$srcfl.tex")"
     mkdir -p -- "${srchashfl%/*}" || {
         i="$srchashfl"
-        while true; do
+        while :; do
             [ -e "$i" ] && {
                 rm -rf "$i"
                 break
@@ -182,7 +182,7 @@ dispatchcompiler() {
 
     printf '[latexstp]: %s\n' \"Initialised in \$(pwd).\" 'Watching $srcfl.tex.'
 
-    while true; do
+    while :; do
         inotifywait -qq -e move_self -- '$srcfl.tex'
         waitfl '$srcfl.tex'
         compile

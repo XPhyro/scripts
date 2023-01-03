@@ -7,7 +7,7 @@ interval="${*:-"180s"}"
 
 sleep 15s
 
-while true; do
+while :; do
     syncmail
     polybar-msg action '#mail.hook.0'
     sleep "$interval"
