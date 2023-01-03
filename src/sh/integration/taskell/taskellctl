@@ -1,0 +1,64 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+config_dir="$HOME/.config/scripts/taskellctl"
+
+sel_db="$({
+    find "$config_dir" -mindepth 1 -type f -print0 \
+        | xargs -r0 realpath --relative-to="$config_dir" --
+    printf "%s\n" \
+        "[CREATE]" \
+        "[REMOVE]"
+} | execmenu -p "Select board:")"
+
+case "$sel_db" in
+    "[CREATE]")
+        until sel_db="$(printf "" | execmenu -p "Enter board name:")" && [ "$sel_db" != "[CREATE]" ]; do
+            :
+        done
+        sel_db="$sel_db.md"
+        mkparent "$sel_db"
+        printf "## %s\n" \
+            "To Do" \
+            "In Progress" \
+            "Done" > "$config_dir/$sel_db"
+        ;;
+    "[REMOVE]")
+        sel_db="$(find "$config_dir" -mindepth 1 -type f -print0 \
+            | xargs -r0 realpath --relative-to="$config_dir" -- \
+            | execmenu -p "Select board to remove:")"
+
+        [ -n "$sel_db" ] && while :; do
+            case "$(printf "" | execmenu -p "Remove $sel_db? (y/N)" | tr '[:upper:]' '[:lower:]')" in
+                y|yes) rm -f -- "$config_dir/$sel_db";;
+                ""|n|no) :;;
+                *) continue;;
+            esac
+            break
+        done
+
+        exit 0
+        ;;
+    "") exit 0;;
+esac
+
+sel_db="$config_dir/$sel_db"
+[ -f "$sel_db" ] || exit 1
+
+if [ "$PAD" = "bspwmpad" ]; then
+    pad_opts="-g 976x1024"
+else
+    pad_opts=
+fi
+
+if [ -n "$TASKELLCTL_REOPEN" ] && [ "$TASKELLCTL_REOPEN" -ne 0 ]; then
+    TASKELLCTL_SEL_DB="$sel_db" "$PAD" $pad_opts -- sh -c '
+        clear
+        while :; do
+            taskell "$TASKELLCTL_SEL_DB"
+        done
+    '
+else
+    "$PAD" $pad_opts -- taskell "$sel_db"
+fi
