@@ -154,6 +154,10 @@
   the script file is touched.
   - Similar to `polybar`, `picom`, etc.
   - Use this header in daemons like `headsetcontrol2mpris`.
+- Create an `fzf`/`execmenu` wrapper that automatically chooses between the two
+  depending on whether stdin is a TTY.
+- Create an nothing/`$PAD` wrapper that automatically chooses between the two
+  depending on whether stdin is a TTY.
 
 ## Refactoring / Rewriting / Reworking
 
