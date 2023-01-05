@@ -97,6 +97,9 @@
 - Support mounting/unmounting Android devices in `mountsel`/`umountsel`.
 - `exif-filter`: support custom filter functions in place of the default
   `[ -n "$val" ] && [ "$flval" != "$val" ]`.
+- `tglapp`: run applications in a `tmux` session.
+  - Still capture stdout/stderr to temporary files.
+    - Or, don't capture them, but query them from `tmux` if it is supported.
 
 ## New Scripts
 
@@ -181,6 +184,7 @@
     languages rather than in shell.
 - Export `align()` from `std::string` to `strutil.h` and use it from the
   header.
+- Use `tmux` instead of `screen`.
 
 ## Other
 
