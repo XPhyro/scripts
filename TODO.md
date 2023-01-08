@@ -100,6 +100,8 @@
 - `tglapp`: run applications in a `tmux` session.
   - Still capture stdout/stderr to temporary files.
     - Or, don't capture them, but query them from `tmux` if it is supported.
+- `headsetcontrol2mpris`: only resume automatically-paused players.
+- MAYBE: `headsetcontrol2mpris`: if the game side is active, use 100% as indicator, otherwise use 0% as indicator.
 
 ## New Scripts
 
