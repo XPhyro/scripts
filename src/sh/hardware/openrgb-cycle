@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+
+# shellcheck disable=SC2154
+. execinfo.sh
+. shellverbose.sh
+
+profiles="$OPENRGB_CYCLE_PROFILES"
+profile_symbols="$OPENRGB_CYCLE_PROFILE_SYMBOLS"
+profile_file="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/openrgb-cycle/current-profile"
+
+optdir=+1
+optsymbol=0
+while getopts "hnps" OPT; do
+    case "$OPT" in
+        h)
+            printf "%s" \
+"$execname [OPTION...]
+   -h      display this help and exit
+   -n      cycle to the next profi
+   -p      cycle to the previous profile
+   -s      print the current profile's symbol and exit
+" >&2
+            exit 0
+            ;;
+        n) optdir=+1;;
+        p) optdir=-1;;
+        s) optsymbol=1;;
+        *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+if ! [ -f "$profile_file" ]; then
+    mkparent "$profile_file"
+    printf "%s\n> " "Enter the name of the current profile:"
+    read -r current_profile
+    printf "%s" "$current_profile" > "$profile_file"
+else
+    current_profile="$(cat -- "$profile_file")"
+fi
+
+current_profile_index="$(($(printf "%s\n" "$profiles" | grep -Fxn -- "$current_profile" | cut -d: -f1) - 1))"
+
+[ "$optsymbol" -ne 0 ] && {
+    printf "%s\n" "$profile_symbols" | head -n "$((current_profile_index + 1))" | tail -n 1
+    exit 0
+}
+
+profile_count="$(printf "%s\n" "$profiles" | wc -l)"
+next_profile_index="$(( ( (current_profile_index + optdir + profile_count) % profile_count) + 1 ))"
+next_profile="$(printf "%s\n" "$profiles" | head -n "$next_profile_index" | tail -n 1)"
+
+color yellow "Found current profile: $current_profile
+Attempting to load profile: $next_profile"
+openrgb --profile "$next_profile" || exit "$?"
+printf "%s" "$next_profile" > "$profile_file"
+[ -n "$OPENRGB_CYCLE_POLYBAR_HOOK" ] && polybar-msg action "$OPENRGB_CYCLE_POLYBAR_HOOK"
