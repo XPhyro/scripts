@@ -163,6 +163,7 @@
   depending on whether stdin is a TTY.
 - Create an nothing/`$PAD` wrapper that automatically chooses between the two
   depending on whether stdin is a TTY.
+- Create a `vit` profile manager similar to `taskellctl`.
 
 ## Refactoring / Rewriting / Reworking
 
