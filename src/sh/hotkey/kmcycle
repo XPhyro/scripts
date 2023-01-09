@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Toggle X keymap.
 
+# shellcheck disable=SC2154
+. execinfo.sh
 . shellverbose.sh
 
 setkm() {
@@ -8,5 +10,30 @@ setkm() {
     setxkb "$1"
 }
 
+optalternate=0
+while getopts "ah" OPT; do
+    case "$OPT" in
+        a) optalternate=1;;
+        h)
+            printf "%s" \
+"$execname [OPTION...]
+   -a      use alternate mappings
+   -h      display this help and exit
+" >&2
+            exit 0
+            ;;
+        *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+if [ "$optalternate" -eq 0 ]; then
+    mappings="$KMCYCLE_MAPPINGS"
+    default_mapping="$KMCYCLE_DEFAULT_MAPPING"
+else
+    mappings="$KMCYCLE_ALTERNATE_MAPPINGS"
+    default_mapping="$KMCYCLE_ALTERNATE_DEFAULT_MAPPING"
+fi
+
 km="$(xkb-switch)"
-setkm "$(printf "%s\n" "$km" | eval "END= DEF=gb fmaps ${KMCYCLE_MAPPINGS:-gb=tr}")"
+setkm "$(printf "%s\n" "$km" | eval "END= DEF=\"${default_mapping:-gb}\" fmaps $mappings")"
