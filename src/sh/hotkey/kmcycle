@@ -9,4 +9,4 @@ setkm() {
 }
 
 km="$(xkb-switch)"
-setkm "$(printf "%s\n" "$km" | END= DEF=gb fmaps ${KMCYCLE_MAPPINGS:-gb=tr})"
+setkm "$(printf "%s\n" "$km" | eval "END= DEF=gb fmaps ${KMCYCLE_MAPPINGS:-gb=tr}")"
