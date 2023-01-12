@@ -4,6 +4,24 @@
 
 [ "$BSPWMPADINIT_VERBOSE" = 1 ] && set -x
 
+if [ "$BSPWMPADINIT_CLEAR" = 1 ]; then
+    printf_term() {
+        :
+    }
+
+    fillline_term() {
+        :
+    }
+else
+    printf_term() {
+        printf "$@"
+    }
+
+    fillline_term() {
+        fillline "$@"
+    }
+fi
+
 lckdir="$1"
 lck="$2"
 shift 2
@@ -12,18 +30,18 @@ shift 2
     printf "%s\n" "$$" > "$lckdir/$lck/pid"
     xdotool search --limit 0 --classname "bspwmpad$lck" \
         | xargs -d '\n' printf "0x%X\n" > "$lckdir/$lck/ids"
-    printf "%s - %s\n" "bspwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
+    printf_term "%s - %s\n" "bspwmpad #$lck" "$(date +"%a %F %H:%M:%S")"
 
     if [ "$#" -eq 0 ]; then
-        printf "%s\n\n" "Deploying shell: $SHELL"
-        fillline "‾"
-        printf "\n"
+        printf_term "%s\n\n" "Deploying shell: $SHELL"
+        fillline_term "‾"
+        printf_term "\n"
         exec "$SHELL"
     else
         { printf "%s " "$@" | head -c -1; printf "\n"; } > "$lckdir/$lck/command"
-        printf "%s\n\n" "Running command: $*"
-        fillline "‾"
-        printf "\n"
+        printf_term "%s\n\n" "Running command: $*"
+        fillline_term "‾"
+        printf_term "\n"
         exec "$@"
     fi
 }

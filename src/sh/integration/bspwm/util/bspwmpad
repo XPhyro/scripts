@@ -17,6 +17,8 @@ execname="${0##*/}"
 printhelp() {
     printf "%s\n" \
 "$execname [OPTION...] -- [COMMAND...]
+   -c, --clear
+       Do not print a header before the command is executed.
    -d PATH, --directory PATH
        Execute the command after changing the working directory to PATH.
    -g GEOMETRY, --geometry GEOMETRY
@@ -50,7 +52,7 @@ assertarg() {
 }
 
 setdefargs() {
-    unset optdirectory optgeometry optnumber opttiled opttitle opthidden
+    unset optclear optdirectory optgeometry optnumber opttiled opttitle opthidden
 }
 
 preprocessargs() {
@@ -71,6 +73,7 @@ parseargs() {
                     opt="${sopt%"${sopt#?}"}"
 
                     case "$opt" in
+                        c) parseargs --clear;;
                         d) shift; parseargs --directory "$1";;
                         g) shift; parseargs --geometry "$1";;
                         n) shift; parseargs --number "$1";;
@@ -88,6 +91,7 @@ parseargs() {
                 opt="${1#??}"
 
                 case "$opt" in
+                    clear       ) optclear=1;;
                     directory   )
                         shift
                         assertarg "-d, --directory" "PATH" "$1"
@@ -206,6 +210,7 @@ main() {
     shift "$argcmdcount"
 
     export PAD_LEVEL="$((PAD_LEVEL + 1))"
+    [ "$optclear" = 1 ] && export BSPWMPADINIT_CLEAR=1
 
     export TABBED_ARGS="$optgeometry -n bspwmpad$lck"
     # shellcheck disable=SC2086
