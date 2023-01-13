@@ -53,11 +53,19 @@ enum class type {
     oct16,
     oct32,
     oct64,
+    uhex8,
+    uhex16,
+    uhex32,
+    uhex64,
     uint8,
     uint16,
     uint32,
     uint64,
     uintx,
+    uoct8,
+    uoct16,
+    uoct32,
+    uoct64,
 };
 
 [[noreturn]] void help();
@@ -94,11 +102,19 @@ const std::unordered_map<std::string, type> types = {
     { "oct16", type::oct16 },
     { "oct32", type::oct32 },
     { "oct64", type::oct64 },
+    { "uhex8", type::uhex8 },
+    { "uhex16", type::uhex16 },
+    { "uhex32", type::uhex32 },
+    { "uhex64", type::uhex64 },
     { "uint8", type::uint8 },
     { "uint16", type::uint16 },
     { "uint32", type::uint32 },
     { "uint64", type::uint64 },
     { "uintx", type::uintx },
+    { "uoct8", type::uoct8 },
+    { "uoct16", type::uoct16 },
+    { "uoct32", type::uoct32 },
+    { "uoct64", type::uoct64 },
 };
 
 const std::unordered_map<std::tuple<type, type>, std::function<void(int, char**)>> funcs = {
@@ -127,12 +143,22 @@ const std::unordered_map<std::tuple<type, type>, std::function<void(int, char**)
     { { type::character, type::oct16 }, cast_character_to_primitive<int16_t, std::oct> },
     { { type::character, type::oct32 }, cast_character_to_primitive<int32_t, std::oct> },
     { { type::character, type::oct64 }, cast_character_to_primitive<int64_t, std::oct> },
+    { { type::character, type::uhex8 },
+      cast_character_to_primitive<uint16_t, std::hex, sizeof(uint8_t)> },
+    { { type::character, type::uhex16 }, cast_character_to_primitive<uint16_t, std::hex> },
+    { { type::character, type::uhex32 }, cast_character_to_primitive<uint32_t, std::hex> },
+    { { type::character, type::uhex64 }, cast_character_to_primitive<uint64_t, std::hex> },
     { { type::character, type::uint8 },
       cast_character_to_primitive<uint16_t, std::dec, sizeof(uint8_t)> },
     { { type::character, type::uint16 }, cast_character_to_primitive<uint16_t, std::dec> },
     { { type::character, type::uint32 }, cast_character_to_primitive<uint32_t, std::dec> },
     { { type::character, type::uint64 }, cast_character_to_primitive<uint64_t, std::dec> },
     { { type::character, type::uintx }, cast_character_to_xintx<uintmax_t, std::dec> },
+    { { type::character, type::uoct8 },
+      cast_character_to_primitive<uint16_t, std::oct, sizeof(uint8_t)> },
+    { { type::character, type::uoct16 }, cast_character_to_primitive<uint16_t, std::oct> },
+    { { type::character, type::uoct32 }, cast_character_to_primitive<uint32_t, std::oct> },
+    { { type::character, type::uoct64 }, cast_character_to_primitive<uint64_t, std::oct> },
 };
 
 DEFINE_EXEC_INFO();
