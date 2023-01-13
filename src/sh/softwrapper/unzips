@@ -13,6 +13,6 @@ for i; do
         *.rar                           ) unrar      x    "$i";;
         *.z                             ) uncompress      "$i";;
         *.7z                            ) 7z         x    "$i";;
-        *                               ) unar            "$i";;
+        *                               ) unar -c         "$i";;
     esac
 done
