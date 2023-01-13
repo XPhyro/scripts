@@ -1,8 +1,12 @@
+# shellcheck disable=SC2034
+
 [ -z "${HEADER_SCRIPTS_EXECINFO_+x}" ] && {
     HEADER_SCRIPTS_EXECINFO_=
 
-    # don't prepend with std_, these should be global variables
-    execpath="${0}"
-    # shellcheck disable=SC2034
-    execname="${execpath##*/}"
+    std_execpath="${0}"
+    std_execname="${std_execpath##*/}"
+
+    # also define as global variables
+    execpath="$std_execpath"
+    execname="$std_execname"
 }
