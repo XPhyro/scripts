@@ -369,6 +369,20 @@ install() {
             systemctl --user daemon-reload
         fi
     )
+
+    printf "\n%s\n" \
+        "Installing program resources:"
+
+    (
+        cd ../rsrc
+
+        find '.' -mindepth 1 -type f -printf "%P\0" \
+            | xargs -r0 -n 1 sh -c '
+                printf "  %s -> %s\n" "$1" "$dataprefix/$1" >&2
+                printf "\0%s\0" "$dataprefix/$1"
+            ' -- >> ../src/.installed
+        rsync -abiPq -- ./ "$dataprefix/"
+    )
 }
 
 uninstall() {
@@ -849,9 +863,10 @@ manprefix="$prefix/share/man"
 dataprefix="$prefix/share/scripts"
 
 export prefix
-export includeprefix
 export binprefix
+export includeprefix
 export manprefix
+export dataprefix
 
 mkdir -p -- "$prefix" "$binprefix" "$includeprefix" "$manprefix" "$dataprefix"
 [ -d "$binprefix" ] && [ -d "$includeprefix" ] && [ -d "$manprefix" ] && [ -d "$dataprefix" ]
