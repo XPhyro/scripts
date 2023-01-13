@@ -65,6 +65,8 @@ enum class type {
 void assert_argc(int n, int argc);
 void cast_bitset_to_character(int argc, char** argv);
 void cast_character_to_bitset(int argc, char** argv);
+template <typename T, auto converter, size_t size_override>
+void cast_character_to_primitive(int argc, [[maybe_unused]] char** argv);
 template <typename T, auto converter>
 void cast_character_to_primitive(int argc, char** argv);
 template <typename T, auto converter>
@@ -113,7 +115,8 @@ const std::unordered_map<std::tuple<type, type>, std::function<void(int, char**)
     { { type::character, type::hexfloat64 }, cast_character_to_primitive<double, std::hexfloat> },
     { { type::character, type::hexfloat128 },
       cast_character_to_primitive<long double, std::hexfloat> },
-    { { type::character, type::int8 }, cast_character_to_primitive<int8_t, std::dec> },
+    { { type::character, type::int8 },
+      cast_character_to_primitive<int16_t, std::dec, sizeof(uint8_t)> },
     { { type::character, type::int16 }, cast_character_to_primitive<int16_t, std::dec> },
     { { type::character, type::int32 }, cast_character_to_primitive<int32_t, std::dec> },
     { { type::character, type::int64 }, cast_character_to_primitive<int64_t, std::dec> },
@@ -122,7 +125,8 @@ const std::unordered_map<std::tuple<type, type>, std::function<void(int, char**)
     { { type::character, type::oct16 }, cast_character_to_primitive<int16_t, std::oct> },
     { { type::character, type::oct32 }, cast_character_to_primitive<int32_t, std::oct> },
     { { type::character, type::oct64 }, cast_character_to_primitive<int64_t, std::oct> },
-    { { type::character, type::uint8 }, cast_character_to_primitive<uint8_t, std::dec> },
+    { { type::character, type::uint8 },
+      cast_character_to_primitive<uint16_t, std::dec, sizeof(uint8_t)> },
     { { type::character, type::uint16 }, cast_character_to_primitive<uint16_t, std::dec> },
     { { type::character, type::uint32 }, cast_character_to_primitive<uint32_t, std::dec> },
     { { type::character, type::uint64 }, cast_character_to_primitive<uint64_t, std::dec> },
@@ -257,6 +261,23 @@ void cast_character_to_bitset(int argc, [[maybe_unused]] char** argv)
             for (int b = 0; b < 8; ++b)
                 putchar(((c & (1 << b)) >> b) + '0');
         }
+    }
+}
+
+template <typename T, auto converter, size_t size_override>
+void cast_character_to_primitive(int argc, [[maybe_unused]] char** argv)
+{
+    assert_argc(0, argc);
+
+    T buf;
+    ssize_t nread;
+
+    while ((nread = read(STDIN_FILENO, &buf, size_override)) > 0) {
+        xph::die_if(nread != size_override,
+                    "could not read ",
+                    size_override,
+                    " bytes for the specified type");
+        std::cout << converter << buf << '\n';
     }
 }
 
