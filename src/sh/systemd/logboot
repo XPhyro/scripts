@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+conf_dir="$XDG_CACHE_HOME/scripts/logboot"
+mkdir -p -- "$conf_dir"
+pfx="$conf_dir/$(date --iso-8601=seconds)"
+systemd-analyze blame > "$pfx.log"
+systemd-analyze plot > "$pfx.svg"
