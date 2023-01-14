@@ -216,19 +216,8 @@
     - `sxhkd` examples for hotkey scripts
     - Script/excerpt examples for utilities & libraries
     - etc.
-- Add `cppcheck` to analyse target in `.make`.
-- Title commits like `script: description1, description2, ...`. Examples:
-  - `bspwmpad: always prefix title`
-  - `update: fix not releasing lock`
-  - `clplog: ensure locks are atomic, apply code style`
-  - `vector: create`
-    - Not sure about how to title "create" commits, but this seems consistent.
-  - `vector: rename to std::vector; unordered_map: rename to std::unordered map`
-  - `{vector, unordered_map}: rename to std::{vector, unordered_map}`
-  - `{vector, unordered_map}: rename to std::\1`
-  - `(vector|unordered_map): rename to std::\1`
 - At this point perhaps rename the repository from `scripts` to `utils`?
-- Move `src/{man,tests,.make}/` to the root of the repository.
+- Move `src/{man,tests,.make}/` to the root of the repository?
 - Consider changing the extension of shell headers from `.sh` to `.shh` or
   something similar.
 - Add a commit hook that catches entries in the readme becoming broken or
