@@ -1,34 +1,56 @@
 #!/usr/bin/env sh
 # Set X keyboard properties.
 
+# shellcheck disable=SC2154
+
+. execinfo.sh
+. io.sh
+. prefix.sh
 . shellverbose.sh
+
+modmap_dir="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/setxkb/xmodmap"
+xset_dir="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/setxkb/xset"
+def_exprs_dir="$std_dataprefix/setxkb/default"
+
+optdefault=0
+while getopts "dh" OPT; do
+    case "$OPT" in
+        d) optdefault=1;;
+        h)
+            printf "%s" \
+"$execname [OPTION...] [keymap]?
+   -h      display this help and exit
+" >&2
+            exit 0
+            ;;
+        *)
+            printf "Invalid option given: %s\n" "$OPT" >&2
+            exit 1
+            ;;
+    esac
+done
+shift "$((OPTIND - 1))"
 
 km="${1:-"$(xkb-switch)"}"
 
-# caps_lock -> escape
-setxkbmap -option "caps:escape"
-# alt_gr -> super_r
-# escape -> caps_lock
-# return -> backspace
-# backspace -> tab
-# control_r -> hyper_r
-# tab -> return
-# xmodmap -e "keycode 108 = Super_R" \
-#         -e "keycode 9 = Caps_Lock" \
-#         -e "keycode 36 = BackSpace" \
-#         -e "keycode 22 = Tab" \
-#         -e 'keycode 105 = Hyper_R' \
-#         -e "keycode 23 = Return"
-# TODO: Chromium (and Brave) does not respect the changes to Tab/BackSpace/Return.
-#       See https://bugs.chromium.org/p/chromium/issues/detail?id=394552.
-eval "
-    xmodmap \
-        -e 'keycode 108 = Super_R' \
-        -e 'keycode 9 = Caps_Lock' \
-        -e 'keycode 105 = Hyper_R' \
-        $(
-            printf "%s\n" "$km" | END= DEF="-e 'keycode 135 = Menu'" fmaps \
-                tr="-e 'keycode 135 = ISO_Level3_Shift'"
-        )
-"
-xset -r 9 -r 108 -r 135 r rate 250 40
+def_exprs="$def_exprs_dir/$km"
+
+[ "$optdefault" -ne 0 ] && {
+    std_assert_can_query_prefix
+    [ -e "$def_exprs" ] || std_logerrq "no default configuration exists for keymap $km"
+    exec xmodmap - < "$def_exprs"
+}
+
+cat -- \
+    "$def_exprs" \
+    "$modmap_dir/*" \
+    "$modmap_dir/$km" \
+    2> /dev/null \
+    | xmodmap -
+
+cat -- \
+    "$xset_dir/*" \
+    "$xset_dir/$km" \
+    2> /dev/null \
+    | tr '[:space:]' '\0' \
+    | xargs -r0 xset
