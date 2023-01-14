@@ -11,7 +11,9 @@ fi
 "$PAD" $extraopts -t "${0##*/}" -- sh -c '
     update > /dev/null 2>&1 &
     if time -v yay -Syu; then
-        yay -Scc --noconfirm > /dev/null 2>&1
+        [ -n "$YAY_ALWAYS_CLEAN_CACHE" ] \
+            && [ "$YAY_ALWAYS_CLEAN_CACHE" -ne 0 ] \
+            && yay -Scc --noconfirm > /dev/null 2>&1
     else
         color red "ERROR(s) encountered."
     fi
