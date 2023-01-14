@@ -32,6 +32,10 @@ done
 shift "$((OPTIND - 1))"
 
 km="${1:-"$(xkb-switch)"}"
+[ "$#" -gt 0 ] && {
+    shift
+    std_logerr "extra operands given, ignoring: $*"
+}
 
 def_exprs="$def_exprs_dir/$km"
 
