@@ -634,7 +634,7 @@ analyse() {
         | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
-                printf "  %s\n    Local compiler flags: %s\n    Local linker flags %s\n" \
+                printf "  %s\n    Local compiler flags: %s\n    Local linker flags: %s\n" \
                     "$1" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
