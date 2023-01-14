@@ -74,8 +74,12 @@ main() {
             preview_image "$@"
             ;;
         text/plain)
-            [ -f "$thumbfl" ] \
-                || sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
+            [ -f "$thumbfl" ] || {
+                touch -- "$thumbfl"
+                [ "$(wc -l < "$1")" -eq 1 ] \
+                    && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$1" \
+                    && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
+            }
             if [ -s "$thumbfl" ]; then
                 preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             else
