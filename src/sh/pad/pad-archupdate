@@ -10,7 +10,11 @@ fi
 
 "$PAD" $extraopts -t "${0##*/}" -- sh -c '
     update > /dev/null 2>&1 &
-    time -v yay -Syu || color red "ERROR(s) encountered."
+    if time -v yay -Syu; then
+        yay -Scc --noconfirm > /dev/null 2>&1
+    else
+        color red "ERROR(s) encountered."
+    fi
     flushterm
     jobs %% && printf "Waiting for [update].\n"
     wait

@@ -4,6 +4,7 @@
 
 "$PAD" -- sh -c '
     if yay -Syu; then
+        yay -Scc --noconfirm > /dev/null 2>&1
         color green "All done."
     else
         color red "ERROR(s) encountered."
