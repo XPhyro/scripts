@@ -164,6 +164,20 @@
 - Create an nothing/`$PAD` wrapper that automatically chooses between the two
   depending on whether stdin is a TTY.
 - Create a `vit` profile manager similar to `taskellctl`.
+- Delegate config reading/parsing/writing/etc. to headers.
+  - Languages:
+    - Create a C header for configs.
+      - There is `dbutil.h`, but a more abstracted version would be better.
+    - Create a C++ header for configs.
+    - Create a shell header for configs.
+  - Support the following features:
+    - Checking if the config exists
+    - Initialising a default config
+    - Reading the config in raw form
+    - Parsing the config
+      - Use an easy-to-parse, sufficiently extensible and sufficiently
+        human-readable format.
+        - Maybe DOS INI or a variant?
 
 ## Refactoring / Rewriting / Reworking
 
