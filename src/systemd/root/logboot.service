@@ -1,0 +1,10 @@
+[Unit]
+Description=Log boot analysis.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=BIN_PREFIX/logboot
+
+[Install]
+WantedBy=default.target
