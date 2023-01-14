@@ -131,7 +131,7 @@ sum_t parse(char *s)
         die("could not parse line: %s\n", s);
     }
 
-    while (true) {
+    for (;;) {
         if (!(c = *end))
             return sum;
         if (isspace(c))
