@@ -34,6 +34,8 @@ preview_image() {
 }
 
 scope() {
+    # FIXME: `scope` does not clean after temporary files when timed out.
+    #        maybe replace scope with a custom script?
     timeout 5 \
         "${XDG_CONFIG_HOME:-$HOME/.config}/ranger/scope.sh" \
             "$(realpath -P -- "$1")" \
@@ -83,7 +85,11 @@ main() {
             if [ -s "$thumbfl" ]; then
                 preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             else
-                scope "$@"
+                if [ "$(stat --printf="%s" -- "$1")" -le 16777216 ]; then # 16MiB
+                    scope "$@"
+                else
+                    cat -- "$1"
+                fi
             fi
             ;;
         *)
