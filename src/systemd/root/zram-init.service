@@ -3,7 +3,7 @@ Description=Initialise zram.
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/zram-init
+ExecStart=BIN_PREFIX/zram-init
 
 [Install]
 WantedBy=default.target
