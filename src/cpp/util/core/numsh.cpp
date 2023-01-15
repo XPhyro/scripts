@@ -28,6 +28,8 @@ DEFINE_EXEC_INFO();
 #define DECL_FUNC(FUNC_NAME) void FUNC_NAME(std::span<double> argv, std::vector<double>& nums);
 
 namespace func {
+    DECL_FUNC(factor);
+
     DECL_FUNC(acos);
     DECL_FUNC(asin);
     DECL_FUNC(atan);
@@ -72,6 +74,8 @@ public:
 };
 
 std::unordered_map<std::string_view, function> functions = {
+    { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
+
     { "acos", { "Map all elements to their acos. See `man 3 acos`.", func::acos, 0, 0 } },
     { "asin", { "Map all elements to their asin. See `man 3 asin`.", func::asin, 0, 0 } },
     { "atan", { "Map all elements to their atan. See `man 3 atan`.", func::atan, 0, 0 } },
@@ -93,8 +97,10 @@ std::unordered_map<std::string_view, function> functions = {
     { "tan", { "Map all elements to their tan. See `man 3 tan`.", func::tan, 0, 0 } },
     { "tanh", { "Map all elements to their tanh. See `man 3 tanh`.", func::tanh, 0, 0 } },
     { "trunc", { "Map all elements to their trunc. See `man 3 trunc`.", func::trunc, 0, 0 } },
+
     { "zero", { "Reduce to zero elements.", func::zero, 0, 0 } },
     { "nonzero", { "Reduce to non-zero elements.", func::nonzero, 0, 0 } },
+
     { "count", { "Reduce to count of elements.", func::count, 0, 0 } },
     { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
     { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
@@ -213,6 +219,33 @@ int main(int argc, char* argv[])
 }
 
 namespace func {
+    void factor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        std::vector<double> factors;
+
+        for (std::intmax_t num : nums) {
+            if (!num)
+                continue;
+
+            if (num < 0)
+                num = -num;
+
+            while (!(num % 2)) {
+                num /= 2;
+                factors.push_back(2);
+            }
+
+            for (auto fac = 3; fac <= num; fac += 2) {
+                while (!(num % fac)) {
+                    num /= fac;
+                    factors.push_back(fac);
+                }
+            }
+        }
+
+        nums.swap(factors);
+    }
+
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         for (auto& num : nums)
