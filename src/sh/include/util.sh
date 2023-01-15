@@ -2,6 +2,6 @@
     HEADER_SCRIPTS_UTIL_=
 
     std_cd() {
-        cd "$@" || exit 1
+        cd "$@" || exit "${ec:-1}"
     }
 }
