@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
 . shellverbose.sh
+. util.sh
 
-set -e
-
-[ -f "__init__.py" ] && cd "$HOME"
+[ -f "__init__.py" ] && std_cd "$HOME"
 exec execaux "$0" "$@"
