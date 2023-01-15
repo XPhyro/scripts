@@ -4,6 +4,7 @@
 # TODO: Add support for multiple -e.
 
 . shellverbose.sh
+. util.sh
 
 execname="${0##*/}"
 
@@ -53,13 +54,6 @@ printusage() {
 
 logerr() {
     printf "ERROR: %s\n" "$1"
-}
-
-cdsafe() {
-    cd -- "$1" 2> /dev/null || {
-        logerr "Could not cd to $1, exiting."
-        exit 0
-    }
 }
 
 assertarg() {
@@ -169,7 +163,7 @@ main() {
         [ -n "$git" ] && initgithash="$(git rev-parse HEAD)"
 
         until [ -e "$sel" ] && [ ! -d "$sel" ]; do
-            [ -d "$sel" ] && cdsafe "$sel"
+            [ -d "$sel" ] && std_cd "$sel"
 
             if [ -n "$showhidden" ]; then
                 if [ -n "$git" ]; then
@@ -180,13 +174,13 @@ main() {
 
                     fls="$(
                         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | while IFS= read -r i; do
-                            cdsafe "$i"
+                            std_cd "$i"
 
                             if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] && [ "$(git rev-parse HEAD)" = "$initgithash" ]; then
                                 printf "%s\n" "$i"
                             fi
 
-                            cdsafe ..
+                            std_cd ..
                         done | sort
 
                         git ls-files
@@ -203,13 +197,13 @@ main() {
 
                     fls="$(
                         find '.' -mindepth 1 -maxdepth 1 -type d -not -name ".*" -printf "%P/\n" | while IFS= read -r i; do
-                            cdsafe "$i"
+                            std_cd "$i"
 
                             if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ] && [ "$(git rev-parse HEAD)" = "$initgithash" ]; then
                                 printf "%s\n" "$i"
                             fi
 
-                            cdsafe ..
+                            std_cd ..
                         done | sort
 
                         git ls-files | sed -e '/^\..*/d' -e '/.*\/\..*/d'
@@ -249,7 +243,7 @@ main() {
         fi
     else
         while :; do
-            [ -d "$sel" ] && cdsafe "$sel"
+            [ -d "$sel" ] && std_cd "$sel"
 
             if [ -n "$showhidden" ]; then
                 fls="$(find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P/\n" | sort)"
@@ -288,8 +282,8 @@ parseargs "$@"
 if [ -n "$initdirs" ]; then
     masterinitpwd="$PWD"
     printf "%s\n" "$initdirs" | while IFS= read -r i; do
-        cdsafe "$masterinitpwd"
-        cdsafe "$i"
+        std_cd "$masterinitpwd"
+        std_cd "$i"
 
         initpwd="$PWD"
         [ "$rootasinit" = "1" ] && root="$initpwd"

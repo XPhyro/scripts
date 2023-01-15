@@ -5,6 +5,7 @@
 # TODO: Add an option to register an already running application. Instead of toggling the application, just register the given pid, checking that the pid exists if -a is passed. If -k is passed, register to the given keycode. Else, query the command that is running as the pid and compute the hash based on that.
 
 . shellverbose.sh
+. util.sh
 
 execname="${0##*/}"
 
@@ -349,7 +350,7 @@ main() {
 
     [ -n "$liststyle" ] && {
         loginfo "Listing to stdout."
-        cd "$flsdir" || logerrq "Could not cd to $flsdir."
+        std_cd "$flsdir"
 
         case "$liststyle" in
             compact) grep -R '';;

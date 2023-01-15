@@ -2,6 +2,7 @@
 # Select a file using fzf and open them in "$EDITOR".
 
 . shellverbose.sh
+. util.sh
 
 main() {
     fl="$(
@@ -26,8 +27,8 @@ done
 rootpwd="$PWD"
 while :; do
     for i; do
-        cd "$i" || exit 1
+        std_cd "$i"
         main
-        cd "$rootpwd" || exit 1
+        std_cd "$rootpwd"
     done
 done
