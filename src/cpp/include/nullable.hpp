@@ -35,7 +35,6 @@ namespace xph {
         friend bool operator==(const nullable<T>& lhs, const T& rhs)
         {
             return lhs.value == rhs;
-            ;
         }
 
         friend bool operator!=(const nullable<T>& lhs, const T& rhs)
