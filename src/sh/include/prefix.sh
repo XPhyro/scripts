@@ -1,4 +1,5 @@
 # shellcheck disable=SC2034
+# shellcheck disable=SC2154
 
 [ -z "${HEADER_SCRIPTS_SH_PREFIX_+x}" ] && {
     HEADER_SCRIPTS_SH_PREFIX_=
