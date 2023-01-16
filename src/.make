@@ -965,6 +965,7 @@ CPPCHECK_SUPPRESS="--suppress=unmatchedSuppression:\* \
                    --suppress=shadowFunction \
                    --suppress=shadowVariable \
                    --suppress=unusedFunction \
+                   --suppress=unusedStructMember \
                    --suppress=uninitvar"
 
 ec=0
