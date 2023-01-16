@@ -355,6 +355,7 @@ install() {
                 printf "    %s -> %s\n" "$flname" "$pfx/$flname"
                 m4 -I"$rootdir" -DHOME="$realhome" -DBIN_PREFIX="$binprefix" \
                     -DDATA_PREFIX="$dataprefix" "$fl" > "$pfx/$flname"
+                printf "\0%s\0" "$pfx/$flname"
                 [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/$flname"
             done
         done
