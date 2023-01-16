@@ -33,6 +33,11 @@ preview_image() {
     fi
 }
 
+preview_pdf() {
+    [ -f "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
+    preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+}
+
 scope() {
     # FIXME: `scope` does not clean after temporary files when timed out.
     #        maybe replace scope with a custom script?
@@ -56,9 +61,14 @@ main() {
     thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
 
     case "$(file --mime-type --brief -- "$(realpath -P -- "$1")")" in
+        application/octet-stream)
+            case "$1" in
+                *.pdf) preview_pdf "$@";;
+                *) scope "$@";;
+            esac
+            ;;
         application/pdf)
-            [ -f "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
-            preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            preview_pdf "$@"
             ;;
         application/epub+zip)
             [ -f "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
