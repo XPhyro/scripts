@@ -68,7 +68,6 @@ struct function {
 public:
     std::string description;
     std::function<void(std::span<double>, std::vector<double>&)> function;
-    // cppcheck-suppress unusedStructMember
     std::size_t min_argc;
     std::size_t max_argc;
 };
