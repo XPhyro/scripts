@@ -19,6 +19,7 @@ while getopts "dh" OPT; do
         h)
             printf "%s" \
 "$execname [OPTION...] [keymap]?
+   -d      load default mappings and exit
    -h      display this help and exit
 " >&2
             exit 0
