@@ -1,5 +1,5 @@
-[ -z "${HEADER_SCRIPTS_IO_+x}" ] && {
-    HEADER_SCRIPTS_IO_=
+[ -z "${HEADER_SCRIPTS_SH_IO_+x}" ] && {
+    HEADER_SCRIPTS_SH_IO_=
 
     . execinfo.sh
 

@@ -1,5 +1,5 @@
-[ -z "${HEADER_SCRIPTS_META_+x}" ] && {
-    HEADER_SCRIPTS_META_=
+[ -z "${HEADER_SCRIPTS_SH_META_+x}" ] && {
+    HEADER_SCRIPTS_SH_META_=
 
     std_is_set() {
         for __i; do

@@ -1,7 +1,7 @@
 # shellcheck disable=SC2034
 
-[ -z "${HEADER_SCRIPTS_PREFIX_+x}" ] && {
-    HEADER_SCRIPTS_PREFIX_=
+[ -z "${HEADER_SCRIPTS_SH_PREFIX_+x}" ] && {
+    HEADER_SCRIPTS_SH_PREFIX_=
 
     . execinfo.sh
     . io.sh

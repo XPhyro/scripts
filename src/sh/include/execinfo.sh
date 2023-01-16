@@ -1,7 +1,7 @@
 # shellcheck disable=SC2034
 
-[ -z "${HEADER_SCRIPTS_EXECINFO_+x}" ] && {
-    HEADER_SCRIPTS_EXECINFO_=
+[ -z "${HEADER_SCRIPTS_SH_EXECINFO_+x}" ] && {
+    HEADER_SCRIPTS_SH_EXECINFO_=
 
     std_execpath="$0"
     std_execname="${std_execpath##*/}"
