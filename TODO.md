@@ -18,6 +18,11 @@
   path not to be `wordexp`ed. Use `shell-escape` to escape the given path
   before adding it to the database if the path is known to be a path.
   - Perhaps also add a flag to signal no-escaping, and escape by default?
+- `ffmw optimize` can increase the size of the file.
+  - Check if the resulting size is greater than the original size, if so, do
+    not overwrite.
+  - If the original size is less than the new size, the shown size difference
+    is incorrect.
 
 ## Features
 
