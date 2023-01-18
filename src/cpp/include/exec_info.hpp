@@ -14,7 +14,7 @@ namespace xph {
     extern std::string_view exec_name;
     extern std::string_view exec_path;
 
-    inline void gather_exec_info(int argc, const char* argv[])
+    inline void gather_exec_info(int argc, const char* const* argv)
     {
         if (argc) {
             exec_path = argv[0];
