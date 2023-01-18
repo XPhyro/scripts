@@ -2,15 +2,9 @@
 
 . shellverbose.sh
 
-case "$1" in
-    c|clean) rm -f -- main.c program;;
-    *)
-        if [ -f "main.cpp" ]; then
-            fl="main.cpp"
-        else
-            fl="main.c"
-        fi
+src="main.C main.cpp main.c"
 
-        gcc "$fl" -Wall -o program && ./program "$@"
-        ;;
+case "$1" in
+    c|clean) rm -f -- $src program;;
+    *) gcc "$(firstexisting $src)" -Wall -o program && ./program "$@";;
 esac
