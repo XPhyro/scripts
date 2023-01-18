@@ -4,5 +4,13 @@
 
 case "$1" in
     c|clean) rm -f -- main.c program;;
-    *      ) gcc main.c -Wall -o program && ./program "$@";;
+    *)
+        if [ -f "main.cpp" ]; then
+            fl="main.cpp"
+        else
+            fl="main.c"
+        fi
+
+        gcc "$fl" -Wall -o program && ./program "$@"
+        ;;
 esac
