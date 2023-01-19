@@ -117,7 +117,6 @@ namespace xph::str {
     {
         return str.compare(0, prefix.length(), prefix) == 0;
     }
-#endif // #else // if __cplusplus >= 202002L
 
     constexpr uint32_t crc32(const std::string_view& str);
 
@@ -128,6 +127,7 @@ namespace xph::str {
         });
         return crc ^ ~0;
     }
+#endif // #else // if __cplusplus >= 202002L
 
     std::string hash(const std::string& str);
 
