@@ -104,20 +104,6 @@ namespace xph::str {
         str.swap(newstr);
     }
 
-    bool starts_with(const std::string& str, const std::string& prefix);
-
-    inline bool starts_with(const std::string& str, const std::string& prefix)
-    {
-        return str.starts_with(prefix);
-    }
-#else // if __cplusplus >= 202002L
-    bool starts_with(const std::string& str, const std::string& prefix);
-
-    inline bool starts_with(const std::string& str, const std::string& prefix)
-    {
-        return str.compare(0, prefix.length(), prefix) == 0;
-    }
-
     constexpr uint32_t crc32(const std::string_view& str);
 
     constexpr inline uint32_t crc32(const std::string_view& str)
@@ -127,6 +113,22 @@ namespace xph::str {
         });
         return crc ^ ~0;
     }
+
+    bool starts_with(const std::string& str, const std::string& prefix);
+
+    inline bool starts_with(const std::string& str, const std::string& prefix)
+    {
+        return str.starts_with(prefix);
+    }
+
+#else // if __cplusplus >= 202002L
+    bool starts_with(const std::string& str, const std::string& prefix);
+
+    inline bool starts_with(const std::string& str, const std::string& prefix)
+    {
+        return str.compare(0, prefix.length(), prefix) == 0;
+    }
+
 #endif // #else // if __cplusplus >= 202002L
 
     std::string hash(const std::string& str);
