@@ -6,4 +6,4 @@ cd ${HOME}
 foreground { tglapp -T off -k sxhkd }
 foreground { tglapp -c }
 foreground { screen -wipe }
-setsid -f -- screen -dmS sxhkd -- tglapp -avfc -T on -k sxhkd -- sxhkd $@
+setsid -f -- tmux new -d -s sxhkd -- tglapp -avfc -T on -k sxhkd -- sxhkd $@
