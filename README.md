@@ -112,9 +112,7 @@ the source code.
   the lock, the next notification is not logged. Then it unlocks itself
   automatically. Supports blacklisting: certain notifications can be blacklisted
   and logged to a different file.
-- [numsh](src/c/util/math/numsh.c): A NumPy-like interface for the `math.h` C
-  standard header, enabling fast mathematical computations of an array of
-  numbers in the shell.
+- [numsh](src/cpp/util/core/numsh.cpp): A NumPy-like interface for the shell.
 - [rgb24togray](src/c/util/math/rgb24togray.c): Convert RGB24 images/video to
   greyscale with selectable algorithms.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
