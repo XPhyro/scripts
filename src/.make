@@ -300,6 +300,41 @@ install() {
     )
 
     printf "\n%s\n" \
+        "Preparing to install Rust programs:"
+
+    (
+        cd rs
+
+        printf "%s\n" \
+            "  Using Rust toolchain:" \
+            "    Compiler: cargo" \
+            "    Compiler version: $(cargo --version | awk '{print $2}')" \
+            "" \
+            "Installing Rust programs:"
+
+        # TODO: don't write to .installed in xargs
+        find '.' -mindepth 1 -type f -name "Cargo.toml" -printf "%h\0" \
+            | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
+                exe="${1##./}"
+                cd "$exe"
+                out="target/release/$exe"
+                if [ -f "$binprefix/$exe" ] && [ "$binprefix/$exe" -nt "$out" ]; then
+                    printf "  %s -> %s\n    %s\n" \
+                        "$exe" \
+                        "$binprefix/$exe" \
+                        "Already up-to-date."
+                    exit 0
+                fi
+                printf "  %s -> %s\n" \
+                    "$exe" \
+                    "$binprefix/$exe"
+                cargo build --release --locked --all-targets --all-features \
+                    && cp -f -t "$binprefix" -- "$out" \
+                    && printf "\0%s\0" "$binprefix/$exe" >> ../../.installed
+            ' --
+    )
+
+    printf "\n%s\n" \
         "Installing man pages:"
 
     (
