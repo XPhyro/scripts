@@ -231,6 +231,8 @@
     - Refuse the commit
   - Otherwise, it should:
     - Warn about entries possibly becoming stale
+- Generate multiple `tags` files instead of a repository-wide one to split up
+  languages, projects, programs, etc.
 
 # Normal Priority
 
