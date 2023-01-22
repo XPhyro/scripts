@@ -8,6 +8,7 @@ pipeline:
       apt-get -y install make git gcc g++ zlib1g-dev libmagic-dev moreutils libbsd-dev
       sudo apt -y install libmagic-dev moreutils libbsd-dev
       curl https://sh.rustup.rs -sSf | sudo sh -s -- -y
+      source "$HOME/.cargo/env"
       sudo rustup update
       make install
       make test
