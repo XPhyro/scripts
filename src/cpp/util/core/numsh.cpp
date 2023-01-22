@@ -28,8 +28,10 @@ DEFINE_EXEC_INFO();
 #define DECL_FUNC(FUNC_NAME) void FUNC_NAME(std::span<double> argv, std::vector<double>& nums);
 
 namespace func {
+    // one to many
     DECL_FUNC(factor);
 
+    // one to one
     DECL_FUNC(acos);
     DECL_FUNC(asin);
     DECL_FUNC(atan);
@@ -52,9 +54,11 @@ namespace func {
     DECL_FUNC(tanh);
     DECL_FUNC(trunc);
 
+    // one to optional one
     DECL_FUNC(zero);
     DECL_FUNC(nonzero);
 
+    // many to one
     DECL_FUNC(count);
     DECL_FUNC(max);
     DECL_FUNC(min);
