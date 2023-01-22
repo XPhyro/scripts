@@ -321,9 +321,16 @@ install() {
                 printf "  %s -> %s\n" \
                     "$exe" \
                     "$binprefix/$exe"
-                cargo build --release --all-features \
+                tmp="$(mktemp)"
+                trap "rm -f -- \"$tmp\"" EXIT INT TERM
+                unbuffer cargo build --release --all-features 2>&1 | tee -a -- "$tmp" \
                     && cp -f -t "$binprefix" -- "$out" \
-                    && printf "\0%s\0" "$binprefix/$exe" >> ../../.installed
+                    && printf "\0%s\0" "$binprefix/$exe" >> ../../.installed \
+                    || {
+                        tail -n 1 -- "$tmp" \
+                            | grep -E "error: package \`[a-zA-Z0-9_-] [v0-9.]+\` cannot be built because it requires rustc [v0-9.]+ or newer, while the currently active rustc version is [v0-9.]+" \
+                            && exit 0
+                    }
             ' --
     )
 
