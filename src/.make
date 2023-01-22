@@ -769,15 +769,18 @@ spell() {
 
         printf "%s\n" \
             "Checking files and files in directories for spelling mistakes:"
-        find '.' -mindepth 1 -maxdepth 1 \( -not -name ".git" -a -not -name "lib" \) -print0 \
-            | xargs -r0 sh -c '
-                for fl; do
-                    printf "  %s" "$fl"
-                    [ -d "$fl" ] && printf "/"
-                    printf "\n"
-                    codespell -e --builtin "clear,rare,informal" -L "ans,ba,erformance" -- "$fl"
-                done
-            ' --
+        find '.' -type f -not -path "*/.git/*" \
+                         -not -path "*/lib/*" \
+                         -not -path "*/.archived/*" \
+                         -not -path "*/rs/*/target/*" \
+                         -not -name "tags" \
+            -print0 \
+            | xargs -r0 \
+                codespell \
+                    -e \
+                    --builtin "clear,rare,informal" \
+                    -L "ans,ba,erformance,crate,doas" \
+                    --
     )
 }
 
