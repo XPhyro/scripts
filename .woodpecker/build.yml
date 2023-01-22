@@ -5,6 +5,9 @@ pipeline:
     image: ubuntu:22.04
     commands: |
       apt-get -y update
-      apt-get -y install make git gcc g++ zlib1g-dev libmagic-dev moreutils libbsd-dev cargo
+      apt-get -y install make git gcc g++ zlib1g-dev libmagic-dev moreutils libbsd-dev
+      sudo apt -y install libmagic-dev moreutils libbsd-dev
+      curl https://sh.rustup.rs -sSf | sudo sh -s -- -y
+      sudo rustup update
       make install
       make test
