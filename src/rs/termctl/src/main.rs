@@ -91,7 +91,7 @@ fn clear(subcommand: String, _args: Vec<String>) -> Result<(), ExitFailure> {
         "before_cursor" => print!("{}", termion::clear::BeforeCursor),
         "current_line" => print!("{}", termion::clear::CurrentLine),
         "until_newline" => print!("{}", termion::clear::UntilNewline),
-        _ => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unknown clear mode").ilto()),
+        _ => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unknown clear mode").into()),
     };
     return Ok(());
 }
