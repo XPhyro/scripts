@@ -22,7 +22,7 @@ getrealuser() {
 
 cancompilecpp() {
     if { [ "$CXX" != "g++" ] && [ "$CXX" != "gcc" ]; } \
-        || [ "$("$CXX" --version | head -n 1 | sed 's/\s*[0-9]*$//;s/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -ge 12 ]; then
+        || [ "$("$CXX" --version | head -n 1 | sed 's/\s*[0-9]*$//;s/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -ge 12 ] 2> /dev/null; then
         printf 1
     else
         printf 0
