@@ -231,6 +231,7 @@
     - Warn about entries possibly becoming stale
 - Generate multiple `tags` files instead of a repository-wide one to split up
   languages, projects, programs, etc.
+- Try out `nim`, `zig` and `#!/usr/bin/env -S tcc -run`.
 
 # Normal Priority
 
