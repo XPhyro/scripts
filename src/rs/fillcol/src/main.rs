@@ -110,7 +110,7 @@ fn main() -> Result<(), ExitFailure> {
 
     cursor.save_position()?;
 
-    for line in 1..term_height {
+    for line in 1..term_height + 1 {
         print!(
             "{}{}{}",
             termion::cursor::Goto(col, line),
