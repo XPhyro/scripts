@@ -206,6 +206,7 @@
     languages rather than in shell.
 - Export `align()` from `std::string` to `strutil.h` and use it from the
   header.
+- Merge `fillline` and `fillterm` into `fillcol`.
 
 ## Other
 
