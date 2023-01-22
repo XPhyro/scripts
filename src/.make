@@ -328,7 +328,7 @@ install() {
                 printf "  %s -> %s\n" \
                     "$exe" \
                     "$binprefix/$exe"
-                cargo build --release --locked --all-targets --all-features \
+                cargo build --release --all-features \
                     && cp -f -t "$binprefix" -- "$out" \
                     && printf "\0%s\0" "$binprefix/$exe" >> ../../.installed
             ' --
