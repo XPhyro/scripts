@@ -77,7 +77,7 @@ the source code.
   `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required
   for operation, but the script was designed with it in mind. There is also
   [dwmpad](src/sh/.archived/dwm/util/dwmpad).
-- [cast](src/cpp/util/ishell/cast.cpp): Cast data between different data types.
+- [cast](src/cpp/util/core/cast.cpp): Cast data between different data types.
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
