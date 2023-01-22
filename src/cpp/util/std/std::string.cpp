@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    xph::die("unkown function: ", requested_function_name);
+    xph::die("unknown function: ", requested_function_name);
 
     return EXIT_SUCCESS;
 }
