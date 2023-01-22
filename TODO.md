@@ -392,8 +392,6 @@
   with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through
   `stat --printf=` if the line starts with ` `.
-- `fillcol`: Like `fillline` and `fillterm`, but for columns. Take a column
-  number as input. Do not scroll lines, rather overwrite the screen.
 - `volauxdefset`
 - `volauxsetarr`: like `volauxset`, but moves in predefined volume levels (given
   via arguments).
