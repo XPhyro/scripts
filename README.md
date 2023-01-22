@@ -8,10 +8,18 @@
 
 # scripts
 
-This repository holds a collection of general and specific scripts, utilities
-and libraries for Unix-like operating systems. Almost all scripts are written in
-POSIX Shell, i.e. `sh`; and most non-script utilities and libraries are written
-in C.
+This repository holds a collection of over 300 scripts, utilities and libraries
+for Unix-like operating systems, written in the following languages:
+
+- Awk
+- Bash
+- C
+- C++
+- POSIX Shell
+- Perl
+- Python
+- Rust
+- execline
 
 ## Installation
 
