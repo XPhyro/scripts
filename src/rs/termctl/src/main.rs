@@ -5,9 +5,9 @@ extern crate termion;
 use std::io;
 
 use clap::Parser;
-use crossterm::cursor;
 use exitfailure::ExitFailure;
 use termion::color;
+use termion::{cursor::DetectCursorPos, raw::IntoRawMode};
 
 /// Query information about the terminal or control it.
 #[derive(Parser)]
@@ -84,67 +84,68 @@ fn get_fg_ansi(color_str: String) -> Result<&'static str, ExitFailure> {
     };
 }
 
-fn cursor_pos(_args: Vec<String>) -> Result<(), ExitFailure> {
-    let cursor = cursor();
-    let (x, y) = cursor.pos().unwrap();
-    println!("{},{}", x, y);
+fn get_cursor_pos(_args: Vec<String>) -> Result<(), ExitFailure> {
+    let mut stdout = std::io::stdout().into_raw_mode().unwrap();
+    let (x, y) = stdout.cursor_pos()?;
+    println!("{},{}", x, y); // FIXME: does not print properly
     return Ok(());
 }
 
-fn geometry(_args: Vec<String>) -> Result<(), ExitFailure> {
+fn get_geometry(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (width, height) = termion::terminal_size().unwrap();
     println!("{}x{}", width, height);
     return Ok(());
 }
 
-fn height(_args: Vec<String>) -> Result<(), ExitFailure> {
+fn get_height(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (_width, height) = termion::terminal_size().unwrap();
     println!("{}", height);
     return Ok(());
 }
 
-fn size(_args: Vec<String>) -> Result<(), ExitFailure> {
+fn get_size(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (width, height) = termion::terminal_size().unwrap();
     println!("{}", width * height);
     return Ok(());
 }
 
-fn width(_args: Vec<String>) -> Result<(), ExitFailure> {
+fn get_width(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (width, _height) = termion::terminal_size().unwrap();
     println!("{}", width);
     return Ok(());
 }
 
 fn move_down(args: Vec<String>) -> Result<(), ExitFailure> {
-    let mut cursor = cursor();
-    cursor.move_down(args[0].parse::<u16>().unwrap())?;
+    print!("{}", termion::cursor::Down(args[0].parse::<u16>().unwrap()));
     return Ok(());
 }
 
 fn move_left(args: Vec<String>) -> Result<(), ExitFailure> {
-    let mut cursor = cursor();
-    cursor.move_left(args[0].parse::<u16>().unwrap())?;
+    print!("{}", termion::cursor::Left(args[0].parse::<u16>().unwrap()));
     return Ok(());
 }
 
 fn move_right(args: Vec<String>) -> Result<(), ExitFailure> {
-    let mut cursor = cursor();
-    cursor.move_right(args[0].parse::<u16>().unwrap())?;
+    print!(
+        "{}",
+        termion::cursor::Right(args[0].parse::<u16>().unwrap())
+    );
     return Ok(());
 }
 
 fn move_to(args: Vec<String>) -> Result<(), ExitFailure> {
-    let cursor = cursor();
-    cursor.goto(
-        args[0].parse::<u16>().unwrap(),
-        args[1].parse::<u16>().unwrap(),
-    )?;
+    print!(
+        "{}",
+        termion::cursor::Goto(
+            args[0].parse::<u16>().unwrap(),
+            args[1].parse::<u16>().unwrap()
+        )
+    );
     return Ok(());
 }
 
 fn move_up(args: Vec<String>) -> Result<(), ExitFailure> {
-    let mut cursor = cursor();
-    cursor.move_up(args[0].parse::<u16>().unwrap())?;
+    print!("{}", termion::cursor::Up(args[0].parse::<u16>().unwrap()));
     return Ok(());
 }
 
@@ -175,15 +176,21 @@ fn print(args: Vec<String>) -> Result<(), ExitFailure> {
     return Ok(());
 }
 
-fn bg_color(args: Vec<String>) -> Result<(), ExitFailure> {
+fn set_bg_color(args: Vec<String>) -> Result<(), ExitFailure> {
     let color = &args[0]; // TODO: check args is not empty
     print!("{}", get_bg_ansi(color.to_string())?);
     return Ok(());
 }
 
-fn fg_color(args: Vec<String>) -> Result<(), ExitFailure> {
+fn set_fg_color(args: Vec<String>) -> Result<(), ExitFailure> {
     let color = &args[0]; // TODO: check args is not empty
     print!("{}", get_fg_ansi(color.to_string())?);
+    return Ok(());
+}
+
+fn set_title(args: Vec<String>) -> Result<(), ExitFailure> {
+    let title = &args[0]; // TODO: check args is not empty
+    print!("\x1b]0;{}\x07", title);
     return Ok(());
 }
 
@@ -192,11 +199,11 @@ fn main() -> Result<(), ExitFailure> {
 
     return match args.command.as_str() {
         "get" => match args.subcommand.as_str() {
-            "cursor_pos" => cursor_pos(args.args),
-            "geometry" => geometry(args.args),
-            "height" => height(args.args),
-            "size" => size(args.args),
-            "width" => width(args.args),
+            "cursor_pos" => get_cursor_pos(args.args),
+            "geometry" => get_geometry(args.args),
+            "height" => get_height(args.args),
+            "size" => get_size(args.args),
+            "width" => get_width(args.args),
             _ => Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
                 f!("Invalid argument: subcommand cannot be {args.subcommand}"),
@@ -217,8 +224,9 @@ fn main() -> Result<(), ExitFailure> {
         },
         "print" => print(args.args),
         "set" => match args.subcommand.as_str() {
-            "bg_color" => bg_color(args.args),
-            "fg_color" => fg_color(args.args),
+            "bg_color" => set_bg_color(args.args),
+            "fg_color" => set_fg_color(args.args),
+            "title" => set_title(args.args),
             _ => Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
                 f!("Invalid argument: subcommand cannot be {args.subcommand}"),
