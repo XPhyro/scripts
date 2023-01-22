@@ -790,6 +790,10 @@ stats() {
     tmp="$(mktemp)"
     trap 'rm -f "$tmp"' INT QUIT TERM EXIT
 
+    find 'awk' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
+    awkloc="$(wc -l < "$tmp")"
+    awksloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
     find 'bash' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
     bashloc="$(wc -l < "$tmp")"
     bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
@@ -809,6 +813,10 @@ stats() {
     find 'sh' -mindepth 1 -type f -executable -exec cat -- {} \; > "$tmp"
     shloc="$(wc -l < "$tmp")"
     shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    find 'rs' -mindepth 1 -type f -iname "*.rs" -exec cat -- {} \; > "$tmp"
+    rsloc="$(wc -l < "$tmp")"
+    rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     find 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \) -exec cat -- {} \; > "$tmp"
     cloc="$(wc -l < "$tmp")"
@@ -832,22 +840,26 @@ stats() {
         "  Total commits: $(git rev-list --all --count)" \
         "" \
         "Lines of Code:" \
+        "  Awk:      $awkloc" \
         "  Bash:     $bashloc" \
         "  execline: $elloc" \
         "  Python:   $pyloc" \
         "  Perl:     $plloc" \
         "  shell:    $shloc" \
+        "  Rust:     $rsloc" \
         "  C:        $cloc" \
         "  C++:      $cpploc" \
         "  systemd:  $systemdloc" \
         "  Total:    $totalloc" \
         "" \
         "Source Lines of Code:" \
+        "  Awk:      $awksloc" \
         "  Bash:     $bashsloc" \
         "  execline: $elsloc" \
         "  Python:   $pysloc" \
         "  Perl:     $plsloc" \
         "  shell:    $shsloc" \
+        "  Rust:     $rssloc" \
         "  C:        $csloc" \
         "  C++:      $cppsloc" \
         "  systemd:  $systemdsloc" \
