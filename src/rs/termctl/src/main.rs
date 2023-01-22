@@ -84,6 +84,18 @@ fn get_fg_ansi(color_str: String) -> Result<&'static str, ExitFailure> {
     };
 }
 
+fn clear(subcommand: String, _args: Vec<String>) -> Result<(), ExitFailure> {
+    match subcommand.as_str() {
+        "all" => print!("{}", termion::clear::All),
+        "after_cursor" => print!("{}", termion::clear::AfterCursor),
+        "before_cursor" => print!("{}", termion::clear::BeforeCursor),
+        "current_line" => print!("{}", termion::clear::CurrentLine),
+        "until_newline" => print!("{}", termion::clear::UntilNewline),
+        _ => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unkown clear mode").into()),
+    };
+    return Ok(());
+}
+
 fn get_cursor_pos(_args: Vec<String>) -> Result<(), ExitFailure> {
     let mut stdout = std::io::stdout().into_raw_mode().unwrap();
     let (x, y) = stdout.cursor_pos()?;
@@ -198,6 +210,7 @@ fn main() -> Result<(), ExitFailure> {
     let args = Args::parse();
 
     return match args.command.as_str() {
+        "clear" => clear(args.subcommand, args.args),
         "get" => match args.subcommand.as_str() {
             "cursor_pos" => get_cursor_pos(args.args),
             "geometry" => get_geometry(args.args),
