@@ -70,7 +70,6 @@
   - `td` may be `printf "%s\n" TODO*(N) TODO.md | head -n 1` (zsh)
   - `rdm` may be `printf "%s\n" README*(N) README.md | head -n 1` (zsh)
   - `lc` may be `find . -mindepth 1 -maxdepth 1 -type f -iname "*license*" -print0 | head -z -n 1 | head -c -2` (sh)
-- After `termctl` is created, add other relevant functionality to it.
 - Support non-absolute values for `-l` and `-p` in `scrolls`.
   - Syntax should support `x%` where `0.0 <= x <= 100.0` or `y` where `y >= 0`.
 - Add new events in `bspwm-autokblayout`:
@@ -192,8 +191,6 @@
   - Use `vector`.
   - Use `-nostdin` and `file:` for `ffmpeg`.
 - Optimise `breadth-find` to not search the same initial depths multiple times.
-- Merge [term/\*](src/c/util/term/) into `termctl`.
-  - Make its syntax human-readable like that of `xdotool`.
 - Make `editpath` and related scripts as easy to use as `_m` and others.
 - Rewrite the pathfinding suite with `std::unordered_map`, or with the
   to-be-implemented C/C++ `std` base library.
