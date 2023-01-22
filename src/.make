@@ -318,13 +318,6 @@ install() {
                 exe="${1##./}"
                 cd "$exe"
                 out="target/release/$exe"
-                if [ -f "$binprefix/$exe" ] && [ "$binprefix/$exe" -nt "$out" ]; then
-                    printf "  %s -> %s\n    %s\n" \
-                        "$exe" \
-                        "$binprefix/$exe" \
-                        "Already up-to-date."
-                    exit 0
-                fi
                 printf "  %s -> %s\n" \
                     "$exe" \
                     "$binprefix/$exe"
