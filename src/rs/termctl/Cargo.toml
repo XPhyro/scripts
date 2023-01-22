@@ -1,0 +1,17 @@
+[package]
+name = "termctl"
+version = "0.1.0"
+edition = "2021"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+
+[dependencies]
+termion = "2.0.1"
+crossterm = "0.11"
+exitfailure = "0.5.1"
+clap = { version = "4.0", features = ["derive"] }
+fstrings = "0.2.3"
