@@ -4,13 +4,15 @@ use std::env;
 use std::io;
 
 use crossterm::cursor;
+use exitfailure::ExitFailure;
 
-fn main() -> io::Result<()> {
+fn main() -> Result<(), ExitFailure> {
     if env::args().len() < 3 {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
             "Needed arguments: COLUMN and STRING",
-        ));
+        )
+        .into());
     }
 
     let (term_width, term_height) = termion::terminal_size().unwrap();
@@ -25,13 +27,13 @@ fn main() -> io::Result<()> {
 
     let cursor = cursor();
 
-    cursor.save_position();
+    cursor.save_position()?;
 
     for line in 1..term_height {
         print!("{}{}", termion::cursor::Goto(col, line), msg);
     }
 
-    cursor.restore_position();
+    cursor.restore_position()?;
 
     Ok(())
 }
