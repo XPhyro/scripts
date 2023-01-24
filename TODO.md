@@ -207,6 +207,8 @@
 - Export `align()` from `std::string` to `strutil.h` and use it from the
   header.
 - Merge `fillline` and `fillterm` into `fillcol`.
+- `prefix.sh`: don't query paths at runtime, make `.make` insert them in via
+  `m4` during installation instead.
 
 ## Other
 
