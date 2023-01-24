@@ -32,10 +32,16 @@ while getopts "dh" OPT; do
 done
 shift "$((OPTIND - 1))"
 
-km="${1:-"$(xkb-switch)"}"
-[ "$#" -gt 0 ] && {
+if [ "$#" -eq 0 ]; then
+    km="$(xkb-switch)"
+elif [ "$#" -eq 1 ]; then
+    km="$1"
     shift
+fi
+
+[ "$#" -ne 0 ] && {
     std_logerr "extra operands given, ignoring: $*"
+    set --
 }
 
 def_exprs="$def_exprs_dir/$km"
