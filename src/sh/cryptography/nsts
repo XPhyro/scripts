@@ -1,9 +1,13 @@
 #!/usr/bin/env sh
 
 # shellcheck disable=SC2154
+
 . execinfo.sh
 . io.sh
+. prefix.sh
 . shellverbose.sh
+
+templates="$std_dataprefix/nsts/templates"
 
 opt_test_800_22=0
 opt_test_800_90b_iid=0
@@ -87,7 +91,7 @@ for data; do
                     experiments/AlgorithmTesting/CumulativeSums \
                     experiments/AlgorithmTesting/RandomExcursions \
                     experiments/AlgorithmTesting/RandomExcursionsVariant \
-                && ln -s "${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/nsts/templates" "." \
+                && ln -s "$templates" "." \
                 || std_logerrq "could not create test directory hierarchy. skipping $data."
 
             if [ "$opt_bitstream_count" -eq 0 ]; then
