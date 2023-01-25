@@ -109,6 +109,7 @@
   indicator, otherwise use 0% as indicator.
 - `termctl`: include commands, subcommands, etc. in help dialog (or add a
   (command & subcommand)/flag for it)
+- Add meaningful errors to `presentimg`.
 
 ## New Scripts
 
