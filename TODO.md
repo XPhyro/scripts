@@ -375,6 +375,13 @@
       - A directory structure with a flags hashmap,
       - A directory structure with the shared files being symlinked,
       - Etc.
+    - Easiest solution that would support multiple systems, synchronous usage
+      accross multiple systems and static & shared files is most likely either
+      multiple repositories or multiple copies of the same repository with
+      distinct branches checked-out.
+      - Have a root directory with necessary configuration files.
+        - This would also make it easy to support public/private dotfiles more
+          easily.
 - Write `getfls` and `getdirs` that support multiple arguments unlike `getfl`
   and `getdir`. This might also be integrated in `getfl` and `getdir` in a
   lightweight manner.
