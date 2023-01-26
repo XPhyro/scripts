@@ -9,23 +9,6 @@ use exitfailure::ExitFailure;
 use termion::color;
 use termion::{cursor::DetectCursorPos, raw::IntoRawMode};
 
-/// Query information about the terminal or control it.
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)]
-struct Args {
-    /// Command to run.
-    #[arg(required = true)]
-    command: String,
-
-    /// Subcommand to run.
-    #[arg(required = true)]
-    subcommand: String,
-
-    /// Positional arguments for the subcommand.
-    #[arg(required = false)]
-    args: Vec<String>,
-}
-
 fn get_bg_ansi(color_str: String) -> Result<&'static str, ExitFailure> {
     return match color_str.as_str() {
         "black" => Ok(color::Black.bg_str()),
@@ -96,7 +79,7 @@ fn clear(subcommand: String, _args: Vec<String>) -> Result<(), ExitFailure> {
     return Ok(());
 }
 
-fn get_cursor_pos(_args: Vec<String>) -> Result<(), ExitFailure> {
+fn get_cursor_pos(args: Vec<String>) -> Result<(), ExitFailure> {
     let mut stdout = std::io::stdout().into_raw_mode().unwrap();
     let (x, y) = stdout.cursor_pos()?;
     println!("{},{}", x, y); // FIXME: does not print properly
@@ -161,6 +144,23 @@ fn move_up(args: Vec<String>) -> Result<(), ExitFailure> {
     return Ok(());
 }
 
+/// Query information about the terminal or control it.
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct PrintArgs {
+    /// Set the color of the background.
+    #[arg(short = 'b', long = "color", default_value = "clear")]
+    bg_color: String,
+
+    /// Do not clear the color after printing.
+    #[arg(short = 'c', long = "no-clear")]
+    no_clear: bool,
+
+    /// Set the color of the message.
+    #[arg(short = 'f', long = "color", default_value = "white")]
+    fg_color: String,
+}
+
 fn print(args: Vec<String>) -> Result<(), ExitFailure> {
     // TODO: parse additional arguments using `clap`
 
@@ -204,6 +204,23 @@ fn set_title(args: Vec<String>) -> Result<(), ExitFailure> {
     let title = &args[0]; // TODO: check args is not empty
     print!("\x1b]0;{}\x07", title);
     return Ok(());
+}
+
+/// Query information about the terminal or control it.
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Command to run.
+    #[arg(required = true)]
+    command: String,
+
+    /// Subcommand to run.
+    #[arg(required = true)]
+    subcommand: String,
+
+    /// Positional arguments for the subcommand.
+    #[arg(required = false)]
+    args: Vec<String>,
 }
 
 fn main() -> Result<(), ExitFailure> {
