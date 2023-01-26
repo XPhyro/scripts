@@ -8,8 +8,11 @@
 . prefix.sh
 . shellverbose.sh
 
-modmap_dir="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/setxkb/xmodmap"
-xset_dir="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/setxkb/xset"
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/setxkb"
+modmap_dir="$config_dir/xmodmap"
+xset_dir="$config_dir/xset"
+pre_exec_dir="$config_dir/pre_exec"
+post_exec_dir="$config_dir/post_exec"
 def_exprs_dir="$std_dataprefix/setxkb/default"
 
 optdefault=0
@@ -52,6 +55,9 @@ def_exprs="$def_exprs_dir/$km"
     exec xmodmap - < "$def_exprs"
 }
 
+[ -x "$pre_exec_dir/*" ] && "$pre_exec_dir/*"
+[ -x "$pre_exec_dir/$km" ] && "$pre_exec_dir/$km"
+
 cat -- \
     "$def_exprs" \
     "$modmap_dir/*" \
@@ -65,3 +71,6 @@ cat -- \
     2> /dev/null \
     | tr '[:space:]' '\0' \
     | xargs -r0 xset
+
+[ -x "$post_exec_dir/*" ] && "$post_exec_dir/*"
+[ -x "$post_exec_dir/$km" ] && "$post_exec_dir/$km"
