@@ -376,7 +376,7 @@
       - A directory structure with the shared files being symlinked,
       - Etc.
     - Easiest solution that would support multiple systems, synchronous usage
-      accross multiple systems and static & shared files is most likely either
+      across multiple systems and static & shared files is most likely either
       multiple repositories or multiple copies of the same repository with
       distinct branches checked-out.
       - Have a root directory with necessary configuration files.
