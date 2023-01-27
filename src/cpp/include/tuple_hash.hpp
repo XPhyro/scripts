@@ -1,3 +1,6 @@
+#ifndef HEADER_SCRIPTS_CXX_TUPLE_HASH_
+#define HEADER_SCRIPTS_CXX_TUPLE_HASH_
+
 #include <functional>
 #include <tuple>
 
@@ -13,7 +16,7 @@ namespace std {
         //     http://stackoverflow.com/questions/4948780
 
         template <class T>
-        inline void hash_combine(std::size_t& seed, T const& v)
+        inline void hash_combine(std::size_t& seed, const T& v)
         {
             seed ^= std::hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         }
@@ -47,3 +50,5 @@ namespace std {
         }
     };
 } // namespace std
+
+#endif /* ifndef HEADER_SCRIPTS_CXX_TUPLE_HASH_ */
