@@ -2,6 +2,7 @@
 #define HEADER_SCRIPTS_CXX_SYSUTIL_
 
 #include <algorithm>
+#include <array>
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
@@ -48,6 +49,16 @@ namespace xph::sys {
     void signals(std::set<int> signals, void (*func)(int)) noexcept;
 
     inline void signals(std::set<int> signals, void (*func)(int)) noexcept
+    {
+        for (auto&& sig : signals)
+            signal(sig, func);
+    }
+
+    template <std::size_t Tn>
+    void signals(std::array<int, Tn> signals, void (*func)(int)) noexcept;
+
+    template <std::size_t Tn>
+    inline void signals(std::array<int, Tn> signals, void (*func)(int)) noexcept
     {
         for (auto&& sig : signals)
             signal(sig, func);
