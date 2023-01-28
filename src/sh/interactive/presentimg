@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
+# shellcheck disable=SC2154
+
+. execinfo.sh
+. io.sh
+. shellverbose.sh
+
 opttextclr=red
 optborderclr=red
 optfont=DejaVu-Sans-Book
@@ -21,10 +27,10 @@ while getopts "C:c:f:g:H:hlo:p:vx:y:W:w:" OPT; do
         H) optoutheight="$OPTARG";;
         h)
             printf "%s" \
-"$0 [OPTION...] [IMAGEPATH=LABEL...] -- [IMAGEPATH=LABEL...]
+"$execname [OPTION...] [IMAGEPATH=LABEL...] -- [IMAGEPATH=LABEL...]
 Outline, label and append imamges.
 
-IMAGEPATH must not contain an equals sign (=). At least one of -H or -W must be given.
+IMAGEPATH must not contain an equals sign (=). LABEL can contain equals signs. At least one of -H or -W must be given.
 
 Options
    -C CLR    text colour. default is red.
@@ -43,9 +49,9 @@ Options
    -w SIZE   border width. default is 20.
 
 Examples
-   $ $0 -H 2160 -o my_horizontally_stacked_image.jpg -- my_vertical_image_1.png=A my_vertical_image_2.webp=B
-   $ $0 -W 3840 -v -o my_vertically_stacked_image.jpg -- my_horizontal_image_1.png=\"Image 1\" my_horizontal_image_2.webp=\"Image 2\"
-   $ $0 -W 3840 -v -o stacked_frames.png -- my_video_1.mp4=\"First Frame of Video 1\" my_video_2.mov=\"First Frame of Video 2\"
+   $ $execname -H 2160 -o my_horizontally_stacked_image.jpg -- my_vertical_image_1.png=A my_vertical_image_2.webp=B
+   $ $execname -W 3840 -v -o my_vertically_stacked_image.jpg -- my_horizontal_image_1.png=\"Image 1\" my_horizontal_image_2.webp=\"Image 2\"
+   $ $execname -W 3840 -v -o stacked_frames.png -- my_video_1.mp4=\"First Frame of Video 1\" my_video_2.mov=\"First Frame of Video 2\"
 "
             exit 0
             ;;
@@ -69,32 +75,51 @@ tmpdir="$(mktemp -d)"
 trap 'rm -rf -- "$tmpdir"' INT TERM HUP QUIT EXIT
 i=1
 for img; do
-    ft="$(file --brief --mime-type -- "${img%%=*}")"
+    imgpath="${img%%=*}"
+    imglabel="${img#*=}"
+
+    [ -e "$imgpath" ] || std_logerrq "file does not exist: $imgpath"
+
+    ft="$(file --brief --mime-type -- "$imgpath")"
+
+    # generate video thumbnail
     [ "${ft%%/*}" = "video" ] && {
         tmpviddir="$(mktemp -d)"
         vidframe="$(mktemp -p "$tmpviddir" --suffix=.png)"
-        ffmpeg -hide_banner -y -i "${img%%=*}" -vframes 1 -update true -loglevel warning "$vidframe"
-        img="$vidframe=${img#*=}"
+        ffmpeg -hide_banner -y -i "$imgpath" -vframes 1 -update true -loglevel warning "$vidframe"
+        img="$vidframe=$imglabel"
     }
+
+    # normalise size
     convert \
         -resize "${optoutwidth}x${optoutheight}" \
-        -- "${img%%=*}" "$tmpdir/$i.png"
+        -- "$imgpath" "$tmpdir/$i.png"
+
+    # add label
     convert \
         -font "$optfont" -pointsize "$optpoint" -fill "$opttextclr" \
-        -gravity "$optgravity" -annotate "+$optoffsetx+$optoffsety" "${img#*=}" \
+        -gravity "$optgravity" -annotate "+$optoffsetx+$optoffsety" "$imglabel" \
         -- "$tmpdir/$i.png" "$tmpdir/$i.png"
+
+    # add border
     convert \
         -bordercolor "$optborderclr" -border "$optborder" \
         -- "$tmpdir/$i.png" "$tmpdir/$i.png"
+
     : $((i += 1))
 done
 
+# merge
 {   find "$tmpdir" -mindepth 1 -maxdepth 1 -type f -print0 | sort -nz
     printf "%s\0" "$optoutpath"
 } | xargs -r0 convert "${optvertical}append" --
+
+# add border
 convert \
     -bordercolor "$optborderclr" -border "$optborder" \
     -- "$optoutpath" "$optoutpath"
+
+# add comment
 convert \
-    -set "comment" "Image generated via $(basename -- "$0")." \
+    -set "comment" "Image generated via $execname." \
     -- "$optoutpath" "$optoutpath"
