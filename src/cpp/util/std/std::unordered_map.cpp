@@ -133,10 +133,10 @@ int main(int argc, char* argv[])
 
     switch (cache) {
         case cache::temporary:
-            prefix = temphome();
+            prefix = ::temphome();
             break;
         case cache::persistent:
-            prefix = cachehome();
+            prefix = ::cachehome();
             break;
         default:
             die("unknown cache type");
