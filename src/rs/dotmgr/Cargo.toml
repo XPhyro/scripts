@@ -1,0 +1,16 @@
+[package]
+name = "dotmgr"
+version = "0.1.0"
+edition = "2021"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+
+[dependencies]
+termion = "2.0.1"
+exitfailure = "0.5.1"
+clap = { version = "4.0", features = ["derive"] }
+die-exit = "0.4.0"
