@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
             die("unknown cache type");
     }
 
-    xph::sys::signals({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_sig);
+    xph::sys::signals<4>({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_sig);
 
     lock_database(givenexecname + '-' + proghash);
     lock_database(givenexecname + '-' + proghash + '-' + vecname);
