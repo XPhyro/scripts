@@ -17,12 +17,11 @@ printf "%s" "Testing..."
 }
 
 timestamp="$(date +%s)"
-isp="$(printf "%s\n" "$result" | grep -F "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//')"
-host="$(printf "%s\n" "$result" | grep -F "Hosted by"    | sed -e 's/Hosted by //' -e 's/:.*//')"
-latency="$(printf "%s\n" "$result" | grep -F "Hosted by"    | awk '{print $(NF - 1)" "$NF}')"
-download="$(printf "%s\n" "$result" | grep -F "Download:"    | awk '{print $2" "$3}'
-)"
-upload="$(printf "%s\n" "$result" | grep -F "Upload:"      | awk '{print $2" "$3}')"
+isp="$(     printf "%s\n" "$result" | grep -F "Testing from" | sed -e 's/Testing from //' -e 's/\.\.\.//')"
+host="$(    printf "%s\n" "$result" | grep -F "Hosted by"    | sed -e 's/Hosted by //' -e 's/:.*//')"
+latency="$( printf "%s\n" "$result" | grep -F "Hosted by"    | awk '{print $(NF - 1)" "$NF}')"
+download="$(printf "%s\n" "$result" | grep -F "Download:"    | awk '{print $2" "$3}')"
+upload="$(  printf "%s\n" "$result" | grep -F "Upload:"      | awk '{print $2" "$3}')"
 
 printf "\n\n"
 printf "%s\n" \
