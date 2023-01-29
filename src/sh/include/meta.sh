@@ -25,4 +25,12 @@
 
         return 0
     }
+
+    std_is_function() {
+        for __i; do
+            [ "$(type "$__i" 2>&1)" = "$__i is a shell function" ] || return 1
+        done
+
+        return 0
+    }
 }
