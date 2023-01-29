@@ -10,7 +10,7 @@ opt-level = 0
 opt-level = 3
 
 [dependencies]
-termion = "2.0.1"
-exitfailure = "0.5.1"
 clap = { version = "4.0", features = ["derive"] }
 die-exit = "0.4.0"
+exitfailure = "0.5.1"
+termion = "2.0.1"
