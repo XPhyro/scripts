@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-sh "$@" &
+cmd="$1"
+shift
+sh -c "$cmd" -- "$@" &

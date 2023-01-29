@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-setsid --fork -- sh "$@" &
+cmd="$1"
+shift
+setsid --fork -- sh -c "$cmd" -- "$@" &
