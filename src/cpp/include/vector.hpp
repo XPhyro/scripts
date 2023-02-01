@@ -136,15 +136,6 @@ public:
         return v;
     }
 
-#define VECTOR_DEFINE_OPERATOR_(OP)                       \
-    template <typename T>                                 \
-    inline friend Vector operator OP(Vector v, const T t) \
-    {                                                     \
-        for (std::size_t i = 0; i < Td; ++i)              \
-            v[i] = v[i] OP t;                             \
-        return v;                                         \
-    }
-
     VECTOR_DEFINE_OPERATOR_(+)
     VECTOR_DEFINE_OPERATOR_(-)
     VECTOR_DEFINE_OPERATOR_(*)
@@ -210,15 +201,6 @@ public:
             v[i] /= vp[i];
 
         return v;
-    }
-
-#define VECTOR_DEFINE_OPERATOR_(OP)                       \
-    template <typename T>                                 \
-    inline friend Vector operator OP(Vector v, const T t) \
-    {                                                     \
-        for (std::size_t i = 0; i < Td; ++i)              \
-            v[i] = v[i] OP t;                             \
-        return v;                                         \
     }
 
     VECTOR_DEFINE_OPERATOR_(+)
@@ -289,15 +271,6 @@ public:
         return v;
     }
 
-#define VECTOR_DEFINE_OPERATOR_(OP)                       \
-    template <typename T>                                 \
-    inline friend Vector operator OP(Vector v, const T t) \
-    {                                                     \
-        for (std::size_t i = 0; i < Td; ++i)              \
-            v[i] = v[i] OP t;                             \
-        return v;                                         \
-    }
-
     VECTOR_DEFINE_OPERATOR_(+)
     VECTOR_DEFINE_OPERATOR_(-)
     VECTOR_DEFINE_OPERATOR_(*)
@@ -365,15 +338,6 @@ public:
             v[i] /= vp[i];
 
         return v;
-    }
-
-#define VECTOR_DEFINE_OPERATOR_(OP)                       \
-    template <typename T>                                 \
-    inline friend Vector operator OP(Vector v, const T t) \
-    {                                                     \
-        for (std::size_t i = 0; i < Td; ++i)              \
-            v[i] = v[i] OP t;                             \
-        return v;                                         \
     }
 
     VECTOR_DEFINE_OPERATOR_(+)
