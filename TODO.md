@@ -185,7 +185,9 @@
       - Use an easy-to-parse, sufficiently extensible and sufficiently
         human-readable format.
         - Maybe DOS INI or a variant?
-- `bspwm-stalk` & `bspwm-stalker`: a client/server-like system for marking windows and making those windows follow the currently selected monitor in their normal desktop.
+- `bspwm-stalk` & `bspwm-stalker`: a client/server-like system for marking
+  windows and making those windows follow the currently selected monitor in
+  their normal desktop.
   - `bspwm-stalk`: toggle stalk status of windows. Also have options for explicit on/off.
   - `bspwm-stalker`: daemon that does the stalking.
   - For example, if the user switches from M1D1 to M2D1, a marked window in
