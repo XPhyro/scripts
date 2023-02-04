@@ -11,7 +11,11 @@ nofocusclasses="$(printf "%s\n" "$nofocus" | cut -d: -f1)"
 nofocusinstances="$(printf "%s\n" "$nofocus" | cut -d: -f2)"
 nofocusnames="$(printf "%s\n" "$nofocus" | cut -d: -f3- | sed 's/ => .*$//')"
 
-{   bspc subscribe node_swap node_transfer node_remove &
+{   bspc subscribe node_swap node_remove &
+    bspc subscribe node_transfer | while IFS=" " read -r _  _ _ i _ _ _; do
+        std::vector -c t -n bspwm-stalker stalkees find "$i" > /dev/null 2>&1 && continue
+        printf "%s\n" "$i"
+    done &
     bspc subscribe node_flag | grep --line-buffered -F "hidden off" &
     bspc subscribe node_state \
         | xargs -d "\n" -n 2 printf "%s %s\n" \
