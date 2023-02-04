@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+vector() {
+    std::vector -c t -n bspwm-stalker stalkees "$@"
+}
+
+add_pid() {
+    pids="$!
+$pids"
+}
+
+# shellcheck disable=SC2154
+trap '
+    printf "%s" "$pids" | while IFS= read -r pid; do
+        kill "$pid" 2> /dev/null
+    done
+' INT EXIT TERM QUIT HUP
+
+bspc subscribe monitor_focus | while IFS=" " read -r _ monitor; do
+    vector | while IFS= read -r node; do
+        # FIXME: do not assume desktop names are 1..n
+        bspc node "$node" -d "$monitor:^$(bspc query -n "$node" -D --names)"
+    done
+done &
+
+add_pid
+
+bspc subscribe node_remove | while IFS=" " read -r _ _ _ node; do
+    vector find "$node" && vector erase "$(vector find "$node")"
+done &
+
+add_pid
+
+wait

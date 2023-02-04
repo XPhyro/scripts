@@ -9,6 +9,9 @@
 - Do not `eval` the output of `headsetcontrol` in `polybar-headsetcontrol` in
   case the interface changes.
   - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
+- The current method of doing `vector erase $(($(vector find) - 1))` is
+  cumbersome, bug-prone and has security flaws as the information could be out
+  of date by the time `vector erase` is issued.
 
 ## Bugs
 
@@ -185,13 +188,6 @@
       - Use an easy-to-parse, sufficiently extensible and sufficiently
         human-readable format.
         - Maybe DOS INI or a variant?
-- `bspwm-stalk` & `bspwm-stalker`: a client/server-like system for marking
-  windows and making those windows follow the currently selected monitor in
-  their normal desktop.
-  - `bspwm-stalk`: toggle stalk status of windows. Also have options for explicit on/off.
-  - `bspwm-stalker`: daemon that does the stalking.
-  - For example, if the user switches from M1D1 to M2D1, a marked window in
-    M1D2 is moved to M2D2.
 
 ## Refactoring / Rewriting / Reworking
 

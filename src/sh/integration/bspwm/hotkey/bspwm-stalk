@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+vector() {
+    std::vector -c t -n bspwm-stalker stalkees "$@"
+}
+
+focused_node="$(bspc query -N -n .focused)"
+vector ensure
+if vector find "$focused_node"; then
+    vector erase "$(vector find "$focused_node")"
+else
+    vector push_back "$focused_node"
+fi
