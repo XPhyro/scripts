@@ -1,0 +1,85 @@
+#!/usr/bin/env sh
+
+# shellcheck disable=SC2154
+
+. execinfo.sh
+. shellverbose.sh
+. util.sh
+
+optcopy=0
+optdelim="\0"
+optlogfile="/dev/null"
+optroot="."
+optnewline=0
+optstat=0
+while getopts "cd:hl:nr:s" OPT; do
+    case "$OPT" in
+        c) optcopy=1;;
+        d) optdelim="$OPTARG";;
+        h)
+            printf "%s" \
+"$execname [OPTION...] [TARGET_DIR...]
+   -c            copy files with any error to the TARGET_DIRs
+   -d DELIM      set the delimiter to DELIM for error messages. default is '\0'
+   -h            display this help and exit
+   -l LOG_FILE   log errors to FILE
+   -n            always use '\n' instead of DELIM. delimiter is still DELIM for LOG_FILE
+   -r ROOT_DIR   set the root directory to DIR. default is '.'
+   -s            also check for file equivalency by \`stat\`ing them
+" >&2
+            exit 0
+            ;;
+        l) optlogfile="$OPTARG";;
+        n) optnewline=1;;
+        r) optroot="$OPTARG";;
+        s) optstat=1;;
+        *) exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+if [ "$optnewline" -ne 0 ]; then
+    optnewline="\n"
+else
+    optnewline="$optdelim"
+fi
+
+export optcopy
+export optdelim
+export optroot
+export optstat
+
+tmp="$(mktemp)"
+trap 'rm -f -- "$tmp"' EXIT INT TERM QUIT HUP
+(std_cd "$optroot" && find '.' -type f -print0 | xargs -r0 realpath -sz --relative-to="$optroot" --) > "$tmp" || exit 1
+for dir; do
+    export dir
+    xargs -r0 -n 4096 -P "$(($(nproc) * 8))" sh -c '
+        err() {
+            printf "%s: " "$1"
+            shift
+            printf "%s$optdelim" "$*"
+        }
+
+        stat() {
+            command stat --printf "%F%i%n%s%W%Y" -- "$@"
+        }
+
+        for fl; do
+            if [ ! -e "$dir/$fl" ]; then
+                err "EEXIST" "$fl"
+            elif [ ! -f "$dir/$fl" ]; then
+                err "ETYPE" "$fl"
+            elif [ "$optstat" -ne 0 ] && [ "$(stat "$fl")" != "$(stat "$dir/$fl")" ]; then
+                err "ESTAT" "$fl"
+            else
+                continue
+            fi
+
+            [ "$optcopy" -ne 0 ] && {
+                mkparent "$dir/$fl"
+                cp -f -- "$optroot/$fl" "$dir/$fl"
+            }
+        done
+    ' -- < "$tmp"
+done | tee -a -- "$optlogfile" | tr "$optdelim" "$optnewline"
