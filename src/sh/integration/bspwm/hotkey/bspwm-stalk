@@ -6,10 +6,21 @@ vector() {
     std::vector -c t -n bspwm-stalker stalkees "$@"
 }
 
-focused_node="$(bspc query -N -n .focused)"
-vector ensure
-if vector find "$focused_node"; then
-    vector erase "$(vector find "$focused_node")"
+toggle_node() {
+    node="$1"
+
+    vector ensure
+    if vector find "$node"; then
+        vector erase "$(vector find "$node")"
+    else
+        vector push_back "$node"
+    fi
+}
+
+if [ "$#" -eq 0 ]; then
+    toggle_node "$(bspc query -N -n .focused)"
 else
-    vector push_back "$focused_node"
+    for node; do
+        toggle_node "$node"
+    done
 fi
