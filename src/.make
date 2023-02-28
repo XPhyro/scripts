@@ -779,7 +779,7 @@ spell() {
                 codespell \
                     -e \
                     --builtin "clear,rare,informal" \
-                    -L "ans,ba,erformance,crate,doas" \
+                    -L "ans,ba,erformance,crate,doas,ond" \
                     --
     )
 }
