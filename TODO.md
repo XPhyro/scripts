@@ -188,6 +188,51 @@
       - Use an easy-to-parse, sufficiently extensible and sufficiently
         human-readable format.
         - Maybe DOS INI or a variant?
+- Create a hotkey manager similar to `sxhkd`.
+  - Config syntax ideas:
+    - Similar to `sxhkd`, with `Down`, `Hold`, `Up` suffixes and other modifications.
+      - Syntax draft:
+        - `A = (E +)? KeyDown      (; D)?`
+        - `B = (E +)? KeyHold (F)? (; D)?`
+        - `C = (E +)? KeyUp        (; D)?`
+        - `D = ((A)|(B)|(C))?`
+        - `E = Modifier (+ E)?`
+        - `F = ((/ (G)(m(il(l(i)?)?)?)?s(ec(ond(s)?)?)?)|(* (G)hz))`
+        - `G = N(.N)?(e[-+]?N)?`
+        - `N = [0-9](N)?`
+        - Also support `{..., ...}` from `sxhkd`.
+      - Example:
+        - `super + EscapeDown`
+        - `    bspc desktop -l next`
+        - `super + EscapeUp`
+        - `    bspc desktop -l prev`
+        - `super + {Down, Up, Left, Right}Hold / 200ms`
+        - `    xdotool mousemove_relative -- {0 5, 0 -5, -5 0, 5 0}`
+    - DOS INI variant, similar to `systemd` service unit files.
+      - Unit files can be enabled/disabled on events or on demand.
+      - Hotkeys can be enabled/disabled on events or on demand.
+      - Possible parameters in unit files, with mandatory ones marked with `*`:
+        - `[LABEL]*`
+        - `Name=NAME`
+        - `Description=DESCRIPTION`
+        - `Hotkey=HOTKEY*`
+        - `Exec=EXEC*`
+        - `Frequency=FREQUENCY**`
+        - `Period=PERIOD**`
+      - Example:
+        - `[next_desktop]`
+        - `Hotkey = super + EscapeDown`
+        - `Exec = bspc desktop -l next`
+        - ``
+        - `[prev_desktop]`
+        - `Hotkey = super + EscapeUp`
+        - `Exec = bspc desktop -l prev`
+        - ``
+        - `[move_mouse]`
+        - `Hotkey = super + {Down, Up, Left, Right}Hold`
+        - `Exec = xdotool mousemove_relative -- {0 5, 0 -5, -5 0, 5 0}`
+        - `Period = 200ms`
+      - Handling complex hotkeys with a DOS INI variant could be too complex.
 
 ## Refactoring / Rewriting / Reworking
 
