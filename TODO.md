@@ -233,6 +233,12 @@
         - `Exec = xdotool mousemove_relative -- {0 5, 0 -5, -5 0, 5 0}`
         - `Period = 200ms`
       - Handling complex hotkeys with a DOS INI variant could be too complex.
+- Write a script that is key based like `tglapp` that caches the output of a
+  command with the given key and re-uses the output.
+  - Support output invalidation after a set (per key or global default) amount
+    of time.
+  - Maybe add implicit support for caching in `tglapp` or with pads (weather,
+    etc.)?
 
 ## Refactoring / Rewriting / Reworking
 
