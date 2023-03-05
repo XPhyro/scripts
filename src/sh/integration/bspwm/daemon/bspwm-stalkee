@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+. meta.sh
+. shellverbose.sh
+. x11.sh
+
+configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/stalkee/config.sh"
+[ -f "$configfl" ] && . "$configfl" # can use $ID, $CLASS, $INSTANCE and $NAME
+
+std_ensure_defined \
+    should_be_stalked
+
+node_count="$(bspc query -N | wc -l)"
+bspc subscribe node_add node_remove | while IFS=" " read -r event _ _ _ ID; do
+    [ "$event" = "node_remove" ] && {
+        node_count="$(bspc query -N | wc -l)"
+        continue
+    }
+
+    old_node_count="$node_count"
+    node_count="$(bspc query -N | wc -l)"
+    [ "$node_count" -le "$old_node_count" ] && continue
+
+    std_x11_eval_prop "$ID"
+    should_be_stalked && bspwm-stalk "$ID"
+done
