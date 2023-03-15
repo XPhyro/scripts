@@ -263,7 +263,6 @@
 - Merge `fillline` and `fillterm` into `fillcol`.
 - `prefix.sh`: don't query paths at runtime, make `.make` insert them in via
   `m4` during installation instead.
-- Convert `xclassname` into a shell header.
 
 ## Other
 
