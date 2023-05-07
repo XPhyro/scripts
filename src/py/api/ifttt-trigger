@@ -29,9 +29,11 @@ def main() -> int:
     )
     key = os.environ.get("IFTTT_KEY") or read_var("key")
 
-    params = {"value1": sys.argv[1], "value2": sys.argv[2]}
-    if len(sys.argv) > 3:
-        params["value3"] = sys.argv[3]
+    params = {"value1": sys.argv[1]}
+    if len(sys.argv) >= 3:
+        params["value2"] = sys.argv[2]
+        if len(sys.argv) >= 4:
+            params["value3"] = sys.argv[3]
 
     ret = requests.post(
         f"https://maker.ifttt.com/trigger/{trigger}/with/key/{key}",
