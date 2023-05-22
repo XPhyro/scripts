@@ -113,10 +113,21 @@ EOF4
                       done
                   }
 
-                  mpvargs="$(eval "$WALLPAPER_MPV_ARGS_CMD")"
+                  if [ -n "$WALLPAPER_XWINWRAP_ARGS_CMD" ]; then
+                      xwinwrapargs="$(eval "$WALLPAPER_XWINWRAP_ARGS_CMD")"
+                  else
+                      xwinwrapargs="-st -sp -ni -s -nf -b -un -argb -fdt"
+                  fi
+
+                  if [ -n "$WALLPAPER_MPV_ARGS_CMD" ]; then
+                      mpvargs="$(eval "$WALLPAPER_MPV_ARGS_CMD")"
+                  else
+                      mpvargs="--vo=vaapi"
+                  fi
 
                   pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
-                      xwinwrap -g "$geom" -st -sp -ni -s -nf -b -un -argb -fdt -ov -sub WID -- \
+                      
+                      xwinwrap $xwinwrapargs -g "$geom" -sub WID -- \
                           prime-run mpv \
                               --loop \
                               --no-config \
