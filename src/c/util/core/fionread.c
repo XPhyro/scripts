@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#ifdef __sun
-#include <sys/filio.h> /* need FIONREAD */
-#endif /* ifdef __sun */
 
 int main(int argc, char *argv[])
 {
