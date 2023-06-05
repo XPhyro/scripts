@@ -33,4 +33,15 @@
 
         return 0
     }
+
+    std_try_choose_command() {
+        for __i; do
+            command -v -- "$__i" > /dev/null 2>&1 && {
+                printf "%s" "$__i"
+                return 0
+            }
+        done
+
+        return 1
+    }
 }
