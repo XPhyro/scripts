@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+
+. meta.sh
+. shellverbose.sh
+
+filter_flags() {
+    filter_type="$1"
+    sed -En "s#^//\s*@${filter_type}FLAGS\s+(.+)#\1#p" | tr '\n' ' '
+}
+
+file="$1"
+file_suffix="${file##*.}"
+if [ -n "$CXX" ]; then
+    cxx="$CXX"
+else
+    case "$file_suffix" in
+        cpp) cxx="$(std_try_choose_command g++ gcc clang++ clang c++ cc tcc)";;
+        c|*) cxx="$(std_try_choose_command gcc clang cc tcc)";;
+    esac
+fi
+
+all_flags="$(grep -E '^//\s*@(CXX|LD)FLAGS\s+.+' -- "$file")"
+cxx_flags="$(printf "%s\n" "$all_flags" | filter_flags CXX)"
+ld_flags="$(printf "%s\n" "$all_flags" | filter_flags LD)"
+
+tmp_src="$(mktemp -t --suffix=".$file_suffix" gcc-otg.XXXXXXXXXX)" || exit 1
+tail -n +2 -- "$file" > "$tmp_src"
+
+tmp_bin="$(mktemp -t gcc-otg.XXXXXXXXXX)" || exit 1
+"$cxx" $cxx_flags "$tmp_src" $ld_flags -o "$tmp_bin"
+
+rm -f -- "$tmp_src"
+
+"$tmp_bin"
+
+rm -f -- "$tmp_bin"
