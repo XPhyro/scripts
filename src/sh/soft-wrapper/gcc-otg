@@ -32,5 +32,8 @@ tmp_bin="$(mktemp -t gcc-otg.XXXXXXXXXX)" || exit 1
 rm -f -- "$tmp_src"
 
 "$tmp_bin"
+ret="$?"
 
 rm -f -- "$tmp_bin"
+
+exit "$ret"
