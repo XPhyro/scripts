@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
-for i in yt-dlp youtube-dl; do
-    command -v -- "$i" > /dev/null 2>&1 \
-        && exec "$i" "$@"
-done
+. meta.sh
 
-exit 1
+command="$(std_try_choose_command yt-dlp youtube-dl)" || exit 1
+"$command" "$@"
