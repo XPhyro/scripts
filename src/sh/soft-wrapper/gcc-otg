@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh --
 
 . meta.sh
 . shellverbose.sh
@@ -9,6 +9,8 @@ filter_flags() {
 }
 
 file="$1"
+shift 1
+
 file_suffix="${file##*.}"
 if [ -n "$CXX" ]; then
     cxx="$CXX"
@@ -31,7 +33,7 @@ tmp_bin="$(mktemp -t gcc-otg.XXXXXXXXXX)" || exit 1
 
 rm -f -- "$tmp_src"
 
-"$tmp_bin"
+"$tmp_bin" "$@"
 ret="$?"
 
 rm -f -- "$tmp_bin"
