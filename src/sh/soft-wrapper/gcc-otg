@@ -8,10 +8,22 @@ filter_flags() {
     sed -En "s#^//\s*@${filter_type}FLAGS\s+(.+)#\1#p" | tr '\n' ' '
 }
 
-file="$1"
-shift 1
+if [ -t 0 ] && [ -f "$1" ]; then
+    file="$1"
+    shift 1
+    file_suffix="${file##*.}"
 
-file_suffix="${file##*.}"
+    has_shebang=1
+else
+    read -r file_suffix \
+        && [ -n "$file_suffix" ] \
+        && file="$(mktemp -t --suffix=".$file_suffix" gcc-otg.XXXXXXXXXX)" \
+        || exit 1
+    cat > "$file"
+
+    has_shebang=0
+fi
+
 if [ -n "$CXX" ]; then
     cxx="$CXX"
 else
@@ -26,7 +38,12 @@ cxx_flags="$(printf "%s\n" "$all_flags" | filter_flags CXX)"
 ld_flags="$(printf "%s\n" "$all_flags" | filter_flags LD)"
 
 tmp_src="$(mktemp -t --suffix=".$file_suffix" gcc-otg.XXXXXXXXXX)" || exit 1
-tail -n +2 -- "$file" > "$tmp_src"
+if [ "$has_shebang" -ne 0 ]; then
+    tail -n +2 -- "$file" > "$tmp_src"
+else
+    # not sure if `cp` introduces security issues, so use `cat`
+    cat -- "$file" > "$tmp_src"
+fi
 
 tmp_bin="$(mktemp -t gcc-otg.XXXXXXXXXX)" || exit 1
 "$cxx" $cxx_flags "$tmp_src" $ld_flags -o "$tmp_bin"
