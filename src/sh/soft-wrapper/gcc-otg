@@ -1,5 +1,6 @@
 #!/usr/bin/env -S sh --
 
+. io.sh
 . meta.sh
 . shellverbose.sh
 
@@ -8,18 +9,18 @@ filter_flags() {
     sed -En "s#^//\s*@${filter_type}FLAGS\s+(.+)#\1#p" | tr '\n' ' '
 }
 
-if [ -t 0 ] && [ -f "$1" ]; then
+if std_is_stdin_empty && [ -f "$1" ]; then
     file="$1"
     shift 1
     file_suffix="${file##*.}"
 
     has_shebang=1
 else
-    read -r file_suffix \
+    read -r file_suffix < "$std_stdin_backup" \
         && [ -n "$file_suffix" ] \
         && file="$(mktemp -t --suffix=".$file_suffix" gcc-otg.XXXXXXXXXX)" \
         || exit 1
-    cat > "$file"
+    tail -n +2 -- "$std_stdin_backup" > "$file"
 
     has_shebang=0
 fi
