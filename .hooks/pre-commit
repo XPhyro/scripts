@@ -43,6 +43,10 @@ printf "%s\n" "$changed" \
         }
     done
 
+printf "%s\n" "$changed" \
+    | grep "^src/sh/.*[^/]" \
+    | xargs -r -d '\n' -n 1 .hooks/has-shellverbose.c
+
 year="$(date '+%Y')"
 grep -Fq -- "2020-$year" LICENSE \
     || printf "$RED%s$NC\n" \
