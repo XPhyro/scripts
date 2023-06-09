@@ -45,6 +45,7 @@ printf "%s\n" "$changed" \
 
 printf "%s\n" "$changed" \
     | grep "^src/sh/.*[^/]" \
+    | grep -v '\.sh$' \
     | xargs -r -d '\n' -n 1 .hooks/has-shellverbose.c
 
 year="$(date '+%Y')"
