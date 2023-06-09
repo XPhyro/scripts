@@ -112,6 +112,7 @@
   indicator, otherwise use 0% as indicator.
 - `termctl`: include commands, subcommands, etc. in help dialog (or add a
   (command & subcommand)/flag for it)
+- Support stdin in `gcc-otg`.
 
 ## New Scripts
 
@@ -263,6 +264,9 @@
 - Merge `fillline` and `fillterm` into `fillcol`.
 - `prefix.sh`: don't query paths at runtime, make `.make` insert them in via
   `m4` during installation instead.
+- Instead of including `shellverbose.sh` in all shell scripts, include
+  `stdlib.sh`. Make this library include other standard features.
+  - Maybe even merge `shellverbose.sh` into `stdlib.sh`?
 
 ## Other
 
