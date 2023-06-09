@@ -9,7 +9,7 @@
     __std_backup_stdin_impl() {
         [ "$__std_is_stdin_backed_up" -ne 0 ] && return 0
         std_stdin_backup="$(mktemp -t std_backup_stdin.XXXXXXXXXX)"
-        # not sure if `cp` introduces security issues, so use `cat`
+        # not sure if `cp` introduces security issues, so use `cat >`
         cat - > "$std_stdin_backup"
     }
 
@@ -19,7 +19,7 @@
         else
             __std_backup_stdin_impl
             for __i; do
-                # not sure if `cp` introduces security issues, so use `cat`
+                # not sure if `cp` introduces security issues, so use `cat >`
                 cat "$std_stdin_backup" > "$__i"
             done
         fi

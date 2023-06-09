@@ -42,7 +42,7 @@ tmp_src="$(mktemp -t --suffix=".$file_suffix" gcc-otg.XXXXXXXXXX)" || exit 1
 if [ "$has_shebang" -ne 0 ]; then
     tail -n +2 -- "$file" > "$tmp_src"
 else
-    # not sure if `cp` introduces security issues, so use `cat`
+    # not sure if `cp` introduces security issues, so use `cat >`
     cat -- "$file" > "$tmp_src"
 fi
 
