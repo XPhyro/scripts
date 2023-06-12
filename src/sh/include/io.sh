@@ -2,6 +2,11 @@
     HEADER_SCRIPTS_SH_IO_=
 
     . execinfo.sh
+    . meta.sh
+
+    printf() {
+        ! std_is_set IN_HEADER_SPACE_ || ! std_is_set SUPPRESS_PRINTF_ && command printf "$@"
+    }
 
     unset std_stdin_backup
     __std_is_stdin_backed_up=0
