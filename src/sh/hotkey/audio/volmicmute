@@ -8,7 +8,7 @@
 play_audio() {
     action="$1"
     # shellcheck disable=SC2154
-    fl="$(printf "%s\0" "$std_config_home/$action"* | head -n 1 -z)"
+    fl="$(printf "%s\0" "$std_config_home/$action"* | shuf -n 1 -z)"
     [ -f "$fl" ] && play -- "$fl" 2> /dev/null
 }
 
