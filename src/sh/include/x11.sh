@@ -1,24 +1,26 @@
 [ -z "${HEADER_SCRIPTS_SH_X11_+x}" ] && {
     HEADER_SCRIPTS_SH_X11_=
 
+    . io.sh
+
     std_x11_prop() {
         __id="$1"
         __expected_lc="${2:-0}"
         shift 2
         __out="$(
             {
-                [ -n "$__id" ] && printf "%s\0" -id "$__id"
-                printf "%s\0" "$@"
+                [ -n "$__id" ] && __std_printf "%s\0" -id "$__id"
+                __std_printf "%s\0" "$@"
             } | xargs -0 xprop | tail -n +2
         )"
         if [ -z "$__out" ]; then
             __i=0
             while [ "$__i" -lt "$__expected_lc" ]; do
-                printf '""\n'
+                __std_printf '""\n'
                 : "$((__i += 1))"
             done
         else
-            printf "%s\n" "$__out"
+            __std_printf "%s\n" "$__out"
         fi
     }
 

@@ -1,6 +1,8 @@
 [ -z "${HEADER_SCRIPTS_SH_META_+x}" ] && {
     HEADER_SCRIPTS_SH_META_=
 
+    . io.sh
+
     std_is_set() {
         for __i; do
             eval '[ -z "${'"$__i"'+x}" ]' && return 1
@@ -37,7 +39,7 @@
     std_try_choose_command() {
         for __i; do
             command -v -- "$__i" > /dev/null 2>&1 && {
-                printf "%s" "$__i"
+                __std_printf "%s" "$__i"
                 return 0
             }
         done
