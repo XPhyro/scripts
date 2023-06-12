@@ -1,6 +1,24 @@
 #!/usr/bin/env sh
 # Toggle the mute status of the default pulseaudio source.
 
+. config.sh
+. prefix.sh
 . shellverbose.sh
 
-exec pactl set-source-mute "$(voldefsource)" toggle
+play_audio() {
+    action="$1"
+    # shellcheck disable=SC2154
+    fl="$(printf "%s\0" "$std_config_home/$action"* | head -n 1 -z)"
+    [ -f "$fl" ] && play -- "$fl" 2> /dev/null
+}
+
+pactl set-source-mute "$(voldefsource)" toggle
+ret="$?"
+
+if [ "$(pactl get-source-mute "$(voldefsource)" | cut -d' ' -f2)" = "yes" ]; then
+    play_audio mute
+else
+    play_audio unmute
+fi
+
+exit "$ret"
