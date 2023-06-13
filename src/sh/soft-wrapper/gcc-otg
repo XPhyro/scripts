@@ -16,11 +16,11 @@ if std_is_stdin_empty && [ -f "$1" ]; then
 
     has_shebang=1
 else
-    read -r file_suffix < "$std_stdin_backup" \
+    read -r file_suffix \
         && [ -n "$file_suffix" ] \
         && file="$(mktemp -t --suffix=".$file_suffix" gcc-otg.XXXXXXXXXX)" \
         || exit 1
-    tail -n +2 -- "$std_stdin_backup" > "$file"
+    cat > "$file"
 
     has_shebang=0
 fi

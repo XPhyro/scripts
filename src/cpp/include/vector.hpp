@@ -96,11 +96,9 @@ public:
         return *((&x) + i);
     }
 
-    inline friend std::ostream& operator<<(std::ostream& os, Vector& v)
+    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
     {
-        for (std::size_t i = 0; i < Td - 1; ++i)
-            os << v[i] << ", ";
-        os << v[Td - 1] << ')';
+        os << '(' << v[0] << ')';
         return os;
     }
 
@@ -163,11 +161,9 @@ public:
         return *((&x) + i);
     }
 
-    inline friend std::ostream& operator<<(std::ostream& os, Vector& v)
+    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
     {
-        for (std::size_t i = 0; i < Td - 1; ++i)
-            os << v[i] << ", ";
-        os << v[Td - 1] << ')';
+        os << '(' << v[0] << ", " << v[1] << ')';
         return os;
     }
 
@@ -231,11 +227,9 @@ public:
         return *((&x) + i);
     }
 
-    inline friend std::ostream& operator<<(std::ostream& os, Vector& v)
+    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
     {
-        for (std::size_t i = 0; i < Td - 1; ++i)
-            os << v[i] << ", ";
-        os << v[Td - 1] << ')';
+        os << '(' << v[0] << ", " << v[1] << ", " << v[2] << ')';
         return os;
     }
 
@@ -300,11 +294,9 @@ public:
         return *((&x) + i);
     }
 
-    inline friend std::ostream& operator<<(std::ostream& os, Vector& v)
+    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
     {
-        for (std::size_t i = 0; i < Td - 1; ++i)
-            os << v[i] << ", ";
-        os << v[Td - 1] << ')';
+        os << '(' << v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3] << ')';
         return os;
     }
 

@@ -6,6 +6,7 @@
 
     std_xdg_config_home="${XDG_CONFIG_HOME:-"$HOME/.config"}"
     std_global_config_home="$std_xdg_config_home/scripts"
+    # shellcheck disable=SC2154
     std_config_home="$std_global_config_home/$std_execname"
 
     [ -d "$std_xdg_config_home" ] || mkdir -- "$std_xdg_config_home" \
