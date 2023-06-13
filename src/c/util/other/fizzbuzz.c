@@ -10,7 +10,7 @@
 #include <stdutil.h>
 #include <strutil.h>
 
-#define ARRLEN(ARR) (sizeof(ARR) / sizeof((ARR)[0]))
+#include <paramutil.h>
 
 typedef unsigned long long ull;
 
