@@ -93,48 +93,48 @@ fn clear(subcommand: String, _args: Vec<String>) -> Result<(), ExitFailure> {
         "until_newline" => print!("{}", termion::clear::UntilNewline),
         _ => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unknown clear mode").into()),
     };
-    return Ok(());
+    Ok(())
 }
 
 fn get_cursor_pos(_args: Vec<String>) -> Result<(), ExitFailure> {
     let mut stdout = std::io::stdout().into_raw_mode().unwrap();
     let (x, y) = stdout.cursor_pos()?;
-    println!("{},{}", x, y); // FIXME: does not print properly
-    return Ok(());
+    println!("{x},{y}"); // FIXME: does not print properly
+    Ok(())
 }
 
 fn get_geometry(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (width, height) = termion::terminal_size().unwrap();
-    println!("{}x{}", width, height);
-    return Ok(());
+    println!("{width}x{height}");
+    Ok(())
 }
 
 fn get_height(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (_width, height) = termion::terminal_size().unwrap();
-    println!("{}", height);
-    return Ok(());
+    println!("{height}");
+    Ok(())
 }
 
 fn get_size(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (width, height) = termion::terminal_size().unwrap();
     println!("{}", width * height);
-    return Ok(());
+    Ok(())
 }
 
 fn get_width(_args: Vec<String>) -> Result<(), ExitFailure> {
     let (width, _height) = termion::terminal_size().unwrap();
-    println!("{}", width);
-    return Ok(());
+    println!("{width}");
+    Ok(())
 }
 
 fn move_down(args: Vec<String>) -> Result<(), ExitFailure> {
     print!("{}", termion::cursor::Down(args[0].parse::<u16>().unwrap()));
-    return Ok(());
+    Ok(())
 }
 
 fn move_left(args: Vec<String>) -> Result<(), ExitFailure> {
     print!("{}", termion::cursor::Left(args[0].parse::<u16>().unwrap()));
-    return Ok(());
+    Ok(())
 }
 
 fn move_right(args: Vec<String>) -> Result<(), ExitFailure> {
@@ -142,7 +142,7 @@ fn move_right(args: Vec<String>) -> Result<(), ExitFailure> {
         "{}",
         termion::cursor::Right(args[0].parse::<u16>().unwrap())
     );
-    return Ok(());
+    Ok(())
 }
 
 fn move_to(args: Vec<String>) -> Result<(), ExitFailure> {
@@ -153,12 +153,12 @@ fn move_to(args: Vec<String>) -> Result<(), ExitFailure> {
             args[1].parse::<u16>().unwrap()
         )
     );
-    return Ok(());
+    Ok(())
 }
 
 fn move_up(args: Vec<String>) -> Result<(), ExitFailure> {
     print!("{}", termion::cursor::Up(args[0].parse::<u16>().unwrap()));
-    return Ok(());
+    Ok(())
 }
 
 fn print(args: Vec<String>) -> Result<(), ExitFailure> {
@@ -180,30 +180,30 @@ fn print(args: Vec<String>) -> Result<(), ExitFailure> {
         get_fg_ansi(fg_color.to_string())?,
         get_bg_ansi(bg_color.to_string())?,
     );
-    for i in 2..args.len() - 1 {
-        print!("{} ", args[i]);
+    for arg in args.iter().take(args.len() - 1).skip(2) {
+        print!("{arg} ");
     }
     println!("{}", args[args.len() - 1]);
 
-    return Ok(());
+    Ok(())
 }
 
 fn set_bg_color(args: Vec<String>) -> Result<(), ExitFailure> {
     let color = &args[0]; // TODO: check args is not empty
     print!("{}", get_bg_ansi(color.to_string())?);
-    return Ok(());
+    Ok(())
 }
 
 fn set_fg_color(args: Vec<String>) -> Result<(), ExitFailure> {
     let color = &args[0]; // TODO: check args is not empty
     print!("{}", get_fg_ansi(color.to_string())?);
-    return Ok(());
+    Ok(())
 }
 
 fn set_title(args: Vec<String>) -> Result<(), ExitFailure> {
     let title = &args[0]; // TODO: check args is not empty
-    print!("\x1b]0;{}\x07", title);
-    return Ok(());
+    print!("\x1b]0;{title}\x07");
+    Ok(())
 }
 
 fn main() -> Result<(), ExitFailure> {
