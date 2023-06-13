@@ -1,5 +1,6 @@
 // @CXXFLAGS -Wno-strict-aliasing
 
+#include <cstdint>
 #include <iostream>
 #include <ranges>
 
