@@ -262,6 +262,7 @@ install() {
         cd c/include
         [ -d "$includeprefix/xph" ] || mkdir -- "$includeprefix/xph"
 
+        # shellcheck disable=SC2069
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
             printf "\0%s\0" "$includeprefix/xph/$fl"
@@ -276,6 +277,7 @@ install() {
     (
         cd cpp/include
 
+        # shellcheck disable=SC2069
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
             fl="$1"
             printf "\0%s\0" "$includeprefix/xph/$fl"
@@ -288,6 +290,7 @@ install() {
         "Installing external C and C++ libraries:"
 
     (
+        # shellcheck disable=SC2069
         printf "%s\0" \
             "$rootdir/lib/hedley/hedley.h" \
             "$rootdir/lib/pstreams/pstream.h" \
@@ -345,6 +348,7 @@ install() {
             exit 0
         }
 
+        # shellcheck disable=SC2069
         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" \
             | while IFS= read -r section; do
                 mkdir -p -- "$manprefix/man$section" >&2
