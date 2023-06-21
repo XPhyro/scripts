@@ -26,6 +26,10 @@
     not overwrite.
   - If the original size is less than the new size, the shown size difference
     is incorrect.
+- `vstrcatbuf` and other similar functions do not return the new `bufsize` or edit
+  the original variable.
+  - Consecutive calls to these functions reallocates memory when it should not
+    due to not updating `bufsize`. See `fizzbuzz` as an example.
 
 ## Features
 
