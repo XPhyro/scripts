@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-. shellverbose.sh
-
-path="$1"
-while [ -e "$path" ]; do
-    path="$path"_
-done
-printf "%s\n" "$path"
