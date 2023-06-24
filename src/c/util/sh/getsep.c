@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
         checkfl(STDIN_FILENO, buf);
     } else
         for (i = 1; i < argc; i++) {
-            if ((fd = open(argv[i], O_RDONLY) == -1)) {
+            if ((fd = open(argv[i], O_RDONLY)) == -1) {
                 perror("open");
                 continue;
             }
