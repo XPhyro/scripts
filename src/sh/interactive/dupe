@@ -4,7 +4,7 @@
 . shellverbose.sh
 
 for i; do
-    newpath="$(getnewpath "$i")"
+    newpath="$(backuppath "$i")"
     cp -r -- "$i" "$newpath"
     printf "%s\n" "$newpath"
 done

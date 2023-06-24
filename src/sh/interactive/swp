@@ -5,7 +5,7 @@
 
 fl="$(printf "%s\n" "$1" | sed 's,/*$,,')"
 other="$(printf "%s\n" "$2" | sed 's,/*$,,')"
-tmp="$(getnewpath "$fl")"
+tmp="$(backuppath "$fl")"
 mv -n -- "$fl" "$tmp"
 mv -n -- "$other" "$fl"
 mv -n -- "$tmp" "$other"

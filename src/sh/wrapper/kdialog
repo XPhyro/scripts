@@ -83,7 +83,7 @@ main() {
         tmplffiles="$(mktemp)"
         cp -f -- "$lffiles" "$tmplffiles"
         truncate -c -s 5 -- "$lffiles"
-        savefl="$(getnewpath "$dir/$fl")"
+        savefl="$(backuppath "$dir/$fl")"
         printf "%s\n" "$savefl" >> "$lffiles"
         lf -remote 'send sync'
 

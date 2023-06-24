@@ -3,4 +3,4 @@
 
 . shellverbose.sh
 
-mv -n -- "$1" "$(getnewpath "$2")"
+mv -n -- "$1" "$(backuppath "$2")"
