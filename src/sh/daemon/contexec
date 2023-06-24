@@ -97,7 +97,7 @@ processargs() {
 }
 
 execute() {
-    xargs -d "$stdinsep" inotifywait -qq -e move_self -- < "$stdinfl"
+    xargs -d "$stdinsep" inotifywait -qq -e move_self -e moved_from -- < "$stdinfl"
     pid="$(cat -- "$pidfl")"
     kill -s 0 "$pid" 2> /dev/null && {
         env kill -s INT --timeout 1000 TERM --timeout 1000 KILL "$pid" 2> /dev/null \
@@ -116,7 +116,7 @@ execute() {
 
 main() {
     [ "$optonce" = "1" ] && {
-        xargs -d "$stdinsep" inotifywait -qq -e move_self -- < "$stdinfl"
+        xargs -d "$stdinsep" inotifywait -qq -e move_self -e moved_from -- < "$stdinfl"
         $argv
         exit 0
     }
