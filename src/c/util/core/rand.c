@@ -27,9 +27,9 @@ printmode_t optprintmode = PRINTMODE_SIGNED;
 
 void randbuf(void *buf, size_t buflen)
 {
-    ssize_t retlen;
 #ifdef __unix__
 #ifdef __linux__
+    ssize_t retlen;
     errno = 0;
     retlen = getrandom(buf, buflen, 0);
     if (errno == EINTR)
