@@ -29,7 +29,7 @@ fn main() {
 
         // path.~1~ exists, find the next backup number and print it
         let mut backup_number = 2;
-        new_path = path.to_path_buf();
+        let mut new_path = path.to_path_buf();
         new_path.set_extension(format!("~{}~", backup_number));
         while new_path.exists() {
             backup_number += 1;
