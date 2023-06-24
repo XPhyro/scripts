@@ -7,6 +7,6 @@
 int main(int argc, char *argv[])
 {
     unsigned char data[PIPE_BUF];
-    memset(data, 0x55, PIPE_BUF * sizeof(unsigned char));
+    memset(data, 0x55, sizeof(data));
     for (;; write(STDOUT_FILENO, data, PIPE_BUF)) {}
 }
