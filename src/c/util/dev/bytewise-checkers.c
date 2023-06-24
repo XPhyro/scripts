@@ -1,9 +1,6 @@
-#include <limits.h>
 #include <stddef.h>
 #include <sys/param.h>
 #include <unistd.h>
-
-#include <strutil.h>
 
 int main(int argc, char *argv[])
 {
