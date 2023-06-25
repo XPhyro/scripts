@@ -1,3 +1,5 @@
+# shellcheck disable=SC2034
+
 [ -z "${HEADER_SCRIPTS_SH_X11_+x}" ] && {
     HEADER_SCRIPTS_SH_X11_=
 

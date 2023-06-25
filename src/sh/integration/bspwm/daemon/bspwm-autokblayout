@@ -21,6 +21,7 @@ setkm() {
     setxkb "$1"
 }
 
+# shellcheck disable=SC2154
 configfl="$std_config_home/config.sh"
 [ -f "$configfl" ] && . "$configfl"
 
