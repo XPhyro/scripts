@@ -32,5 +32,5 @@ shift "$((OPTIND - 1))"
 
 config_path="$std_config_home/$keycode.sxhkdrc"
 
-[ -n "$optfallback" ] && ! [ -f "$config_path" ] && exec sxhkd
-exec sxhkd -c "$config_path"
+[ -n "$optfallback" ] && ! [ -f "$config_path" ] && exec sxhkd "$@"
+exec sxhkd -c "$config_path" "$@"
