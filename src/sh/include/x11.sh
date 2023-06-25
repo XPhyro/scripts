@@ -23,7 +23,7 @@
         bspwm) std_x11_desktop="bspwm";;
         dwm) std_x11_desktop="dwm";;
 
-        *) std_x11_desktop="unkown";;
+        *) std_x11_desktop="unknown";;
     esac
 
     std_x11_prop() {
