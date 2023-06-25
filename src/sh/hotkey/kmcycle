@@ -27,13 +27,19 @@ while getopts "ah" OPT; do
 done
 shift "$((OPTIND - 1))"
 
-if [ "$optalternate" -eq 0 ]; then
-    mappings="$KMCYCLE_MAPPINGS"
-    default_mapping="$KMCYCLE_DEFAULT_MAPPING"
+if [ "$#" -gt 0 ]; then
+    nextkm="$1"
 else
-    mappings="$KMCYCLE_ALTERNATE_MAPPINGS"
-    default_mapping="$KMCYCLE_ALTERNATE_DEFAULT_MAPPING"
+    if [ "$optalternate" -eq 0 ]; then
+        mappings="$KMCYCLE_MAPPINGS"
+        default_mapping="$KMCYCLE_DEFAULT_MAPPING"
+    else
+        mappings="$KMCYCLE_ALTERNATE_MAPPINGS"
+        default_mapping="$KMCYCLE_ALTERNATE_DEFAULT_MAPPING"
+    fi
+
+    km="$(xkb-switch)"
+    nextkm="$(printf "%s\n" "$km" | eval "END= DEF=\"${default_mapping:-gb}\" fmaps $mappings")"
 fi
 
-km="$(xkb-switch)"
-setkm "$(printf "%s\n" "$km" | eval "END= DEF=\"${default_mapping:-gb}\" fmaps $mappings")"
+setkm "$nextkm"
