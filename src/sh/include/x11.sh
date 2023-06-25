@@ -3,6 +3,29 @@
 
     . io.sh
 
+    # `xdg-open` does a lot more than this if it cannot determine the keycode,
+    # but we'll just assume this is enough.
+    case "$XDG_CURRENT_DESKTOP" in
+        # same names as `xdg-open`
+        Cinnamon|X-Cinnamon) std_x11_desktop="cinnamon";;
+        ENLIGHTENMENT) std_x11_desktop="enlightenment";;
+        GNOME*) std_x11_desktop="gnome";; # matches GNOME, GNOME-Classic:GNOME, or GNOME-Flashback:GNOME
+        KDE) std_x11_desktop="kde";;
+        DEEPIN|Deepin|deepin) std_x11_desktop="deepin";;
+        LXDE) std_x11_desktop="lxde";;
+        LXQt) std_x11_desktop="lxqt";;
+        MATE) std_x11_desktop="mate";;
+        XFCE) std_x11_desktop="xfce";;
+        X-Generic) std_x11_desktop="generic";;
+
+        # following names are not used by `xdg-open` and are not standard
+        awesome) std_x11_desktop="awesome";;
+        bspwm) std_x11_desktop="bspwm";;
+        dwm) std_x11_desktop="dwm";;
+
+        *) std_x11_desktop="unkown";;
+    esac
+
     std_x11_prop() {
         __id="$1"
         __expected_lc="${2:-0}"
