@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+. config.sh
+. execinfo.sh
+. io.sh
+. x11.sh
+
+unset keycode optkeymap
+while getopts "c:hk" OPT; do
+    case "$OPT" in
+        c) keycode="$OPTARG";;
+        h)
+            printf "%s" \
+"$execname [OPTION...] [SXHKD_ARGS...] -- [SXHKD_ARGS...]
+   -c KEYCODE   use the keycode KEYCODE. if not given, keycode will be derived from the current X11 desktop. this might also work on Wayland, but it is not guaranteed.
+   -h           display this help and exit
+   -k           append '-\$CURRENT_KEYMAP' at the end of the keycode. this option takes affect even if -c is given.
+" >&2
+            exit 0
+            ;;
+        k) optkeymap=1;;
+        *) std_logerrq "Invalid option given: $OPT\n";;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ -z "$keycode" ] && keycode="$std_x11_desktop"
+[ -n "$optkeymap" ] && keycode="$keycode-$(std_x11_get_current_keymap)"
+
+exec sxhkd -c "$std_config_home/$keycode"
