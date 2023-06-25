@@ -57,4 +57,8 @@
     std_x11_eval_prop() {
         eval "$(std_x11_evalable_prop "$1")"
     }
+
+    std_x11_get_current_keymap() {
+        xkb-switch # TODO: add fallbacks in case xkb-switch is not installed
+    }
 }
