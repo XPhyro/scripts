@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+. config.sh
 . execinfo.sh
 . io.sh
 . meta.sh
@@ -20,7 +21,7 @@ setkm() {
     setxkb "$1"
 }
 
-configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/autokblayout/config.sh"
+configfl="$std_config_home/config.sh"
 [ -f "$configfl" ] && . "$configfl"
 
 std_ensure_defined \
