@@ -7,14 +7,15 @@
 . io.sh
 . x11.sh
 
-unset keycode optkeymap
-while getopts "c:hk" OPT; do
+unset keycode optfallback optkeymap
+while getopts "c:fhk" OPT; do
     case "$OPT" in
         c) keycode="$OPTARG";;
         h)
             printf "%s" \
 "$execname [OPTION...] [SXHKD_ARGS...] -- [SXHKD_ARGS...]
    -c KEYCODE   use the keycode KEYCODE. if not given, keycode will be derived from the current X11 desktop. this might also work on Wayland, but it is not guaranteed.
+   -f           fall back to the global sxhkd config file if the constructed path does not exist.
    -h           display this help and exit
    -k           append '-\$CURRENT_KEYMAP' at the end of the keycode. this option takes affect even if -c is given.
 " >&2
@@ -29,4 +30,7 @@ shift "$((OPTIND - 1))"
 [ -z "$keycode" ] && keycode="$std_x11_desktop"
 [ -n "$optkeymap" ] && keycode="$keycode-$(std_x11_get_current_keymap)"
 
-exec sxhkd -c "$std_config_home/$keycode.sxhkdrc"
+config_path="$std_config_home/$keycode.sxhkdrc"
+
+[ -n "$optfallback" ] && ! [ -f "$config_path" ] && exec sxhkd
+exec sxhkd -c "$config_path"
