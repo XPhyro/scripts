@@ -6,6 +6,7 @@
 #include <pwd.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/inotify.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -23,16 +24,20 @@ const char *const db_locksprefix = "/locks/";
 const char *temphome_s(const char *pfx)
 {
     static const char *temphome;
-    static bool tmphomeset = false;
+    static char *lastpfx = NULL;
     char *prefix;
 
-    if (tmphomeset)
-        return temphome;
+    if (lastpfx) {
+        if (!strcmp(lastpfx, pfx))
+            return temphome;
+
+        free(lastpfx);
+        lastpfx = astrdup(pfx);
+    }
 
     if (!(prefix = getenv("TMPDIR")))
         prefix = "/tmp";
 
-    tmphomeset = true;
     return temphome = vstrcat(2, prefix, pfx);
 }
 
@@ -44,23 +49,25 @@ const char *temphome(void)
 const char *confhome_s(const char *pfx)
 {
     static const char *confhome;
-    static bool confhomeset = false;
+    static char *lastpfx = NULL;
     char *prefix, *s;
     bool allocedprefix = false;
 
-    if (confhomeset)
-        return confhome;
+    if (lastpfx) {
+        if (!strcmp(lastpfx, pfx))
+            return confhome;
+
+        free(lastpfx);
+        lastpfx = astrdup(pfx);
+    }
 
     if (!(prefix = getenv("XDG_CONFIG_HOME"))) {
-        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir)) {
-            confhomeset = true;
+        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             return confhome = NULL;
-        }
         prefix = vstrcat(2, s, "/.config");
         allocedprefix = true;
     }
 
-    confhomeset = true;
     confhome = vstrcat(2, prefix, pfx);
     if (allocedprefix)
         free(prefix);
@@ -78,23 +85,25 @@ const char *confhome(void)
 const char *cachehome_s(const char *pfx)
 {
     static const char *cachehome;
-    static bool cachehomeset = false;
+    static char *lastpfx = NULL;
     char *prefix, *s;
     bool allocedprefix = false;
 
-    if (cachehomeset)
-        return cachehome;
+    if (lastpfx) {
+        if (!strcmp(lastpfx, pfx))
+            return cachehome;
+
+        free(lastpfx);
+        lastpfx = astrdup(pfx);
+    }
 
     if (!(prefix = getenv("XDG_CACHE_HOME"))) {
-        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir)) {
-            cachehomeset = true;
+        if (!(s = getenv("HOME")) && !(s = getpwuid(getuid())->pw_dir))
             return cachehome = NULL;
-        }
         prefix = vstrcat(2, s, "/.cache");
         allocedprefix = true;
     }
 
-    cachehomeset = true;
     cachehome = vstrcat(2, prefix, pfx);
     if (allocedprefix)
         free(prefix);
@@ -114,14 +123,19 @@ typedef enum { LCKDB_TEMP, LCKDB_PERS } lckdb_t;
 const char *lckhome_s(lckdb_t type, const char *pfx)
 {
     static const char *lckhome;
-    static bool lckhomeset = false;
+    static char *lastpfx = NULL;
     char *prefix;
     const char *s;
 
     assert(type == LCKDB_TEMP || type == LCKDB_PERS);
 
-    if (lckhomeset)
-        return lckhome;
+    if (lastpfx) {
+        if (!strcmp(lastpfx, pfx))
+            return lckhome;
+
+        free(lastpfx);
+        lastpfx = astrdup(pfx);
+    }
 
     switch (type) {
         case LCKDB_TEMP:
@@ -137,7 +151,6 @@ const char *lckhome_s(lckdb_t type, const char *pfx)
 
     prefix = vstrcat(2, s, pfx);
 
-    lckhomeset = true;
     return lckhome = prefix;
 }
 
