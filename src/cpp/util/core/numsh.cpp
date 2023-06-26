@@ -1,3 +1,4 @@
+// @CXXFLAGS -funsafe-math-optimizations -fassociative-math -freciprocal-math -ffinite-math-only -fno-signed-zeros -fno-trapping-math
 // @LDFLAGS -lboost_system
 
 // TODO: sort -L alphabetically
