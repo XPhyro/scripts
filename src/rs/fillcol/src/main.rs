@@ -14,7 +14,7 @@ use termion::color;
 #[command(author, version, about, long_about = None)]
 struct Args {
     /// Set the color of the background.
-    #[arg(short = 'b', long = "color", default_value = "clear")]
+    #[arg(short = 'b', long = "bg-color", default_value = "clear")]
     bg_color: String,
 
     /// Do not clear the color after printing.
@@ -22,7 +22,7 @@ struct Args {
     no_clear: bool,
 
     /// Set the color of the message.
-    #[arg(short = 'f', long = "color", default_value = "white")]
+    #[arg(short = 'f', long = "fg-color", default_value = "white")]
     fg_color: String,
 
     /// Column to start filling at.
