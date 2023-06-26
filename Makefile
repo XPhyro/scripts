@@ -8,13 +8,13 @@ If no TARGET is given, help is assumed.
        help: show this help
     install: install everything
   uninstall: uninstall everything previously installed
+      clean: remove all generated files
        test: run tests
      format: format C, C++ and Python source/header files
     analyse: statically analyse C source files
       spell: check for spelling mistakes
        auto: same as `make format spell analyse install test`
       stats: print code statistics
-      clean: ignored
 endef
 export HELP_MESSAGE
 
@@ -29,6 +29,9 @@ install:
 
 uninstall:
 	@cd src && ./.make uninstall o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
+
+clean:
+	@cd src && ./.make clean o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
 
 test:
 	@cd src && ./.make test o=$(o) g=$(g) view=$(view) v=$(v) m=$(m)
@@ -47,8 +50,6 @@ stats:
 
 statistics: stats
 
-auto: format spell analyse install test index stats
+auto: format spell analyse install clean test index stats
 
-clean:
-
-.PHONY: help install uninstall test format analyse spell stats statistics auto clean
+.PHONY: help install uninstall clean test format analyse spell stats statistics auto

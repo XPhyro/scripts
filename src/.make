@@ -450,6 +450,23 @@ uninstall() {
     rm -f .installed
 }
 
+clean() {
+    printf "%s\n" \
+        "=====" \
+        "CLEAN" \
+        "====="
+
+    (
+        cd rs || exit 1
+        find '.' -mindepth 1 -maxdepth 1 -type d -not -path "*/.archived/*" -not -name ".archived" -printf "%P\n" \
+            | while IFS= read -r project; do
+                cd "$project" || continue
+                cargo clean
+                cd ..
+            done
+    )
+}
+
 unittest() {
     printf "%s\n" \
         "====" \
@@ -1059,6 +1076,7 @@ case "$cmd" in
     index) index;;
     install) install;;
     uninstall) uninstall;;
+    clean) clean;;
     test) unittest;;
     format) format;;
     analyse) analyse;;
