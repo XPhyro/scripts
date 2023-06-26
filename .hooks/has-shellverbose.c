@@ -10,21 +10,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EXECNAME "has-shellverbose"
-
 int main(int argc, char *argv[])
 {
+    const char *execname = argv[0];
+
     argc--;
     argv++;
 
-    while (argc--) {
+    while (argc) {
         const char *filename = *argv;
         FILE *stream;
         if (!(stream = fopen(filename, "r"))) {
             if (errno == ENOENT)
-                fprintf(stderr, EXECNAME ": %s: No such file or directory\n", filename);
+                fprintf(stderr, "%s: %s: No such file or directory\n", execname, filename);
             else {
-                fprintf(stderr, EXECNAME ": %s: Could not open file: ", filename);
+                fprintf(stderr, "%s: %s: Could not open file: ", execname, filename);
                 perror("fopen");
             }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
                 }
                 goto next_file;
             }
-            
+
 next_line:;
         }
 next_file:;
@@ -71,6 +71,7 @@ next_file:;
         fclose(stream);
 
         argv++;
+        argc--;
     }
 
     return EXIT_SUCCESS;
