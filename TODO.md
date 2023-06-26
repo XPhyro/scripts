@@ -551,6 +551,8 @@
   sort of window showing (icon-ic) previews of the different available layouts.
   When one is selected, it would change the wm to that layout. You may want to
   use `rofi` or a `dialog` menu.
+- Port `unitutil.hpp` to C.
+  - Maybe use the new C header in the C++ header as the backend?
 
 ## Refactoring / Rewriting / Reworking
 
