@@ -1,6 +1,7 @@
 #ifndef HEADER_SCRIPTS_CXX_DIE_
 #define HEADER_SCRIPTS_CXX_DIE_
 
+#include <functional>
 #include <iostream>
 
 #include <exec_info.hpp>
@@ -29,6 +30,16 @@ namespace xph {
     inline void die_if(bool condition, const Ts&... args)
     {
         if (condition)
+            die(args...);
+    }
+
+    template <typename... Ts>
+    void die_if(std::function<bool()> func, const Ts&... args);
+
+    template <typename... Ts>
+    void die_if(std::function<bool()> func, const Ts&... args)
+    {
+        if (func())
             die(args...);
     }
 } // namespace xph
