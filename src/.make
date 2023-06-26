@@ -169,6 +169,7 @@ install() {
         # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
+                                     -not -path "*/.archived/*" \
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 '"$FUNC_PARSEFLAGS"'
@@ -228,6 +229,7 @@ install() {
         # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
+                                     -not -path "*/.archived/*" \
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 '"$FUNC_PARSEFLAGS"'
