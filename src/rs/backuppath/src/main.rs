@@ -4,6 +4,10 @@ use clap::Parser;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
+    /// Use NULs to separate the names instead of newlines.
+    #[arg(short = '0', long = "null")]
+    nulldelim: bool,
+
     /// Positional arguments for the subcommand.
     #[arg(required = false)]
     args: Vec<String>,
@@ -12,10 +16,12 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
+    let delim = if args.nulldelim { '\0' } else { '\n' };
+
     for arg in args.args {
         let path = std::path::Path::new(&arg);
         if !path.exists() {
-            println!("{}", arg);
+            print!("{}{}", arg, delim);
             continue;
         }
 
@@ -23,7 +29,7 @@ fn main() {
         let mut new_path = path.to_path_buf();
         new_path.set_extension("~1~");
         if !new_path.exists() {
-            println!("{}.~1~", arg);
+            print!("{}.~1~{}", arg, delim);
             continue;
         }
 
@@ -36,6 +42,6 @@ fn main() {
             new_path = path.to_path_buf();
             new_path.set_extension(format!("~{}~", backup_number));
         }
-        println!("{}", new_path.to_str().unwrap());
+        print!("{}{}", new_path.to_str().unwrap(), delim);
     }
 }
