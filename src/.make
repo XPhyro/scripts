@@ -761,6 +761,29 @@ analyse() {
         | sed 's/^/  /')
     ec="$((ec | $?))"
 
+    printf "%s\n" \
+        "" \
+        "Preparing to analyse Rust projects:" \
+        "  Analyser: cargo" \
+        "  Analyser version: $(cargo --version)" \
+        ""
+
+    printf "%s\n" "Analysing Rust projects:"
+    (
+        cd rs || exit 1
+        find '.' -mindepth 1 -maxdepth 1 -type d -not -path "*/.archived/*" -not -name ".archived" -printf "%P\n" \
+            | while IFS= read -r project; do
+                printf "  %s\n" "$project"
+                cd "$project" || {
+                    printf "    Failed analysis\n"
+                    continue
+                }
+                cargo clippy --all-targets --all-features 2>&1
+                cd .. || exit 1
+            done
+    )
+    ec="$((ec | $?))"
+
     rm -f -- "$tmpout"
 }
 
