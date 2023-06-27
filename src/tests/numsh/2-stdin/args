@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+printf "%s " \
+    '-m' \
+    '-f' \
+    'min' \
+    '-f' \
+    'max' \
+    '-f' \
+    'mean' \
+    '-f' \
+    'std'
