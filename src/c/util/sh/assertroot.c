@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <zconf.h>
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
     int i;
 

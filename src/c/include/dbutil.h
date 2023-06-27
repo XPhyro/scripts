@@ -219,7 +219,7 @@ bool awaitdb(const char *hash, lckdb_t type)
 
     i = 0;
     while (i < length) {
-        struct inotify_event *event = (struct inotify_event *)&buf[i];
+        const struct inotify_event *event = (const struct inotify_event *)&buf[i];
         if (event->len && event->mask & IN_DELETE_SELF)
             goto cleanup;
         i += eventsize + event->len;

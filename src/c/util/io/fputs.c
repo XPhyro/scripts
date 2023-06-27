@@ -7,7 +7,7 @@
         exit(EXIT_FAILURE);                   \
     }
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
     int i;
 

@@ -55,7 +55,7 @@
     TESTCASENOBREAK(CHAR, FUNC); \
     break
 
-#define TESTFUNCDEF(NAME) bool NAME(const char *path, struct stat *st)
+#define TESTFUNCDEF(NAME) bool NAME(const char *path, const struct stat *st)
 #define TESTFUNC(NAME, RET) \
     TESTFUNCDEF(NAME)       \
     {                       \
@@ -69,8 +69,8 @@ const char *optmime, *optsmime;
 struct stat newer, older;
 magic_t magic;
 
-bool (*postests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
-bool (*negtests[TESTCOUNTMAX])(const char *, struct stat *) = { NULL };
+bool (*postests[TESTCOUNTMAX])(const char *, const struct stat *) = { NULL };
+bool (*negtests[TESTCOUNTMAX])(const char *, const struct stat *) = { NULL };
 
 const char *getmime(const char *path)
 {

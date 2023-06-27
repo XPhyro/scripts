@@ -33,7 +33,7 @@ void vec_del(vector_t *vec)
     *vec = (vector_t){ .arr = NULL, .nmemb = 0, .nptr = 0, .size = 0 };
 }
 
-void vec_cpy(vector_t *dest, vector_t *src)
+void vec_cpy(vector_t *dest, const vector_t *src)
 {
     memcpy(dest->arr, src->arr, src->nmemb * src->size);
     dest->nmemb = src->nmemb;
@@ -41,7 +41,7 @@ void vec_cpy(vector_t *dest, vector_t *src)
     dest->size = src->size;
 }
 
-vector_t vec_dup(vector_t *vec)
+vector_t vec_dup(const vector_t *vec)
 {
     vector_t dup;
     vec_cpy(&dup, vec);

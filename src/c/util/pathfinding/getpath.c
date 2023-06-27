@@ -30,6 +30,7 @@ typedef enum {
     FILEMODE_FILE = 2,
 } FILEMODES;
 
+// cppcheck-suppress constParameter
 HEDLEY_NO_RETURN void die(bool shellinit, int argc, char *argv[], const char *fmt, ...)
 {
     va_list ap;
