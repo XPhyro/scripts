@@ -8,7 +8,7 @@ struct Args {
     #[arg(short = '0', long = "null")]
     nulldelim: bool,
 
-    /// Positional arguments for the subcommand.
+    /// Paths to generate backup paths off of.
     #[arg(required = false)]
     args: Vec<String>,
 }
