@@ -4,6 +4,7 @@
 // TODO: sort -L alphabetically
 // TODO: enforce stuff in man page and help dialog
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -21,6 +22,7 @@
 
 #include <boost/range/combine.hpp>
 
+#include <algorithmutil.hpp>
 #include <die.hpp>
 #include <lexical_cast.hpp>
 #include <mathutil.hpp>
@@ -253,128 +255,107 @@ namespace func {
 
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::acos(num);
+        xph::transform_in_place(nums, [](double num) { return std::acos(num); });
     }
 
     void asin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::asin(num);
+        xph::transform_in_place(nums, [](double num) { return std::asin(num); });
     }
 
     void atan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::atan(num);
+        xph::transform_in_place(nums, [](double num) { return std::atan(num); });
     }
 
     void cbrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::cbrt(num);
+        xph::transform_in_place(nums, [](double num) { return std::cbrt(num); });
     }
 
     void ceil([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::ceil(num);
+        xph::transform_in_place(nums, [](double num) { return std::ceil(num); });
     }
 
     void cos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::cos(num);
+        xph::transform_in_place(nums, [](double num) { return std::cos(num); });
     }
 
     void cosh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::cosh(num);
+        xph::transform_in_place(nums, [](double num) { return std::cosh(num); });
     }
 
     void exp([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::exp(num);
+        xph::transform_in_place(nums, [](double num) { return std::exp(num); });
     }
 
     void fabs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::fabs(num);
+        xph::transform_in_place(nums, [](double num) { return std::fabs(num); });
     }
 
     void floor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::floor(num);
+        xph::transform_in_place(nums, [](double num) { return std::floor(num); });
     }
 
     void log([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::log(num);
+        xph::transform_in_place(nums, [](double num) { return std::log(num); });
     }
 
     void log10([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::log10(num);
+        xph::transform_in_place(nums, [](double num) { return std::log10(num); });
     }
 
     void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::log2(num);
+        xph::transform_in_place(nums, [](double num) { return std::log2(num); });
     }
 
     void pow(std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::pow(num, argv[0]);
+        xph::transform_in_place(nums, [&](double num) { return std::pow(num, argv[0]); });
     }
 
     void round([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::round(num);
+        xph::transform_in_place(nums, [](double num) { return std::round(num); });
     }
 
     void sin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::sin(num);
+        xph::transform_in_place(nums, [](double num) { return std::sin(num); });
     }
 
     void sinh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::sinh(num);
+        xph::transform_in_place(nums, [](double num) { return std::sinh(num); });
     }
 
     void sqrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::sqrt(num);
+        xph::transform_in_place(nums, [](double num) { return std::sqrt(num); });
     }
 
     void tan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::tan(num);
+        xph::transform_in_place(nums, [](double num) { return std::tan(num); });
     }
 
     void tanh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::tanh(num);
+        xph::transform_in_place(nums, [](double num) { return std::tanh(num); });
     }
 
     void trunc([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        for (auto& num : nums)
-            num = std::trunc(num);
+        xph::transform_in_place(nums, [](double num) { return std::trunc(num); });
     }
 
     void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
@@ -427,7 +408,8 @@ namespace func {
 
     void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double min = std::numeric_limits<double>::max(), max = std::numeric_limits<double>::min();
+        double min = std::numeric_limits<double>::max();
+        double max = std::numeric_limits<double>::min();
 
         for (double num : nums) {
             num = std::abs(num);
