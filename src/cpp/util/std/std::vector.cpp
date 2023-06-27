@@ -519,7 +519,7 @@ namespace vec {
 
         const vecsize_t size = vec.size();
         fl.write(reinterpret_cast<const char*>(&size), sizeof(size));
-        std::for_each(vec.begin(), vec.end(), [&fl](std::string& str) {
+        std::for_each(vec.begin(), vec.end(), [&fl](const std::string& str) {
             fl.write(str.c_str(), str.length() + 1);
         });
     }

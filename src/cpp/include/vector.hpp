@@ -29,7 +29,7 @@ public:
         return os;
     }
 
-    inline friend Vector operator+(Vector v, Vector vp)
+    inline friend Vector operator+(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] += vp[i];
@@ -37,7 +37,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator-(Vector v, Vector vp)
+    inline friend Vector operator-(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] -= vp[i];
@@ -45,7 +45,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator*(Vector v, Vector vp)
+    inline friend Vector operator*(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] *= vp[i];
@@ -53,7 +53,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator/(Vector v, Vector vp)
+    inline friend Vector operator/(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] /= vp[i];
@@ -102,7 +102,7 @@ public:
         return os;
     }
 
-    inline friend Vector operator+(Vector v, Vector vp)
+    inline friend Vector operator+(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] += vp[i];
@@ -110,7 +110,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator-(Vector v, Vector vp)
+    inline friend Vector operator-(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] -= vp[i];
@@ -118,7 +118,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator*(Vector v, Vector vp)
+    inline friend Vector operator*(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] *= vp[i];
@@ -126,7 +126,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator/(Vector v, Vector vp)
+    inline friend Vector operator/(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] /= vp[i];
@@ -167,7 +167,7 @@ public:
         return os;
     }
 
-    inline friend Vector operator+(Vector v, Vector vp)
+    inline friend Vector operator+(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] += vp[i];
@@ -175,7 +175,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator-(Vector v, Vector vp)
+    inline friend Vector operator-(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] -= vp[i];
@@ -183,7 +183,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator*(Vector v, Vector vp)
+    inline friend Vector operator*(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] *= vp[i];
@@ -191,7 +191,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator/(Vector v, Vector vp)
+    inline friend Vector operator/(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] /= vp[i];
@@ -233,7 +233,7 @@ public:
         return os;
     }
 
-    inline friend Vector operator+(Vector v, Vector vp)
+    inline friend Vector operator+(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] += vp[i];
@@ -241,7 +241,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator-(Vector v, Vector vp)
+    inline friend Vector operator-(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] -= vp[i];
@@ -249,7 +249,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator*(Vector v, Vector vp)
+    inline friend Vector operator*(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] *= vp[i];
@@ -257,7 +257,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator/(Vector v, Vector vp)
+    inline friend Vector operator/(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] /= vp[i];
@@ -300,7 +300,7 @@ public:
         return os;
     }
 
-    inline friend Vector operator+(Vector v, Vector vp)
+    inline friend Vector operator+(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] += vp[i];
@@ -308,7 +308,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator-(Vector v, Vector vp)
+    inline friend Vector operator-(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] -= vp[i];
@@ -316,7 +316,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator*(Vector v, Vector vp)
+    inline friend Vector operator*(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] *= vp[i];
@@ -324,7 +324,7 @@ public:
         return v;
     }
 
-    inline friend Vector operator/(Vector v, Vector vp)
+    inline friend Vector operator/(Vector v, const Vector& vp)
     {
         for (std::size_t i = 0; i < Td; ++i)
             v[i] /= vp[i];
