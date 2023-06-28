@@ -26,7 +26,7 @@ struct Args {
     ingredients: Vec<String>,
 }
 
-fn make_bread(width: u16, dough: &str, random_dough: bool) {
+fn bake_bread(width: u16, dough: &str, random_dough: bool) {
     if random_dough {
         for _ in 0..width {
             print!(
@@ -56,12 +56,12 @@ fn main() {
         termion::terminal_size().unwrap().0
     };
 
-    make_bread(width, &args.dough, args.random_dough);
+    bake_bread(width, &args.dough, args.random_dough);
 
     println!("{}", ingredients);
     if !stdin_isatty() {
         std::io::copy(&mut std::io::stdin().lock(), &mut std::io::stdout().lock()).unwrap();
     }
 
-    make_bread(width, &args.dough, args.random_dough);
+    bake_bread(width, &args.dough, args.random_dough);
 }
