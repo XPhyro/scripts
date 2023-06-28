@@ -9,6 +9,10 @@ use rand::Rng;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
+    /// Bake the bread with a specific width.
+    #[arg(short = 'w', long = "width")]
+    width: Option<u16>,
+
     /// Mix the dough randomly.
     #[arg(short = 'r', long = "random-dough")]
     random_dough: bool,
@@ -45,7 +49,12 @@ fn main() {
     let args = Args::parse();
 
     let ingredients = args.ingredients.join(" ");
-    let (width, _height) = termion::terminal_size().unwrap();
+
+    let width = if args.width.is_some() {
+        args.width.unwrap()
+    } else {
+        termion::terminal_size().unwrap().0
+    };
 
     make_bread(width, &args.dough, args.random_dough);
 
