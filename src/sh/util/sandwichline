@@ -1,8 +1,0 @@
-#!/usr/bin/env sh
-
-s="$1"
-shift
-
-fillline "$s"
-printf "%s\n" "$*"
-fillline "$s"
