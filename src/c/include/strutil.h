@@ -41,6 +41,14 @@ HEDLEY_MALLOC char *astrdup(const char *s)
     return dup;
 }
 
+HEDLEY_MALLOC char *astrndup(const char *s, size_t n)
+{
+    size_t size = MIN(strlen(s) * sizeof(char), n);
+    char *dup = amalloc(size);
+    memcpy(dup, s, size);
+    return dup;
+}
+
 char *strend(const char *s)
 {
     if (!s)
