@@ -181,6 +181,16 @@ bool strnsfx(const char *s, const char *sfx, size_t n)
     return true;
 }
 
+char *strnchr(const char *s, int c, size_t n)
+{
+    for (; *s && n; s++, n--) {
+        if (*s == c)
+            return (char *)s;
+    }
+
+    return NULL;
+}
+
 bool strhaschr(const char *s, int c)
 {
     return strchr(s, c);
@@ -188,12 +198,7 @@ bool strhaschr(const char *s, int c)
 
 bool strnhaschr(const char *s, int c, size_t n)
 {
-    for (; *s && n; s++, n--) {
-        if (*s == c)
-            return true;
-    }
-
-    return false;
+    return strnchr(s, c, n);
 }
 
 bool strhasstr(const char *s, const char *str)
