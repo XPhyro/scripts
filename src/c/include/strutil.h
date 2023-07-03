@@ -188,7 +188,12 @@ bool strhaschr(const char *s, int c)
 
 bool strnhaschr(const char *s, int c, size_t n)
 {
-    return strchr(s, c) - s < n;
+    for (; *s && n; s++, n--) {
+        if (*s == c)
+            return true;
+    }
+
+    return false;
 }
 
 bool strhasstr(const char *s, const char *str)
