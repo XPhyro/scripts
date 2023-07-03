@@ -21,7 +21,7 @@ struct Args {
     #[arg(required = true)]
     dough: String,
 
-    /// Ingredients to put between the bread.
+    /// Ingredients to put between the bread. If given, stdin is used after positional ingredients.
     #[arg(required = false)]
     ingredients: Vec<String>,
 }
