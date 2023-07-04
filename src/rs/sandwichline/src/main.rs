@@ -9,13 +9,13 @@ use rand::Rng;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Bake the bread with a specific width.
-    #[arg(short = 'w', long = "width")]
-    width: Option<u16>,
-
     /// Mix the dough randomly.
     #[arg(short = 'r', long = "random-dough")]
     random_dough: bool,
+
+    /// Bake the bread with a specific width.
+    #[arg(short = 'w', long = "width")]
+    width: Option<u16>,
 
     /// Dough for the bread.
     #[arg(required = true)]
