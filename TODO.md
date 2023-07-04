@@ -419,6 +419,8 @@
 - Support more parameters in `reddit-fetch`, see
   <https://pushshift.io/api-parameters/>.
 - In `rgb24togray`, add `METHOD_HSL_S` and `METHOD_HSL_L`.
+- In `sandwichline`, add `-s, --same-dough` option to make the top and bottom
+  of the sandwich the same when randomised.
 
 ## New Scripts
 
