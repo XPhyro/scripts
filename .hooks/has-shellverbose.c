@@ -69,6 +69,8 @@ next_line:;
 next_file:;
 
         fclose(stream);
+        if (line)
+            free(line);
 
         argv++;
         argc--;
