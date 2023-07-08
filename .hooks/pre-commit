@@ -1,54 +1,54 @@
 #!/usr/bin/env sh
 
-RED='\033[0;31m'
-NC='\033[0m'
+COLOR_RED='\033[0;31m'
+COLOR_CLEAR='\033[0m'
 
-changed="$(git diff --cached --name-only)"
+changed_files="$(git diff --cached --name-only)"
 
-printf "%s\n" "$changed" \
+printf "%s\n" "$changed_files" \
     | grep -E "^src/c(pp)?/.*\.[ch](pp)?$" \
-    | while IFS= read -r fl; do
-        realfl="$PWD/$fl"
-        [ -e "$realfl" ] || continue
-        flcontent="$(cat -- "$realfl")"
-        (cd "$(dirname -- "$realfl")" \
-             && clang-format -i --style=file -- "$realfl" \
+    | while IFS= read -r path; do
+        full_path="$PWD/$path"
+        [ -e "$full_path" ] || continue
+        file_content="$(cat -- "$full_path")"
+        (cd "$(dirname -- "$full_path")" \
+             && clang-format -i --style=file -- "$full_path" \
              && {
                  [ -z "$GIT_PRE_COMMIT_NO_ADD" ] \
                  || [ "$GIT_PRE_COMMIT_NO_ADD" -ne 0 ]
              } \
-             && git add -- "$realfl"
+             && git add -- "$full_path"
         )
-        printf "%s\n" "$flcontent" | cmp -s -- "$realfl" \
-            && printf "Formatted file %s\n" "$(basename -- "$realfl")"
+        printf "%s\n" "$file_content" | cmp -s -- "$full_path" \
+            && printf "Formatted file %s\n" "$(basename -- "$full_path")"
     done
 
-printf "%s\n" "$changed" \
+printf "%s\n" "$changed_files" \
     | grep "^src/py/.*[^/]" \
-    | while IFS= read -r fl; do
-        [ ! -x "$fl" ] || {
-            realfl="$PWD/$fl"
-            [ -e "$realfl" ] || continue
-            flcontent="$(cat -- "$realfl")"
-            (cd "$(dirname -- "$realfl")" \
-                 && black -- "$realfl" \
+    | while IFS= read -r path; do
+        [ ! -x "$path" ] || {
+            full_path="$PWD/$path"
+            [ -e "$full_path" ] || continue
+            file_content="$(cat -- "$full_path")"
+            (cd "$(dirname -- "$full_path")" \
+                 && black -- "$full_path" \
                  && {
                      [ -z "$GIT_PRE_COMMIT_NO_ADD" ] \
                      || [ "$GIT_PRE_COMMIT_NO_ADD" -ne 0 ]
                  } \
-                 && git add -- "$realfl"
+                 && git add -- "$full_path"
             )
-            printf "%s\n" "$flcontent" | cmp -s -- "$realfl" \
-                && printf "Formatted file %s\n" "$(basename -- "$realfl")"
+            printf "%s\n" "$file_content" | cmp -s -- "$full_path" \
+                && printf "Formatted file %s\n" "$(basename -- "$full_path")"
         }
     done
 
-printf "%s\n" "$changed" \
+printf "%s\n" "$changed_files" \
     | grep "^src/sh/.*[^/]" \
     | grep -v '\.sh$' \
     | xargs -r -d '\n' -n 1 .hooks/has-shellverbose.c
 
-year="$(date '+%Y')"
-grep -Fq -- "2020-$year" LICENSE \
-    || printf "$RED%s$NC\n" \
+current_year="$(date '+%Y')"
+grep -Fq -- "2020-$current_year" LICENSE \
+    || printf "$COLOR_RED%s$COLOR_CLEAR\n" \
         "Please update the year in the license header."
