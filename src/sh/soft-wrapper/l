@@ -4,7 +4,7 @@
 
 if [ "$#" -eq 0 ]; then
     less -RN
-elif [ -e "$1" ]; then
+elif exists "$@"; then
     previewtext "$@" | less -RN
 else
     unbuffer "$@" | less -RN
