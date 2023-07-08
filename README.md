@@ -71,8 +71,8 @@ the source code.
 
 - [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
   offset.
-- [bspwm-autokblayout](src/sh/bspwm/daemon/bspwm-autokblayout): Automatically switch between keyboard layouts for different windows in [bspwm](https://github.com/baskerville/bspwm).
-- [bspwmpad](src/sh/bspwm/util/bspwmpad): Dynamic scratch pads for
+- [bspwm-autokblayout](src/sh/integration/bspwm/daemon/bspwm-autokblayout): Automatically switch between keyboard layouts for different windows in [bspwm](https://github.com/baskerville/bspwm).
+- [bspwmpad](src/sh/integration/bspwm/util/bspwmpad): Dynamic scratch pads for
   bspwm. For optimum operation, include
   `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required
   for operation, but the script was designed with it in mind. There is also
@@ -92,8 +92,7 @@ the source code.
   pairs.
 - [kdialog](src/sh/wrapper/kdialog): Wrapper for KDE's `kdialog` to trick
   applications into using `lf` as the file picker.
-- [latexd](src/sh/daemon/latexd): Basically `latexmk` but sucks less and is
-  more minimal.
+- [latexd](src/sh/daemon/latexd): Basically `latexmk` but more minimal.
 - [mapexec](src/sh/util/mapexec): Open standard input in `$EDITOR` and execute
   commands against all, modified, unmodified or wiped lines synchronously or
   asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
