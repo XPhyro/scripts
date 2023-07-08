@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     for (i = 1; i < argc; i++) {
         path = argv[i];
         if (!access(path, F_OK)) {
-            fputs(path, stdout);
+            puts(path);
             return 0;
         }
     }
