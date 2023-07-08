@@ -1,4 +1,4 @@
-#!/usr/bin/env gcc-otg
+#!/ usr / bin / env gcc - otg
 
 // @CXXFLAGS -std=c99 -Wall -Werror -pedantic
 // @LDFLAGS
@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
         const char *filename = *argv;
         FILE *stream;
         if (!(stream = fopen(filename, "r"))) {
-            if (errno == ENOENT)
+            if (errno == ENOENT) {
                 fprintf(stderr, "%s: %s: No such file or directory\n", execname, filename);
-            else {
+            } else {
                 fprintf(stderr, "%s: %s: Could not open file: ", execname, filename);
                 perror("fopen");
             }
@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
                 line[line_len - 1] = '\0';
                 line_len--;
             }
+
             for (size_t i = 0; i < line_len; i++) {
                 while (i < line_len) {
                     if (line[i] == ' ')
@@ -46,9 +47,10 @@ int main(int argc, char *argv[])
                     else
                         break;
                 }
-                if (line[i] == '#') {
+
+                if (line[i] == '#')
                     goto next_line;
-                }
+
                 if (line[i] == '.') {
                     for (i++; i < line_len;) {
                         if (line[i] == ' ')
@@ -56,11 +58,13 @@ int main(int argc, char *argv[])
                         else
                             break;
                     }
+
                     if (strcmp(line + i, "shellverbose.sh"))
                         printf("File %s does not have shellverbose.sh at the top\n", filename);
                 } else {
                     printf("File %s does not have shellverbose.sh at the top\n", filename);
                 }
+
                 goto next_file;
             }
 
