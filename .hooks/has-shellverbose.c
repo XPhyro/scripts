@@ -13,6 +13,9 @@
 int main(int argc, char *argv[])
 {
     const char *execname = argv[0];
+    char *line = NULL;
+    size_t line_size = 0;
+    ssize_t line_len;
 
     argc--;
     argv++;
@@ -31,9 +34,6 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-        char *line = NULL;
-        size_t line_size = 0;
-        ssize_t line_len;
         while ((line_len = getline(&line, &line_size, stream)) != -1) {
             if (line[line_len - 1] == '\n') {
                 line[line_len - 1] = '\0';
@@ -73,12 +73,13 @@ next_line:;
 next_file:;
 
         fclose(stream);
-        if (line)
-            free(line);
 
         argv++;
         argc--;
     }
+
+    if (line)
+        free(line);
 
     return EXIT_SUCCESS;
 }
