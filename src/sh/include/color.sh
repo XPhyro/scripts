@@ -4,7 +4,7 @@
     HEADER_SCRIPTS_SH_COLOR_=
 
     std_clr() {
-        printf "$2$1$NC"
+        printf "$2$1$std_nc"
     }
 
     std_clrl() {
