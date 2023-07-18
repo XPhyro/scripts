@@ -1,4 +1,4 @@
-#!/ usr / bin / env gcc - otg
+#!/usr/bin/env gcc-otg
 
 // @CXXFLAGS -std=c99 -Wall -Werror -pedantic
 // @LDFLAGS
