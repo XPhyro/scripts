@@ -117,15 +117,6 @@
 - `termctl`: include commands, subcommands, etc. in help dialog (or add a
   (command & subcommand)/flag for it)
 - Support stdin in `gcc-otg`.
-- In `lf-preview` and `lf-cleaner`, conditionally support Sixel and Kitten
-  depending on the current terminal.
-  - Kitty:
-    - `lf-preview`: `kitty +kitten icat --transfer-mode file --stdin no --place ${2}x${3}@${4}x${5} ${1} < /dev/null > /dev/tty`
-    - `lf-cleaner`: `kitty +kitten icat --stdin no clear < /dev/null > /dev/tty`
-  - Sixel:
-    - `lf-preview`: `chafa -f sixel -s "${4}x${5}" -- "$1"`
-    - `lf-cleaner`: Not needed (remember to exit with 0)
-  - Match first supported in this order: Kitten, Sixel, Ueberzug, non-sixel chafa.
 
 ## New Scripts
 

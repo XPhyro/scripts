@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-if [ -n "$UEBERZUG_FIFO" ]; then
+if [ -n "$KITTY_PID" ]; then
+    kitty +kitten icat --stdin no clear < /dev/null > /dev/tty
+elif [ -n "$UEBERZUG_FIFO" ]; then
     jq -cn \
         --arg action remove \
         --arg identifier PREVIEW \
