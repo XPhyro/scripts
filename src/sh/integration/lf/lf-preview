@@ -76,7 +76,8 @@ main() {
     thumbdir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/thumbnails"
     thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
 
-    case "$(file --mime-type --brief -- "$(realpath -P -- "$1")")" in
+    mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$1")")"
+    case "$mime_type" in
         application/octet-stream)
             case "$1" in
                 *.pdf) preview_pdf "$@";;
@@ -90,8 +91,13 @@ main() {
             [ -f "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
             preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
-        video/*)
+        video/*|image/gif)
             if [ -n "$KITTY_PID" ]; then
+                [ "$mime_type" = "image/gif" ] && {
+                    preview_image "$1" "$2" "$3" "$4" "$5"
+                    return
+                }
+
                 ext=gif
                 [ -f "$thumbfl.$ext" ] || {
                     i=0
