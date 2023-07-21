@@ -12,6 +12,8 @@ preview_image() {
             kitty +kitten icat \
                 --transfer-mode file \
                 --stdin no \
+                --scale-up \
+                --clear \
                 --place ${2}x${3}@${4}x${5} ${1} < /dev/null > /dev/tty
             exit 1
         elif [ -n "$LF_PREVIEW_USE_SIXEL" ] && [ "$LF_PREVIEW_USE_SIXEL" -ne 0 ]; then
