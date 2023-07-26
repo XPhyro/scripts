@@ -6,7 +6,7 @@
 #       support (which is handled here).
 # TODO: add support for CBR files.
 
-preview_image() {
+exec_preview_image() {
     if [ -n "$DISPLAY" ]; then
         if [ -n "$KITTY_PID" ]; then
             kitty +kitten icat \
@@ -53,7 +53,7 @@ preview_image() {
 
 preview_pdf() {
     [ -f "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
-    preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+    exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
 }
 
 scope() {
@@ -91,14 +91,11 @@ main() {
             ;;
         application/epub+zip)
             [ -f "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
-            preview_image "$thumbfl" "$2" "$3" "$4" "$5"
+            exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
         video/*|image/gif)
             if [ -n "$KITTY_PID" ]; then
-                [ "$mime_type" = "image/gif" ] && {
-                    preview_image "$1" "$2" "$3" "$4" "$5"
-                    return
-                }
+                [ "$mime_type" = "image/gif" ] && exec_preview_image "$1" "$2" "$3" "$4" "$5"
 
                 ext=gif
                 [ -f "$thumbfl.$ext" ] || {
@@ -138,14 +135,14 @@ main() {
                     rm -f -- "$thumbfl"-*.jpg
                 }
             fi
-            preview_image "$thumbfl.$ext" "$2" "$3" "$4" "$5"
+            exec_preview_image "$thumbfl.$ext" "$2" "$3" "$4" "$5"
             ;;
         image/heic)
             [ -f "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"
-            preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
             ;;
         image/*)
-            preview_image "$@"
+            exec_preview_image "$@"
             ;;
         text/plain)
             [ -f "$thumbfl" ] || {
@@ -155,7 +152,7 @@ main() {
                     && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
             }
             if [ -s "$thumbfl" ]; then
-                preview_image "$thumbfl" "$2" "$3" "$4" "$5"
+                exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             else
                 if [ "$(stat --printf="%s" -- "$1")" -le 16777216 ]; then # 16MiB
                     scope "$@"
