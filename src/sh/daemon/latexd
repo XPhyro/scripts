@@ -10,13 +10,18 @@
 #       and the rest just be opened along with the source file with the editor?
 #       Currently multiple are accepted, but only the first one is considered.
 
+# I apologise for whatever happened here as more features got added.
+# You should probably look away.
+#
+# FIXME: rewrite this mess
+
 . shellverbose.sh
 
 execname="${0##*/}"
 
 printhelp() {
     printf "%s\n" \
-"$execname [OPTION...] [FILES...] -- [FILES...]
+"$execname [OPTION...] [MAIN_FILE]
    -f, --force
        Force compile even if hash-check succeeds.
    --no-force
@@ -25,6 +30,12 @@ printhelp() {
        Compile once and exit.
    --no-once
        Revert -o.
+   -p, --project
+       Watch all TeX files in the current directory or its subdirectories
+       recursively. Also watches newly created files after a compile.
+       Compilation is still only done against MAIN_FILE.
+   --no-project
+       Revert -p.
    --shell-escape
        Enable \write18.
    --no-shell-escape
@@ -59,6 +70,7 @@ parseargs() {
                     case "$opt" in
                         f) parseargs --force;;
                         o) parseargs --once;;
+                        p) parseargs --project;;
                         h) parseargs --help;;
                         *) printusage "-$opt"; exit 0;;
                     esac
@@ -73,6 +85,8 @@ parseargs() {
                     no-force         ) optforce="0";;
                     once             ) optonce="1";;
                     no-once          ) optonce="0";;
+                    project          ) optproject="1";;
+                    no-project       ) optproject="0";;
                     shell-escape     ) optshellesc="--shell-escape";;
                     no-shell-escape  ) optshellesc="";;
                     help             ) printhelp; exit 0;;
@@ -116,6 +130,7 @@ setdefargs() {
 processargs() {
     [ -z "$fls" ] && logerrq "Expected at least one file, exiting."
     srcfl="$(printf "%s\n" "$fls" | head -n 1)"
+    export srcfl
     hardlinked "$srcfl" "${srcfl##*/}" || logerrq "Source file must be in the current directory."
     srchashfl="$cachedir$(realpath -- "$srcfl.tex")"
     mkdir -p -- "${srchashfl%/*}" || {
@@ -147,7 +162,11 @@ cleanaux() {
 
 printcompile() {
     printf "%s\n" "
-    srchash=\"\$(sha512sum -- '$srcfl.tex' | awk '{print \$1}')\"
+    if [ '$optproject' != '1' ]; then
+        srchash=\"\$(sha512sum -- '$srcfl.tex' | awk '{print \$1}')\"
+    else
+        srchash=\"\$({ find '.' -mindepth 2 -type f -exec cat '{}' \;; cat -- bibliography.bib '$srcfl.tex'; } | sha512sum | awk '{print \$1}')\"
+    fi
     [ '$optforce' != '1' ] && [ -s '$srchashfl' ] && [ -s '$srcfl.pdf' ] && [ \"\$srchash\" = \"\$(cat -- '$srchashfl' 2> /dev/null)\" ] && return 0
 
     # Adapted from https://tex.stackexchange.com/a/8792/199300
@@ -171,6 +190,15 @@ compile() {
     eval "$(printcompile)"
 }
 
+printwait() {
+    if [ "$optproject" != '1' ]; then
+        printf "%s\n" 'inotifywait -qq -e move_self -- "$srcfl.tex"'
+    else
+        printf "%s\n" 'inotifywait -qq -- .'
+    fi
+    printf "%s\n" 'waitfl "$srcfl.tex"'
+}
+
 dispatchcompiler() {
     REUSE_TABBED_XID=1 bspwmpad -Hg 725x900 -- sh -c "
     compile() {
@@ -183,8 +211,7 @@ dispatchcompiler() {
     printf '[latexstp]: %s\n' \"Initialised in \$(pwd).\" 'Watching $srcfl.tex.'
 
     while :; do
-        inotifywait -qq -e move_self -- '$srcfl.tex'
-        waitfl '$srcfl.tex'
+        $(printwait)
         compile
     done
     "
