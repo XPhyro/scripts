@@ -13,6 +13,7 @@
 # or transform this script to fit your file picker.
 
 . shellverbose.sh
+. x11.sh
 
 realkdialog() {
     execaux "$0" "$@"
@@ -129,6 +130,15 @@ main() {
     else
         execrealkdialog "$@"
     fi
+}
+
+[ -n "$KDIALOG_BYPASS_WRAPPER" ] && [ "$KDIALOG_BYPASS_WRAPPER" -ne 0 ] && execrealkdialog "$@"
+
+[ -n "$KDIALOG_AUTO" ] && [ "$KDIALOG_AUTO" -ne 0 ] && {
+    case "$std_x11_desktop" in
+        awesome|bspwm|dwm|generic|unknown) :;;
+        *) execrealkdialog "$@";;
+    esac
 }
 
 peekargs "$@"
