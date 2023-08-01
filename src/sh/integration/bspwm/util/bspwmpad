@@ -11,6 +11,7 @@
 # bspwm is not required for operation, but the script was designed with it in mind.
 
 . shellverbose.sh
+. x11.sh
 
 execname="${0##*/}"
 
@@ -150,6 +151,11 @@ processargs() {
         && { [ "${#optnumber}" -ne 1 ] \
                 || [ -z "$(printf "%s" "$optnumber" | tr -dc '0-9')" ]
         } && logerrq "Invalid NUMBER passed, exiting."
+
+    case "$std_x11_desktop" in
+        bspwm) :;;
+        *) unset optgeometry;;
+    esac
 }
 
 handlenode() {
