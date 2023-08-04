@@ -152,6 +152,7 @@ processargs() {
                 || [ -z "$(printf "%s" "$optnumber" | tr -dc '0-9')" ]
         } && logerrq "Invalid NUMBER passed, exiting."
 
+    # shellcheck disable=SC2154
     case "$std_x11_desktop" in
         bspwm) :;;
         *) unset optgeometry;;
