@@ -153,7 +153,7 @@ clean() {
 }
 
 printcleanaux() {
-    printf "%s\n" "rm -f -- '$srcfl.aux' '$srcfl.bbl' '$srcfl.blg' '$srcfl.lof' '$srcfl.log' '$srcfl.lot' '$srcfl.out' '$srcfl.toc' '$srcfl.bcf' '$srcfl.run.xml' '$srcfl.py' '$srcfl.py.err' '$srcfl.py.out' '$srcfl.pytxcode' 'luadebug.lua' 'latex.py' 'texput.log' '$srcfl.nav' '$srcfl.snm' *.1 *.2 *.log *.mp > /dev/null 2>&1; rm -rf -- 'pythontex-files-$srcfl/' > /dev/null 2>&1"
+    printf "%s\n" "rm -f -- '$srcfl.aux' '$srcfl.bbl' '$srcfl.blg' '$srcfl.lof' '$srcfl.log' '$srcfl.lot' '$srcfl.out' '$srcfl.toc' '$srcfl.bcf' '$srcfl.run.xml' '$srcfl.py' '$srcfl.py.err' '$srcfl.py.out' '$srcfl.pytxcode' 'luadebug.lua' 'latex.py' 'texput.log' '$srcfl.nav' '$srcfl.snm' '$srcfl.equ' '$srcfl.fdb_latexmk' '$srcfl.fls' *.1 *.2 *.log *.mp > /dev/null 2>&1; rm -rf -- 'pythontex-files-$srcfl/' > /dev/null 2>&1"
 }
 
 cleanaux() {
