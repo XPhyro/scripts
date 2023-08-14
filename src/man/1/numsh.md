@@ -44,7 +44,7 @@ multiple times.
 
 # AUTHOR
 
-Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
+Berke Kocaoğlu <kberke@metu.edu.tr>
 
 # BUGS & ISSUES
 

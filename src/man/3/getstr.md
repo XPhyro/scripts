@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
 # AUTHOR
 
-Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
+Berke Kocaoğlu <kberke@metu.edu.tr>
 
 # BUGS & ISSUES
 
