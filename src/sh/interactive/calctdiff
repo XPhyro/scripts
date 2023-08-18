@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+d1="$(date -d "$1" +%s)"
+d2="$(date -d "$2" +%s)"
+diff="$((d1 - d2))"
+
+printf "%s days, %s hours, %s minutes, %s seconds\n" \
+    "$((diff / 86400))" \
+    "$((diff % 86400 / 3600))" \
+    "$((diff % 3600 / 60))" \
+    "$((diff % 60))"
