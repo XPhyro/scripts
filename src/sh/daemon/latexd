@@ -174,6 +174,7 @@ printcompile() {
         cleanaux
         $latex_engine $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl' || return 1
     }
+    cp -f -- '$srcfl.pdf' '$tmp_pdf'
     [ -f '$srcfl.pytxcode' ] && pythontex -- '$srcfl'
     bibtex -- '$srcfl'
     biber -- '$srcfl'
@@ -183,6 +184,7 @@ printcompile() {
     $latex_engine $optshellesc -interaction=nonstopmode -halt-on-error -- '$srcfl'
 
     printf '%s\n' \"\$srchash\" > '$srchashfl'
+    cp -f -- '$srcfl.pdf' '$tmp_pdf'
     "
 }
 
@@ -226,7 +228,10 @@ main() {
         exit 0
     }
 
-    xdg-open "$srcfl.pdf" > /dev/null 2>&1 &
+    tmp_pdf="$(mktemp -t --suffix=".pdf" -- "$srcfl-XXXXXX")"
+    trap 'rm -- "$tmp_pdf"' EXIT TERM INT QUIT
+    cp -f -- "$srcfl.pdf" "$tmp_pdf"
+    xdg-open "$tmp_pdf" > /dev/null 2>&1 &
     dispatchcompiler > /dev/null 2>&1 &
     xdg-open "$srcfl.tex"
     compile > /dev/null 2>&1
