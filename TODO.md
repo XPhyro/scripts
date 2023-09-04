@@ -95,9 +95,6 @@
 - Support `fzf` in `selfl`.
   - By default, automatically determine whether to use `fzf` or `$MENU`
     depending on `[ -t 0 ]`.
-- In `latexd`, support watching multiple files or directories.
-  - Automatically watch other `.tex` files in the directory that the main file
-    is located in.
 - Support anonymous (non-numbered) pads in `bspwmpad`.
   - In `latexd`, if `$TABBED_XID` is set and non-empty, use request an
     anonymous pad.
@@ -353,8 +350,6 @@
 - Integrate _synctex_ in `latexd`. See
   [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html)
   and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
-- Implement a no-quoting option in `tglapp` like the inverse of the one that
-  exists in `mapexec`.
 - In `tglapp`, add support for different commands depending on whether the
   application is open or not. This would be useful in many scenarios, including
   toggling an application wrapped with `screen`.
