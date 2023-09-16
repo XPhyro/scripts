@@ -18,13 +18,14 @@ typedef struct timespec timespec_t;
 enum { NS_PER_SECOND = 1000000000 };
 
 ssize_t totread = 0;
-timespec_t t0;
+ssize_t lastread;
+timespec_t inittime, lasttime;
 unit_t optunit = UNIT_BYTE;
 
-void clock_gettimediff(timespec_t t1, timespec_t *td)
+void clock_gettimediff(timespec_t *ti, timespec_t *tf, timespec_t *td)
 {
-    td->tv_nsec = t1.tv_nsec - t0.tv_nsec;
-    td->tv_sec = t1.tv_sec - t0.tv_sec;
+    td->tv_nsec = tf->tv_nsec - ti->tv_nsec;
+    td->tv_sec = tf->tv_sec - ti->tv_sec;
     if (td->tv_sec > 0 && td->tv_nsec < 0) {
         td->tv_nsec += NS_PER_SECOND;
         td->tv_sec--;
@@ -34,21 +35,31 @@ void clock_gettimediff(timespec_t t1, timespec_t *td)
     }
 }
 
-void printdiff(void)
+void printdiff(timespec_t *ti, timespec_t *tf, char sep)
 {
-    static timespec_t t1, td;
+    static timespec_t td;
 
-    clock_gettime(CLOCK_REALTIME, &t1);
-    clock_gettimediff(t1, &td);
+    clock_gettimediff(ti, tf, &td);
 
-    printf("%.16e\n",
-           (double)(optunit == UNIT_BYTE ? totread : totread * 8) /
-               ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND));
+    double diff = (double)(optunit == UNIT_BYTE ? totread : totread * 8) /
+                  ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND);
+
+    printf("%ld.%ld %ld.%ld %.16e%c", ti->tv_sec, ti->tv_nsec, tf->tv_sec, tf->tv_nsec, diff, sep);
+}
+
+void printdiffs(void)
+{
+    static timespec_t tf;
+
+    clock_gettime(CLOCK_REALTIME, &tf);
+
+    printdiff(&lasttime, &tf, ' ');
+    printdiff(&inittime, &tf, '\n');
 }
 
 void onsigint(int _)
 {
-    printdiff();
+    printdiffs();
     exit(EXIT_SUCCESS);
 }
 
@@ -73,19 +84,18 @@ int main(int argc, char *argv[])
                 optunit = UNIT_BIT;
                 break;
             case 'h':
-                printf(
-                    "Usage: %s [OPTION...]\n"
-                    "Measure the speed of input from stdin.\n"
-                    "\n"
-                    "  -B        output in bytes (default)\n"
-                    "  -b        output in bits\n"
-                    "  -h        display this help and exit\n"
-                    "  -i NUM    ignore the first NUM bytes (default is %s)\n"
-                    "  -n NUM    calculate and output speed approximately every NUM bytes (default is %s)\n"
-                    "  -s        start measuring after -i is satisfied\n",
-                    execname,
-                    STRINGIFY(DEFAULT_WARMUP),
-                    STRINGIFY(DEFAULT_OPTCYCLE));
+                printf("Usage: %s [OPTION...]\n"
+                       "Measure the speed of input from stdin.\n"
+                       "\n"
+                       "  -B        output in bytes (default)\n"
+                       "  -b        output in bits\n"
+                       "  -h        display this help and exit\n"
+                       "  -i NUM    ignore the first NUM bytes (default is %s)\n"
+                       "  -n NUM    calculate and output speed every NUM cycles (default is %s)\n"
+                       "  -s        start measuring after -i is satisfied\n",
+                       execname,
+                       STRINGIFY(DEFAULT_WARMUP),
+                       STRINGIFY(DEFAULT_OPTCYCLE));
                 exit(EXIT_SUCCESS);
             case 'n':
                 optcycle = astrtoul(optarg, "invalid number given");
@@ -99,11 +109,11 @@ int main(int argc, char *argv[])
         }
     }
 
-    i = 0;
-    clock_gettime(CLOCK_REALTIME, &t0);
+    i = 1;
 
     signal(SIGINT, onsigint);
 
+    clock_gettime(CLOCK_REALTIME, &inittime);
     while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0) {
         totread += nread;
         if (optwarmup) {
@@ -112,12 +122,12 @@ int main(int argc, char *argv[])
             totread -= optwarmup;
             optwarmup = 0;
             if (optstart)
-                clock_gettime(CLOCK_REALTIME, &t0);
+                clock_gettime(CLOCK_REALTIME, &inittime);
         }
         if (optcycle && !(i++ % optcycle))
-            printdiff();
+            printdiffs();
     }
-    printdiff();
+    printdiffs();
 
     return 0;
 }
