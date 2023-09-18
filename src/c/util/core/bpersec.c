@@ -18,7 +18,7 @@ typedef struct timespec timespec_t;
 enum { NS_PER_SECOND = 1000000000 };
 
 ssize_t totread = 0;
-ssize_t lastread;
+ssize_t lastread = 0;
 timespec_t inittime, lasttime;
 unit_t optunit = UNIT_BYTE;
 
@@ -35,13 +35,13 @@ void clock_gettimediff(timespec_t *ti, timespec_t *tf, timespec_t *td)
     }
 }
 
-void printdiff(timespec_t *ti, timespec_t *tf, char sep)
+void printdiff(timespec_t *ti, timespec_t *tf, ssize_t nread, char sep)
 {
     static timespec_t td;
 
     clock_gettimediff(ti, tf, &td);
 
-    double diff = (double)(optunit == UNIT_BYTE ? totread : totread * 8) /
+    double diff = (double)(optunit == UNIT_BYTE ? nread : nread * 8) /
                   ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND);
 
     printf("%ld.%09ld %.16e%c", td.tv_sec, td.tv_nsec, diff, sep);
@@ -53,8 +53,8 @@ void printdiffs(void)
 
     clock_gettime(CLOCK_REALTIME, &tf);
 
-    printdiff(&lasttime, &tf, '|');
-    printdiff(&inittime, &tf, '\n');
+    printdiff(&lasttime, &tf, lastread, '|');
+    printdiff(&inittime, &tf, totread, '\n');
     lasttime = tf;
 }
 
@@ -126,8 +126,11 @@ int main(int argc, char *argv[])
     lasttime = inittime;
     while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0) {
         totread += nread;
-        if (!(i++ % optcycle))
+        lastread += nread;
+        if (!(i++ % optcycle)) {
             printdiffs();
+            lastread = 0;
+        }
     }
     printdiffs();
 
