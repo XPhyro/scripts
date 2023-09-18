@@ -22,7 +22,7 @@ ssize_t lastread = 0;
 timespec_t inittime, lasttime;
 unit_t optunit = UNIT_BYTE;
 
-void clock_gettimediff(timespec_t *ti, timespec_t *tf, timespec_t *td)
+void clock_gettimediff(const timespec_t *ti, const timespec_t *tf, timespec_t *td)
 {
     td->tv_nsec = tf->tv_nsec - ti->tv_nsec;
     td->tv_sec = tf->tv_sec - ti->tv_sec;
@@ -35,7 +35,7 @@ void clock_gettimediff(timespec_t *ti, timespec_t *tf, timespec_t *td)
     }
 }
 
-void printdiff(timespec_t *ti, timespec_t *tf, ssize_t nread, char sep)
+void printdiff(const timespec_t *ti, const timespec_t *tf, ssize_t nread, char sep)
 {
     static timespec_t td;
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     ssize_t nread;
     char buf[PIPE_BUF];
     int i;
-    char *execname = argv[0];
+    const char *execname = argv[0];
 #define DEFAULT_OPTCYCLE 10000
     unsigned int optcycle = DEFAULT_OPTCYCLE;
 #define DEFAULT_WARMUP 0

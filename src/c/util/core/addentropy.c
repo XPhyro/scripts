@@ -17,13 +17,11 @@ int main(void)
         randsize = readsize + randbufoffset,
         randbufratio = 4,
     };
+
     ssize_t nread;
     int randfd;
     struct rand_pool_info *randinfo;
     char *buf;
-
-    randinfo = amalloc(randsize);
-    buf = (char *)randinfo + randbufoffset;
 
     randfd = open("/dev/random", O_WRONLY);
     if (randfd < 0) {
@@ -31,15 +29,21 @@ int main(void)
         return EXIT_FAILURE;
     }
 
+    randinfo = amalloc(randsize);
+    buf = (char *)randinfo + randbufoffset;
+
     while ((nread = read(STDIN_FILENO, buf, readsize)) > 0) {
         randinfo->entropy_count = nread;
         randinfo->buf_size = nread / randbufratio;
         errno = 0;
         if (ioctl(randfd, RNDADDENTROPY, randinfo) == -1 || errno) {
             perror("ioctl");
+            free(randinfo);
             return EXIT_FAILURE;
         }
     }
+
+    free(randinfo);
 
     return EXIT_SUCCESS;
 }

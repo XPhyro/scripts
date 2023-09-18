@@ -11,14 +11,14 @@
 
 #include <hedley.h>
 
-#define ASTRTOGENPRE(TYPE, FUNC)                 \
-    TYPE a##FUNC(char *s, const char *const err) \
-    {                                            \
-        TYPE n;                                  \
-        int olderrno;                            \
-        char *endptr;                            \
-                                                 \
-        olderrno = errno;                        \
+#define ASTRTOGENPRE(TYPE, FUNC)                       \
+    TYPE a##FUNC(const char *s, const char *const err) \
+    {                                                  \
+        TYPE n;                                        \
+        int olderrno;                                  \
+        char *endptr;                                  \
+                                                       \
+        olderrno = errno;                              \
         errno = 0;
 
 #define ASTROGEN(TYPE, FUNC, NFUNC) \
@@ -51,21 +51,21 @@ ASTRTOGENNOBASE(float, strtof)
 ASTRTOGENNOBASE(double, strtod)
 ASTRTOGENNOBASE(long double, strtold)
 
-#define ASTRTOLGENPRE(TYPE, SPECIFIER)                     \
-    TYPE astrto##SPECIFIER(char *s, const char *const err) \
-    {                                                      \
-        long n;                                            \
-        int olderrno;                                      \
-        char *endptr;                                      \
-                                                           \
-        olderrno = errno;                                  \
-        errno = 0;                                         \
-        n = strtol(s, &endptr, 0);                         \
-                                                           \
-        if (errno) {                                       \
-            perror("strtol");                              \
-            exit(EXIT_FAILURE);                            \
-        }                                                  \
+#define ASTRTOLGENPRE(TYPE, SPECIFIER)                           \
+    TYPE astrto##SPECIFIER(const char *s, const char *const err) \
+    {                                                            \
+        long n;                                                  \
+        int olderrno;                                            \
+        char *endptr;                                            \
+                                                                 \
+        olderrno = errno;                                        \
+        errno = 0;                                               \
+        n = strtol(s, &endptr, 0);                               \
+                                                                 \
+        if (errno) {                                             \
+            perror("strtol");                                    \
+            exit(EXIT_FAILURE);                                  \
+        }                                                        \
     if (*endptr ||
 #define ASTRTOLGENPOST(TYPE) \
        )                     \

@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 #define DEFAULTSEC 0
 #define DEFAULTNSEC 500000000
     struct timespec delayreq = { .tv_sec = DEFAULTSEC, .tv_nsec = DEFAULTNSEC };
-    char *execname = basename(argv[0]);
+    const char *execname = basename(argv[0]);
 
     while ((i = getopt(argc, argv, "hkl:p:S:s:")) != -1) {
         switch (i) {
