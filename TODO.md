@@ -114,6 +114,7 @@
 - `termctl`: include commands, subcommands, etc. in help dialog (or add a
   (command & subcommand)/flag for it)
 - Support stdin in `gcc-otg`.
+- Add support for arbitrary precision computation in `numsh`.
 
 ## New Scripts
 
