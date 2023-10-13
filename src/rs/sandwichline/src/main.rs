@@ -58,7 +58,7 @@ fn main() {
 
     bake_bread(width, &args.dough, args.random_dough);
 
-    println!("{}", ingredients);
+    println!("{ingredients}");
     if !stdin_isatty() {
         std::io::copy(&mut std::io::stdin().lock(), &mut std::io::stdout().lock()).unwrap();
     }
