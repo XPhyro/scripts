@@ -13,7 +13,7 @@ namespace xph::vec {
     inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T& val)
     {
         vec[idx] = val;
-        return std::move(vec);
+        return std::forward(vec);
     }
 
     template <typename T>
@@ -23,7 +23,7 @@ namespace xph::vec {
     inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T&& val)
     {
         vec[idx] = val;
-        return std::move(vec);
+        return std::forward(vec);
     }
 
     template <typename T>
@@ -33,7 +33,7 @@ namespace xph::vec {
     inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T& val)
     {
         vec[idx] = val;
-        return std::move(vec);
+        return std::forward(vec);
     }
 
     template <typename T>
@@ -43,7 +43,7 @@ namespace xph::vec {
     inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t&& idx, const T&& val)
     {
         vec[idx] = val;
-        return std::move(vec);
+        return std::forward(vec);
     }
 } // namespace xph::vec
 
