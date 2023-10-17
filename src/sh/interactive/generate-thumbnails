@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+calc() {
+    qalc -- "$@" | awk '{print $NF}'
+}
+
+is_calc() {
+    [ "$(qalc -- "$@" | awk '{print $NF}')" = true ] && return 0
+    return 1
+}
+
+# TODO: use `getopts`
+thumbs_dir="$1"
+thumbnail_count="$(calc "if ($thumbnail_count == 0, 1, $thumbnail_count)")"
+max_time_delta="$3"
+size="$4"
+shift 4
+for fl; do
+    printf "%s\n" "Processing $fl."
+
+    mkdir -p -- "$thumbs_dir/$(basename -- "$fl")"
+
+    duration="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 -- "$fl")" || {
+        printf "%s\n" "Failed to get duration of $fl."
+        continue
+    }
+
+    delta="$(calc "if ($duration / $thumbnail_count < $max_time_delta, $duration / $thumbnail_count, $max_time_delta)" | awk '{print $NF}')"
+    printf "%s\n" "Chosen delta is $delta."
+
+    t="0"
+    i=1
+    while is_calc -- "$t <= $duration - $delta"; do
+        t="$(calc -- "$t + $delta")"
+        echo "$t"
+        ffmpegthumbnailer -i "$fl" -o "$thumbs_dir/$(basename -- "$fl")/$i.png" -t "00:00:$t" -s "$size" &
+        : $((i += 1))
+    done
+    wait
+done
