@@ -13,7 +13,7 @@ namespace xph::vec {
     inline std::vector<T> setindex(std::vector<T>&& vec, const std::size_t idx, const T& val)
     {
         vec[idx] = val;
-        return std::forward(vec);
+        return std::move(vec);
     }
 
     template <typename T>
