@@ -5,337 +5,339 @@
 #include <cstddef>
 #include <iostream>
 
-template <std::size_t Td>
-struct Vector final {
-private:
-    std::array<double, Td> data;
-
-public:
-    inline double operator[](std::size_t i) const
-    {
-        return this->data[i];
+#define VECTOR_DEFINE_OPERATOR_(OP)                                   \
+    template <typename T>                                             \
+    inline friend vector<Tdim> operator OP(vector<Tdim> v, const T t) \
+    {                                                                 \
+        for (std::size_t i = 0; i < Tdim; ++i)                        \
+            v[i] = v[i] OP t;                                         \
+        return v;                                                     \
     }
 
-    inline double& operator[](std::size_t i)
-    {
-        return this->data[i];
-    }
+namespace xph {
+    template <std::size_t Tdim>
+    struct vector final {
+    private:
+        std::array<double, Tdim> data;
 
-    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
-    {
-        for (std::size_t i = 0; i < Td - 1; ++i)
-            os << v[i] << ", ";
-        os << v[Td - 1] << ')';
-        return os;
-    }
+    public:
+        inline double operator[](std::size_t i) const
+        {
+            return this->data[i];
+        }
 
-    inline friend Vector operator+(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] += vp[i];
+        inline double& operator[](std::size_t i)
+        {
+            return this->data[i];
+        }
 
-        return v;
-    }
+        inline friend std::ostream& operator<<(std::ostream& os, const vector<Tdim>& v)
+        {
+            for (std::size_t i = 0; i < Tdim - 1; ++i)
+                os << v[i] << ", ";
+            os << v[Tdim - 1] << ')';
+            return os;
+        }
 
-    inline friend Vector operator-(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] -= vp[i];
+        inline friend vector<Tdim> operator+(vector<Tdim> v, const vector<Tdim>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] += vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator*(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] *= vp[i];
+        inline friend vector<Tdim> operator-(vector<Tdim> v, const vector<Tdim>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] -= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator/(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] /= vp[i];
+        inline friend vector<Tdim> operator*(vector<Tdim> v, const vector<Tdim>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] *= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-#define VECTOR_DEFINE_OPERATOR_(OP)                       \
-    template <typename T>                                 \
-    inline friend Vector operator OP(Vector v, const T t) \
-    {                                                     \
-        for (std::size_t i = 0; i < Td; ++i)              \
-            v[i] = v[i] OP t;                             \
-        return v;                                         \
-    }
+        inline friend vector<Tdim> operator/(vector<Tdim> v, const vector<Tdim>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] /= vp[i];
 
-    VECTOR_DEFINE_OPERATOR_(+)
-    VECTOR_DEFINE_OPERATOR_(-)
-    VECTOR_DEFINE_OPERATOR_(*)
-    VECTOR_DEFINE_OPERATOR_(/)
-};
+            return v;
+        }
 
-template <>
-struct Vector<1> final {
-private:
-    static const constexpr std::size_t Td = 1;
+        VECTOR_DEFINE_OPERATOR_(+)
+        VECTOR_DEFINE_OPERATOR_(-)
+        VECTOR_DEFINE_OPERATOR_(*)
+        VECTOR_DEFINE_OPERATOR_(/)
+    };
 
-public:
+    template <>
+    struct vector<1> final {
+    private:
+        static const constexpr std::size_t Tdim = 1;
+
+    public:
 #pragma pack(push, 1)
-    double x;
+        double x;
 #pragma pack(pop)
 
-    inline double operator[](std::size_t i) const
-    {
-        return *((&x) + i);
-    }
+        inline double operator[](std::size_t i) const
+        {
+            return *((&x) + i);
+        }
 
-    inline double& operator[](std::size_t i)
-    {
-        return *((&x) + i);
-    }
+        inline double& operator[](std::size_t i)
+        {
+            return *((&x) + i);
+        }
 
-    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
-    {
-        os << '(' << v[0] << ')';
-        return os;
-    }
+        inline friend std::ostream& operator<<(std::ostream& os, const vector<1>& v)
+        {
+            os << '(' << v[0] << ')';
+            return os;
+        }
 
-    inline friend Vector operator+(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] += vp[i];
+        inline friend vector<1> operator+(vector<1> v, const vector<1>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] += vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator-(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] -= vp[i];
+        inline friend vector<1> operator-(vector<1> v, const vector<1>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] -= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator*(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] *= vp[i];
+        inline friend vector<1> operator*(vector<1> v, const vector<1>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] *= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator/(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] /= vp[i];
+        inline friend vector<1> operator/(vector<1> v, const vector<1>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] /= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    VECTOR_DEFINE_OPERATOR_(+)
-    VECTOR_DEFINE_OPERATOR_(-)
-    VECTOR_DEFINE_OPERATOR_(*)
-    VECTOR_DEFINE_OPERATOR_(/)
-};
+        VECTOR_DEFINE_OPERATOR_(+)
+        VECTOR_DEFINE_OPERATOR_(-)
+        VECTOR_DEFINE_OPERATOR_(*)
+        VECTOR_DEFINE_OPERATOR_(/)
+    };
 
-template <>
-struct Vector<2> final {
-private:
-    static const constexpr std::size_t Td = 2;
+    template <>
+    struct vector<2> final {
+    private:
+        static const constexpr std::size_t Tdim = 2;
 
-public:
+    public:
 #pragma pack(push, 1)
-    double x;
-    double y;
+        double x;
+        double y;
 #pragma pack(pop)
 
-    inline double operator[](std::size_t i) const
-    {
-        return *((&x) + i);
-    }
+        inline double operator[](std::size_t i) const
+        {
+            return *((&x) + i);
+        }
 
-    inline double& operator[](std::size_t i)
-    {
-        return *((&x) + i);
-    }
+        inline double& operator[](std::size_t i)
+        {
+            return *((&x) + i);
+        }
 
-    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
-    {
-        os << '(' << v[0] << ", " << v[1] << ')';
-        return os;
-    }
+        inline friend std::ostream& operator<<(std::ostream& os, const vector<2>& v)
+        {
+            os << '(' << v[0] << ", " << v[1] << ')';
+            return os;
+        }
 
-    inline friend Vector operator+(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] += vp[i];
+        inline friend vector<2> operator+(vector<2> v, const vector<2>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] += vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator-(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] -= vp[i];
+        inline friend vector<2> operator-(vector<2> v, const vector<2>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] -= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator*(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] *= vp[i];
+        inline friend vector<2> operator*(vector<2> v, const vector<2>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] *= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator/(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] /= vp[i];
+        inline friend vector<2> operator/(vector<2> v, const vector<2>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] /= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    VECTOR_DEFINE_OPERATOR_(+)
-    VECTOR_DEFINE_OPERATOR_(-)
-    VECTOR_DEFINE_OPERATOR_(*)
-    VECTOR_DEFINE_OPERATOR_(/)
-};
+        VECTOR_DEFINE_OPERATOR_(+)
+        VECTOR_DEFINE_OPERATOR_(-)
+        VECTOR_DEFINE_OPERATOR_(*)
+        VECTOR_DEFINE_OPERATOR_(/)
+    };
 
-template <>
-struct Vector<3> final {
-private:
-    static const constexpr std::size_t Td = 3;
+    template <>
+    struct vector<3> final {
+    private:
+        static const constexpr std::size_t Tdim = 3;
 
-public:
+    public:
 #pragma pack(push, 1)
-    double x;
-    double y;
-    double z;
+        double x;
+        double y;
+        double z;
 #pragma pack(pop)
 
-    inline double operator[](std::size_t i) const
-    {
-        return *((&x) + i);
-    }
+        inline double operator[](std::size_t i) const
+        {
+            return *((&x) + i);
+        }
 
-    inline double& operator[](std::size_t i)
-    {
-        return *((&x) + i);
-    }
+        inline double& operator[](std::size_t i)
+        {
+            return *((&x) + i);
+        }
 
-    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
-    {
-        os << '(' << v[0] << ", " << v[1] << ", " << v[2] << ')';
-        return os;
-    }
+        inline friend std::ostream& operator<<(std::ostream& os, const vector<3>& v)
+        {
+            os << '(' << v[0] << ", " << v[1] << ", " << v[2] << ')';
+            return os;
+        }
 
-    inline friend Vector operator+(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] += vp[i];
+        inline friend vector<3> operator+(vector<3> v, const vector<3>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] += vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator-(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] -= vp[i];
+        inline friend vector<3> operator-(vector<3> v, const vector<3>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] -= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator*(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] *= vp[i];
+        inline friend vector<3> operator*(vector<3> v, const vector<3>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] *= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator/(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] /= vp[i];
+        inline friend vector<3> operator/(vector<3> v, const vector<3>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] /= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    VECTOR_DEFINE_OPERATOR_(+)
-    VECTOR_DEFINE_OPERATOR_(-)
-    VECTOR_DEFINE_OPERATOR_(*)
-    VECTOR_DEFINE_OPERATOR_(/)
-};
+        VECTOR_DEFINE_OPERATOR_(+)
+        VECTOR_DEFINE_OPERATOR_(-)
+        VECTOR_DEFINE_OPERATOR_(*)
+        VECTOR_DEFINE_OPERATOR_(/)
+    };
 
-template <>
-struct Vector<4> final {
-private:
-    static const constexpr std::size_t Td = 4;
+    template <>
+    struct vector<4> final {
+    private:
+        static const constexpr std::size_t Tdim = 4;
 
-public:
+    public:
 #pragma pack(push, 1)
-    double x;
-    double y;
-    double z;
-    double w;
+        double x;
+        double y;
+        double z;
+        double w;
 #pragma pack(pop)
 
-    inline double operator[](std::size_t i) const
-    {
-        return *((&x) + i);
-    }
+        inline double operator[](std::size_t i) const
+        {
+            return *((&x) + i);
+        }
 
-    inline double& operator[](std::size_t i)
-    {
-        return *((&x) + i);
-    }
+        inline double& operator[](std::size_t i)
+        {
+            return *((&x) + i);
+        }
 
-    inline friend std::ostream& operator<<(std::ostream& os, const Vector& v)
-    {
-        os << '(' << v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3] << ')';
-        return os;
-    }
+        inline friend std::ostream& operator<<(std::ostream& os, const vector<4>& v)
+        {
+            os << '(' << v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3] << ')';
+            return os;
+        }
 
-    inline friend Vector operator+(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] += vp[i];
+        inline friend vector<4> operator+(vector<4> v, const vector<4>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] += vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator-(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] -= vp[i];
+        inline friend vector<4> operator-(vector<4> v, const vector<4>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] -= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator*(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] *= vp[i];
+        inline friend vector<4> operator*(vector<4> v, const vector<4>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] *= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    inline friend Vector operator/(Vector v, const Vector& vp)
-    {
-        for (std::size_t i = 0; i < Td; ++i)
-            v[i] /= vp[i];
+        inline friend vector<4> operator/(vector<4> v, const vector<4>& vp)
+        {
+            for (std::size_t i = 0; i < Tdim; ++i)
+                v[i] /= vp[i];
 
-        return v;
-    }
+            return v;
+        }
 
-    VECTOR_DEFINE_OPERATOR_(+)
-    VECTOR_DEFINE_OPERATOR_(-)
-    VECTOR_DEFINE_OPERATOR_(*)
-    VECTOR_DEFINE_OPERATOR_(/)
-};
+        VECTOR_DEFINE_OPERATOR_(+)
+        VECTOR_DEFINE_OPERATOR_(-)
+        VECTOR_DEFINE_OPERATOR_(*)
+        VECTOR_DEFINE_OPERATOR_(/)
+    };
+} // namespace xph
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_VECTOR_ */
