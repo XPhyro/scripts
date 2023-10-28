@@ -133,9 +133,14 @@ int main(int argc, char* argv[])
                     xph::die("too few parameters given to function ",
                              "" /* TODO: print function name */
                     );
-                if (!functions.contains(optarg))
+
+                function func;
+                try {
+                    func = functions.at(optarg);
+                } catch (const std::out_of_range& e) {
                     xph::die("invalid function given: ", optarg);
-                auto func = functions.at(optarg);
+                }
+
                 sel_funcs.push_back(func);
                 func_argvs.emplace_back();
                 func_argvs.back().reserve(func.max_argc);
