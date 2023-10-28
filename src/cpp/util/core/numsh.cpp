@@ -17,6 +17,7 @@
 #include <span>
 #include <unordered_map>
 #include <vector>
+#include <version>
 
 #include <unistd.h>
 
@@ -36,6 +37,7 @@ namespace func {
     DECL_FUNC(factor);
 
     // one to one
+    DECL_FUNC(factorial);
     DECL_FUNC(acos);
     DECL_FUNC(asin);
     DECL_FUNC(atan);
@@ -83,6 +85,11 @@ public:
 std::unordered_map<std::string_view, function> functions = {
     { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
 
+    { "factorial",
+      { "Map all elements to their factorial. If elements are not integers, truncate them first.",
+        func::factorial,
+        0,
+        0 } },
     { "acos", { "Map all elements to their acos. See `man 3 acos`.", func::acos, 0, 0 } },
     { "asin", { "Map all elements to their asin. See `man 3 asin`.", func::asin, 0, 0 } },
     { "atan", { "Map all elements to their atan. See `man 3 atan`.", func::atan, 0, 0 } },
@@ -258,7 +265,32 @@ namespace func {
         nums.swap(factors);
     }
 
+    void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+#if false // no gcc feature-test for fold_left
+        xph::transform_in_place(nums, [](double num) {
+            return std::ranges::fold_left(std::views::iota(1ull, static_cast<std::uintmax_t>(num) + 1ull),
+                                          std::multiplies<>());
+            ;
+        });
+#endif
+
+        class factorial_impl final {
+        public:
+            static inline std::uintmax_t factorial(std::uintmax_t num)
+            {
+                std::uintmax_t fac = 1;
+                for (auto&& i : std::views::iota(1ull, num + 1ull))
+                    fac *= i;
+                return fac;
+            }
+        };
+
+        xph::transform_in_place(nums, [](double num) { return factorial_impl::factorial(num); });
+    }
+
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+
     {
         xph::transform_in_place(nums, [](double num) { return std::acos(num); });
     }
