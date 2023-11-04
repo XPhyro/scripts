@@ -34,7 +34,7 @@ void randbuf(void *buf, size_t buflen)
     retlen = getrandom(buf, buflen, 0);
     if (errno == EINTR)
         exit(2);
-    if (retlen == -1 || (errno && errno != EINTR))
+    if (retlen == -1 || errno)
         exit(1);
     if (retlen < buflen)
         exit(3);
