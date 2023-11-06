@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+
+
+import sys
+import multiprocessing as mp
+import argparse
+
+
+import evdev as ev
+import configparser as cp
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Read input devices and execute shell commands accordingly.",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--config-path",
+        default="config.ini",  # TODO: "${XDG_CONFIG_HOME:-"$HOME"}/scripts/evdev-hotkey/config.ini"
+        help="path to the configuration file",
+    )
+
+    parser.add_argument(
+        "-l",
+        "--list-devices",
+        action="store_true",
+        help="list device names for use in configuration files",
+    )
+
+    args = parser.parse_args()
+    post_process_args(args)
+
+    return args
+
+
+def post_process_args(args):
+    if args.list_devices:
+        for dev in [ev.InputDevice(dev_path) for dev_path in ev.list_devices()]:
+            print(f"[{dev.name}]")
+        sys.exit(0)
+
+
+def parse_config(config_path) -> dict:
+    config = cp.ConfigParser()
+
+    config.read(config_path)
+
+    processed_config = {}
+    for device in config.sections():
+        processed_config[device] = []
+        for key_code in config[device]:
+            command_line = config[device][key_code]
+            processed_config[device].append((key_code, command_line))
+
+    return processed_config
+
+
+def dev_read_loop(dev):
+    for event in dev.read_loop():
+        print(
+            event.code,
+            event.type,
+            event.value,
+            event.sec,
+            event.usec,
+            event.timestamp(),
+        )
+
+
+def main() -> int:
+    args = parse_args()
+    config_devs = parse_config(args.config_path)
+
+    devs = []
+    for dev in [ev.InputDevice(dev_path) for dev_path in ev.list_devices()]:
+        if dev.name in config_devs.keys():
+            devs.append(dev)
+
+    processes = []
+
+    for dev in devs:
+        process = mp.Process(target=dev_read_loop, args=(dev,))
+        processes.append(process)
+        process.start()
+
+    for process in processes:
+        process.join()
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
