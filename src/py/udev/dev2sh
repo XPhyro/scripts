@@ -70,6 +70,8 @@ def dev_read_loop(dev):
 
 
 def main() -> int:
+    print("Beware: this program is currently unfinished.", end="\n\n")
+
     args = parse_args()
     config_devs = parse_config(args.config_path)
 
