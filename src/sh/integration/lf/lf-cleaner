@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 if [ -n "$KITTY_PID" ]; then
     kitty +kitten icat --stdin no clear < /dev/null > /dev/tty
 elif [ -n "$UEBERZUG_FIFO" ]; then
@@ -10,4 +12,10 @@ elif [ -n "$UEBERZUG_FIFO" ]; then
             action: $action,
             identifier: $identifier,
         }' > "$UEBERZUG_FIFO"
+elif [ -n "$UEBERZUGPP_SOCKET" ]; then
+    ueberzugpp \
+        cmd \
+        -s $UEBERZUGPP_SOCKET \
+        -a remove \
+        -i PREVIEW
 fi

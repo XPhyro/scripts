@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 # TODO: svg preview does not work, fix.
 # TODO: scope.sh does not handle on-demand files such as /proc/*. create a
 #       scope script with support for these, a simpler API and without image
@@ -40,6 +42,19 @@ exec_preview_image() {
                     scaler: $scaler,
                     path: $path,
                 }' > "$UEBERZUG_FIFO"
+            exit 1
+        elif { [ -z "$LF_PREVIEW_USE_UEBERZUGPP" ] || [ "$LF_PREVIEW_USE_UEBERZUGPP" -ne 0 ]; } \
+            && command -v ueberzugpp > /dev/null 2>&1; then
+            ueberzugpp \
+                cmd \
+                -s "$UEBERZUGPP_SOCKET" \
+                -a add \
+                -i PREVIEW \
+                -x "$4" \
+                -y "$5" \
+                --max-width "$(($2 - 1))" \
+                --max-height "$(($3 - 1))" \
+                -f "$1"
             exit 1
         else
             chafa -s "$(($2 - 2))x$3" -- "$1"
