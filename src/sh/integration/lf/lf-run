@@ -4,23 +4,48 @@
 
 set -e
 
-cleanup() {
-    exec 3>&-
-    rm -- "$UEBERZUG_FIFO"
-}
-
 [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] && exec lf "$@"
 
-fifodir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/fifos"
-mkdir -p -- "$fifodir" 2> /dev/null || [ -d "$fifodir" ]
+if command -v -- ueberzugpp > /dev/null 2>&1; then
+    cleanup() {
+        exec 3>&-
+        ueberzugpp cmd -s "$UEBERZUGPP_SOCKET" -a exit
+    }
 
-UEBERZUG_FIFO="$fifodir/ueberzug-$$"
+    cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf"
+    mkdir -p -- "$cachedir" 2> /dev/null || [ -d "$cachedir" ]
 
-mkfifo -- "$UEBERZUG_FIFO"
-trap 'cleanup' EXIT INT TERM HUP QUIT
+    UEBERZUGPP_PID_FILE="$UEBERZUG_TMP_DIR/.$(uuidgen)"
+    ueberzugpp layer --silent --no-stdin --use-escape-codes --pid-file "$UEBERZUGPP_PID_FILE"
 
-ueberzug -s layer < "$UEBERZUG_FIFO" &
-exec 3> "$UEBERZUG_FIFO"
+    UEBERZUGPP_PID=$(cat "$UEBERZUGPP_PID_FILE")
+    rm -- "$UEBERZUGPP_PID_FILE"
 
-export UEBERZUG_FIFO
-lf "$@" 3>&-
+    UEBERZUGPP_SOCKET="$UEBERZUG_TMP_DIR/ueberzugpp-${UEBERZUGPP_PID}.socket"
+
+    export UEBERZUGPP_PID
+    export UEBERZUGPP_SOCKET
+
+    trap cleanup HUP INT QUIT TERM EXIT
+
+    lf "$@" 3>&-
+elif command -v -- ueberzug > /dev/null 2>&1; then
+    cleanup() {
+        exec 3>&-
+        rm -- "$UEBERZUG_FIFO"
+    }
+
+    fifodir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/fifos"
+    mkdir -p -- "$fifodir" 2> /dev/null || [ -d "$fifodir" ]
+    UEBERZUG_FIFO="$fifodir/ueberzug-$$"
+
+    mkfifo -- "$UEBERZUG_FIFO"
+    trap 'cleanup' EXIT INT TERM HUP QUIT
+
+    ueberzug -s layer < "$UEBERZUG_FIFO" &
+    exec 3> "$UEBERZUG_FIFO"
+
+    export UEBERZUG_FIFO
+
+    lf "$@" 3>&-
+fi
