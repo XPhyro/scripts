@@ -17,6 +17,12 @@ typedef struct timespec timespec_t;
 
 enum { NS_PER_SECOND = 1000000000 };
 
+typedef struct {
+    const char *time;
+    const char *nread;
+    const char *speed;
+} names_t;
+
 ssize_t totread = 0;
 ssize_t lastread = 0;
 timespec_t inittime, lasttime;
@@ -35,7 +41,11 @@ void clock_gettimediff(const timespec_t *ti, const timespec_t *tf, timespec_t *t
     }
 }
 
-void printdiff(const timespec_t *ti, const timespec_t *tf, ssize_t nread, char sep)
+void printdiff(const timespec_t *ti,
+               const timespec_t *tf,
+               ssize_t nread,
+               names_t names,
+               const char *sep)
 {
     static timespec_t td;
 
@@ -44,7 +54,15 @@ void printdiff(const timespec_t *ti, const timespec_t *tf, ssize_t nread, char s
     double diff = (double)(optunit == UNIT_BYTE ? nread : nread * 8) /
                   ((double)td.tv_sec + (double)td.tv_nsec / (double)NS_PER_SECOND);
 
-    printf("%ld.%09ld %.16e%c", td.tv_sec, td.tv_nsec, diff, sep);
+    printf("%s=%ld.%09ld %s=%zd %s=%.16e%s",
+           names.time,
+           td.tv_sec,
+           td.tv_nsec,
+           names.nread,
+           nread,
+           names.speed,
+           diff,
+           sep);
 }
 
 void printdiffs(void)
@@ -53,8 +71,8 @@ void printdiffs(void)
 
     clock_gettime(CLOCK_REALTIME, &tf);
 
-    printdiff(&lasttime, &tf, lastread, '|');
-    printdiff(&inittime, &tf, totread, '\n');
+    printdiff(&lasttime, &tf, lastread, (names_t){ "dt", "b", "b/dt" }, " || ");
+    printdiff(&inittime, &tf, totread, (names_t){ "t", "b", "b/t" }, "\n");
     lasttime = tf;
 }
 
