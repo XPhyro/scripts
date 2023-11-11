@@ -4,7 +4,9 @@
 
 set -e
 
-[ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] && exec lf "$@"
+[ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] \
+    || [ -n "$LF_NO_IMAGE_PREVIEW" ] \
+    && exec lf "$@"
 
 if command -v -- ueberzugpp > /dev/null 2>&1; then
     cleanup() {
