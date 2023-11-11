@@ -50,4 +50,6 @@ elif command -v -- ueberzug > /dev/null 2>&1; then
     export UEBERZUG_FIFO
 
     lf "$@" 3>&-
+else
+    lf "$@"
 fi
