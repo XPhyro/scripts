@@ -286,73 +286,73 @@ namespace func {
             }
         };
 
-        xph::transform(nums, [](double num) { return factorial_impl::factorial(num); });
+        xph::transform(nums, factorial_impl::factorial);
     }
 
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
 
     {
-        xph::transform(nums, [](double num) { return std::acos(num); });
+        xph::transform(nums, std::acos);
     }
 
     void asin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::asin(num); });
+        xph::transform(nums, std::asin);
     }
 
     void atan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::atan(num); });
+        xph::transform(nums, std::atan);
     }
 
     void cbrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::cbrt(num); });
+        xph::transform(nums, std::cbrt);
     }
 
     void ceil([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::ceil(num); });
+        xph::transform(nums, std::ceil);
     }
 
     void cos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::cos(num); });
+        xph::transform(nums, std::cos);
     }
 
     void cosh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::cosh(num); });
+        xph::transform(nums, std::cosh);
     }
 
     void exp([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::exp(num); });
+        xph::transform(nums, std::exp);
     }
 
     void fabs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::fabs(num); });
+        xph::transform(nums, std::fabs);
     }
 
     void floor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::floor(num); });
+        xph::transform(nums, std::floor);
     }
 
     void log([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log(num); });
+        xph::transform(nums, std::log);
     }
 
     void log10([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log10(num); });
+        xph::transform(nums, std::log10);
     }
 
     void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log2(num); });
+        xph::transform(nums, std::log2);
     }
 
     void pow(std::span<double> argv, std::vector<double>& nums)
@@ -362,37 +362,37 @@ namespace func {
 
     void round([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::round(num); });
+        xph::transform(nums, std::round);
     }
 
     void sin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::sin(num); });
+        xph::transform(nums, std::sin);
     }
 
     void sinh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::sinh(num); });
+        xph::transform(nums, std::sinh);
     }
 
     void sqrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::sqrt(num); });
+        xph::transform(nums, std::sqrt);
     }
 
     void tan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::tan(num); });
+        xph::transform(nums, std::tan);
     }
 
     void tanh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::tanh(num); });
+        xph::transform(nums, std::tanh);
     }
 
     void trunc([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::trunc(num); });
+        xph::transform(nums, std::trunc);
     }
 
     void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
