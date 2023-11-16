@@ -268,7 +268,7 @@ namespace func {
     void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
 #if false // no gcc feature-test for fold_left
-        xph::transform_in_place(nums, [](double num) {
+        xph::transform(nums, [](double num) {
             return std::ranges::fold_left(std::views::iota(1ull, static_cast<std::uintmax_t>(num) + 1ull),
                                           std::multiplies<>());
             ;
@@ -286,113 +286,113 @@ namespace func {
             }
         };
 
-        xph::transform_in_place(nums, [](double num) { return factorial_impl::factorial(num); });
+        xph::transform(nums, [](double num) { return factorial_impl::factorial(num); });
     }
 
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
 
     {
-        xph::transform_in_place(nums, [](double num) { return std::acos(num); });
+        xph::transform(nums, [](double num) { return std::acos(num); });
     }
 
     void asin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::asin(num); });
+        xph::transform(nums, [](double num) { return std::asin(num); });
     }
 
     void atan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::atan(num); });
+        xph::transform(nums, [](double num) { return std::atan(num); });
     }
 
     void cbrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::cbrt(num); });
+        xph::transform(nums, [](double num) { return std::cbrt(num); });
     }
 
     void ceil([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::ceil(num); });
+        xph::transform(nums, [](double num) { return std::ceil(num); });
     }
 
     void cos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::cos(num); });
+        xph::transform(nums, [](double num) { return std::cos(num); });
     }
 
     void cosh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::cosh(num); });
+        xph::transform(nums, [](double num) { return std::cosh(num); });
     }
 
     void exp([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::exp(num); });
+        xph::transform(nums, [](double num) { return std::exp(num); });
     }
 
     void fabs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::fabs(num); });
+        xph::transform(nums, [](double num) { return std::fabs(num); });
     }
 
     void floor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::floor(num); });
+        xph::transform(nums, [](double num) { return std::floor(num); });
     }
 
     void log([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::log(num); });
+        xph::transform(nums, [](double num) { return std::log(num); });
     }
 
     void log10([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::log10(num); });
+        xph::transform(nums, [](double num) { return std::log10(num); });
     }
 
     void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::log2(num); });
+        xph::transform(nums, [](double num) { return std::log2(num); });
     }
 
     void pow(std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [&](double num) { return std::pow(num, argv[0]); });
+        xph::transform(nums, [&](double num) { return std::pow(num, argv[0]); });
     }
 
     void round([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::round(num); });
+        xph::transform(nums, [](double num) { return std::round(num); });
     }
 
     void sin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::sin(num); });
+        xph::transform(nums, [](double num) { return std::sin(num); });
     }
 
     void sinh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::sinh(num); });
+        xph::transform(nums, [](double num) { return std::sinh(num); });
     }
 
     void sqrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::sqrt(num); });
+        xph::transform(nums, [](double num) { return std::sqrt(num); });
     }
 
     void tan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::tan(num); });
+        xph::transform(nums, [](double num) { return std::tan(num); });
     }
 
     void tanh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::tanh(num); });
+        xph::transform(nums, [](double num) { return std::tanh(num); });
     }
 
     void trunc([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform_in_place(nums, [](double num) { return std::trunc(num); });
+        xph::transform(nums, [](double num) { return std::trunc(num); });
     }
 
     void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)

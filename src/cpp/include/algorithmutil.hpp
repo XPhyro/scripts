@@ -7,10 +7,10 @@
 
 namespace xph {
     template <std::ranges::range Tit, class Top>
-    inline constexpr auto transform_in_place(Tit& iterable, Top operation);
+    inline constexpr auto transform(Tit& iterable, Top operation);
 
     template <std::ranges::range Tit, class Top>
-    inline constexpr auto transform_in_place(Tit& iterable, Top operation)
+    inline constexpr auto transform(Tit& iterable, Top operation)
     {
         return std::transform(iterable.cbegin(), iterable.cend(), iterable.begin(), operation);
     }
