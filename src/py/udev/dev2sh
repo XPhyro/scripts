@@ -1,13 +1,44 @@
 #!/usr/bin/env python3
 
 
-import sys
-import multiprocessing as mp
 import argparse
-
+import importlib.util
+import multiprocessing as mp
+import os
+import subprocess
+import sys
 
 import evdev as ev
-import configparser as cp
+from Xlib import display as xdisp
+
+
+PROGRAM_NAME = "dev2sh"
+
+
+class CallbackData:
+    EVENT_TYPE_UP = 0
+    EVENT_TYPE_DOWN = 1
+    EVENT_TYPE_HOLD = 2
+    EVENT_TYPE_NAMES = {0: "up", 1: "down", 2: "hold"}
+
+    def __init__(self, button, value, event_type, sec, delta_sec):
+        self.button = button
+        self.value = value
+        self.event_type = event_type
+        self.sec = sec
+        self.delta_sec = delta_sec
+
+    def __str__(self):
+        event_type_str = (
+            self.event_type
+            if self.button in [0, 1] or self.value != 1
+            else self.EVENT_TYPE_NAMES.get(self.event_type, self.event_type)
+        )
+        return (
+            f"{{button: {self.button}, value: {self.value}, "
+            + f"event_type: {event_type_str}, sec: {self.sec:.4f}, "
+            + f"delta_sec: {self.delta_sec:.4f}}}"
+        )
 
 
 def parse_args():
@@ -18,7 +49,8 @@ def parse_args():
     parser.add_argument(
         "-c",
         "--config-path",
-        default="config.ini",  # TODO: "${XDG_CONFIG_HOME:-"$HOME"}/scripts/evdev-hotkey/config.ini"
+        default=(os.environ.get("XDG_CONFIG_HOME") or f"{os.environ['HOME']}/.config")
+        + "/scripts/dev2sh/config.py",
         help="path to the configuration file",
     )
 
@@ -29,6 +61,13 @@ def parse_args():
         help="list device names for use in configuration files",
     )
 
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="increase verbosity",
+    )
+
     args = parser.parse_args()
     post_process_args(args)
 
@@ -37,53 +76,100 @@ def parse_args():
 
 def post_process_args(args):
     if args.list_devices:
-        for dev in [ev.InputDevice(dev_path) for dev_path in ev.list_devices()]:
-            print(f"[{dev.name}]")
+        print(
+            "\n".join(
+                [
+                    f"[{dev.name}]:\n\t{dev.capabilities(verbose=True)}"
+                    for dev in [
+                        ev.InputDevice(dev_path) for dev_path in ev.list_devices()
+                    ]
+                ]
+            )
+        )
         sys.exit(0)
 
 
-def parse_config(config_path) -> dict:
-    config = cp.ConfigParser()
-
-    config.read(config_path)
-
-    processed_config = {}
-    for device in config.sections():
-        processed_config[device] = []
-        for key_code in config[device]:
-            command_line = config[device][key_code]
-            processed_config[device].append((key_code, command_line))
-
-    return processed_config
+def get_config(config_path):
+    spec = importlib.util.spec_from_file_location(
+        config_path.removesuffix(".py"), config_path
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-def dev_read_loop(dev):
-    for event in dev.read_loop():
-        print(
-            event.code,
-            event.type,
-            event.value,
-            event.sec,
-            event.usec,
-            event.timestamp(),
-        )
+def get_wm_props():
+    display = xdisp.Display()
+    root = display.screen().root
+    net_wm_name = display.intern_atom("_NET_WM_NAME")
+    net_active_window = display.intern_atom("_NET_ACTIVE_WINDOW")
+
+    active_window_id = root.get_full_property(net_active_window, 0).value[0]
+
+    window = display.create_resource_object("window", active_window_id)
+    wm_name = window.get_full_property(net_wm_name, 0).value
+    wm_class = window.get_wm_class()
+
+    wm_instance = wm_class[0] if wm_class else None
+    wm_class = wm_class[1] if wm_class else None
+    wm_name = wm_name.decode("utf-8") if wm_name else None
+
+    return (wm_class, wm_instance, wm_name)
+
+
+def dev_read_loop(args, dev, selector_func):
+    # TODO: spawn a thread (not a multiprocess) that monitors the focused window and updates callback_func with selector_func(...)
+    callback_func = selector_func(*get_wm_props())
+
+    with dev.grab_context():
+        ui = ev.UInput.from_device(dev, name=f"{PROGRAM_NAME} {dev.name}")
+        last_timestamps = {}
+        i = 0
+        for event in dev.read_loop():
+            button, value, event_type = event.code, event.type, event.value
+            last_timestamp = last_timestamps.get((button, value, event_type), (0, 0))
+
+            sec = event.sec + event.usec / 1e6
+            delta_sec = (last_timestamp[0] + last_timestamp[1] / 1e6) - sec
+            callback_data = CallbackData(button, value, event_type, sec, delta_sec)
+
+            if callback_func is not None:
+                cmd = callback_func(callback_data)
+
+                if type(cmd) is list:
+                    print(f"{i}: catched {callback_data}\n\trunning {cmd}")
+                    subprocess.run(cmd)
+                elif type(cmd) is str:
+                    print(f"{i}: catched {callback_data}\n\trunning {cmd}")
+                    subprocess.run(cmd, shell=True)
+                else:
+                    if args.verbose:
+                        print(f"{i}: ignored {callback_data}")
+                    ui.write_event(event)
+                    ui.syn()
+
+            last_timestamps[(button, value, event_type)] = (event.sec, event.usec)
+
+            i += 1
 
 
 def main() -> int:
-    print("Beware: this program is currently unfinished.", end="\n\n")
-
     args = parse_args()
-    config_devs = parse_config(args.config_path)
+    config = get_config(args.config_path)
+    config_devs = config.dev_to_selector.keys()
 
     devs = []
     for dev in [ev.InputDevice(dev_path) for dev_path in ev.list_devices()]:
-        if dev.name in config_devs.keys():
+        if dev.name in config_devs:
             devs.append(dev)
 
     processes = []
 
     for dev in devs:
-        process = mp.Process(target=dev_read_loop, args=(dev,))
+        process = mp.Process(
+            target=dev_read_loop,
+            args=(args, dev, config.dev_to_selector[dev.name]),
+        )
         processes.append(process)
         process.start()
 
