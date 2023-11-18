@@ -137,10 +137,10 @@ def dev_read_loop(args, dev, selector_func):
                 cmd = callback_func(callback_data)
 
                 if type(cmd) is list:
-                    print(f"{i}: catched {callback_data}\n\trunning {cmd}")
+                    print(f"{i}: caught {callback_data}\n\trunning {cmd}")
                     subprocess.run(cmd)
                 elif type(cmd) is str:
-                    print(f"{i}: catched {callback_data}\n\trunning {cmd}")
+                    print(f"{i}: caught {callback_data}\n\trunning {cmd}")
                     subprocess.run(cmd, shell=True)
                 else:
                     if args.verbose:
