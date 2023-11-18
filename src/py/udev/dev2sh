@@ -21,10 +21,10 @@ class CallbackData:
     EVENT_TYPE_HOLD = 2
     EVENT_TYPE_NAMES = {0: "up", 1: "down", 2: "hold"}
 
-    def __init__(self, button, value, event_type, sec, delta_sec):
+    def __init__(self, button, event_type, value, sec, delta_sec):
         self.button = button
-        self.value = value
         self.event_type = event_type
+        self.value = value
         self.sec = sec
         self.delta_sec = delta_sec
 
@@ -35,13 +35,13 @@ class CallbackData:
             else self.EVENT_TYPE_NAMES.get(self.event_type, self.event_type)
         )
         return (
-            f"{{button: {self.button}, value: {self.value}, "
-            + f"event_type: {event_type_str}, sec: {self.sec:.4f}, "
+            f"{{button: {self.button}, event_type: {event_type_str}, "
+            + f"value: {self.value}, sec: {self.sec:.4f}, "
             + f"delta_sec: {self.delta_sec:.4f}}}"
         )
 
     def __eq__(self, other):
-        props = (self.button, self.value, self.event_type, self.sec, self.delta_sec)
+        props = (self.button, self.event_type, self.value, self.sec, self.delta_sec)
         other_type = type(other)
         if other_type is tuple or other_type is list:
             for i in range(min(len(props), len(other))):
@@ -148,12 +148,12 @@ def dev_read_loop(args, dev, selector_func):
         last_timestamps = {}
         i = 0
         for event in dev.read_loop():
-            button, value, event_type = event.code, event.type, event.value
+            button, event_type, value = event.code, event.value, event.type
             last_timestamp = last_timestamps.get((button, value, event_type), (0, 0))
 
             sec = event.sec + event.usec / 1e6
             delta_sec = sec - (last_timestamp[0] + last_timestamp[1] / 1e6)
-            callback_data = CallbackData(button, value, event_type, sec, delta_sec)
+            callback_data = CallbackData(button, event_type, value, sec, delta_sec)
 
             if callback_func is not None:
                 cmd = callback_func(callback_data)
@@ -173,7 +173,7 @@ def dev_read_loop(args, dev, selector_func):
                     ui.write_event(event)
                     ui.syn()
 
-            last_timestamps[(button, value, event_type)] = (event.sec, event.usec)
+            last_timestamps[(button, event_type, value)] = (event.sec, event.usec)
 
             i += 1
 
