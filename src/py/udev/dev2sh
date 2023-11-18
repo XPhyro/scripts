@@ -43,7 +43,9 @@ class CallbackData:
 
 def parse_args():
     parser = argparse.ArgumentParser(
+        prog=PROGRAM_NAME,
         description="Read input devices and execute shell commands accordingly.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     parser.add_argument(
@@ -142,9 +144,12 @@ def dev_read_loop(args, dev, selector_func):
                 elif type(cmd) is str:
                     print(f"{i}: caught {callback_data}\n\trunning {cmd}")
                     subprocess.run(cmd, shell=True)
-                else:
+                elif cmd:
                     if args.verbose:
                         print(f"{i}: ignored {callback_data}")
+                else:
+                    if args.verbose:
+                        print(f"{i}: passed through {callback_data}")
                     ui.write_event(event)
                     ui.syn()
 
