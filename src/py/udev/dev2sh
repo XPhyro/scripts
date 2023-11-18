@@ -40,6 +40,26 @@ class CallbackData:
             + f"delta_sec: {self.delta_sec:.4f}}}"
         )
 
+    def __eq__(self, other):
+        props = (self.button, self.value, self.event_type, self.sec, self.delta_sec)
+        other_type = type(other)
+        if other_type is tuple or other_type is list:
+            for i in range(min(len(props), len(other))):
+                if props[i] != other[i]:
+                    return False
+            return True
+        elif other_type is CallbackData:
+            return props == (
+                other.button,
+                other.value,
+                other.event_type,
+                other.sec,
+                other.delta_sec,
+            )
+
+    def __ne__(self, other):
+        return not (self == other)
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
