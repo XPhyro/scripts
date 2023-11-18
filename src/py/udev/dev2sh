@@ -140,10 +140,10 @@ def dev_read_loop(args, dev, selector_func):
 
                 if type(cmd) is list:
                     print(f"{i}: caught {callback_data}\n\trunning {cmd}")
-                    subprocess.run(cmd)
+                    subprocess.Popen(cmd)
                 elif type(cmd) is str:
                     print(f"{i}: caught {callback_data}\n\trunning {cmd}")
-                    subprocess.run(cmd, shell=True)
+                    subprocess.Popen(cmd, shell=True)
                 elif cmd:
                     if args.verbose:
                         print(f"{i}: ignored {callback_data}")
