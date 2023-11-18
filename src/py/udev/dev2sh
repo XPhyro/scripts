@@ -61,6 +61,7 @@ class CallbackData:
                 other.sec,
                 other.delta_sec,
             )
+        return self.button == other
 
     def __ne__(self, other):
         return not (self == other)
