@@ -43,7 +43,12 @@ class CallbackData:
     def __eq__(self, other):
         props = (self.button, self.event_type, self.value, self.sec, self.delta_sec)
         other_type = type(other)
-        if other_type is tuple or other_type is list:
+        if other_type in [tuple, list]:
+            if len(other > 0) and type(other[0]) in [tuple, list]:
+                for i in other:
+                    if self != i:
+                        return False
+                return True
             for i in range(min(len(props), len(other))):
                 if props[i] != other[i]:
                     return False
