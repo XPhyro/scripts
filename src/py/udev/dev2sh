@@ -5,7 +5,7 @@ import argparse
 import importlib.util
 import multiprocessing as mp
 import os
-import subprocess
+import subprocess as sp
 import sys
 
 import evdev as ev
@@ -13,6 +13,30 @@ from Xlib import display as xdisp
 
 
 PROGRAM_NAME = "dev2sh"
+
+
+class API:
+    @staticmethod
+    def spawn_cmd(cmd, *args, **kwargs):
+        print(f"spawning command {cmd}")
+        return sp.Popen(cmd, *args, **kwargs)
+
+    @staticmethod
+    def spawn_shell(cmd, *args, **kwargs):
+        print(f"spawning shell {cmd}")
+        return sp.Popen(cmd, *args, **kwargs, shell=True)
+
+    @staticmethod
+    def spawn(cmd, *args, **kwargs):
+        cmd_type = type(cmd)
+
+        if cmd_type in [list, tuple]:
+            return API.spawn_cmd(cmd, *args, **kwargs)
+        if cmd_type is str:
+            return API.spawn_shell(cmd, *args, **kwargs)
+
+        print(f"Could not determine how to spawn {repr(cmd)}.", file=sys.stderr)
+        return None
 
 
 class CallbackData:
@@ -126,6 +150,7 @@ def get_config(config_path):
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    module.API = API
     return module
 
 
@@ -164,21 +189,19 @@ def dev_read_loop(args, dev, selector_func):
             delta_sec = sec - (last_timestamp[0] + last_timestamp[1] / 1e6)
             callback_data = CallbackData(button, event_type, value, sec, delta_sec)
 
-            if callback_func is not None:
-                cmd = callback_func(callback_data)
+            if args.verbose:
+                print(f"{i}: received event {callback_data}")
 
-                if type(cmd) is list:
-                    print(f"{i}: caught {callback_data}\n\trunning {cmd}")
-                    subprocess.Popen(cmd)
-                elif type(cmd) is str:
-                    print(f"{i}: caught {callback_data}\n\trunning {cmd}")
-                    subprocess.Popen(cmd, shell=True)
-                elif cmd:
-                    if args.verbose:
-                        print(f"{i}: ignored {callback_data}")
+            if callback_func is not None:
+                grab = callback_func(callback_data)
+
+                if grab:
+                    if not args.verbose:
+                        print(f"{i}: received event {callback_data}")
+                    print(f"caught event")
                 else:
                     if args.verbose:
-                        print(f"{i}: passed through {callback_data}")
+                        print(f"passed event through")
                     ui.write_event(event)
                     ui.syn()
 
