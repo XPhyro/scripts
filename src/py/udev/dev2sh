@@ -7,6 +7,7 @@ import multiprocessing as mp
 import os
 import subprocess as sp
 import sys
+import time
 
 import evdev as ev
 from Xlib import display as xdisp
@@ -173,7 +174,10 @@ def get_wm_props():
     return (wm_class, wm_instance, wm_name)
 
 
-def dev_read_loop(args, dev, selector_func):
+def dev_read_loop_impl(args, dev_path, selector_funcs):
+    dev = ev.InputDevice(dev_path)
+    selector_func = selector_funcs[dev.name]
+
     # TODO: spawn a thread (not a multiprocess) that monitors the focused window and updates callback_func with selector_func(...)
     callback_func = selector_func(*get_wm_props())
 
@@ -213,22 +217,25 @@ def dev_read_loop(args, dev, selector_func):
             i += 1
 
 
+def dev_read_loop(args, dev_path, selector_funcs):
+    while True:
+        try:
+            dev_read_loop_impl(args, dev_path, selector_funcs)
+        except OSError as e:
+            if e.errno != 19:
+                raise e
+        time.sleep(3.0)
+
+
 def main() -> int:
     args = parse_args()
     config = get_config(args.config_path)
-    config_devs = config.dev_to_selector.keys()
-
-    devs = []
-    for dev in [ev.InputDevice(dev_path) for dev_path in ev.list_devices()]:
-        if dev.name in config_devs:
-            devs.append(dev)
 
     processes = []
-
-    for dev in devs:
+    for dev_path in ev.list_devices():
         process = mp.Process(
             target=dev_read_loop,
-            args=(args, dev, config.dev_to_selector[dev.name]),
+            args=(args, dev_path, config.dev_to_selector),
         )
         processes.append(process)
         process.start()
