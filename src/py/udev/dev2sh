@@ -183,6 +183,9 @@ def dev_read_loop(args, dev, selector_func):
         i = 0
         for event in dev.read_loop():
             button, event_type, value = event.code, event.value, event.type
+            if button == event_type == value == 0:
+                continue
+
             last_timestamp = last_timestamps.get((button, value, event_type), (0, 0))
 
             sec = event.sec + event.usec / 1e6
