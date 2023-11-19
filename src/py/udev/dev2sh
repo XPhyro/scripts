@@ -39,6 +39,20 @@ class API:
         print(f"Could not determine how to spawn {repr(cmd)}.", file=sys.stderr)
         return None
 
+    # TODO:
+    # @staticmethod
+    # def send_key_down():
+    #     pass
+
+    # TODO:
+    # @staticmethod
+    # def send_key_up():
+    #     pass
+
+    @staticmethod
+    def type_text(text):
+        API.spawn_cmd(["xdotool", "type", text])
+
 
 class CallbackData:
     EVENT_TYPE_UP = 0
