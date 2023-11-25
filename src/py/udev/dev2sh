@@ -174,22 +174,24 @@ def get_config(config_path):
 
 
 def get_wm_props():
-    display = xdisp.Display()
-    root = display.screen().root
-    net_wm_name = display.intern_atom("_NET_WM_NAME")
-    net_active_window = display.intern_atom("_NET_ACTIVE_WINDOW")
+    try:
+        display = xdisp.Display()
+        root = display.screen().root
+        net_wm_name = display.intern_atom("_NET_WM_NAME")
+        net_active_window = display.intern_atom("_NET_ACTIVE_WINDOW")
 
-    active_window_id = root.get_full_property(net_active_window, 0).value[0]
+        active_window_id = root.get_full_property(net_active_window, 0).value[0]
 
-    window = display.create_resource_object("window", active_window_id)
-    wm_name = window.get_full_property(net_wm_name, 0).value
-    wm_class = window.get_wm_class()
+        window = display.create_resource_object("window", active_window_id)
+        wm_name = window.get_full_property(net_wm_name, 0).value
+        wm_class = window.get_wm_class()
 
-    wm_instance = wm_class[0] if wm_class else None
-    wm_class = wm_class[1] if wm_class else None
-    wm_name = wm_name.decode("utf-8") if wm_name else None
-
-    return (wm_class, wm_instance, wm_name)
+        wm_instance = wm_class[0] if wm_class else None
+        wm_class = wm_class[1] if wm_class else None
+        wm_name = wm_name.decode("utf-8") if wm_name else None
+        return (wm_class, wm_instance, wm_name)
+    except:
+        return ("", "", "")
 
 
 def dev_read_loop_impl(args, dev_path, selector_funcs):
