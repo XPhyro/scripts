@@ -186,9 +186,9 @@ def get_wm_props():
         wm_name = window.get_full_property(net_wm_name, 0).value
         wm_class = window.get_wm_class()
 
-        wm_instance = wm_class[0] if wm_class else None
-        wm_class = wm_class[1] if wm_class else None
-        wm_name = wm_name.decode("utf-8") if wm_name else None
+        wm_instance = wm_class[0] if wm_class else ""
+        wm_class = wm_class[1] if wm_class else ""
+        wm_name = wm_name.decode("utf-8") if wm_name else ""
         return (wm_class, wm_instance, wm_name)
     except:
         return ("", "", "")
