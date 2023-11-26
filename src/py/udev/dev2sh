@@ -7,10 +7,12 @@ import multiprocessing as mp
 import os
 import subprocess as sp
 import sys
+import threading as tp
 import time
 
 import evdev as ev
 from Xlib import display as xdisp
+import Xlib as xlib
 
 
 PROGRAM_NAME = "dev2sh"
@@ -194,12 +196,34 @@ def get_wm_props():
         return ("", "", "")
 
 
+def update_selector_loop(selector_func):
+    global callback_func
+
+    display = xdisp.Display()
+    root = display.screen().root
+    net_active_window = display.intern_atom("_NET_ACTIVE_WINDOW")
+    root.change_attributes(
+        event_mask=xlib.X.PropertyChangeMask | xlib.X.SubstructureNotifyMask
+    )
+
+    while True:
+        event = display.next_event()
+        if event.type == xlib.X.PropertyNotify and event.atom == net_active_window:
+            callback_func = selector_func(*get_wm_props())
+
+
 def dev_read_loop_impl(args, dev_path, selector_funcs):
     dev = ev.InputDevice(dev_path)
     selector_func = selector_funcs[dev.name]
 
-    # TODO: spawn a thread (not a multiprocess) that monitors the focused window and updates callback_func with selector_func(...)
+    global callback_func
     callback_func = selector_func(*get_wm_props())
+
+    thread = tp.Thread(
+        target=update_selector_loop,
+        args=(selector_func,),
+    )
+    thread.start()
 
     with dev.grab_context():
         ui = ev.UInput.from_device(dev, name=f"{PROGRAM_NAME} {dev.name}")
