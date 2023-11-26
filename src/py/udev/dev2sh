@@ -175,7 +175,7 @@ def get_config(config_path):
     return module
 
 
-def get_wm_props():
+def get_wm_props(default=None):
     try:
         display = xdisp.Display()
         root = display.screen().root
@@ -193,10 +193,10 @@ def get_wm_props():
         wm_name = wm_name.decode("utf-8") if wm_name else ""
         return (wm_class, wm_instance, wm_name)
     except:
-        return ("", "", "")
+        return (default, default, default)
 
 
-def update_selector_loop(selector_func):
+def update_selector_loop(selector_func, initial_wm_props):
     global callback_func
 
     display = xdisp.Display()
@@ -206,10 +206,22 @@ def update_selector_loop(selector_func):
         event_mask=xlib.X.PropertyChangeMask | xlib.X.SubstructureNotifyMask
     )
 
+    last_wm_props = initial_wm_props
     while True:
         event = display.next_event()
         if event.type == xlib.X.PropertyNotify and event.atom == net_active_window:
-            callback_func = selector_func(*get_wm_props())
+            wm_props = get_wm_props(default=None)
+
+            if (
+                wm_props[0] is None
+                or wm_props[1] is None
+                or wm_props[2] is None
+                or wm_props == last_wm_props
+            ):
+                continue
+            last_wm_props = wm_props
+
+            callback_func = selector_func(*wm_props)
 
 
 def dev_read_loop_impl(args, dev_path, selector_funcs):
@@ -217,11 +229,12 @@ def dev_read_loop_impl(args, dev_path, selector_funcs):
     selector_func = selector_funcs[dev.name]
 
     global callback_func
-    callback_func = selector_func(*get_wm_props())
+    initial_wm_props = get_wm_props(default="")
+    callback_func = selector_func(*initial_wm_props)
 
     thread = tp.Thread(
         target=update_selector_loop,
-        args=(selector_func,),
+        args=(selector_func, initial_wm_props),
     )
     thread.start()
 
