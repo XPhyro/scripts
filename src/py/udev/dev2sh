@@ -24,12 +24,12 @@ class API:
     @staticmethod
     def spawn_cmd(cmd, *args, **kwargs):
         API.print_buffer.append((f"spawning command {repr(cmd)}", sys.stdout))
-        return sp.Popen(cmd, *args, **kwargs)
+        return sp.Popen(cmd, *args, start_new_session=True, **kwargs)
 
     @staticmethod
     def spawn_shell(cmd, *args, **kwargs):
         API.print_buffer.append((f"spawning shell {repr(cmd)}", sys.stdout))
-        return sp.Popen(cmd, *args, **kwargs, shell=True)
+        return sp.Popen(cmd, *args, start_new_session=True, shell=True, **kwargs)
 
     @staticmethod
     def spawn(cmd, *args, **kwargs):
