@@ -218,25 +218,30 @@ def update_selector_loop(config_path, dev_name):
     global last_wm_props
 
     while True:
-        i = inotify.adapters.Inotify()
-        i.add_watch(config_path)
+        try:
+            i = inotify.adapters.Inotify()
+            i.add_watch(config_path)
 
-        for event in i.event_gen(yield_nones=False):
-            (_, event_types, _, _) = event
+            for event in i.event_gen(yield_nones=False):
+                (_, event_types, _, _) = event
 
-            if "IN_IGNORED" in event_types:
-                break
+                if "IN_IGNORED" in event_types:
+                    break
 
-            if (
-                "IN_MOVE_SELF" not in event_types
-                and "IN_MODIFY" not in event_types
-                and "IN_ATTRIB" not in event_types
-            ):
-                continue
+                if (
+                    "IN_MOVE_SELF" not in event_types
+                    and "IN_MODIFY" not in event_types
+                    and "IN_ATTRIB" not in event_types
+                ):
+                    continue
 
-            selector_func = get_config(config_path).dev_to_selector[dev_name]
-            callback_func = selector_func(*last_wm_props)
-            print("Config reloaded")
+                time.sleep(0.100)
+                selector_func = get_config(config_path).dev_to_selector[dev_name]
+                callback_func = selector_func(*last_wm_props)
+                print("Config reloaded")
+        except FileNotFoundError as e:
+            if e.errno != 2:
+                raise e
 
 
 def update_callback_loop(config_path, dev_name, initial_wm_props):
