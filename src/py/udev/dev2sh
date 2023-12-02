@@ -10,9 +10,10 @@ import sys
 import threading as tp
 import time
 
-import evdev as ev
 from Xlib import display as xdisp
 import Xlib as xlib
+import evdev as ev
+import inotify.adapters
 
 
 PROGRAM_NAME = "dev2sh"
@@ -211,8 +212,46 @@ def get_wm_props(default=None):
         return (default, default, default)
 
 
-def update_selector_loop(selector_func, initial_wm_props):
+def update_selector_loop(config_path, dev_name):
+    global selector_func
     global callback_func
+    global last_wm_props
+
+    while True:
+        i = inotify.adapters.Inotify()
+        i.add_watch(config_path)
+
+        for event in i.event_gen(yield_nones=False):
+            (_, event_types, _, _) = event
+
+            if "IN_IGNORED" in event_types:
+                break
+
+            if (
+                "IN_MOVE_SELF" not in event_types
+                and "IN_MODIFY" not in event_types
+                and "IN_ATTRIB" not in event_types
+            ):
+                continue
+
+            selector_func = get_config(config_path).dev_to_selector[dev_name]
+            callback_func = selector_func(*last_wm_props)
+            print("Config reloaded")
+
+
+def update_callback_loop(config_path, dev_name, initial_wm_props):
+    global callback_func
+    global selector_func
+    global last_wm_props
+
+    selector_func = get_config(config_path).dev_to_selector[dev_name]
+    last_wm_props = initial_wm_props
+
+    thread = tp.Thread(
+        target=update_selector_loop,
+        args=(config_path, dev_name),
+    )
+    thread.start()
 
     display = xdisp.Display()
     root = display.screen().root
@@ -221,7 +260,6 @@ def update_selector_loop(selector_func, initial_wm_props):
         event_mask=xlib.X.PropertyChangeMask | xlib.X.SubstructureNotifyMask
     )
 
-    last_wm_props = initial_wm_props
     while True:
         event = display.next_event()
         if event.type == xlib.X.PropertyNotify and event.atom == net_active_window:
@@ -239,17 +277,17 @@ def update_selector_loop(selector_func, initial_wm_props):
             callback_func = selector_func(*wm_props)
 
 
-def dev_read_loop_impl(args, dev_path, selector_funcs):
-    dev = ev.InputDevice(dev_path)
-    selector_func = selector_funcs[dev.name]
-
+def dev_read_loop_impl(args, dev_path, config_path):
     global callback_func
+
+    dev = ev.InputDevice(dev_path)
+
     initial_wm_props = get_wm_props(default="")
-    callback_func = selector_func(*initial_wm_props)
+    callback_func = get_config(config_path).dev_to_selector[dev.name](*initial_wm_props)
 
     thread = tp.Thread(
-        target=update_selector_loop,
-        args=(selector_func, initial_wm_props),
+        target=update_callback_loop,
+        args=(config_path, dev.name, initial_wm_props),
     )
     thread.start()
 
@@ -294,10 +332,10 @@ def dev_read_loop_impl(args, dev_path, selector_funcs):
             i += 1
 
 
-def dev_read_loop(args, dev_path, selector_funcs):
+def dev_read_loop(args, dev_path, config_path):
     while True:
         try:
-            dev_read_loop_impl(args, dev_path, selector_funcs)
+            dev_read_loop_impl(args, dev_path, config_path)
         except OSError as e:
             if e.errno != 19:
                 raise e
@@ -306,13 +344,12 @@ def dev_read_loop(args, dev_path, selector_funcs):
 
 def main() -> int:
     args = parse_args()
-    config = get_config(args.config_path)
 
     processes = []
     for dev_path in ev.list_devices():
         process = mp.Process(
             target=dev_read_loop,
-            args=(args, dev_path, config.dev_to_selector),
+            args=(args, dev_path, args.config_path),
         )
         processes.append(process)
         process.start()
