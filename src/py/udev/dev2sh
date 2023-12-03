@@ -277,9 +277,9 @@ def update_callback_loop(config_path, dev_name, initial_wm_props):
                 or wm_props == last_wm_props
             ):
                 continue
-            last_wm_props = wm_props
 
             callback_func = selector_func(*wm_props)
+            last_wm_props = wm_props
 
 
 def dev_read_loop_impl(args, dev_path, config_path):
