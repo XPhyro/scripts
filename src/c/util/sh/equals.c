@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <strutil.h>
@@ -9,7 +10,7 @@ int main(int argc, const char *argv[])
 
     for (i = 2; i < argc; i++)
         if (streq(argv[1], argv[i]))
-            return 0;
+            return EXIT_SUCCESS;
 
-    return 1;
+    return EXIT_FAILURE;
 }
