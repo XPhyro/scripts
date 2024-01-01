@@ -8,7 +8,7 @@
 
 # scripts
 
-This repository holds a collection of over 300 scripts, utilities and libraries
+This repository holds a collection of over 400 scripts, utilities and libraries
 for Unix-like operating systems, written in the following languages:
 
 - Awk
