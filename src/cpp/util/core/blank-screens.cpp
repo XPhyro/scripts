@@ -57,12 +57,13 @@ int main(int argc, char* argv[])
         }
 
         if (output_info->connection)
-            continue;
+            goto next;
 
-        XRRCrtcInfo* crtc_info = XRRGetCrtcInfo(display, screen_resources, output_info->crtc);
+        XRRCrtcInfo* crtc_info;
+        crtc_info = XRRGetCrtcInfo(display, screen_resources, output_info->crtc);
         if (!crtc_info) {
             std::cerr << xph::exec_name << ": unable to get information for monitor " << i << '\n';
-            continue;
+            goto next;
         }
 
         windows.push_back(XCreateSimpleWindow(display,
@@ -75,8 +76,9 @@ int main(int argc, char* argv[])
                                               0,
                                               0));
 
-        XRRFreeOutputInfo(output_info);
         XRRFreeCrtcInfo(crtc_info);
+next:
+        XRRFreeOutputInfo(output_info);
     }
     XRRFreeScreenResources(screen_resources);
 
