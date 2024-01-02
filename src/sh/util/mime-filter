@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+
+# shellcheck disable=SC2154
+. shellverbose.sh
+. execinfo.sh
+. io.sh
+
+test_files() {
+    # FIXME: this would fail if the given file has special characters in it.
+    #        either find a different method with parallel, or don't use it.
+    OPTTYPE="$opttype" OPTSUBTYPE="$optsubtype" OPTDELIM="$optdelim" parallel -k -r0 -P 128 '
+        fl="{}"
+        [ ! -e "$fl" ] && return
+        realfl="$(realpath -- "$fl")"
+
+        full_type="$(file --mime-type --brief -- "$realfl")"
+
+        [ -n "$OPTTYPE" ] && [ "${full_type%%/*}" != "$OPTTYPE" ] && return
+        [ -n "$OPTSUBTYPE" ] && [ "${full_type#*/}" != "$OPTSUBTYPE" ] && return
+
+        printf "%s\\$OPTDELIM" "$fl"
+    '
+}
+
+unset optsubtype opttype
+optdelim=n
+while getopts "hM:m:z0" OPT; do
+    case "$OPT" in
+        h)
+            printf "%s" \
+"$execpath [OPTION]... [FILE]...
+Filter files by mime type.
+
+Standard input must be delimited by nul.
+
+  -h         show this help and exit
+  -M TYPE    filter by mime subtype
+  -m TYPE    filter by mime type
+  -z         use nul as output delimiter
+  -0         use nul as output delimiter
+"
+            exit 0
+            ;;
+        M) optsubtype="$OPTARG";;
+        m) opttype="$OPTARG";;
+        z|0) optdelim=0;;
+        *) std_logferrq "invalid option given: %s\n" "$OPT";;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+if [ "$#" -ne 0 ]; then
+    for fl; do
+        printf "%s\0" "$fl"
+    done | test_files
+else
+    test_files <&0
+fi
