@@ -4,7 +4,7 @@ If you believe you found a security issue, please send details to the following
 e-mail address encrypted with its public and your private PGP keys.
 
 ```email
-kberke@metu.edu.tr
+berke.kocaoglu@metu.edu.tr
 ```
 
 Please include the following details if possible:
