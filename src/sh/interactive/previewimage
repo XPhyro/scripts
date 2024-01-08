@@ -1,0 +1,53 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+add() {
+    pid="$1"
+    file="$2"
+    max_width="$3"
+    max_height="$4"
+    x="$5"
+    y="$6"
+    shift 6
+
+    [ -e "$tmpdir/$pid" ] && {
+        remove "$pid"
+    }
+
+    ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file "$tmpdir/$pid"
+    ueberzugpp cmd \
+        -s "$ueberzugpp_tmpdir/ueberzugpp-$(cat -- "$tmpdir/$pid").socket" \
+        -a add \
+        -i PREVIEW \
+        -x "$x" \
+        -y "$((y + 20))" \
+        --max-width "$max_width" \
+        --max-height "$max_height" \
+        -f "$file"
+
+    [ "$#" -ne 0 ] && add "$@"
+}
+
+remove() {
+    pid="$1"
+    shift 1
+
+    [ -e "$tmpdir/$pid" ] && {
+        xargs -r kill -SIGTERM -- < "$tmpdir/$pid"
+        rm -f -- "$tmpdir/$pid"
+    }
+
+    [ "$#" -ne 0 ] && remove "$@"
+}
+
+tmpdir="${TMPDIR:-/tmp}/previewimage"
+mkdir -p -- "$tmpdir" || [ -d "$tmpdir" ] || exit 1
+
+ueberzugpp_tmpdir="${TMPDIR:-/tmp}"
+
+case "$1" in
+    add) shift 1; add "$@";;
+    remove) shift 1; remove "$@";;
+    *) exit 1;;
+esac
