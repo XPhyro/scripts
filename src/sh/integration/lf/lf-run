@@ -2,7 +2,5 @@
 
 . shellverbose.sh
 
-set -e
-
 lf "$@"
 previewimage remove "$?"
