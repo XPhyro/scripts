@@ -4,4 +4,5 @@
 
 set -e
 
-exec lf "$@"
+lf "$@"
+previewimage remove "$?"
