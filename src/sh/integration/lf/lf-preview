@@ -59,47 +59,30 @@ main() {
             exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
         video/*|image/gif)
-            if [ -n "$KITTY_PID" ]; then
-                [ "$mime_type" = "image/gif" ] && exec_preview_image "$1" "$2" "$3" "$4" "$5"
+            ext=jpg
+            [ -f "$thumbfl.$ext" ] || {
+                resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1")"
+                width="${resolution%x*}"
+                height="${resolution#*x}"
 
-                ext=gif
-                [ -f "$thumbfl.$ext" ] || {
-                    i=0
-                    seq 0 5 100 | while IFS= read -r seek; do
-                        [ -f "$thumbfl-$i.jpg" ] || ffmpegthumbnailer -i "$1" -o "$thumbfl-$i.jpg" -s 0 -q 5 -t "$seek%"
-                        : "$((i += 1))"
-                    done
+                if [ "$width" -gt "$height" ]; then
+                    tile=2x5
+                    inc=11.1
+                else
+                    tile=3x3
+                    inc=12.4
+                fi
 
-                    ffmpeg -framerate "${LF_PREVIEW_FRAMERATE:-"3"}" -i "$thumbfl-%d.jpg" "$thumbfl.$ext"
+                i=0
+                seq 0 "$inc" 100 | while IFS= read -r seek; do
+                    [ -f "$thumbfl-$i.jpg" ] || ffmpegthumbnailer -i "$1" -o "$thumbfl-$i.jpg" -s 0 -q 5 -t "$seek%"
+                    : "$((i += 1))"
+                done
 
-                    rm -f -- "$thumbfl"-*.jpg
-                }
-            else
-                ext=jpg
-                [ -f "$thumbfl.$ext" ] || {
-                    resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1")"
-                    width="${resolution%x*}"
-                    height="${resolution#*x}"
+                montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
 
-                    if [ "$width" -gt "$height" ]; then
-                        tile=2x5
-                        inc=11.1
-                    else
-                        tile=3x3
-                        inc=12.4
-                    fi
-
-                    i=0
-                    seq 0 "$inc" 100 | while IFS= read -r seek; do
-                        [ -f "$thumbfl-$i.jpg" ] || ffmpegthumbnailer -i "$1" -o "$thumbfl-$i.jpg" -s 0 -q 5 -t "$seek%"
-                        : "$((i += 1))"
-                    done
-
-                    montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
-
-                    rm -f -- "$thumbfl"-*.jpg
-                }
-            fi
+                rm -f -- "$thumbfl"-*.jpg
+            }
             exec_preview_image "$thumbfl.$ext" "$2" "$3" "$4" "$5"
             ;;
         image/heic)
