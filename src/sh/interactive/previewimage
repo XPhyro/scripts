@@ -11,11 +11,31 @@ add() {
     pane_y="$6"
     shift 6
 
-    [ -e "$tmpdir/$pid" ] && {
-        remove "$pid"
-    }
+    [ -e "$tmpdir/$pid" ] && remove "$pid"
+
+    tmpfl="$(mktemp)"
+    termsize "$tmpfl" < /dev/tty > /dev/tty
+    term_size_pixels="$(cat -- "$tmpfl")"
+    rm -f -- "$tmpfl"
+    term_width="${term_size_pixels%" "*}"
+    term_height="${term_size_pixels#*" "}"
+    if [ -n "$LF_LEVEL" ] && [ "$LF_LEVEL" -gt 0 ]; then
+        term_cols="$(($(tput cols) + pane_x))"
+        term_lines="$((pane_height))"
+    else
+        term_cols="$(tput cols)"
+        term_lines="$(tput lines)"
+    fi
+
+    image_width="$(printf "%d\n" "$(printf "scale = 0; %d.0 / %d.0 * %d.0\n" "$term_width" "$term_cols" "$pane_width" | bc)")"
+    image_height="$(printf "%d\n" "$(printf "scale = 0; %d.0 / %d.0 * %d.0\n" "$term_height" "$term_lines" "$pane_height" | bc)")"
+    image_path="$tmpdir/$pid-img-$(basename -- "$file")"
 
     ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file "$tmpdir/$pid" < /dev/null > /dev/null
+    convert "$file" \
+        -resize "${image_width}x${image_height}" \
+        -gravity center \
+        "$image_path"
     ueberzugpp cmd \
         -s "$ueberzugpp_tmpdir/ueberzugpp-$(cat -- "$tmpdir/$pid").socket" \
         -a add \
@@ -24,7 +44,7 @@ add() {
         -y "$pane_y" \
         --max-width "$pane_width" \
         --max-height "$pane_height" \
-        -f "$file" < /dev/null > /dev/null
+        -f "$image_path" < /dev/null > /dev/null
 
     [ "$#" -ne 0 ] && add "$@"
 }
@@ -35,7 +55,7 @@ remove() {
 
     [ -e "$tmpdir/$pid" ] && {
         xargs -r kill -SIGKILL -- < "$tmpdir/$pid"
-        rm -f -- "$tmpdir/$pid"
+        rm -f -- "$tmpdir/$pid" "$tmpdir/$pid"-img-*
     }
 
     [ "$#" -ne 0 ] && remove "$@"
