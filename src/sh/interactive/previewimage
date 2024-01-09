@@ -15,16 +15,16 @@ add() {
         remove "$pid"
     }
 
-    ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file "$tmpdir/$pid"
+    ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file "$tmpdir/$pid" < /dev/null > /dev/null 2>&1
     ueberzugpp cmd \
         -s "$ueberzugpp_tmpdir/ueberzugpp-$(cat -- "$tmpdir/$pid").socket" \
         -a add \
         -i PREVIEW \
         -x "$x" \
-        -y "$((y + 20))" \
+        -y "$((y))" \
         --max-width "$max_width" \
         --max-height "$max_height" \
-        -f "$file"
+        -f "$file" < /dev/null > /dev/null 2>&1
 
     [ "$#" -ne 0 ] && add "$@"
 }
