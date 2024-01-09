@@ -2,20 +2,5 @@
 
 . shellverbose.sh
 
-if [ -n "$KITTY_PID" ]; then
-    kitty +kitten icat --stdin no clear < /dev/null > /dev/tty
-elif [ -n "$UEBERZUG_FIFO" ]; then
-    jq -cn \
-        --arg action remove \
-        --arg identifier PREVIEW \
-        '{
-            action: $action,
-            identifier: $identifier,
-        }' > "$UEBERZUG_FIFO"
-elif [ -n "$UEBERZUGPP_SOCKET" ]; then
-    ueberzugpp \
-        cmd \
-        -s $UEBERZUGPP_SOCKET \
-        -a remove \
-        -i PREVIEW
-fi
+[ "$#" -eq 0 ] && exit 1
+previewimage remove "${id:-"$PPID"}"
