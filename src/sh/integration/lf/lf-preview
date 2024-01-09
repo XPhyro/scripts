@@ -24,15 +24,12 @@ preview_pdf() {
 }
 
 scope() {
-    # FIXME: `scope` does not clean after temporary files when timed out.
-    #        maybe replace scope with a custom script?
-    timeout 5 \
-        "${XDG_CONFIG_HOME:-$HOME/.config}/ranger/scope.sh" \
-            "$(realpath -P -- "$1")" \
-            "$2" \
-            "" \
-            "$thumbfl" \
-            "True"
+    "${XDG_CONFIG_HOME:-$HOME/.config}/ranger/scope.sh" \
+        "$(realpath -P -- "$1")" \
+        "$2" \
+        "unused" \
+        "$thumbfl" \
+        "False"
 }
 
 main() {
