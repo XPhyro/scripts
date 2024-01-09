@@ -34,7 +34,7 @@ remove() {
     shift 1
 
     [ -e "$tmpdir/$pid" ] && {
-        xargs -r kill -SIGTERM -- < "$tmpdir/$pid"
+        xargs -r kill -SIGKILL -- < "$tmpdir/$pid"
         rm -f -- "$tmpdir/$pid"
     }
 
