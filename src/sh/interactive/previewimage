@@ -5,26 +5,26 @@
 add() {
     pid="$1"
     file="$2"
-    max_width="$3"
-    max_height="$4"
-    x="$5"
-    y="$6"
+    pane_width="$3"
+    pane_height="$4"
+    pane_x="$5"
+    pane_y="$6"
     shift 6
 
     [ -e "$tmpdir/$pid" ] && {
         remove "$pid"
     }
 
-    ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file "$tmpdir/$pid" < /dev/null > /dev/null 2>&1
+    ueberzugpp layer --no-stdin --silent --use-escape-codes --pid-file "$tmpdir/$pid" < /dev/null > /dev/null
     ueberzugpp cmd \
         -s "$ueberzugpp_tmpdir/ueberzugpp-$(cat -- "$tmpdir/$pid").socket" \
         -a add \
         -i PREVIEW \
-        -x "$x" \
-        -y "$((y))" \
-        --max-width "$max_width" \
-        --max-height "$max_height" \
-        -f "$file" < /dev/null > /dev/null 2>&1
+        -x "$pane_x" \
+        -y "$pane_y" \
+        --max-width "$pane_width" \
+        --max-height "$pane_height" \
+        -f "$file" < /dev/null > /dev/null
 
     [ "$#" -ne 0 ] && add "$@"
 }
