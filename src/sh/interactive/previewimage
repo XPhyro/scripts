@@ -42,8 +42,8 @@ add() {
         -i PREVIEW \
         -x "$pane_x" \
         -y "$pane_y" \
-        --max-width "$pane_width" \
-        --max-height "$pane_height" \
+        --max-width "100000" \
+        --max-height "100000" \
         -f "$image_path" < /dev/null > /dev/null
 
     [ "$#" -ne 0 ] && add "$@"
