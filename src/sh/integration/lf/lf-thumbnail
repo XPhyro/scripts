@@ -1,0 +1,69 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+thumbnail() {
+    realfl="$(realpath -P -- "$1")"
+    thumbdir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/thumbnails"
+    mkdir -p -- "$thumbdir"
+    thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
+
+    mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$1")")"
+    case "$mime_type" in
+        application/octet-stream)
+            case "$1" in
+                *.pdf)
+                    [ -s "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
+                    ;;
+            esac
+            ;;
+        application/pdf)
+            [ -s "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
+            ;;
+        application/epub+zip)
+            [ -s "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
+            ;;
+        video/*|image/gif)
+            ext=jpg
+            [ -s "$thumbfl.$ext" ] || {
+                resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1")"
+                width="${resolution%x*}"
+                height="${resolution#*x}"
+
+                if [ "$width" -gt "$height" ]; then
+                    tile=2x5
+                    inc=11.1
+                else
+                    tile=3x3
+                    inc=12.4
+                fi
+
+                seq 0 "$inc" 100 | xargs -r -d '\n' -I SEEK -P 0 \
+                    ffmpegthumbnailer -i "$1" -o "$thumbfl-SEEK.jpg" -s 640 -q 8 -t "SEEK%"
+                montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
+
+                rm -f -- "$thumbfl"-*.jpg
+            }
+            ;;
+        image/heic)
+            [ -s "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"
+            ;;
+        text/plain)
+            [ -f "$thumbfl" ] || {
+                touch -- "$thumbfl"
+                [ "$(wc -l < "$1")" -eq 1 ] \
+                    && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$1" \
+                    && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
+            }
+            ;;
+    esac
+}
+
+if [ "$#" -eq 0 ]; then
+    exit 0
+elif [ "$#" -eq 1 ]; then
+    printf "%s\n" "Thumbnailing $1." >&2
+    thumbnail "$1" >&2
+else
+    printf "%s\0" "$@" | xargs -r0 -P "$(($(nproc) / 4 + 1))" -n 1 "$0"
+fi
