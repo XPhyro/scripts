@@ -25,6 +25,7 @@
 
 #include <algorithmutil.hpp>
 #include <die.hpp>
+#include <functionalutil.hpp>
 #include <lexical_cast.hpp>
 #include <mathutil.hpp>
 
@@ -136,11 +137,6 @@ int main(int argc, char* argv[])
     for (int i; (i = getopt(argc, argv, "f:hLmp:")) != -1;) {
         switch (i) {
             case 'f': {
-                if (!sel_funcs.empty() && func_argvs.back().size() < sel_funcs.back().min_argc)
-                    xph::die("too few parameters given to function ",
-                             "" /* TODO: print function name */
-                    );
-
                 function func;
                 try {
                     func = functions.at(optarg);
@@ -184,12 +180,7 @@ int main(int argc, char* argv[])
                 break;
             }
             case 'p': {
-                if (auto& func_argv = func_argvs.back(); func_argv.size() == func_argv.capacity())
-                    xph::die("too many parameters given to function ",
-                             "" /* TODO: print function name */
-                    );
-                else
-                    func_argv.push_back(xph::lexical_cast<char*, double>(optarg));
+                func_argvs.back().push_back(xph::lexical_cast<char*, double>(optarg));
                 break;
             }
             default: {
@@ -202,9 +193,24 @@ int main(int argc, char* argv[])
     argc -= optind;
     argv += optind;
 
-    if (!sel_funcs.empty() && func_argvs.back().size() < sel_funcs.back().min_argc)
-        xph::die("too few parameters given to function ", "" /* TODO: print function name */
-        );
+    for (const auto&& [sel_func, func_argv] : boost::combine(sel_funcs, func_argvs)) {
+        const char* err = func_argv.size() < sel_func.min_argc ? "few" :
+                          func_argv.size() > sel_func.max_argc ? "many" :
+                                                                 nullptr;
+
+        if (err) {
+            // this is very inefficient, but we die anyways
+            std::string func_name = "NULL";
+            for (const auto& [name, func] : functions) {
+                if (xph::function_eq(func.function, sel_func.function)) {
+                    func_name = name;
+                    break;
+                }
+            }
+
+            xph::die("too ", err, " parameters given to function ", func_name);
+        }
+    }
 
     std::vector<double> nums;
     if (argc) {
