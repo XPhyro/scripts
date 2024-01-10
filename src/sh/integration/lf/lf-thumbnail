@@ -66,5 +66,12 @@ elif [ "$#" -eq 1 ]; then
     thumbnail "$1" >&2
 else
     printf "%s\0" "$@" \
-        | parallel --eta --progress --total-jobs="$#" -r0 -P "$(($(nproc) / 4 + 1))" -n 1 "$0"
+        | parallel \
+            --eta \
+            --progress \
+            --total-jobs="$#" \
+            -r0 \
+            -P "${LF_THUMBNAIL_JOBS:-"$(($(nproc) / 4 + 1))"}" \
+            -n 1 \
+            "$0"
 fi
