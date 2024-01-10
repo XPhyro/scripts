@@ -19,7 +19,6 @@ exec_preview_image() {
 }
 
 preview_pdf() {
-    [ -f "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
     exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
 }
 
@@ -38,6 +37,9 @@ main() {
         exit 1
     }
 
+    # TODO: clean up thumbnail usage. perhaps lf-thumbnail should return the path to the thumbnail?
+    lf-thumbnail "$1"
+
     realfl="$(realpath -P -- "$1")"
     thumbdir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/thumbnails"
     mkdir -p -- "$thumbdir"
@@ -47,7 +49,7 @@ main() {
     case "$mime_type" in
         application/octet-stream)
             case "$1" in
-                *.pdf) preview_pdf "$@";;
+                *.pdf) ;;
                 *) scope "$@";;
             esac
             ;;
@@ -55,50 +57,19 @@ main() {
             preview_pdf "$@"
             ;;
         application/epub+zip)
-            [ -f "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
             exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
         video/*|image/gif)
             ext=jpg
-            [ -f "$thumbfl.$ext" ] || {
-                resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1")"
-                width="${resolution%x*}"
-                height="${resolution#*x}"
-
-                if [ "$width" -gt "$height" ]; then
-                    tile=2x5
-                    inc=11.1
-                else
-                    tile=3x3
-                    inc=12.4
-                fi
-
-                i=0
-                seq 0 "$inc" 100 | while IFS= read -r seek; do
-                    [ -f "$thumbfl-$i.jpg" ] || ffmpegthumbnailer -i "$1" -o "$thumbfl-$i.jpg" -s 0 -q 5 -t "$seek%"
-                    : "$((i += 1))"
-                done
-
-                montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
-
-                rm -f -- "$thumbfl"-*.jpg
-            }
             exec_preview_image "$thumbfl.$ext" "$2" "$3" "$4" "$5"
             ;;
         image/heic)
-            [ -f "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"
             exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
             ;;
         image/*)
             exec_preview_image "$@"
             ;;
         text/plain)
-            [ -f "$thumbfl" ] || {
-                touch -- "$thumbfl"
-                [ "$(wc -l < "$1")" -eq 1 ] \
-                    && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$1" \
-                    && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
-            }
             if [ -s "$thumbfl" ]; then
                 exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             else
