@@ -2,5 +2,7 @@
 
 . shellverbose.sh
 
-lf "$@"
-previewimage remove "$?"
+lf "$@" &
+pid="$!"
+wait
+previewimage remove "$pid"
