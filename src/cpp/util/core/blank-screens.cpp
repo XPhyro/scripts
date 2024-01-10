@@ -119,7 +119,7 @@ void handle_signals([[maybe_unused]] int sig)
     std::exit(EXIT_SUCCESS);
 }
 
-std::optional<bool> force_single_instance(const Options& options)
+std::optional<int> force_single_instance(const Options& options)
 {
     if (!options.lock_path.empty()) {
         lock_file = options.lock_path;
@@ -138,13 +138,13 @@ std::optional<bool> force_single_instance(const Options& options)
         ifl >> pid;
         kill(pid, SIGTERM);
         ifl.close();
-        return { true };
+        return { EXIT_SUCCESS };
     } else if (std::ofstream ofl(lock_file); ofl.is_open()) {
         pid_t pid = getpid();
         ofl << pid;
         return {};
     } else {
-        return { false };
+        return { EXIT_FAILURE };
     }
 }
 
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 
     Options options(xph::exec_name, argc, argv);
 
-    if (std::optional<bool> optional_ret; (optional_ret = force_single_instance(options)))
+    if (std::optional<int> optional_ret; (optional_ret = force_single_instance(options)))
         return *optional_ret;
 
     xph::die_if(!(display = XOpenDisplay(NULL)), "unable to open display");
