@@ -8,6 +8,7 @@
 #include <fstream>
 #include <future>
 #include <iostream>
+#include <optional>
 #include <ranges>
 #include <string_view>
 #include <unordered_set>
