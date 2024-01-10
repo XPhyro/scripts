@@ -1,11 +1,13 @@
 // @LDFLAGS -lX11 -lXrandr
 
 // C++
+#include <csignal>
 #include <cstdlib>
 #include <exec_info.hpp>
+#include <filesystem>
+#include <fstream>
 #include <future>
 #include <iostream>
-#include <iterator>
 #include <ranges>
 #include <string_view>
 #include <unordered_set>
@@ -23,6 +25,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 
+std::string lock_file;
 static Display* display;
 static std::vector<Window> windows;
 
@@ -31,6 +34,7 @@ DEFINE_EXEC_INFO();
 struct Options {
 public:
     bool exit_if_none_selected = false;
+    std::string_view lock_path;
     bool ignore_primary = false;
     std::unordered_set<std::string> selected_monitors;
     std::unordered_set<std::string> ignored_monitors;
@@ -55,6 +59,9 @@ public:
                      "\n"
                      "  -e        immediately exit if no monitors are blanked\n"
                      "  -h        display this help and exit\n"
+                     "  -l PATH   path to lock file. default is \"${TMPDIR:-/tmp}/"
+                  << exec_name
+                  << ".lock\"\n"
                      "  -m NAME   don't blank monitor with name NAME, can be given multiple times\n"
                      "  -p        don't blank primary monitor\n";
         std::exit(EXIT_SUCCESS);
@@ -68,13 +75,16 @@ public:
 
     void parse_args(int& argc, char**& argv)
     {
-        for (int i; (i = getopt(argc, argv, "ehm:p")) != -1;) {
+        for (int i; (i = getopt(argc, argv, "ehl:m:p")) != -1;) {
             switch (i) {
                 case 'e':
                     exit_if_none_selected = true;
                     break;
                 case 'h':
                     help();
+                    break;
+                case 'l':
+                    lock_path = optarg;
                     break;
                 case 'm':
                     ignored_monitors.emplace(optarg);
@@ -100,6 +110,7 @@ void cleanup(void)
     for (auto& window : windows)
         XDestroyWindow(display, window);
     XCloseDisplay(display);
+    std::filesystem::remove(lock_file);
 }
 
 void handle_signals([[maybe_unused]] int sig)
@@ -108,11 +119,43 @@ void handle_signals([[maybe_unused]] int sig)
     std::exit(EXIT_SUCCESS);
 }
 
+std::optional<bool> force_single_instance(const Options& options)
+{
+    if (!options.lock_path.empty()) {
+        lock_file = options.lock_path;
+    } else {
+        const char* tmpdir = std::getenv("TMPDIR");
+        lock_file = tmpdir ? tmpdir : "/tmp";
+
+        lock_file.reserve(lock_file.size() + 1 + xph::exec_name.size() + 5);
+        lock_file += "/";
+        lock_file += xph::exec_name;
+        lock_file += ".lock";
+    }
+
+    if (std::ifstream ifl(lock_file); ifl.is_open()) {
+        pid_t pid;
+        ifl >> pid;
+        kill(pid, SIGTERM);
+        ifl.close();
+        return { true };
+    } else if (std::ofstream ofl(lock_file); ofl.is_open()) {
+        pid_t pid = getpid();
+        ofl << pid;
+        return {};
+    } else {
+        return { false };
+    }
+}
+
 int main(int argc, char* argv[])
 {
     xph::gather_exec_info(argc, argv);
 
     Options options(xph::exec_name, argc, argv);
+
+    if (std::optional<bool> optional_ret; (optional_ret = force_single_instance(options)))
+        return *optional_ret;
 
     xph::die_if(!(display = XOpenDisplay(NULL)), "unable to open display");
     int default_screen = DefaultScreen(display);
