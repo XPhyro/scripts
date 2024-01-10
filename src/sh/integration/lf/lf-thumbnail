@@ -65,5 +65,6 @@ elif [ "$#" -eq 1 ]; then
     printf "%s\n" "Thumbnailing $1." >&2
     thumbnail "$1" >&2
 else
-    printf "%s\0" "$@" | xargs -r0 -P "$(($(nproc) / 4 + 1))" -n 1 "$0"
+    printf "%s\0" "$@" \
+        | parallel --eta --progress --total-jobs="$#" -r0 -P "$(($(nproc) / 4 + 1))" -n 1 "$0"
 fi
