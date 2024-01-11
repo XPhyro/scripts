@@ -20,32 +20,33 @@ PROGRAM_NAME = sys.argv[0].split("/")[-1]
 
 
 class API:
-    print_buffer = []
-    default_stdout = sp.DEVNULL
-    default_stderr = sp.DEVNULL
+    _print_buffer = []
+    _default_stdout = sp.DEVNULL
+    _default_stderr = sp.DEVNULL
+    _repeat_processes = {}
 
     @staticmethod
     def spawn_cmd(cmd, *args, **kwargs):
-        API.print_buffer.append((f"spawning command {repr(cmd)}", sys.stdout))
+        API._print_buffer.append((f"spawning command {repr(cmd)}", sys.stdout))
         return sp.Popen(
             cmd,
             *args,
             start_new_session=True,
-            stdout=API.default_stdout,
-            stderr=API.default_stderr,
+            stdout=API._default_stdout,
+            stderr=API._default_stderr,
             **kwargs,
         )
 
     @staticmethod
     def spawn_shell(cmd, *args, **kwargs):
-        API.print_buffer.append((f"spawning shell {repr(cmd)}", sys.stdout))
+        API._print_buffer.append((f"spawning shell {repr(cmd)}", sys.stdout))
         return sp.Popen(
             cmd,
             *args,
             start_new_session=True,
             shell=True,
-            stdout=API.default_stdout,
-            stderr=API.default_stderr,
+            stdout=API._default_stdout,
+            stderr=API._default_stderr,
             **kwargs,
         )
 
@@ -58,7 +59,7 @@ class API:
         if cmd_type is str:
             return API.spawn_shell(cmd, *args, **kwargs)
 
-        API.print_buffer.append(
+        API._print_buffer.append(
             (f"could not determine how to spawn {repr(cmd)}", sys.stderr)
         )
 
@@ -94,6 +95,35 @@ class API:
                 *[*(sum(zip(["keyup"] * len(keys), keys), ()))],
             ]
         )
+
+    @staticmethod
+    def _repeat_impl(keys, modifiers, down_time, up_time):
+        if not down_time:
+            while True:
+                API.send_key(keys, modifiers)
+                time.sleep(up_time)
+        else:
+            while True:
+                API.send_key_down(keys, modifiers)
+                time.sleep(down_time)
+                API.send_key_up(keys, modifiers)
+                time.sleep(up_time)
+
+    @staticmethod
+    def start_repeat_key(keys, modifiers=[], down_time=None, up_time=0.0):
+        process = mp.Process(
+            target=API._repeat_impl,
+            args=(keys, modifiers, down_time, up_time),
+        )
+        process.start()
+        API._repeat_processes[process.pid] = process
+        return process.pid
+
+    @staticmethod
+    def stop_repeat_key(id):
+        if id in API._repeat_processes:
+            process = API._repeat_processes.pop(id)
+            process.kill()
 
     @staticmethod
     def type_text(text):
@@ -343,7 +373,7 @@ def dev_read_loop_impl(args, dev_path, config_path):
                 grab = callback_func(callback_data)
 
                 if grab:
-                    if API.print_buffer or args.verbose:
+                    if API._print_buffer or args.verbose:
                         if not args.verbose:
                             print(f"{i}: received event {callback_data}")
                         print(f"caught event")
@@ -353,8 +383,8 @@ def dev_read_loop_impl(args, dev_path, config_path):
                     ui.write_event(event)
                     ui.syn()
 
-                while API.print_buffer:
-                    string, file = API.print_buffer.pop(0)
+                while API._print_buffer:
+                    string, file = API._print_buffer.pop(0)
                     print(string, file=file)
 
             last_timestamps[(button, event_type, value)] = (event.sec, event.usec)
