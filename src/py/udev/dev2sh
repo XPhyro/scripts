@@ -16,7 +16,7 @@ import evdev as ev
 import inotify.adapters
 
 
-PROGRAM_NAME = "dev2sh"
+PROGRAM_NAME = sys.argv[0].split("/")[-1]
 
 
 class API:
@@ -61,6 +61,7 @@ class API:
         API.print_buffer.append(
             (f"could not determine how to spawn {repr(cmd)}", sys.stderr)
         )
+
         return None
 
     @staticmethod
