@@ -63,15 +63,36 @@ class API:
         )
         return None
 
-    # TODO:
-    # @staticmethod
-    # def send_key_down():
-    #     pass
+    @staticmethod
+    def send_key(keys, modifiers=[]):
+        API.spawn_cmd(
+            [
+                "xdotool",
+                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["key"] * len(keys), keys), ()))],
+                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+            ]
+        )
 
-    # TODO:
-    # @staticmethod
-    # def send_key_up():
-    #     pass
+    @staticmethod
+    def send_key_down(keys, modifiers=[]):
+        API.spawn_cmd(
+            [
+                "xdotool",
+                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keydown"] * len(keys), keys), ()))],
+            ]
+        )
+
+    @staticmethod
+    def send_key_up(keys, modifiers=[]):
+        API.spawn_cmd(
+            [
+                "xdotool",
+                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keyup"] * len(keys), keys), ()))],
+            ]
+        )
 
     @staticmethod
     def type_text(text):
