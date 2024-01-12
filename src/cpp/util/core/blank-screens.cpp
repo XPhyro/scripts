@@ -20,9 +20,11 @@
 // C++ libraries
 #include <die.hpp>
 #include <iteratorutil.hpp>
+#include <lexical_cast.hpp>
 #include <sysutil.hpp>
 
 // third-party
+#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 
@@ -34,6 +36,7 @@ DEFINE_EXEC_INFO();
 
 struct Options {
 public:
+    double alpha = 1.0;
     bool exit_if_none_selected = false;
     std::string_view lock_path;
     bool ignore_primary = false;
@@ -53,18 +56,20 @@ public:
 
     void help(void)
     {
-        std::cout << "Usage: " << exec_name << " [OPTION...] [NAME...]\n"
-                  << "Blank monitors.\n"
-                     "\n"
-                     "If no NAME is provided, all monitors are blanked.\n"
-                     "\n"
-                     "  -e        immediately exit if no monitors are blanked\n"
-                     "  -h        display this help and exit\n"
-                     "  -l PATH   path to lock file. default is \"${TMPDIR:-/tmp}/"
-                  << exec_name
-                  << ".lock\"\n"
-                     "  -m NAME   don't blank monitor with name NAME, can be given multiple times\n"
-                     "  -p        don't blank primary monitor\n";
+        std::cout
+            << "Usage: " << exec_name << " [OPTION...] [NAME...]\n"
+            << "Blank monitors.\n"
+               "\n"
+               "If no NAME is provided, all monitors are blanked.\n"
+               "\n"
+               "  -a ALPHA   set alpha of blinds to ALPHA. default is 1.0.\n"
+               "  -e         immediately exit if no monitors are blanked\n"
+               "  -h         display this help and exit\n"
+               "  -l PATH    path to lock file. default is \"${TMPDIR:-/tmp}/"
+            << exec_name
+            << ".lock\"\n"
+               "  -m NAME    don't blank monitor with name NAME, can be given multiple times\n"
+               "  -p         don't blank primary monitor\n";
         std::exit(EXIT_SUCCESS);
     }
 
@@ -76,8 +81,11 @@ public:
 
     void parse_args(int& argc, char**& argv)
     {
-        for (int i; (i = getopt(argc, argv, "ehl:m:p")) != -1;) {
+        for (int i; (i = getopt(argc, argv, "a:ehl:m:p")) != -1;) {
             switch (i) {
+                case 'a':
+                    alpha = xph::lexical_cast<decltype(optarg), decltype(alpha)>(optarg);
+                    break;
                 case 'e':
                     exit_if_none_selected = true;
                     break;
@@ -191,7 +199,8 @@ int main(int argc, char* argv[])
             goto next;
         }
 
-        windows.push_back(XCreateSimpleWindow(display,
+        {
+            auto window = XCreateSimpleWindow(display,
                                               root_window,
                                               crtc_info->x,
                                               crtc_info->y,
@@ -199,7 +208,21 @@ int main(int argc, char* argv[])
                                               crtc_info->height,
                                               0,
                                               0,
-                                              0));
+                                              0);
+
+            unsigned long opacity = 0xFFFFFFFFul * options.alpha;
+            auto XA_NET_WM_WINDOW_OPACITY = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
+            XChangeProperty(display,
+                            window,
+                            XA_NET_WM_WINDOW_OPACITY,
+                            XA_CARDINAL,
+                            32,
+                            PropModeReplace,
+                            reinterpret_cast<unsigned char*>(&opacity),
+                            1L);
+
+            windows.push_back(window);
+        }
 
         XRRFreeCrtcInfo(crtc_info);
 next:

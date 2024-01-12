@@ -420,7 +420,6 @@
 
 ## New Scripts
 
-- Create software-level alternatives to the `bright*` scripts.
 - Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink
   them to the original locations.
