@@ -97,7 +97,7 @@ class API:
         )
 
     @staticmethod
-    def _repeat_impl(keys, modifiers, down_time, up_time):
+    def _repeat_key_impl(keys, modifiers, down_time, up_time):
         if not down_time:
             while True:
                 API.send_key(keys, modifiers)
@@ -112,7 +112,7 @@ class API:
     @staticmethod
     def start_repeat_key(keys, modifiers=[], down_time=None, up_time=0.0):
         process = mp.Process(
-            target=API._repeat_impl,
+            target=API._repeat_key_impl,
             args=(keys, modifiers, down_time, up_time),
         )
         process.start()
@@ -121,6 +121,66 @@ class API:
 
     @staticmethod
     def stop_repeat_key(id):
+        if id in API._repeat_processes:
+            process = API._repeat_processes.pop(id)
+            process.kill()
+
+    @staticmethod
+    def send_mouse(buttons, modifiers=[]):
+        API.spawn_cmd(
+            [
+                "xdotool",
+                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["click"] * len(buttons), buttons), ()))],
+                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+            ]
+        )
+
+    @staticmethod
+    def send_mouse_down(buttons, modifiers=[]):
+        API.spawn_cmd(
+            [
+                "xdotool",
+                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["mousedown"] * len(buttons), buttons), ()))],
+            ]
+        )
+
+    @staticmethod
+    def send_mouse_up(buttons, modifiers=[]):
+        API.spawn_cmd(
+            [
+                "xdotool",
+                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["mouseup"] * len(buttons), buttons), ()))],
+            ]
+        )
+
+    @staticmethod
+    def _repeat_mouse_impl(buttons, modifiers, down_time, up_time):
+        if not down_time:
+            while True:
+                API.send_mouse(buttons, modifiers)
+                time.sleep(up_time)
+        else:
+            while True:
+                API.send_mouse_down(buttons, modifiers)
+                time.sleep(down_time)
+                API.send_mouse_up(buttons, modifiers)
+                time.sleep(up_time)
+
+    @staticmethod
+    def start_repeat_mouse(buttons, modifiers=[], down_time=None, up_time=0.0):
+        process = mp.Process(
+            target=API._repeat_mouse_impl,
+            args=(buttons, modifiers, down_time, up_time),
+        )
+        process.start()
+        API._repeat_processes[process.pid] = process
+        return process.pid
+
+    @staticmethod
+    def stop_repeat_mouse(id):
         if id in API._repeat_processes:
             process = API._repeat_processes.pop(id)
             process.kill()
