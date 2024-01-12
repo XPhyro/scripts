@@ -35,8 +35,11 @@ static std::vector<Window> windows;
 DEFINE_EXEC_INFO();
 
 struct Options {
+private:
+    static const constexpr double k_default_alpha = 1.0;
+
 public:
-    double alpha = 1.0;
+    double alpha = k_default_alpha;
     bool exit_if_none_selected = false;
     std::string_view lock_path;
     bool ignore_primary = false;
@@ -62,7 +65,9 @@ public:
                "\n"
                "If no NAME is provided, all monitors are blanked.\n"
                "\n"
-               "  -a ALPHA   set alpha of blinds to ALPHA. default is 1.0.\n"
+               "  -a ALPHA   set alpha of blinds to ALPHA. default is "
+            << k_default_alpha
+            << ".\n"
                "  -e         immediately exit if no monitors are blanked\n"
                "  -h         display this help and exit\n"
                "  -l PATH    path to lock file. default is \"${TMPDIR:-/tmp}/"
