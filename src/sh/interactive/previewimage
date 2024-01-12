@@ -54,8 +54,12 @@ remove() {
     shift 1
 
     [ -e "$tmpdir/$pid" ] && {
-        xargs -r kill -SIGKILL -- < "$tmpdir/$pid"
-        rm -f -- "$tmpdir/$pid" "$tmpdir/$pid"-img-*
+        ueberzugpp_pid="$(cat -- "$tmpdir/$pid")"
+        kill -s KILL -- "$ueberzugpp_pid"
+        rm -f -- \
+            "$ueberzugpp_tmpdir/ueberzugpp-$ueberzugpp_pid.socket" \
+            "$tmpdir/$pid" \
+            "$tmpdir/$pid"-img-*
     }
 
     [ "$#" -ne 0 ] && remove "$@"
