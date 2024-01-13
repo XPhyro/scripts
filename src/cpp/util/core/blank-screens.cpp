@@ -1,6 +1,7 @@
 // @LDFLAGS -lX11 -lXrandr
 
 // C++
+#include <algorithm>
 #include <csignal>
 #include <cstdlib>
 #include <exec_info.hpp>
@@ -11,10 +12,12 @@
 #include <optional>
 #include <ranges>
 #include <string_view>
+#include <type_traits>
 #include <unordered_set>
 #include <vector>
 
 // C
+#include <sys/inotify.h>
 #include <unistd.h>
 
 // C++ libraries
@@ -39,6 +42,7 @@ private:
     static const constexpr double k_default_alpha = 1.0;
 
 public:
+    std::string_view alpha_path;
     double alpha = k_default_alpha;
     bool exit_if_none_selected = false;
     std::string_view lock_path;
@@ -65,6 +69,7 @@ public:
                "\n"
                "If no NAME is provided, all monitors are blanked.\n"
                "\n"
+               "  -A PATH    listen for alpha changes in PATH. listening is done via inotify.\n"
                "  -a ALPHA   set alpha of blinds to ALPHA. default is "
             << k_default_alpha
             << ".\n"
@@ -86,8 +91,11 @@ public:
 
     void parse_args(int& argc, char**& argv)
     {
-        for (int i; (i = getopt(argc, argv, "a:ehl:m:p")) != -1;) {
+        for (int i; (i = getopt(argc, argv, "A:a:ehl:m:p")) != -1;) {
             switch (i) {
+                case 'A':
+                    alpha_path = optarg;
+                    break;
                 case 'a':
                     alpha = xph::lexical_cast<decltype(optarg), decltype(alpha)>(optarg);
                     break;
@@ -119,18 +127,28 @@ public:
     }
 };
 
-void cleanup(void)
+[[noreturn]] void cleanup(int exit_code)
 {
     for (auto& window : windows)
         XDestroyWindow(display, window);
     XCloseDisplay(display);
     std::filesystem::remove(lock_file);
+    std::exit(exit_code);
+}
+
+[[noreturn]] void terminate(void)
+{
+    cleanup(EXIT_SUCCESS);
+}
+
+[[noreturn]] void die(void)
+{
+    cleanup(EXIT_FAILURE);
 }
 
 void handle_signals([[maybe_unused]] int sig)
 {
-    cleanup();
-    std::exit(EXIT_SUCCESS);
+    terminate();
 }
 
 std::optional<int> force_single_instance(const Options& options)
@@ -162,9 +180,9 @@ std::optional<int> force_single_instance(const Options& options)
     }
 }
 
-void set_window_alpha(Window window, const Options& options)
+void set_window_alpha(Window window, double alpha)
 {
-    unsigned long opacity = 0xFFFFFFFFul * options.alpha;
+    unsigned long opacity = 0xFFFFFFFFul * alpha;
     auto XA_NET_WM_WINDOW_OPACITY = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
     XChangeProperty(display,
                     window,
@@ -235,11 +253,46 @@ next:
         XMapWindow(display, window);
         XFlush(display);
 
-        set_window_alpha(window, options);
+        set_window_alpha(window, options.alpha);
         XSetWindowBackground(display, window, BlackPixel(display, default_screen));
         XClearWindow(display, window);
         XFlush(display);
     }
+}
+
+[[nodiscard]] bool watch_alpha(const char* path)
+{
+    const constexpr auto eventsize = sizeof(struct inotify_event);
+    const constexpr auto buflen = (eventsize + 16) * 1024;
+
+    const auto fd = inotify_init();
+    if (fd < 0) {
+        perror("inotify_init");
+        return false;
+    }
+
+    const auto wd = inotify_add_watch(fd, path, IN_CREATE | IN_MODIFY | IN_MOVE_SELF);
+
+    char buf[buflen];
+    const auto length = read(fd, buf, buflen);
+    if (length < 0) {
+        perror("read");
+        return false;
+    }
+
+    std::remove_const<decltype(length)>::type i = 0;
+    while (i < length) {
+        const struct inotify_event* event = reinterpret_cast<const struct inotify_event*>(&buf[i]);
+        if (event->len)
+            goto cleanup;
+        i += eventsize + event->len;
+    }
+
+cleanup:
+    inotify_rm_watch(fd, wd);
+    close(fd);
+
+    return true;
 }
 
 int main(int argc, char* argv[])
@@ -253,13 +306,27 @@ int main(int argc, char* argv[])
 
     create_windows(options);
 
-    if (options.exit_if_none_selected && windows.empty()) {
-        cleanup();
-        return EXIT_SUCCESS;
-    }
+    if (options.exit_if_none_selected && windows.empty())
+        terminate();
 
     xph::sys::signals<4>({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_signals);
-    std::promise<void>().get_future().wait();
 
-    return EXIT_SUCCESS;
+    if (!options.alpha_path.empty()) {
+        while (watch_alpha(options.alpha_path.data())) {
+            std::ifstream ifl(options.alpha_path.data());
+            if (!ifl.is_open())
+                continue;
+
+            double alpha;
+            ifl >> alpha;
+            std::for_each(windows.begin(), windows.end(), [&](auto window) {
+                set_window_alpha(window, alpha);
+                XFlush(display);
+            });
+        }
+        die();
+    }
+
+    std::promise<void>().get_future().wait();
+    terminate();
 }
