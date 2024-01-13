@@ -162,15 +162,22 @@ std::optional<int> force_single_instance(const Options& options)
     }
 }
 
-int main(int argc, char* argv[])
+void set_window_alpha(Window window, const Options& options)
 {
-    xph::gather_exec_info(argc, argv);
+    unsigned long opacity = 0xFFFFFFFFul * options.alpha;
+    auto XA_NET_WM_WINDOW_OPACITY = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
+    XChangeProperty(display,
+                    window,
+                    XA_NET_WM_WINDOW_OPACITY,
+                    XA_CARDINAL,
+                    32,
+                    PropModeReplace,
+                    reinterpret_cast<unsigned char*>(&opacity),
+                    1L);
+}
 
-    Options options(xph::exec_name, argc, argv);
-
-    if (std::optional<int> optional_ret; (optional_ret = force_single_instance(options)))
-        return *optional_ret;
-
+void create_windows(const Options& options)
+{
     xph::die_if(!(display = XOpenDisplay(NULL)), "unable to open display");
     int default_screen = DefaultScreen(display);
 
@@ -204,8 +211,7 @@ int main(int argc, char* argv[])
             goto next;
         }
 
-        {
-            auto window = XCreateSimpleWindow(display,
+        windows.push_back(XCreateSimpleWindow(display,
                                               root_window,
                                               crtc_info->x,
                                               crtc_info->y,
@@ -213,32 +219,13 @@ int main(int argc, char* argv[])
                                               crtc_info->height,
                                               0,
                                               0,
-                                              0);
-
-            unsigned long opacity = 0xFFFFFFFFul * options.alpha;
-            auto XA_NET_WM_WINDOW_OPACITY = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
-            XChangeProperty(display,
-                            window,
-                            XA_NET_WM_WINDOW_OPACITY,
-                            XA_CARDINAL,
-                            32,
-                            PropModeReplace,
-                            reinterpret_cast<unsigned char*>(&opacity),
-                            1L);
-
-            windows.push_back(window);
-        }
+                                              0));
 
         XRRFreeCrtcInfo(crtc_info);
 next:
         XRRFreeOutputInfo(output_info);
     }
     XRRFreeScreenResources(screen_resources);
-
-    if (options.exit_if_none_selected && windows.empty()) {
-        cleanup();
-        return EXIT_SUCCESS;
-    }
 
     for (auto& window : windows) {
         XSetWindowAttributes attr;
@@ -248,9 +235,27 @@ next:
         XMapWindow(display, window);
         XFlush(display);
 
+        set_window_alpha(window, options);
         XSetWindowBackground(display, window, BlackPixel(display, default_screen));
         XClearWindow(display, window);
         XFlush(display);
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    xph::gather_exec_info(argc, argv);
+
+    Options options(xph::exec_name, argc, argv);
+
+    if (std::optional<int> optional_ret; (optional_ret = force_single_instance(options)))
+        return *optional_ret;
+
+    create_windows(options);
+
+    if (options.exit_if_none_selected && windows.empty()) {
+        cleanup();
+        return EXIT_SUCCESS;
     }
 
     xph::sys::signals<4>({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_signals);
