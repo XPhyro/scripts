@@ -16,7 +16,7 @@ import evdev as ev
 import inotify.adapters
 
 
-PROGRAM_NAME = sys.argv[0].split("/")[-1]
+PROGRAM_NAME = sys.argv[0].rsplit("/", maxsplit=1)[-1]
 
 
 class API:
@@ -66,32 +66,32 @@ class API:
         return None
 
     @staticmethod
-    def send_key(keys, modifiers=[]):
+    def send_key(keys, modifiers=None):
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
                 *[*(sum(zip(["key"] * len(keys), keys), ()))],
-                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keyup"] * len(m), m), ()))],
             ]
         )
 
     @staticmethod
-    def send_key_down(keys, modifiers=[]):
+    def send_key_down(keys, modifiers=None):
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
                 *[*(sum(zip(["keydown"] * len(keys), keys), ()))],
             ]
         )
 
     @staticmethod
-    def send_key_up(keys, modifiers=[]):
+    def send_key_up(keys, modifiers=None):
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keyup"] * len(m := modifiers or []), m), ()))],
                 *[*(sum(zip(["keyup"] * len(keys), keys), ()))],
             ]
         )
@@ -110,48 +110,48 @@ class API:
                 time.sleep(up_time)
 
     @staticmethod
-    def start_repeat_key(keys, modifiers=[], down_time=None, up_time=0.0):
+    def start_repeat_key(keys, modifiers=None, down_time=None, up_time=0.0):
         process = mp.Process(
             target=API._repeat_key_impl,
-            args=(keys, modifiers, down_time, up_time),
+            args=(keys, modifiers or [], down_time, up_time),
         )
         process.start()
         API._repeat_processes[process.pid] = process
         return process.pid
 
     @staticmethod
-    def stop_repeat_key(id):
-        if id in API._repeat_processes:
-            process = API._repeat_processes.pop(id)
+    def stop_repeat_key(repeat_id):
+        if repeat_id in API._repeat_processes:
+            process = API._repeat_processes.pop(repeat_id)
             process.kill()
 
     @staticmethod
-    def send_mouse(buttons, modifiers=[]):
+    def send_mouse(buttons, modifiers=None):
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
                 *[*(sum(zip(["click"] * len(buttons), buttons), ()))],
-                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keyup"] * len(m), m), ()))],
             ]
         )
 
     @staticmethod
-    def send_mouse_down(buttons, modifiers=[]):
+    def send_mouse_down(buttons, modifiers=None):
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
                 *[*(sum(zip(["mousedown"] * len(buttons), buttons), ()))],
             ]
         )
 
     @staticmethod
-    def send_mouse_up(buttons, modifiers=[]):
+    def send_mouse_up(buttons, modifiers=None):
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keyup"] * len(modifiers), modifiers), ()))],
+                *[*(sum(zip(["keyup"] * len(m := modifiers or []), m), ()))],
                 *[*(sum(zip(["mouseup"] * len(buttons), buttons), ()))],
             ]
         )
@@ -170,19 +170,19 @@ class API:
                 time.sleep(up_time)
 
     @staticmethod
-    def start_repeat_mouse(buttons, modifiers=[], down_time=None, up_time=0.0):
+    def start_repeat_mouse(buttons, modifiers=None, down_time=None, up_time=0.0):
         process = mp.Process(
             target=API._repeat_mouse_impl,
-            args=(buttons, modifiers, down_time, up_time),
+            args=(buttons, modifiers or [], down_time, up_time),
         )
         process.start()
         API._repeat_processes[process.pid] = process
         return process.pid
 
     @staticmethod
-    def stop_repeat_mouse(id):
-        if id in API._repeat_processes:
-            process = API._repeat_processes.pop(id)
+    def stop_repeat_mouse(repeat_id):
+        if repeat_id in API._repeat_processes:
+            process = API._repeat_processes.pop(repeat_id)
             process.kill()
 
     @staticmethod
@@ -242,7 +242,7 @@ class CallbackData:
         return self.button == other
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
 
 def parse_args():
@@ -323,7 +323,7 @@ def get_wm_props(default=None):
         wm_class = wm_class[1] if wm_class else ""
         wm_name = wm_name.decode("utf-8") if wm_name else ""
         return (wm_class, wm_instance, wm_name)
-    except:
+    except Exception:
         return (default, default, default)
 
 
@@ -436,10 +436,10 @@ def dev_read_loop_impl(args, dev_path, config_path):
                     if API._print_buffer or args.verbose:
                         if not args.verbose:
                             print(f"{i}: received event {callback_data}")
-                        print(f"caught event")
+                        print("caught event")
                 else:
                     if args.verbose:
-                        print(f"passed event through")
+                        print("passed event through")
                     ui.write_event(event)
                     ui.syn()
 
