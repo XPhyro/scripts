@@ -31,7 +31,7 @@ printf "%s\n" "$changed_files" \
             [ -e "$full_path" ] || continue
             file_content="$(cat -- "$full_path")"
             (cd "$(dirname -- "$full_path")" \
-                 && black -- "$full_path" \
+                 && black -q -- "$full_path" \
                  && {
                      [ -z "$GIT_PRE_COMMIT_NO_ADD" ] \
                      || [ "$GIT_PRE_COMMIT_NO_ADD" -ne 0 ]
@@ -40,8 +40,12 @@ printf "%s\n" "$changed_files" \
             )
             printf "%s\n" "$file_content" | cmp -s -- "$full_path" \
                 && printf "Formatted file %s\n" "$(basename -- "$full_path")"
+            pylint --rcfile src/py/.pylintrc --score=false -- "$full_path" || {
+                printf "${COLOR_RED}Commit introduces %s with pylint issues.${COLOR_CLEAR}\n" "$(basename -- "$full_path")"
+                exit 1
+            }
         }
-    done
+    done || exit 1
 
 printf "%s\n" "$changed_files" \
     | grep "^src/sh/.*[^/]" \
