@@ -156,7 +156,7 @@ std::optional<int> force_single_instance(const Options& options)
     if (!options.lock_path.empty()) {
         lock_file = options.lock_path;
     } else {
-        const char* tmpdir = std::getenv("TMPDIR");
+        const auto tmpdir = std::getenv("TMPDIR");
         lock_file = tmpdir ? tmpdir : "/tmp";
 
         lock_file.reserve(lock_file.size() + 1 + xph::exec_name.size() + 5);
@@ -183,10 +183,10 @@ std::optional<int> force_single_instance(const Options& options)
 void set_window_alpha(Window window, double alpha)
 {
     unsigned long opacity = 0xFFFFFFFFul * alpha;
-    auto XA_NET_WM_WINDOW_OPACITY = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
+    auto opacity_atom = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
     XChangeProperty(display,
                     window,
-                    XA_NET_WM_WINDOW_OPACITY,
+                    opacity_atom,
                     XA_CARDINAL,
                     32,
                     PropModeReplace,
@@ -197,9 +197,9 @@ void set_window_alpha(Window window, double alpha)
 void create_windows(const Options& options)
 {
     xph::die_if(!(display = XOpenDisplay(NULL)), "unable to open display");
-    int default_screen = DefaultScreen(display);
 
-    Window root_window = RootWindow(display, default_screen);
+    auto default_screen = DefaultScreen(display);
+    auto root_window = RootWindow(display, default_screen);
 
     XRRScreenResources* screen_resources = XRRGetScreenResources(display, root_window);
     xph::die_if(!screen_resources, "unable to get screen resources");
@@ -210,7 +210,7 @@ void create_windows(const Options& options)
         if (options.ignore_primary && screen_resources->outputs[i] == primary_output)
             continue;
 
-        XRROutputInfo* output_info =
+        auto output_info =
             XRRGetOutputInfo(display, screen_resources, screen_resources->outputs[i]);
         if (!output_info) {
             std::cerr << xph::exec_name << ": unable to get information for monitor " << i << '\n';
@@ -246,9 +246,9 @@ next:
     XRRFreeScreenResources(screen_resources);
 
     for (auto& window : windows) {
-        XSetWindowAttributes attr;
-        attr.override_redirect = True;
-        XChangeWindowAttributes(display, window, CWOverrideRedirect, &attr);
+        XSetWindowAttributes window_attributes;
+        window_attributes.override_redirect = True;
+        XChangeWindowAttributes(display, window, CWOverrideRedirect, &window_attributes);
 
         XMapWindow(display, window);
         XFlush(display);
@@ -282,7 +282,7 @@ next:
 
     std::remove_const<decltype(length)>::type i = 0;
     while (i < length) {
-        const struct inotify_event* event = reinterpret_cast<const struct inotify_event*>(&buf[i]);
+        auto event = reinterpret_cast<const struct inotify_event*>(&buf[i]);
         if (event->len)
             goto cleanup;
         i += eventsize + event->len;
