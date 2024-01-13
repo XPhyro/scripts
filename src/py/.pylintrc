@@ -80,9 +80,12 @@ confidence=
 # --disable=W".
 disable=fixme,
         missing-module-docstring,
-        invalid-name,
+        missing-class-docstring,
         missing-function-docstring,
+        invalid-name,
         global-variable-undefined,
+        global-variable-not-assigned,
+        protected-access,
         unused-argument,
         consider-using-with,
 
@@ -566,7 +569,7 @@ max-statements=9999
 
 # Minimum number of public methods for a class (see R0903).
 # min-public-methods=2
-min-public-methods=9999
+min-public-methods=2
 
 
 [EXCEPTIONS]
