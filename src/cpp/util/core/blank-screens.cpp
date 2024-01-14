@@ -41,15 +41,19 @@ DEFINE_EXEC_INFO();
 struct Options {
 private:
     static const constexpr double k_default_alpha = 1.0;
+    static const constexpr double k_default_frame_rate = 100.0;
+    static const constexpr double k_default_lerp_factor = 0.10;
 
 public:
     std::string_view alpha_path;
     double alpha = k_default_alpha;
     bool exit_if_none_selected = false;
+    std::chrono::duration<double> frame_time{ 1.0 / k_default_frame_rate };
     std::string_view lock_path;
-    bool ignore_primary = false;
-    std::unordered_set<std::string> selected_monitors;
     std::unordered_set<std::string> ignored_monitors;
+    bool ignore_primary = false;
+    double lerp_factor = k_default_lerp_factor;
+    std::unordered_set<std::string> selected_monitors;
 
 private:
     std::string_view exec_name;
@@ -70,17 +74,22 @@ public:
                "\n"
                "If no NAME is provided, all monitors are blanked.\n"
                "\n"
-               "  -A PATH    listen for alpha changes in PATH. listening is done via inotify.\n"
-               "  -a ALPHA   set alpha of blinds to ALPHA. default is "
+               "  -A PATH      listen for alpha changes in PATH. listening is done via inotify.\n"
+               "  -a ALPHA     set alpha of blinds to ALPHA. default is "
             << k_default_alpha
             << ".\n"
-               "  -e         immediately exit if no monitors are blanked\n"
-               "  -h         display this help and exit\n"
-               "  -l PATH    path to lock file. default is \"${TMPDIR:-/tmp}/"
+               "  -e           immediately exit if no monitors are blanked\n"
+               "  -f FPS       set frame rate of alpha interpolation to FPS. default is "
+            << k_default_frame_rate
+            << ".\n"
+               "  -h           display this help and exit\n"
+               "  -l PATH      path to lock file. default is \"${TMPDIR:-/tmp}/"
             << exec_name
             << ".lock\"\n"
-               "  -m NAME    don't blank monitor with name NAME, can be given multiple times\n"
-               "  -p         don't blank primary monitor\n";
+               "  -m NAME      don't blank monitor with name NAME, can be given multiple times\n"
+               "  -p           don't blank primary monitor\n"
+               "  -t FACTOR    set alpha interpolation factor to FACTOR. default is "
+            << k_default_lerp_factor << ".\n";
         std::exit(EXIT_SUCCESS);
     }
 
@@ -92,7 +101,7 @@ public:
 
     void parse_args(int& argc, char**& argv)
     {
-        for (int i; (i = getopt(argc, argv, "A:a:ehl:m:p")) != -1;) {
+        for (int i; (i = getopt(argc, argv, "A:a:ef:hl:m:pt:")) != -1;) {
             switch (i) {
                 case 'A':
                     alpha_path = optarg;
@@ -102,6 +111,11 @@ public:
                     break;
                 case 'e':
                     exit_if_none_selected = true;
+                    break;
+                case 'f':
+                    frame_time = decltype(frame_time)(
+                        1.0 /
+                        xph::lexical_cast<decltype(optarg), decltype(frame_time)::rep>(optarg));
                     break;
                 case 'h':
                     help();
@@ -114,6 +128,10 @@ public:
                     break;
                 case 'p':
                     ignore_primary = true;
+                    break;
+                case 't':
+                    lerp_factor =
+                        xph::lexical_cast<decltype(optarg), decltype(lerp_factor)>(optarg);
                     break;
                 default:
                     error();
@@ -322,17 +340,13 @@ int main(int argc, char* argv[])
             ifl >> new_alpha;
 
             while (!xph::approx_eq(alpha, new_alpha, 0.0001)) {
-                const constexpr double t = 0.1;
-                const constexpr double frame_rate = 100;
-                const constexpr std::chrono::duration<double> frame_time(1 / frame_rate);
-
-                alpha += (new_alpha - alpha) * t;
+                alpha += (new_alpha - alpha) * options.lerp_factor;
                 std::for_each(windows.begin(), windows.end(), [&](auto window) {
                     set_window_alpha(window, alpha);
                     XFlush(display);
                 });
 
-                std::this_thread::sleep_for(frame_time);
+                std::this_thread::sleep_for(options.frame_time);
 
                 if (ifl.good()) {
                     ifl.seekg(0);
