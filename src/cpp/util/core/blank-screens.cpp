@@ -17,15 +17,23 @@
 #include <vector>
 
 // C
+#include <cstdio>
+#include <fcntl.h>
 #include <sys/inotify.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 // C++ libraries
+#include <auto_charptr.hpp>
 #include <die.hpp>
 #include <iteratorutil.hpp>
 #include <lexical_cast.hpp>
 #include <mathutil.hpp>
 #include <sysutil.hpp>
+
+// C libraries
+#include <ioutil.h>
 
 // third-party
 #include <X11/Xatom.h>
@@ -331,13 +339,39 @@ int main(int argc, char* argv[])
     xph::sys::signals<4>({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_signals);
 
     if (!options.alpha_path.empty()) {
-        for (auto alpha = options.alpha; watch_alpha(options.alpha_path.data());) {
-            std::ifstream ifl(options.alpha_path.data());
-            if (!ifl.is_open())
-                continue;
+        if (!std::filesystem::exists(options.alpha_path) &&
+            ::mkfifo(options.alpha_path.data(), 0666)) {
+            std::perror("mkfifo");
+            die();
+        }
 
+        auto fd = ::open(options.alpha_path.data(), O_RDONLY | O_NONBLOCK);
+        if (fd == -1) {
+            std::perror("open");
+            die();
+        }
+
+        if (struct stat st; !::fstat(fd, &st) && !S_ISFIFO(st.st_mode))
+            die();
+
+        fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(fd, &read_fds);
+
+        struct timeval timeout = {
+            .tv_sec = 0,
+            .tv_usec = 0,
+        };
+
+        while (watch_alpha(options.alpha_path.data())) {
+            static auto alpha = options.alpha;
+            static std::stringstream ss;
+            ss.str("");
+            ss.clear();
+            for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
+                 ss << buf) {}
             double new_alpha;
-            ifl >> new_alpha;
+            ss >> new_alpha;
 
             const constexpr double epsilon = 0.0001;
             while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
@@ -349,9 +383,16 @@ int main(int argc, char* argv[])
 
                 std::this_thread::sleep_for(options.frame_time);
 
-                if (ifl.good()) {
-                    ifl.seekg(0);
-                    ifl >> new_alpha;
+                if (auto select = ::select(fd + 1, &read_fds, nullptr, nullptr, &timeout);
+                    select == -1) {
+                    std::perror("select");
+                    die();
+                } else if (select) {
+                    ss.str("");
+                    ss.clear();
+                    for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
+                         ss << buf) {}
+                    ss >> new_alpha;
                 }
             }
 
