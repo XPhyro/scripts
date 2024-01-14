@@ -11,6 +11,16 @@ namespace xph {
     {
         return -1e-12 < x && x < 1e-12;
     }
+
+    inline bool approx_eq(float x, float y)
+    {
+        return approx_zero(x - y);
+    }
+
+    inline bool approx_eq(double x, double y)
+    {
+        return approx_zero(x - y);
+    }
 } // namespace xph
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_MATHUTIL_ */

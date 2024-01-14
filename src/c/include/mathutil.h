@@ -13,4 +13,14 @@ bool approxzerof(float x)
     return -1e-6f < x && x < 1e-6f;
 }
 
+bool approxeq(double x, double y)
+{
+    return approxzero(x - y);
+}
+
+bool approxeqf(float x, float y)
+{
+    return approxzerof(x - y);
+}
+
 #endif /* ifndef HEADER_SCRIPTS_C_MATHUTIL_ */
