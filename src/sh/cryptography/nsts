@@ -29,7 +29,7 @@ while getopts "AaBbc:H:hl:T:" OPT; do
         c) opt_bitstream_count="$OPTARG";;
         H) opt_remove_head="$OPTARG";;
         h) printf "%s" \
-"Usage: $execname [OPTION]...
+"Usage: $execname [OPTION...] FILE [FILE...]
 Pass data through NIST tests.
 
   -A          enable all tests.
