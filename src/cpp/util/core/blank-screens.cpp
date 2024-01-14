@@ -339,7 +339,8 @@ int main(int argc, char* argv[])
             double new_alpha;
             ifl >> new_alpha;
 
-            while (!xph::approx_eq(alpha, new_alpha, 0.0001)) {
+            const constexpr double epsilon = 0.0001;
+            while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
                 alpha += (new_alpha - alpha) * options.lerp_factor;
                 std::for_each(windows.begin(), windows.end(), [&](auto window) {
                     set_window_alpha(window, alpha);
