@@ -24,6 +24,7 @@
 #include <die.hpp>
 #include <iteratorutil.hpp>
 #include <lexical_cast.hpp>
+#include <mathutil.hpp>
 #include <sysutil.hpp>
 
 // third-party
@@ -312,17 +313,38 @@ int main(int argc, char* argv[])
     xph::sys::signals<4>({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_signals);
 
     if (!options.alpha_path.empty()) {
-        while (watch_alpha(options.alpha_path.data())) {
+        for (auto alpha = options.alpha; watch_alpha(options.alpha_path.data());) {
             std::ifstream ifl(options.alpha_path.data());
             if (!ifl.is_open())
                 continue;
 
-            double alpha;
-            ifl >> alpha;
+            double new_alpha;
+            ifl >> new_alpha;
+
+            while (!xph::approx_eq(alpha, new_alpha, 0.0001)) {
+                const constexpr double t = 0.1;
+                const constexpr double frame_rate = 100;
+                const constexpr std::chrono::duration<double> frame_time(1 / frame_rate);
+
+                alpha += (new_alpha - alpha) * t;
+                std::for_each(windows.begin(), windows.end(), [&](auto window) {
+                    set_window_alpha(window, alpha);
+                    XFlush(display);
+                });
+
+                std::this_thread::sleep_for(frame_time);
+
+                if (ifl.good()) {
+                    ifl.seekg(0);
+                    ifl >> new_alpha;
+                }
+            }
+
             std::for_each(windows.begin(), windows.end(), [&](auto window) {
-                set_window_alpha(window, alpha);
+                set_window_alpha(window, new_alpha);
                 XFlush(display);
             });
+            alpha = new_alpha;
         }
         die();
     }
