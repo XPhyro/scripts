@@ -372,10 +372,12 @@ int main(int argc, char* argv[])
                  ss << buf) {}
             double new_alpha;
             ss >> new_alpha;
+            new_alpha = std::clamp(new_alpha, 0.0, 1.0);
 
             const constexpr double epsilon = 0.0001;
             while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
                 alpha += (new_alpha - alpha) * options.lerp_factor;
+                alpha = std::clamp(alpha, 0.0, 1.0);
                 std::for_each(windows.begin(), windows.end(), [&](auto window) {
                     set_window_alpha(window, alpha);
                     XFlush(display);
