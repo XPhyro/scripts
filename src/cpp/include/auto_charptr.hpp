@@ -33,6 +33,11 @@ namespace xph {
             std::free(m_ptr);
             m_ptr = new_ptr;
         }
+
+        inline void unsafe_overwrite(char* new_ptr) noexcept
+        {
+            m_ptr = new_ptr;
+        }
     };
 } // namespace xph
 
