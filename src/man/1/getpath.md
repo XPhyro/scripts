@@ -87,7 +87,7 @@ See ENVIRONMENT section for `$PREFIX`.
 
 # AUTHOR
 
-Berke Kocaoğlu <kberke@metu.edu.tr>
+Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
 
 # BUGS & ISSUES
 
