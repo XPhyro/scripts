@@ -366,13 +366,17 @@ int main(int argc, char* argv[])
         while (watch_alpha(options.alpha_path.data())) {
             static auto alpha = options.alpha;
             static std::stringstream ss;
-            ss.str("");
-            ss.clear();
-            for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
-                 ss << buf) {}
-            double new_alpha;
-            ss >> new_alpha;
-            new_alpha = std::clamp(new_alpha, 0.0, 1.0);
+            static double new_alpha;
+            static auto read_alpha = [&](void) {
+                for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
+                     ss << buf) {}
+                ss >> new_alpha;
+                ss.str("");
+                ss.clear();
+                new_alpha = std::clamp(new_alpha, 0.0, 1.0);
+            };
+
+            read_alpha();
 
             const constexpr double epsilon = 0.0001;
             while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
@@ -390,11 +394,7 @@ int main(int argc, char* argv[])
                     std::perror("select");
                     die();
                 } else if (select) {
-                    ss.str("");
-                    ss.clear();
-                    for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
-                         ss << buf) {}
-                    ss >> new_alpha;
+                    read_alpha();
                 }
             }
 
