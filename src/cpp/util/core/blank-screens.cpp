@@ -154,23 +154,25 @@ public:
     }
 };
 
-[[noreturn]] void cleanup(int exit_code)
+void cleanup(void)
 {
     for (auto& window : windows)
         XDestroyWindow(display, window);
     XCloseDisplay(display);
     std::filesystem::remove(lock_file);
-    std::exit(exit_code);
 }
 
 [[noreturn]] void terminate(void)
 {
-    cleanup(EXIT_SUCCESS);
+    cleanup();
+    std::exit(EXIT_SUCCESS);
 }
 
-[[noreturn]] void die(void)
+template <typename... Ts>
+[[noreturn]] void die(const Ts&... args)
 {
-    cleanup(EXIT_FAILURE);
+    cleanup();
+    xph::die(args...);
 }
 
 void handle_signals([[maybe_unused]] int sig)
@@ -342,17 +344,17 @@ int main(int argc, char* argv[])
         if (!std::filesystem::exists(options.alpha_path) &&
             ::mkfifo(options.alpha_path.data(), 0666)) {
             std::perror("mkfifo");
-            die();
+            die("could not create fifo at ", options.alpha_path);
         }
 
         auto fd = ::open(options.alpha_path.data(), O_RDONLY | O_NONBLOCK);
         if (fd == -1) {
             std::perror("open");
-            die();
+            die("could not open ", options.alpha_path);
         }
 
         if (struct stat st; !::fstat(fd, &st) && !S_ISFIFO(st.st_mode))
-            die();
+            die(options.alpha_path, " exists and is not a fifo");
 
         fd_set read_fds;
         FD_ZERO(&read_fds);
@@ -392,7 +394,7 @@ int main(int argc, char* argv[])
                 if (auto select = ::select(fd + 1, &read_fds, nullptr, nullptr, &timeout);
                     select == -1) {
                     std::perror("select");
-                    die();
+                    die("could not check for data in ", options.alpha_path);
                 } else if (select) {
                     read_alpha();
                 }
@@ -404,7 +406,7 @@ int main(int argc, char* argv[])
             });
             alpha = new_alpha;
         }
-        die();
+        die("could not watch ", options.alpha_path);
     }
 
     std::promise<void>().get_future().wait();
