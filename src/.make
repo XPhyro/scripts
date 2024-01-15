@@ -1073,7 +1073,7 @@ CXX="g++"
 CXX_INCLUDE_FLAGS="-Iinclude -I'$rootdir/src/c/include' \
                    -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
-          -Wall -Wextra -Werror -Wabi=12 \
+          -Wall -Wextra -Werror -Wabi=18 \
           -Wswitch-default \
           -Wimplicit-fallthrough=5 -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
