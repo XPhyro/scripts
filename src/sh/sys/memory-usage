@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+
+. shellverbose.sh
+. sudo.sh
+
+std_sudo ps -eo size,pid,user,command \
+    | awk '{printf("%d %s\n", $1, $4)}' \
+    | cut -d "" -f2 \
+    | cut -d "-" -f1 \
+    | tail -n +2 \
+    | grep -Evx '[0-9]+ \[[a-zA-Z0-9/:_.+]+\]?' \
+    | sed 's/ /\t/' \
+    | datamash -s -g2 sum 1 \
+    | datamash reverse \
+    | awk '{printf("%f GiB %s\n", $1 / 1024 / 1024, $2)}' \
+    | sort -n
