@@ -13,7 +13,7 @@
 
 OBS_DECLARE_MODULE()
 
-std::unordered_map<obs_frontend_event, const char*> event_sounds = {
+std::unordered_map<enum obs_frontend_event, const char*> event_sounds = {
     { OBS_FRONTEND_EVENT_STREAMING_STARTED, "stream-started.mp3" },
     { OBS_FRONTEND_EVENT_STREAMING_STOPPED, "stream-stopped.mp3" },
     { OBS_FRONTEND_EVENT_RECORDING_STARTED, "recording-started.mp3" },
