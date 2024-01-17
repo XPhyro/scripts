@@ -60,10 +60,7 @@ void event_callback(enum obs_frontend_event event, [[maybe_unused]] void* privat
     last_pid = play_sound(event_sounds.at(event));
 }
 
-const char* obs_module_author(void)
-{
-    return "Berke Kocaoğlu";
-}
+OBS_MODULE_AUTHOR("Berke Kocaoğlu")
 
 const char* obs_module_name(void)
 {
@@ -80,5 +77,3 @@ bool obs_module_load(void)
     obs_frontend_add_event_callback(event_callback, 0);
     return true;
 }
-
-void obs_module_unload(void) {}
