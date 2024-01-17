@@ -67,32 +67,41 @@ class API:
 
     @staticmethod
     def send_key(keys, modifiers=None):
+        k = [str(key) for key in keys]
+        m = [str(modifier) for modifier in modifiers] if modifiers else []
+
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
-                *[*(sum(zip(["key"] * len(keys), keys), ()))],
+                *[*(sum(zip(["keydown"] * len(m), m), ()))],
+                *[*(sum(zip(["key"] * len(k), k), ()))],
                 *[*(sum(zip(["keyup"] * len(m), m), ()))],
             ]
         )
 
     @staticmethod
     def send_key_down(keys, modifiers=None):
+        k = [str(key) for key in keys]
+        m = [str(modifier) for modifier in modifiers] if modifiers else []
+
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
-                *[*(sum(zip(["keydown"] * len(keys), keys), ()))],
+                *[*(sum(zip(["keydown"] * len(m), m), ()))],
+                *[*(sum(zip(["keydown"] * len(k), k), ()))],
             ]
         )
 
     @staticmethod
     def send_key_up(keys, modifiers=None):
+        k = [str(key) for key in keys]
+        m = [str(modifier) for modifier in modifiers] if modifiers else []
+
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keyup"] * len(m := modifiers or []), m), ()))],
-                *[*(sum(zip(["keyup"] * len(keys), keys), ()))],
+                *[*(sum(zip(["keyup"] * len(m), m), ()))],
+                *[*(sum(zip(["keyup"] * len(k), k), ()))],
             ]
         )
 
@@ -127,32 +136,41 @@ class API:
 
     @staticmethod
     def send_mouse(buttons, modifiers=None):
+        b = [str(button) for button in buttons]
+        m = [str(modifier) for modifier in modifiers] if modifiers else []
+
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
-                *[*(sum(zip(["click"] * len(buttons), buttons), ()))],
+                *[*(sum(zip(["keydown"] * len(m), m), ()))],
+                *[*(sum(zip(["click"] * len(b), b), ()))],
                 *[*(sum(zip(["keyup"] * len(m), m), ()))],
             ]
         )
 
     @staticmethod
     def send_mouse_down(buttons, modifiers=None):
+        b = [str(button) for button in buttons]
+        m = [str(modifier) for modifier in modifiers] if modifiers else []
+
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keydown"] * len(m := modifiers or []), m), ()))],
-                *[*(sum(zip(["mousedown"] * len(buttons), buttons), ()))],
+                *[*(sum(zip(["keydown"] * len(m), m), ()))],
+                *[*(sum(zip(["mousedown"] * len(b), b), ()))],
             ]
         )
 
     @staticmethod
     def send_mouse_up(buttons, modifiers=None):
+        b = [str(button) for button in buttons]
+        m = [str(modifier) for modifier in modifiers] if modifiers else []
+
         API.spawn_cmd(
             [
                 "xdotool",
-                *[*(sum(zip(["keyup"] * len(m := modifiers or []), m), ()))],
-                *[*(sum(zip(["mouseup"] * len(buttons), buttons), ()))],
+                *[*(sum(zip(["keyup"] * len(m), m), ()))],
+                *[*(sum(zip(["mouseup"] * len(b), b), ()))],
             ]
         )
 
