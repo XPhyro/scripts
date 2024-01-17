@@ -178,7 +178,7 @@ install() {
                 out="${1%.c}"
                 out="${out##*/}"
                 case "$1" in
-                    */shared/*)
+                    shared/*|*/shared/*)
                         out="$out.so"
                         installprefix="$libprefix"
                         ;;
@@ -247,7 +247,7 @@ install() {
                 out="${1%.cpp}"
                 out="${out##*/}"
                 case "$1" in
-                    */shared/*)
+                    shared/*|*/shared/*)
                         out="$out.so"
                         installprefix="$libprefix"
                         ;;
