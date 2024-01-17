@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <sstream>
+#include <unordered_map>
 
 #include <unistd.h>
 
@@ -11,6 +12,18 @@
 #include <obs/obs-module.h>
 
 OBS_DECLARE_MODULE()
+
+std::unordered_map<obs_frontend_event, const char*> event_sounds = {
+    { OBS_FRONTEND_EVENT_STREAMING_STARTED, "stream-started.mp3" },
+    { OBS_FRONTEND_EVENT_STREAMING_STOPPED, "stream-stopped.mp3" },
+    { OBS_FRONTEND_EVENT_RECORDING_STARTED, "recording-started.mp3" },
+    { OBS_FRONTEND_EVENT_RECORDING_STOPPED, "recording-stopped.mp3" },
+    { OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED, "replay-buffer-started.mp3" },
+    { OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED, "replay-buffer-stopped.mp3" },
+    { OBS_FRONTEND_EVENT_RECORDING_PAUSED, "recording-paused.mp3" },
+    { OBS_FRONTEND_EVENT_RECORDING_UNPAUSED, "recording-resumed.mp3" },
+    { OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED, "replay-saved.mp3" },
+};
 
 void play_sound(const char* filename)
 {
@@ -31,41 +44,8 @@ void play_sound(const char* filename)
 
 void event_callback(enum obs_frontend_event event, [[maybe_unused]] void* private_data)
 {
-    const char* filename = NULL;
-
-    switch (event) {
-        case OBS_FRONTEND_EVENT_STREAMING_STARTED:
-            filename = "stream-started.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_RECORDING_STARTED:
-            filename = "recording-started.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
-            filename = "replay-buffer-started.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
-            filename = "recording-paused.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
-            filename = "stream-stopped.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
-            filename = "recording-stopped.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
-            filename = "replay-buffer-stopped.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
-            filename = "recording-resumed.mp3";
-            break;
-        case OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED:
-            filename = "replay-saved.mp3";
-            break;
-        default:
-            break;
-    }
-
-    play_sound(filename);
+    if (event_sounds.contains(event))
+        play_sound(event_sounds.at(event));
 }
 
 const char* obs_module_author(void)
