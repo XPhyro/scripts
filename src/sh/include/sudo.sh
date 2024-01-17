@@ -4,24 +4,20 @@
     . meta.sh
 
     if [ "$(id -u)" = 0 ]; then
-        __sudo_func() {
+        std_sudo() {
             "$@"
         }
     elif std_has_command doas; then
-        __sudo_func() {
+        std_sudo() {
             doas -- "$@"
         }
     elif std_has_command sudo; then
-        __sudo_func() {
+        std_sudo() {
             sudo -- "$@"
         }
     else
-        __sudo_func() {
+        std_sudo() {
             "$@"
         }
     fi
-
-    std_sudo() {
-        __sudo_func "$@"
-    }
 }
