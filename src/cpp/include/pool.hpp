@@ -59,7 +59,7 @@ namespace xph {
         inline std::optional<T> pop()
         {
             if (!m_pool.size())
-                return {};
+                return std::nullopt;
 
             auto front = m_pool.front();
             m_pool.erase(m_pool.begin());

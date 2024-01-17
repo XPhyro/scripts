@@ -203,7 +203,7 @@ std::optional<int> force_single_instance(const Options& options)
     } else if (std::ofstream ofl(lock_file); ofl.is_open()) {
         pid_t pid = getpid();
         ofl << pid;
-        return {};
+        return std::nullopt;
     } else {
         return { EXIT_FAILURE };
     }

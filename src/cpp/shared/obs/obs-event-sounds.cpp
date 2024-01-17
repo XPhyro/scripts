@@ -38,7 +38,7 @@ std::optional<decltype(fork())> play_sound(const char* filename)
     errno = 0;
     if (auto pid = fork(); pid < 0 || errno) {
         perror("fork");
-        return {};
+        return std::nullopt;
     } else if (pid == 0) {
         execlp("play", "play", "-q", "--", ss.str().c_str(), NULL);
         std::exit(EXIT_SUCCESS);
