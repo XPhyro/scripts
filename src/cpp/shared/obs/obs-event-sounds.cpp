@@ -2,7 +2,9 @@
 // @LDFLAGS -I/usr/include/obs/ -lobs
 
 #include <cerrno>
+#include <csignal>
 #include <cstdlib>
+#include <optional>
 #include <sstream>
 #include <unordered_map>
 
@@ -25,7 +27,7 @@ std::unordered_map<enum obs_frontend_event, const char*> event_sounds = {
     { OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED, "replay-saved.mp3" },
 };
 
-void play_sound(const char* filename)
+std::optional<decltype(fork())> play_sound(const char* filename)
 {
     static std::stringstream ss;
     ss.str("");
@@ -36,16 +38,26 @@ void play_sound(const char* filename)
     errno = 0;
     if (auto pid = fork(); pid < 0 || errno) {
         perror("fork");
+        return {};
     } else if (pid == 0) {
         execlp("play", "play", "-q", "--", ss.str().c_str(), NULL);
         std::exit(EXIT_SUCCESS);
+    } else {
+        return { pid };
     }
 }
 
 void event_callback(enum obs_frontend_event event, [[maybe_unused]] void* private_data)
 {
-    if (event_sounds.contains(event))
-        play_sound(event_sounds.at(event));
+    if (!event_sounds.contains(event))
+        return;
+
+    static decltype(play_sound("")) last_pid;
+    if (last_pid) {
+        kill(*last_pid, SIGTERM);
+        last_pid.reset();
+    }
+    last_pid = play_sound(event_sounds.at(event));
 }
 
 const char* obs_module_author(void)
