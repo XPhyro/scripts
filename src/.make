@@ -506,7 +506,7 @@ unittest() {
         printf "%s\n" \
             "Testing scripts and programs:"
 
-        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r cmd; do
+        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -V | while IFS= read -r cmd; do
             printf "%s\n" \
                 "  $cmd:"
             command -v -- "$cmd" > /dev/null 2>&1 || {
@@ -515,7 +515,7 @@ unittest() {
                 continue
             }
 
-            find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | while IFS= read -r testname; do
+            find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -V | while IFS= read -r testname; do
                 printf "%s" \
                     "    $testname: "
 
