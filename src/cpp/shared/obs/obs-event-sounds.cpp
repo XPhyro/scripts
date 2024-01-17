@@ -69,7 +69,7 @@ const char* obs_module_name(void)
 
 const char* obs_module_description(void)
 {
-    return "Play sounds on user events.";
+    return "Play sounds on user events. See <https://github.com/XPhyro/scripts> for updates.";
 }
 
 bool obs_module_load(void)
