@@ -177,10 +177,19 @@ install() {
                 set -e
                 out="${1%.c}"
                 out="${out##*/}"
-                if [ -f "$binprefix/$out" ] && [ "$binprefix/$out" -nt "$1" ]; then
+                case "$1" in
+                    */shared/*)
+                        out="$out.so"
+                        installprefix="$libprefix"
+                        ;;
+                    *)
+                        installprefix="$binprefix"
+                        ;;
+                esac
+                if [ -f "$installprefix/$out" ] && [ "$installprefix/$out" -nt "$1" ]; then
                     printf "  %s -> %s\n    %s\n" \
                         "$1" \
-                        "$binprefix/$out" \
+                        "$installprefix/$out" \
                         "Already up-to-date."
                     exit 0
                 fi
@@ -189,11 +198,11 @@ install() {
                 esac
                 printf "  %s -> %s\n    Local compiler flags: %s\n    Local linker flags: %s\n" \
                     "$1" \
-                    "$binprefix/$out" \
+                    "$installprefix/$out" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
-                '"$CC"' '"$CFLAGS"' $flags "$1" '"$CLDFLAGS"' $ldflags -o "$binprefix/$out" \
-                    && printf "\0%s\0" "$binprefix/$out" >> ../.installed
+                '"$CC"' '"$CFLAGS"' $flags -shared "$1" '"$CLDFLAGS"' $ldflags -o "$installprefix/$out" \
+                    && printf "\0%s\0" "$installprefix/$out" >> ../.installed
             ' --
     )
 
@@ -237,10 +246,19 @@ install() {
                 set -e
                 out="${1%.cpp}"
                 out="${out##*/}"
-                if [ -f "$binprefix/$out" ] && [ "$binprefix/$out" -nt "$1" ]; then
+                case "$1" in
+                    */shared/*)
+                        out="$out.so"
+                        installprefix="$libprefix"
+                        ;;
+                    *)
+                        installprefix="$binprefix"
+                        ;;
+                esac
+                if [ -f "$installprefix/$out" ] && [ "$installprefix/$out" -nt "$1" ]; then
                     printf "  %s -> %s\n    %s\n" \
                         "$1" \
-                        "$binprefix/$out" \
+                        "$installprefix/$out" \
                         "Already up-to-date."
                     exit 0
                 fi
@@ -249,11 +267,11 @@ install() {
                 esac
                 printf "  %s -> %s\n    Local compiler flags: %s\n    Local linker flags: %s\n" \
                     "$1" \
-                    "$binprefix/$out" \
+                    "$installprefix/$out" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
-                '"$CXX"' '"$CXXFLAGS"' $flags "$1" '"$CXXLDFLAGS"' $ldflags -o "$binprefix/$out" \
-                    && printf "\0%s\0" "$binprefix/$out" >> ../.installed
+                '"$CXX"' '"$CXXFLAGS"' $flags -shared "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out" \
+                    && printf "\0%s\0" "$installprefix/$out" >> ../.installed
             ' --
     )
 
@@ -989,18 +1007,29 @@ else
     realhome="$HOME"
 fi
 binprefix="$prefix/bin"
+libprefix="$prefix/lib/scripts"
 includeprefix="$prefix/include"
 manprefix="$prefix/share/man"
 dataprefix="$prefix/share/scripts"
 
 export prefix
 export binprefix
+export libprefix
 export includeprefix
 export manprefix
 export dataprefix
 
-mkdir -p -- "$prefix" "$binprefix" "$includeprefix" "$manprefix" "$dataprefix"
-[ -d "$binprefix" ] && [ -d "$includeprefix" ] && [ -d "$manprefix" ] && [ -d "$dataprefix" ]
+mkdir -p -- "$prefix" \
+    "$binprefix" \
+    "$libprefix" \
+    "$includeprefix" \
+    "$manprefix" \
+    "$dataprefix"
+[ -d "$binprefix" ] \
+    && [ -d "$libprefix" ] \
+    && [ -d "$includeprefix" ] \
+    && [ -d "$manprefix" ] \
+    && [ -d "$dataprefix" ]
 
 cmd="$1"
 shift
