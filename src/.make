@@ -181,9 +181,11 @@ install() {
                     shared/*|*/shared/*)
                         out="$out.so"
                         installprefix="$libprefix"
+                        extraflags=-shared
                         ;;
                     *)
                         installprefix="$binprefix"
+                        extraflags=
                         ;;
                 esac
                 if [ -f "$installprefix/$out" ] && [ "$installprefix/$out" -nt "$1" ]; then
@@ -201,7 +203,7 @@ install() {
                     "$installprefix/$out" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
-                '"$CC"' '"$CFLAGS"' $flags -shared "$1" '"$CLDFLAGS"' $ldflags -o "$installprefix/$out" \
+                '"$CC"' '"$CFLAGS"' $flags $extraflags "$1" '"$CLDFLAGS"' $ldflags -o "$installprefix/$out" \
                     && printf "\0%s\0" "$installprefix/$out" >> ../.installed
             ' --
     )
@@ -250,9 +252,11 @@ install() {
                     shared/*|*/shared/*)
                         out="$out.so"
                         installprefix="$libprefix"
+                        extraflags=-shared
                         ;;
                     *)
                         installprefix="$binprefix"
+                        extraflags=
                         ;;
                 esac
                 if [ -f "$installprefix/$out" ] && [ "$installprefix/$out" -nt "$1" ]; then
@@ -270,7 +274,7 @@ install() {
                     "$installprefix/$out" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
-                '"$CXX"' '"$CXXFLAGS"' $flags -shared "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out" \
+                '"$CXX"' '"$CXXFLAGS"' $flags $extraflags "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out" \
                     && printf "\0%s\0" "$installprefix/$out" >> ../.installed
             ' --
     )
