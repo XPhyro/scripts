@@ -15,7 +15,7 @@
 
 OBS_DECLARE_MODULE()
 
-std::unordered_map<enum obs_frontend_event, const char*> event_sounds = {
+const std::unordered_map<enum obs_frontend_event, const char*> event_sounds = {
     { OBS_FRONTEND_EVENT_STREAMING_STARTED, "stream-started.mp3" },
     { OBS_FRONTEND_EVENT_STREAMING_STOPPED, "stream-stopped.mp3" },
     { OBS_FRONTEND_EVENT_RECORDING_STARTED, "recording-started.mp3" },
@@ -26,6 +26,18 @@ std::unordered_map<enum obs_frontend_event, const char*> event_sounds = {
     { OBS_FRONTEND_EVENT_RECORDING_UNPAUSED, "recording-resumed.mp3" },
     { OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED, "replay-saved.mp3" },
 };
+
+OBS_MODULE_AUTHOR("Berke Kocaoğlu")
+
+const char* obs_module_name(void)
+{
+    return "event-sounds";
+}
+
+const char* obs_module_description(void)
+{
+    return "Play sounds on user events. See <https://github.com/XPhyro/scripts> for updates.";
+}
 
 std::optional<decltype(fork())> play_sound(const char* filename)
 {
@@ -58,18 +70,6 @@ void event_callback(enum obs_frontend_event event, [[maybe_unused]] void* privat
         last_pid.reset();
     }
     last_pid = play_sound(event_sounds.at(event));
-}
-
-OBS_MODULE_AUTHOR("Berke Kocaoğlu")
-
-const char* obs_module_name(void)
-{
-    return "event-sounds";
-}
-
-const char* obs_module_description(void)
-{
-    return "Play sounds on user events. See <https://github.com/XPhyro/scripts> for updates.";
 }
 
 bool obs_module_load(void)
