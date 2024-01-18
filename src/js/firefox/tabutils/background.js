@@ -1,4 +1,4 @@
-chrome.commands.onCommand.addListener(function(command) {
+chrome.commands.onCommand.addListener((command) => {
     if (command === "copyTabs") {
         copyTabs();
     } else if (command === "pasteTabs") {
@@ -12,39 +12,39 @@ chrome.commands.onCommand.addListener(function(command) {
 
 function copyTabs()
 {
-    chrome.tabs.query({ currentWindow: true }, function(tabs) {
-        let tabInfo = tabs.map(tab => `${tab.title}: ${tab.url}`).join('\n');
+    chrome.tabs.query({ currentWindow: true }, (tabs) => {
+        const tabInfo = tabs.map(tab => `${tab.title}: ${tab.url}`).join('\n');
         writeToClipboard(tabInfo);
     });
 }
 
 function pasteTabs()
 {
-    readFromClipboard(function(clipboardData) {
-        let urls = clipboardData.split('\n');
-        urls.forEach(url => {
+    readFromClipboard((clipboardData) => {
+        const urls = clipboardData.split('\n');
+        for (const url of urls) {
             if (url.trim() !== '') {
                 chrome.tabs.create({ url: url, active: true });
             }
-        });
+        }
     });
 }
 
 function copyCurrentTab()
 {
-    chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
-        let tabInfo = `${tabs[0].title}: ${tabs[0].url}`;
+    chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+        const tabInfo = `${tabs[0].title}: ${tabs[0].url}`;
         writeToClipboard(tabInfo);
     });
 }
 
 function pasteNextTab()
 {
-    readFromClipboard(function(clipboardData) {
-        let urls = clipboardData.split('\n');
-        chrome.tabs.query({ currentWindow: true, active: true }, function(currentTabs) {
-            let currentTab = currentTabs[0];
-            let currentIndex = currentTab.index;
+    readFromClipboard((clipboardData) => {
+        const urls = clipboardData.split('\n');
+        chrome.tabs.query({ currentWindow: true, active: true }, (currentTabs) => {
+            const currentTab = currentTabs[0];
+            const currentIndex = currentTab.index;
             for (let i = 0; i < urls.length; i++) {
                 chrome.tabs.create({ url: urls[i], index: currentIndex + i + 1, active: true });
             }
@@ -54,7 +54,7 @@ function pasteNextTab()
 
 function writeToClipboard(data)
 {
-    document.addEventListener('copy', function(e) {
+    document.addEventListener('copy', (e) => {
         e.clipboardData.setData('text/plain', data);
         e.preventDefault();
     });
@@ -63,14 +63,14 @@ function writeToClipboard(data)
 
 function readFromClipboard(callback)
 {
-    let textArea = document.createElement("textarea");
+    const textArea = document.createElement("textarea");
     document.body.appendChild(textArea);
     textArea.focus();
 
     document.execCommand('paste');
-    let clipboardData = textArea.value;
+    const clipboardData = textArea.value;
 
-    let urls = clipboardData.match(/https?:\/\/[^\s]+/g) || [];
+    const urls = clipboardData.match(/https?:\/\/[^\s]+/g) || [];
 
     callback(urls.join('\n'));
 
