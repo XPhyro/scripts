@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "TabUtils",
+  "version": "1.0",
+  "description": "Copy and paste tabs",
+  "permissions": ["tabs", "clipboardWrite", "clipboardRead"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tabutil@xphyro.github.io"
+    }
+  },
+  "commands": {
+    "copyTabs": {
+      "suggested_key": {
+        "default": "Alt+C"
+      },
+      "description": "Copy titles and URLs of all tabs in the current window."
+    },
+    "pasteTabs": {
+      "suggested_key": {
+        "default": "Alt+V"
+      },
+      "description": "Paste URLs in clipboard as new tabs."
+    }
+  }
+}
