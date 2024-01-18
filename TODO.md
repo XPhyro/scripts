@@ -115,6 +115,9 @@
   (command & subcommand)/flag for it)
 - Support stdin in `gcc-otg`.
 - Add support for arbitrary precision computation in `numsh`.
+- `tabutils`:
+  - Replace last tab if it is `about:blank` when pasting to the end.
+  - Replace current tab if it is `about:blank` when pasting inline.
 
 ## New Scripts
 
