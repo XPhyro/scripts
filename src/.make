@@ -873,36 +873,6 @@ stats() {
     bashloc="$(wc -l < "$tmp")"
     bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    files="$(find 'el' -mindepth 1 -type f -executable)"
-    eln="$(printf "%s\n" "$files" | wc -l)"
-    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    elloc="$(wc -l < "$tmp")"
-    elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
-
-    files="$(find 'py' -mindepth 1 -type f -executable)"
-    pyn="$(printf "%s\n" "$files" | wc -l)"
-    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    pyloc="$(wc -l < "$tmp")"
-    pysloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
-
-    files="$(find 'pl' -mindepth 1 -type f -executable)"
-    pln="$(printf "%s\n" "$files" | wc -l)"
-    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    plloc="$(wc -l < "$tmp")"
-    plsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
-
-    files="$(find 'sh' -mindepth 1 -type f -executable)"
-    shn="$(printf "%s\n" "$files" | wc -l)"
-    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    shloc="$(wc -l < "$tmp")"
-    shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
-
-    files="$(find 'rs' -mindepth 1 -type f -iname "*.rs")"
-    rsn="$(printf "%s\n" "$files" | wc -l)"
-    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    rsloc="$(wc -l < "$tmp")"
-    rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
-
     files="$(find 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \))"
     cn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
@@ -914,6 +884,36 @@ stats() {
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     cpploc="$(wc -l < "$tmp")"
     cppsloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
+
+    files="$(find 'el' -mindepth 1 -type f -executable)"
+    eln="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    elloc="$(wc -l < "$tmp")"
+    elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    files="$(find 'pl' -mindepth 1 -type f -executable)"
+    pln="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    plloc="$(wc -l < "$tmp")"
+    plsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    files="$(find 'py' -mindepth 1 -type f -executable)"
+    pyn="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    pyloc="$(wc -l < "$tmp")"
+    pysloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
+    files="$(find 'rs' -mindepth 1 -type f -iname "*.rs")"
+    rsn="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    rsloc="$(wc -l < "$tmp")"
+    rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
+
+    files="$(find 'sh' -mindepth 1 -type f -executable)"
+    shn="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    shloc="$(wc -l < "$tmp")"
+    shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'systemd' -mindepth 1 -type f -iname "*.service")"
     systemdn="$(printf "%s\n" "$files" | wc -l)"
@@ -934,39 +934,39 @@ stats() {
         "Number of Source Files:" \
         "  Awk:      $awkn" \
         "  Bash:     $bashn" \
-        "  execline: $eln" \
-        "  Python:   $pyn" \
-        "  Perl:     $pln" \
-        "  shell:    $shn" \
-        "  Rust:     $rsn" \
         "  C:        $cn" \
         "  C++:      $cppn" \
+        "  execline: $eln" \
+        "  Perl:     $pln" \
+        "  Python:   $pyn" \
+        "  Rust:     $rsn" \
+        "  shell:    $shn" \
         "  systemd:  $systemdn" \
         "  Total:    $totaln" \
         "" \
         "Lines of Code:" \
         "  Awk:      $awkloc" \
         "  Bash:     $bashloc" \
-        "  execline: $elloc" \
-        "  Python:   $pyloc" \
-        "  Perl:     $plloc" \
-        "  shell:    $shloc" \
-        "  Rust:     $rsloc" \
         "  C:        $cloc" \
         "  C++:      $cpploc" \
+        "  execline: $elloc" \
+        "  Perl:     $plloc" \
+        "  Python:   $pyloc" \
+        "  Rust:     $rsloc" \
+        "  shell:    $shloc" \
         "  systemd:  $systemdloc" \
         "  Total:    $totalloc" \
         "" \
         "Source Lines of Code:" \
         "  Awk:      $awksloc" \
         "  Bash:     $bashsloc" \
-        "  execline: $elsloc" \
-        "  Python:   $pysloc" \
-        "  Perl:     $plsloc" \
-        "  shell:    $shsloc" \
-        "  Rust:     $rssloc" \
         "  C:        $csloc" \
         "  C++:      $cppsloc" \
+        "  execline: $elsloc" \
+        "  Perl:     $plsloc" \
+        "  Python:   $pysloc" \
+        "  Rust:     $rssloc" \
+        "  shell:    $shsloc" \
         "  systemd:  $systemdsloc" \
         "  Total:    $totalsloc"
 }
