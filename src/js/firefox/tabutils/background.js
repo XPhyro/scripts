@@ -69,8 +69,7 @@ function readFromClipboard(callback)
 
     document.execCommand('paste');
     const clipboardData = textArea.value;
-
-    const urls = clipboardData.match(/https?:\/\/[^\s]+/g) || [];
+    const urls = clipboardData.split("\n").map((line) => line.split(/(\s+)/).at(-1) || "");
 
     callback(urls.join('\n'));
 
