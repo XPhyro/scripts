@@ -891,6 +891,12 @@ stats() {
     elloc="$(wc -l < "$tmp")"
     elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
+    files="$(find 'js' -mindepth 1 -type f -iname "*.js")"
+    jsn="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    jsloc="$(wc -l < "$tmp")"
+    jssloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
     files="$(find 'pl' -mindepth 1 -type f -executable)"
     pln="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
@@ -932,43 +938,46 @@ stats() {
         "  Total commits: $(git rev-list --all --count)" \
         "" \
         "Number of Source Files:" \
-        "  Awk:      $awkn" \
-        "  Bash:     $bashn" \
-        "  C:        $cn" \
-        "  C++:      $cppn" \
-        "  execline: $eln" \
-        "  Perl:     $pln" \
-        "  Python:   $pyn" \
-        "  Rust:     $rsn" \
-        "  shell:    $shn" \
-        "  systemd:  $systemdn" \
-        "  Total:    $totaln" \
+        "  Awk:        $awkn" \
+        "  Bash:       $bashn" \
+        "  C:          $cn" \
+        "  C++:        $cppn" \
+        "  execline:   $eln" \
+        "  JavaScript: $jsn" \
+        "  Perl:       $pln" \
+        "  Python:     $pyn" \
+        "  Rust:       $rsn" \
+        "  shell:      $shn" \
+        "  systemd:    $systemdn" \
+        "  Total:      $totaln" \
         "" \
         "Lines of Code:" \
-        "  Awk:      $awkloc" \
-        "  Bash:     $bashloc" \
-        "  C:        $cloc" \
-        "  C++:      $cpploc" \
-        "  execline: $elloc" \
-        "  Perl:     $plloc" \
-        "  Python:   $pyloc" \
-        "  Rust:     $rsloc" \
-        "  shell:    $shloc" \
-        "  systemd:  $systemdloc" \
-        "  Total:    $totalloc" \
+        "  Awk:        $awkloc" \
+        "  Bash:       $bashloc" \
+        "  C:          $cloc" \
+        "  C++:        $cpploc" \
+        "  execline:   $elloc" \
+        "  JavaScript: $jsloc" \
+        "  Perl:       $plloc" \
+        "  Python:     $pyloc" \
+        "  Rust:       $rsloc" \
+        "  shell:      $shloc" \
+        "  systemd:    $systemdloc" \
+        "  Total:      $totalloc" \
         "" \
         "Source Lines of Code:" \
-        "  Awk:      $awksloc" \
-        "  Bash:     $bashsloc" \
-        "  C:        $csloc" \
-        "  C++:      $cppsloc" \
-        "  execline: $elsloc" \
-        "  Perl:     $plsloc" \
-        "  Python:   $pysloc" \
-        "  Rust:     $rssloc" \
-        "  shell:    $shsloc" \
-        "  systemd:  $systemdsloc" \
-        "  Total:    $totalsloc"
+        "  Awk:        $awksloc" \
+        "  Bash:       $bashsloc" \
+        "  C:          $csloc" \
+        "  C++:        $cppsloc" \
+        "  execline:   $elsloc" \
+        "  JavaScript: $jssloc" \
+        "  Perl:       $plsloc" \
+        "  Python:     $pysloc" \
+        "  Rust:       $rssloc" \
+        "  shell:      $shsloc" \
+        "  systemd:    $systemdsloc" \
+        "  Total:      $totalsloc"
 }
 
 [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
