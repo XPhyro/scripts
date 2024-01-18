@@ -25,6 +25,8 @@ function pasteTabs()
         for (const url of urls) {
             if (url.trim() !== '') {
                 chrome.tabs.create({ url: url, active: true });
+            } else {
+                chrome.tabs.create({ url: 'about:blank', active: true });
             }
         }
     });
@@ -69,7 +71,8 @@ function readFromClipboard(callback)
 
     document.execCommand('paste');
     const clipboardData = textArea.value;
-    const urls = clipboardData.split("\n").map((line) => line.split(/(\s+)/).at(-1) || "");
+    const urls = clipboardData.split("\n").map(
+        (line) => line.split(/(\s+)/).at(-1).replace(/^about:.*$/, "") || "");
 
     callback(urls.join('\n'));
 
