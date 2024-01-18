@@ -23,11 +23,7 @@ function pasteTabs()
     readFromClipboard((clipboardData) => {
         const urls = clipboardData.split('\n');
         for (const url of urls) {
-            if (url.trim() !== '') {
-                chrome.tabs.create({ url: url, active: true });
-            } else {
-                chrome.tabs.create({ url: 'about:blank', active: true });
-            }
+            chrome.tabs.create({ url: url.trim() !== "" ? url : "about:blank", active: true });
         }
     });
 }
