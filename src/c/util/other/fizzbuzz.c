@@ -10,7 +10,10 @@
 #include <stdutil.h>
 #include <strutil.h>
 
+#include <exec_info.h>
 #include <paramutil.h>
+
+DEFINE_EXEC_INFO()
 
 typedef unsigned long long ull;
 
@@ -32,7 +35,8 @@ int main(int argc, char *argv[])
         { .div = 13, .name = "Yennefer" }, { .div = 17, .name = "Mario" },
         { .div = 19, .name = "Claire" },   { .div = 23, .name = "Peach" },
     };
-    const char *execname = argv[0];
+
+    init_exec_info(argc, argv);
 
     while ((i = getopt(argc, argv, "hp")) != -1) {
         switch (i) {

@@ -12,8 +12,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <exec_info.h>
 #include <hedley.h>
 #include <strutil.h>
+
+DEFINE_EXEC_INFO()
 
 typedef enum {
     METHOD_MEAN,
@@ -26,7 +29,6 @@ typedef enum {
     METHOD_HSV_S,
     METHOD_HSV_V,
 } method_t;
-char *execname;
 
 HEDLEY_NO_RETURN void invalidarg(void)
 {
@@ -46,7 +48,7 @@ int main(int argc, char *argv[])
     int i, bufpool, grayidx;
     method_t method = METHOD_SRGB;
 
-    execname = argv[0];
+    init_exec_info(argc, argv);
 
     while ((i = getopt(argc, argv, "hm:")) != -1) {
         switch (i) {

@@ -8,9 +8,10 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include <exec_info.h>
 #include <stdutil.h>
 
-const char *execname;
+DEFINE_EXEC_INFO()
 
 int ctl_reset(const char *dev)
 {
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     const char *fl;
     char flbuf[21];
 
-    execname = argv[0];
+    init_exec_info(argc, argv);
 
     while ((i = getopt(argc, argv, "hr")) != -1) {
         switch (i) {

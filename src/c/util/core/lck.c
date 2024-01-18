@@ -9,12 +9,14 @@
 #include <unistd.h>
 
 #include <dbutil.h>
+#include <exec_info.h>
 #include <stdutil.h>
 #include <strutil.h>
 
+DEFINE_EXEC_INFO()
+
 int main(int argc, char *argv[])
 {
-    const char *execname;
     int i, ret;
     lckdb_t lcktype = LCKDB_TEMP;
     bool optstatus = false, optsleep = false, optlck = true, optprint = false, optretry = false,
@@ -28,7 +30,8 @@ int main(int argc, char *argv[])
 
     if (!argc)
         return EXIT_SUCCESS;
-    execname = argv[0];
+
+    init_exec_info(argc, argv);
 
     while ((i = getopt(argc, argv, "dhilprS:s:t:uqz0")) != -1) {
         switch (i) {

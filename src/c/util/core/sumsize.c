@@ -7,11 +7,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <exec_info.h>
 #include <ioutil.h>
 #include <stdutil.h>
 #include <strutil.h>
 
 #include <hedley.h>
+
+DEFINE_EXEC_INFO()
 
 typedef unsigned long long int sum_t;
 #define SUM_T_FMT "%llu"
@@ -41,7 +44,6 @@ const sum_t binpfx[pfxsize] = {
 const char lowerpfx[pfxsize] = { 'k', 'm', 'g', 't', 'p' };
 const char upperpfx[pfxsize] = { 'K', 'M', 'G', 'T', 'P' };
 
-const char *execname;
 bool optdec = false, optboth = false, optargisline = false, optunitless = false;
 char *optfig = "2";
 char optdelim = '\n';
@@ -205,11 +207,10 @@ int main(int argc, char *argv[])
     FILE *fl;
     char *s;
 
-    if (!argc) {
-        execname = "NULL";
+    init_exec_info(argc, argv);
+
+    if (!argc)
         die("0 argc not supported\n");
-    }
-    execname = argv[0];
 
     parseargs(&argc, &argv);
 

@@ -15,8 +15,11 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <exec_info.h>
 #include <paramutil.h>
 #include <stdutil.h>
+
+DEFINE_EXEC_INFO()
 
 int n, idx;
 #define DEFAULTTEXTLEN 50
@@ -66,7 +69,8 @@ int main(int argc, char *argv[])
 #define DEFAULTSEC 0
 #define DEFAULTNSEC 500000000
     struct timespec delayreq = { .tv_sec = DEFAULTSEC, .tv_nsec = DEFAULTNSEC };
-    const char *execname = basename(argv[0]);
+
+    init_exec_info(argc, argv);
 
     while ((i = getopt(argc, argv, "hkl:p:S:s:")) != -1) {
         switch (i) {

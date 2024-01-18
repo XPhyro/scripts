@@ -9,8 +9,11 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <exec_info.h>
 #include <paramutil.h>
 #include <stdutil.h>
+
+DEFINE_EXEC_INFO()
 
 typedef enum { UNIT_BYTE, UNIT_BIT } unit_t;
 typedef struct timespec timespec_t;
@@ -87,11 +90,12 @@ int main(int argc, char *argv[])
     ssize_t nread;
     char buf[PIPE_BUF];
     int i;
-    const char *execname = argv[0];
 #define DEFAULT_OPTCYCLE 10000
     unsigned int optcycle = DEFAULT_OPTCYCLE;
 #define DEFAULT_WARMUP 0
     unsigned long long optwarmup = DEFAULT_WARMUP;
+
+    init_exec_info(argc, argv);
 
     while ((i = getopt(argc, argv, "Bbhi:n:")) != -1) {
         switch (i) {
