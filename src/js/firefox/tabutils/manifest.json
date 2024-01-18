@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "TabUtils",
-  "version": "1.0",
+  "version": "1.1.0",
   "description": "Copy and paste tabs",
   "permissions": ["tabs", "clipboardWrite", "clipboardRead"],
   "background": {
@@ -16,15 +16,27 @@
   "commands": {
     "copyTabs": {
       "suggested_key": {
-        "default": "Alt+C"
+        "default": "Alt+Z"
       },
       "description": "Copy titles and URLs of all tabs in the current window."
     },
     "pasteTabs": {
       "suggested_key": {
+        "default": "Alt+X"
+      },
+      "description": "Paste URLs in clipboard as new tabs at the end."
+    },
+    "copyCurrentTab": {
+      "suggested_key": {
+        "default": "Alt+C"
+      },
+      "description": "Copy the current tab's title and URL."
+    },
+    "pasteNextTab": {
+      "suggested_key": {
         "default": "Alt+V"
       },
-      "description": "Paste URLs in clipboard as new tabs."
+      "description": "Paste URLs in clipboard as new tabs next to current."
     }
   }
 }
