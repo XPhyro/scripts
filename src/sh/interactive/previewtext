@@ -32,7 +32,7 @@ esac
 
 realfl="$(realpath -- "$fl")"
 case "$(file --mime-type --brief -- "$realfl")" in
-    text/*|*/xml)
+    text/*|*/xml|application/javascript)
         tmp="$(mktemp)"
         {   [ "${fl%.*}" = "$realfl" ] \
                 || bat -L | sed -e 's/^.*://' -e 's/,/\n/g' | grep -Fxq -- "${fl##*.}"
