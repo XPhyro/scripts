@@ -456,6 +456,12 @@ install() {
 
         (
             cd firefox
+
+            command -v pandoc > /dev/null 2>&1 || {
+                printf "  %s\n" '`web-ext` is not installed, build Firefox addons.'
+                exit 0
+            }
+
             find '.' -mindepth 1 -maxdepth 1 -type d -not -name "build" -printf "%P\n" | while IFS= read -r addon; do
                 cd "$addon"
                 printf "  %s -> %s\n" "$addon" "$rootdir/src/js/firefox/build/$addon-$(jq .version < manifest.json | sed 's/^"//;s/"$//').zip"
