@@ -1,0 +1,68 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+pretty_df() {
+    header="$1"
+    should_print_footer="$2"
+
+    sandwichline - "$header"
+
+    colour_df="$(grc --colour=on df -h)"
+    printf "%s\n" "$colour_df" | head -n 1
+    printf "%s\n" "$colour_df" | grep '/dev.*\s' --color=never
+
+    [ "$should_print_footer" -ne 0 ] && fillline -
+}
+
+pretty_df Before 0
+
+mount_usages_before="$(df | grep '^/dev/.*\s' | awk '{print($6, $3)}')"
+
+printf "%s\n" "$mount_usages_before" | while IFS=' ' read -r mount _used; do
+    trash_dir="$mount/.Trash-1000/"
+    [ -d "$trash_dir" ] && rm -rf "$trash_dir"
+done
+
+home_trash_dir="${XDG_DATA_HOME:-"$HOME/.local/share"}/Trash/"
+[ -d "$home_trash_dir" ] && rm -rf "$home_trash_dir"
+
+mount_usages_after="$(df | grep '^/dev/.*\s' | awk '{print($6, $3)}')"
+
+sandwichline - "During"
+
+{
+    printf "%s\t%s\n" "Difference" "Mounted on"
+    while IFS=' ' read -r mount_before before <&3 && IFS=' ' read -r mount_after after <&4; do
+        [ "$mount_before" != "$mount_after" ] && {
+            printf "mounts don't match (%s != %s), can't calculate differences\n" \
+                "$mount_before" \
+                "$mount_after"
+            exit 1
+        }
+        mount="$mount_before"
+
+        difference="$((before - after))"
+        prefix=K
+        [ "$difference" -ge 1024 ] && {
+            difference="$((difference / 1024))"
+            prefix=M
+        }
+        [ "$difference" -ge 1024 ] && {
+            difference="$((difference / 1024))"
+            prefix=G
+        }
+        [ "$difference" -ge 1024 ] && {
+            difference="$((difference / 1024))"
+            prefix=T
+        }
+
+        printf "%d%s\t%s\n" "$difference" "$prefix" "$mount"
+    done 3<<EOF3 4<<EOF4
+$(printf "%s\n" "$mount_usages_before")
+EOF3
+$(printf "%s\n" "$mount_usages_after")
+EOF4
+} | std::string align "	" | sed '/^\s*$/d'
+
+pretty_df After 1
