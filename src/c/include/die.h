@@ -4,12 +4,12 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include <execinfo.h>
+#include <exec_info.h>
 
 void die(const char *restrict format, ...)
 {
     va_list ap;
-    fprintf(stderr, ": ", execname);
+    fprintf(stderr, "%s: ", execname);
     va_start(ap, format);
     vfprintf(stderr, format, ap);
     va_end(ap);
