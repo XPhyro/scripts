@@ -487,6 +487,11 @@ clean() {
                 cd ..
             done
     )
+
+    (
+        cd js || exit 1
+        find '.' -mindepth 1 -type d -name "web-ext-artifacts" -print0 | xargs -r0 rm -rf --
+    )
 }
 
 unittest() {
