@@ -41,13 +41,15 @@ HEDLEY_MALLOC char *astrdup(const char *s)
     return dup;
 }
 
+#if _POSIX_C_SOURCE >= 200809L // need strnlen
 HEDLEY_MALLOC char *astrndup(const char *s, size_t n)
 {
-    size_t size = MIN(strlen(s) * sizeof(char), n);
+    size_t size = MIN(strnlen(s, n), n) * sizeof(char);
     char *dup = amalloc(size);
     memcpy(dup, s, size);
     return dup;
 }
+#endif /* _POSIX_C_SOURCE >= 200809L */
 
 char *strend(const char *s)
 {
