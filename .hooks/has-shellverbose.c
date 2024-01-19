@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     char *line = NULL;
     size_t line_size = 0;
     ssize_t line_len;
+    int ret = EXIT_SUCCESS;
 
     argc--;
     argv++;
@@ -31,7 +32,8 @@ int main(int argc, char *argv[])
                 perror("fopen");
             }
 
-            return EXIT_FAILURE;
+            ret = EXIT_FAILURE;
+            continue;
         }
 
         while ((line_len = getline(&line, &line_size, stream)) != -1) {
@@ -59,10 +61,13 @@ int main(int argc, char *argv[])
                             break;
                     }
 
-                    if (strcmp(line + i, "shellverbose.sh"))
+                    if (strcmp(line + i, "shellverbose.sh")) {
                         printf("File %s does not have shellverbose.sh at the top\n", filename);
+                        ret = EXIT_FAILURE;
+                    }
                 } else {
                     printf("File %s does not have shellverbose.sh at the top\n", filename);
+                    ret = EXIT_FAILURE;
                 }
 
                 goto next_file;
@@ -81,5 +86,5 @@ next_file:;
     if (line)
         free(line);
 
-    return EXIT_SUCCESS;
+    return ret;
 }
