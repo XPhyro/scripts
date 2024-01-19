@@ -447,6 +447,23 @@ install() {
             ' -- >> ../src/.installed
         rsync -abiPq -- ./ "$dataprefix/"
     )
+
+    (
+        cd js
+
+        printf "\n%s\n" \
+            "Building Firefox addons:"
+
+        (
+            cd firefox
+            find '.' -mindepth 1 -maxdepth 1 -type d -not -name "build" -printf "%P\n" | while IFS= read -r addon; do
+                cd "$addon"
+                printf "  %s -> %s\n" "$addon" "$rootdir/src/js/firefox/build/$addon-$(jq .version < manifest.json | sed 's/^"//;s/"$//').zip"
+                web-ext --no-input --artifacts-dir=../build \
+                    build --overwrite-dest > /dev/null
+            done
+        )
+    )
 }
 
 uninstall() {
@@ -490,7 +507,8 @@ clean() {
 
     (
         cd js || exit 1
-        find '.' -mindepth 1 -type d -name "web-ext-artifacts" -print0 | xargs -r0 rm -rf --
+        cd firefox || exit 1
+        rm -rf -- build/
     )
 }
 
