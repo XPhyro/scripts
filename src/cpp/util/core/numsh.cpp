@@ -11,6 +11,7 @@
 #include <functional>
 #include <iostream>
 #include <limits>
+#include <numbers>
 #include <numeric>
 #include <ranges>
 #include <span>
@@ -38,6 +39,8 @@ namespace func {
 
     // one to one
     DECL_FUNC(factorial);
+    DECL_FUNC(degrees);
+    DECL_FUNC(radians);
     DECL_FUNC(acos);
     DECL_FUNC(asin);
     DECL_FUNC(atan);
@@ -93,6 +96,8 @@ std::unordered_map<std::string_view, function> functions = {
         func::factorial,
         0,
         0 } },
+    { "degrees", { "Map all elements to their degrees.", func::degrees, 0, 0 } },
+    { "radians", { "Map all elements to their radians.", func::radians, 0, 0 } },
     { "acos", { "Map all elements to their acos. See `man 3 acos`.", func::acos, 0, 0 } },
     { "asin", { "Map all elements to their asin. See `man 3 asin`.", func::asin, 0, 0 } },
     { "atan", { "Map all elements to their atan. See `man 3 atan`.", func::atan, 0, 0 } },
@@ -298,6 +303,16 @@ namespace func {
         };
 
         xph::transform(nums, [](double num) { return factorial_impl::factorial(num); });
+    }
+
+    void degrees([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        xph::transform(nums, [](double num) { return num * 180.0 / std::numbers::pi; });
+    }
+
+    void radians([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        xph::transform(nums, [](double num) { return num * std::numbers::pi / 180.0; });
     }
 
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
