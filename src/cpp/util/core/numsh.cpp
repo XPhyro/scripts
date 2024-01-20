@@ -73,6 +73,7 @@ namespace func {
     DECL_FUNC(std);
     DECL_FUNC(median);
     DECL_FUNC(gmean);
+    DECL_FUNC(hmean);
     DECL_FUNC(gcd);
 } // namespace func
 
@@ -125,6 +126,7 @@ std::unordered_map<std::string_view, function> functions = {
     { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
     { "median", { "Reduce to the median of the elements.", func::median, 0, 0 } },
     { "gmean", { "Reduce to the geometric mean of the elements.", func::gmean, 0, 0 } },
+    { "hmean", { "Reduce to the harmonic mean of the elements.", func::hmean, 0, 0 } },
     { "gcd", { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
 };
 
@@ -466,6 +468,14 @@ namespace func {
                                           1.0,
                                           [&](double accum, double num) { return accum * num; }),
                           1.0 / nums.size()) };
+    }
+
+    void hmean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        nums = { nums.size() /
+                 std::accumulate(nums.begin(), nums.end(), 0.0, [&](double accum, double num) {
+                     return accum + 1.0 / num;
+                 }) };
     }
 
     void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
