@@ -92,10 +92,13 @@ public:
 };
 
 std::unordered_map<std::string_view, function> functions = {
+    // none to many
     { "arange", { "Append [MIN, MAX) to elements.", func::arange, 1, 2 } },
 
+    // one to many
     { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
 
+    // one to one
     { "factorial",
       { "Map all elements to their factorial. If elements are not integers, truncate them first.",
         func::factorial,
@@ -125,9 +128,11 @@ std::unordered_map<std::string_view, function> functions = {
     { "tanh", { "Map all elements to their tanh. See `man 3 tanh`.", func::tanh, 0, 0 } },
     { "trunc", { "Map all elements to their trunc. See `man 3 trunc`.", func::trunc, 0, 0 } },
 
+    // one to optional one
     { "zero", { "Reduce to zero elements.", func::zero, 0, 0 } },
     { "nonzero", { "Reduce to non-zero elements.", func::nonzero, 0, 0 } },
 
+    // many to one
     { "count", { "Reduce to count of elements.", func::count, 0, 0 } },
     { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
     { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
@@ -265,6 +270,7 @@ int main(int argc, char* argv[])
 }
 
 namespace func {
+    // none to many
     void arange(std::span<double> argv, std::vector<double>& nums)
     {
         std::intmax_t min, max;
@@ -286,6 +292,7 @@ namespace func {
             nums.push_back(i);
     }
 
+    // one to many
     void factor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         std::vector<double> factors;
@@ -313,6 +320,7 @@ namespace func {
         nums.swap(factors);
     }
 
+    // one to one
     void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
 #if false // no gcc feature-test for fold_left
@@ -453,6 +461,7 @@ namespace func {
         xph::transform(nums, [](double num) { return std::trunc(num); });
     }
 
+    // one to optional one
     void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         std::erase_if(nums, [](double num) { return !xph::approx_zero(num); });
@@ -463,6 +472,7 @@ namespace func {
         std::erase_if(nums, [](double num) { return xph::approx_zero(num); });
     }
 
+    // many to one
     void count([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         nums = { static_cast<double>(nums.size()) };
