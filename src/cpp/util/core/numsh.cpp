@@ -42,6 +42,8 @@ namespace func {
 
     // many to many
     DECL_FUNC(difference);
+    DECL_FUNC(partsum);
+    DECL_FUNC(partprod);
 
     // one to one
     DECL_FUNC(cumsum);
@@ -109,6 +111,8 @@ constexpr Tret get_functions(void) noexcept
 
         // many to many
         { "difference", { "Map all elements to their difference.", func::difference, 0, 0 } },
+        { "partsum", { "Map all elements to their partial sum.", func::partsum, 1, 1 } },
+        { "partprod", { "Map all elements to their partial product.", func::partprod, 1, 1 } },
 
         // one to one
         { "cumsum", { "Map all elements to their cumulative sum.", func::cumsum, 0, 0 } },
@@ -353,6 +357,27 @@ namespace func {
         nums.swap(difference);
     }
 
+    void partsum(std::span<double> argv, std::vector<double>& nums)
+    {
+        std::vector<double> partsum;
+        partsum.reserve(nums.size() - argv[0] + 1);
+        for (const auto& window : nums | std::views::slide(argv[0])) {
+            partsum.push_back(std::accumulate(window.begin(), window.end(), 0.0));
+        }
+        nums.swap(partsum);
+    }
+
+    void partprod(std::span<double> argv, std::vector<double>& nums)
+    {
+        std::vector<double> partprod;
+        partprod.reserve(nums.size() - argv[0] + 1);
+        for (const auto& window : nums | std::views::slide(argv[0])) {
+            partprod.push_back(
+                std::accumulate(window.begin(), window.end(), 1.0, std::multiplies<>()));
+        }
+        nums.swap(partprod);
+    }
+
     // one to one
     void cumsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
@@ -542,7 +567,7 @@ namespace func {
 
     void product([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { std::accumulate(nums.begin(), nums.end(), 0.0, std::multiplies<>()) };
+        nums = { std::accumulate(nums.begin(), nums.end(), 1.0, std::multiplies<>()) };
     }
 
     void mean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
