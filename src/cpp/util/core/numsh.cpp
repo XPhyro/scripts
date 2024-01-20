@@ -34,6 +34,9 @@ DEFINE_EXEC_INFO();
 #define DECL_FUNC(FUNC_NAME) void FUNC_NAME(std::span<double> argv, std::vector<double>& nums);
 
 namespace func {
+    // none to many
+    DECL_FUNC(arange);
+
     // one to many
     DECL_FUNC(factor);
 
@@ -89,6 +92,8 @@ public:
 };
 
 std::unordered_map<std::string_view, function> functions = {
+    { "arange", { "Append [MIN, MAX) to elements.", func::arange, 1, 2 } },
+
     { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
 
     { "factorial",
@@ -254,6 +259,27 @@ int main(int argc, char* argv[])
 }
 
 namespace func {
+    void arange(std::span<double> argv, std::vector<double>& nums)
+    {
+        std::intmax_t min, max;
+        switch (argv.size()) {
+            case 1:
+                min = 0;
+                max = argv[0];
+                break;
+            case 2:
+                min = argv[0];
+                max = argv[1];
+                break;
+            default:
+                return;
+        }
+
+        nums.reserve(nums.size() + max - min);
+        for (auto&& i : std::views::iota(min, max))
+            nums.push_back(i);
+    }
+
     void factor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         std::vector<double> factors;
