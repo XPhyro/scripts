@@ -1,7 +1,6 @@
 // @CXXFLAGS -funsafe-math-optimizations -fassociative-math -freciprocal-math -ffinite-math-only -fno-signed-zeros -fno-trapping-math
 // @LDFLAGS -lboost_system
 
-// TODO: sort -L alphabetically
 // TODO: enforce stuff in man page and help dialog
 
 #include <algorithm>
@@ -15,6 +14,7 @@
 #include <numeric>
 #include <ranges>
 #include <span>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 #include <version>
@@ -91,59 +91,67 @@ public:
     std::size_t max_argc;
 };
 
-std::unordered_map<std::string_view, function> functions = {
-    // none to many
-    { "arange", { "Append [MIN, MAX) to elements.", func::arange, 1, 2 } },
+template <typename Tret>
+constexpr Tret get_functions(void) noexcept
+{
+    return {
+        // none to many
+        { "arange", { "Append [MIN, MAX) to elements.", func::arange, 1, 2 } },
 
-    // one to many
-    { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
+        // one to many
+        { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
 
-    // one to one
-    { "factorial",
-      { "Map all elements to their factorial. If elements are not integers, truncate them first.",
-        func::factorial,
-        0,
-        0 } },
-    { "degrees", { "Map all elements to their degrees.", func::degrees, 0, 0 } },
-    { "radians", { "Map all elements to their radians.", func::radians, 0, 0 } },
-    { "acos", { "Map all elements to their acos. See `man 3 acos`.", func::acos, 0, 0 } },
-    { "asin", { "Map all elements to their asin. See `man 3 asin`.", func::asin, 0, 0 } },
-    { "atan", { "Map all elements to their atan. See `man 3 atan`.", func::atan, 0, 0 } },
-    { "cbrt", { "Map all elements to their cbrt. See `man 3 cbrt`.", func::cbrt, 0, 0 } },
-    { "ceil", { "Map all elements to their ceil. See `man 3 ceil`.", func::ceil, 0, 0 } },
-    { "cos", { "Map all elements to their cos. See `man 3 cos`.", func::cos, 0, 0 } },
-    { "cosh", { "Map all elements to their cosh. See `man 3 cosh`.", func::cosh, 0, 0 } },
-    { "exp", { "Map all elements to their exp. See `man 3 exp`.", func::exp, 0, 0 } },
-    { "abs", { "Map all elements to their fabs. See `man 3 fabs`.", func::fabs, 0, 0 } },
-    { "floor", { "Map all elements to their floor. See `man 3 floor`.", func::floor, 0, 0 } },
-    { "log", { "Map all elements to their log. See `man 3 log`.", func::log, 0, 0 } },
-    { "log10", { "Map all elements to their log10. See `man 3 log10`.", func::log10, 0, 0 } },
-    { "log2", { "Map all elements to their log2. See `man 3 log2`.", func::log2, 0, 0 } },
-    { "pow", { "Map all elements to their pow. See `man 3 pow`.", func::pow, 1, 1 } },
-    { "round", { "Map all elements to their round. See `man 3 round`.", func::round, 0, 0 } },
-    { "sin", { "Map all elements to their sin. See `man 3 sin`.", func::sin, 0, 0 } },
-    { "sinh", { "Map all elements to their sinh. See `man 3 sinh`.", func::sinh, 0, 0 } },
-    { "sqrt", { "Map all elements to their sqrt. See `man 3 sqrt`.", func::sqrt, 0, 0 } },
-    { "tan", { "Map all elements to their tan. See `man 3 tan`.", func::tan, 0, 0 } },
-    { "tanh", { "Map all elements to their tanh. See `man 3 tanh`.", func::tanh, 0, 0 } },
-    { "trunc", { "Map all elements to their trunc. See `man 3 trunc`.", func::trunc, 0, 0 } },
+        // one to one
+        { "factorial",
+          { "Map all elements to their factorial. If elements are not integers, truncate them first.",
+            func::factorial,
+            0,
+            0 } },
+        { "degrees", { "Map all elements to their degrees.", func::degrees, 0, 0 } },
+        { "radians", { "Map all elements to their radians.", func::radians, 0, 0 } },
+        { "acos", { "Map all elements to their acos. See `man 3 acos`.", func::acos, 0, 0 } },
+        { "asin", { "Map all elements to their asin. See `man 3 asin`.", func::asin, 0, 0 } },
+        { "atan", { "Map all elements to their atan. See `man 3 atan`.", func::atan, 0, 0 } },
+        { "cbrt", { "Map all elements to their cbrt. See `man 3 cbrt`.", func::cbrt, 0, 0 } },
+        { "ceil", { "Map all elements to their ceil. See `man 3 ceil`.", func::ceil, 0, 0 } },
+        { "cos", { "Map all elements to their cos. See `man 3 cos`.", func::cos, 0, 0 } },
+        { "cosh", { "Map all elements to their cosh. See `man 3 cosh`.", func::cosh, 0, 0 } },
+        { "exp", { "Map all elements to their exp. See `man 3 exp`.", func::exp, 0, 0 } },
+        { "abs", { "Map all elements to their fabs. See `man 3 fabs`.", func::fabs, 0, 0 } },
+        { "floor", { "Map all elements to their floor. See `man 3 floor`.", func::floor, 0, 0 } },
+        { "log", { "Map all elements to their log. See `man 3 log`.", func::log, 0, 0 } },
+        { "log10", { "Map all elements to their log10. See `man 3 log10`.", func::log10, 0, 0 } },
+        { "log2", { "Map all elements to their log2. See `man 3 log2`.", func::log2, 0, 0 } },
+        { "pow", { "Map all elements to their pow. See `man 3 pow`.", func::pow, 1, 1 } },
+        { "round", { "Map all elements to their round. See `man 3 round`.", func::round, 0, 0 } },
+        { "sin", { "Map all elements to their sin. See `man 3 sin`.", func::sin, 0, 0 } },
+        { "sinh", { "Map all elements to their sinh. See `man 3 sinh`.", func::sinh, 0, 0 } },
+        { "sqrt", { "Map all elements to their sqrt. See `man 3 sqrt`.", func::sqrt, 0, 0 } },
+        { "tan", { "Map all elements to their tan. See `man 3 tan`.", func::tan, 0, 0 } },
+        { "tanh", { "Map all elements to their tanh. See `man 3 tanh`.", func::tanh, 0, 0 } },
+        { "trunc", { "Map all elements to their trunc. See `man 3 trunc`.", func::trunc, 0, 0 } },
 
-    // one to optional one
-    { "zero", { "Reduce to zero elements.", func::zero, 0, 0 } },
-    { "nonzero", { "Reduce to non-zero elements.", func::nonzero, 0, 0 } },
+        // one to optional one
+        { "zero", { "Reduce to zero elements.", func::zero, 0, 0 } },
+        { "nonzero", { "Reduce to non-zero elements.", func::nonzero, 0, 0 } },
 
-    // many to one
-    { "count", { "Reduce to count of elements.", func::count, 0, 0 } },
-    { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
-    { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
-    { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
-    { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
-    { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
-    { "median", { "Reduce to the median of the elements.", func::median, 0, 0 } },
-    { "gmean", { "Reduce to the geometric mean of the elements.", func::gmean, 0, 0 } },
-    { "hmean", { "Reduce to the harmonic mean of the elements.", func::hmean, 0, 0 } },
-    { "gcd", { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
-};
+        // many to one
+        { "count", { "Reduce to count of elements.", func::count, 0, 0 } },
+        { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
+        { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
+        { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
+        { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
+        { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
+        { "median", { "Reduce to the median of the elements.", func::median, 0, 0 } },
+        { "gmean", { "Reduce to the geometric mean of the elements.", func::gmean, 0, 0 } },
+        { "hmean", { "Reduce to the harmonic mean of the elements.", func::hmean, 0, 0 } },
+        { "gcd",
+          { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
+    };
+}
+
+std::unordered_map<std::string_view, function> functions =
+    get_functions<std::unordered_map<std::string_view, function>>();
 
 int main(int argc, char* argv[])
 {
@@ -192,7 +200,8 @@ int main(int argc, char* argv[])
                 return EXIT_SUCCESS;
             }
             case 'L': {
-                for (const auto& [name, func] : functions)
+                for (const auto& [name, func] :
+                     get_functions<std::vector<std::pair<std::string_view, function>>>())
                     std::cout << name << ":\n\t" << func.description << '\n';
 
                 return EXIT_SUCCESS;
