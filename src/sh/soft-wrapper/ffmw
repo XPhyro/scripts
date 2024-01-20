@@ -919,14 +919,29 @@ optimize() {
                 continue
             }
         }
+        before_size="$(stat --printf="%s\n" -- "$fl")"
         $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -q:v 0 "file:$outfl" >&2 || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
-        [ "$remove" = '1' ] && rm -f -- "$fl"
+        after_size="$(stat --printf="%s\n" -- "$outfl")"
+        [ "$remove" = '1' ] && {
+            if [ "$after_size" -ge "$before_size" ]; then
+                printf "Not removing input file [%s] as output file [%s] is larger.\n" "$fl" "$outfl" >&2
+                rm -f -- "$outfl"
+            else
+                rm -f -- "$fl"
+            fi
+        }
         if [ "$moveorig" = '1' ]; then
-            mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
-            printf "%s\n" "${fl%.*}.${outfl##*.}"
+            if [ "$after_size" -ge "$before_size" ]; then
+                printf "Not moving output file [%s] to input file [%s] as output file is larger.\n" "$outfl" "$fl" >&2
+                rm -f -- "$outfl"
+                printf "%s\n" "$fl"
+            else
+                mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
+                printf "%s\n" "${fl%.*}.${outfl##*.}"
+            fi
         else
             printf "%s\n" "$outfl"
         fi
