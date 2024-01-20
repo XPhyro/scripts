@@ -40,7 +40,11 @@ namespace func {
     // one to many
     DECL_FUNC(factor);
 
+    // many to many
+    DECL_FUNC(difference);
+
     // one to one
+    DECL_FUNC(cumsum);
     DECL_FUNC(factorial);
     DECL_FUNC(degrees);
     DECL_FUNC(radians);
@@ -101,7 +105,11 @@ constexpr Tret get_functions(void) noexcept
         // one to many
         { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
 
+        // many to many
+        { "difference", { "Map all elements to their difference.", func::difference, 0, 0 } },
+
         // one to one
+        { "cumsum", { "Map all elements to their cumulative sum.", func::cumsum, 0, 0 } },
         { "factorial",
           { "Map all elements to their factorial. If elements are not integers, truncate them first.",
             func::factorial,
@@ -327,6 +335,25 @@ namespace func {
         }
 
         nums.swap(factors);
+    }
+
+    // many to many
+    void difference([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        std::vector<double> difference;
+
+        difference.reserve(nums.size() - 1);
+        for (auto&& window : nums | std::views::slide(2))
+            difference.push_back(window[1] - window[0]);
+
+        nums.swap(difference);
+    }
+
+    void cumsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        double cumsum = 0;
+        for (double& num : nums)
+            num = cumsum += num;
     }
 
     // one to one
