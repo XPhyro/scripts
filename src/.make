@@ -463,10 +463,12 @@ install() {
             }
 
             find '.' -mindepth 1 -maxdepth 1 -type d -not -name "build" -printf "%P\n" | while IFS= read -r addon; do
-                cd "$addon"
-                printf "  %s -> %s\n" "$addon" "$rootdir/src/js/firefox/build/$addon-$(jq .version < manifest.json | sed 's/^"//;s/"$//').zip"
-                web-ext --no-input --artifacts-dir=../build \
-                    build --overwrite-dest > /dev/null
+                (
+                    cd "$addon"
+                    printf "  %s -> %s\n" "$addon" "$rootdir/src/js/firefox/build/$addon-$(jq .version < manifest.json | sed 's/^"//;s/"$//').zip"
+                    web-ext --no-input --artifacts-dir=../build \
+                        build --overwrite-dest > /dev/null
+                )
             done
         )
     )
