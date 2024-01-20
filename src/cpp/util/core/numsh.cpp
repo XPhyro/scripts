@@ -12,7 +12,6 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
-#include <optional>
 #include <ranges>
 #include <span>
 #include <unordered_map>
@@ -72,6 +71,8 @@ namespace func {
     DECL_FUNC(sum);
     DECL_FUNC(mean);
     DECL_FUNC(std);
+    DECL_FUNC(median);
+    DECL_FUNC(gmean);
     DECL_FUNC(gcd);
 } // namespace func
 
@@ -122,6 +123,8 @@ std::unordered_map<std::string_view, function> functions = {
     { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
     { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
     { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
+    { "median", { "Reduce to the median of the elements.", func::median, 0, 0 } },
+    { "gmean", { "Reduce to the geometric mean of the elements.", func::gmean, 0, 0 } },
     { "gcd", { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
 };
 
@@ -447,6 +450,22 @@ namespace func {
                                                return accum + diff * diff;
                                            }) /
                            (nums.size() - 1)) };
+    }
+
+    void median([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        std::sort(nums.begin(), nums.end());
+        nums = { nums.size() % 2 ? nums[nums.size() / 2] :
+                                   (nums[nums.size() / 2 - 1] + nums[nums.size() / 2]) / 2 };
+    }
+
+    void gmean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        nums = { std::pow(std::accumulate(nums.begin(),
+                                          nums.end(),
+                                          1.0,
+                                          [&](double accum, double num) { return accum * num; }),
+                          1.0 / nums.size()) };
     }
 
     void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
