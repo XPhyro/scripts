@@ -45,6 +45,7 @@ namespace func {
 
     // one to one
     DECL_FUNC(cumsum);
+    DECL_FUNC(cumprod);
     DECL_FUNC(factorial);
     DECL_FUNC(degrees);
     DECL_FUNC(radians);
@@ -79,6 +80,7 @@ namespace func {
     DECL_FUNC(max);
     DECL_FUNC(min);
     DECL_FUNC(sum);
+    DECL_FUNC(product);
     DECL_FUNC(mean);
     DECL_FUNC(std);
     DECL_FUNC(median);
@@ -110,6 +112,7 @@ constexpr Tret get_functions(void) noexcept
 
         // one to one
         { "cumsum", { "Map all elements to their cumulative sum.", func::cumsum, 0, 0 } },
+        { "cumprod", { "Map all elements to their cumulative product.", func::cumprod, 0, 0 } },
         { "factorial",
           { "Map all elements to their factorial. If elements are not integers, truncate them first.",
             func::factorial,
@@ -148,6 +151,7 @@ constexpr Tret get_functions(void) noexcept
         { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
         { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
         { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
+        { "product", { "Reduce to the product of the elements.", func::product, 0, 0 } },
         { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
         { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
         { "median", { "Reduce to the median of the elements.", func::median, 0, 0 } },
@@ -349,14 +353,21 @@ namespace func {
         nums.swap(difference);
     }
 
+    // one to one
     void cumsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double cumsum = 0;
+        double cumsum = 0.0;
         for (double& num : nums)
             num = cumsum += num;
     }
 
-    // one to one
+    void cumprod([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        double cumprod = 1.0;
+        for (double& num : nums)
+            num = cumprod *= num;
+    }
+
     void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
 #if false // no gcc feature-test for fold_left
@@ -527,6 +538,11 @@ namespace func {
     void sum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         nums = { std::accumulate(nums.begin(), nums.end(), 0.0) };
+    }
+
+    void product([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        nums = { std::accumulate(nums.begin(), nums.end(), 0.0, std::multiplies<>()) };
     }
 
     void mean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
