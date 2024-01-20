@@ -30,6 +30,8 @@ printhelp() {
         Move TEMPOUTFILE to respective INFILE after the operation succeeds. If the extensions of the respective INFILE and TEMPOUTFILE differ, TEMPOUTFILE is moved to INFILE with its extension changed to TEMPOUTFILE's.
     -n, --no-clobber
         Do nothing if the output file exists.
+    -o, --no-repeat
+        Do not optimize if the file is encoded with libx265.
     -r, --remove
         Remove INFILE if operation succeeded.
     -t FILE, --target FILE
@@ -331,6 +333,7 @@ parseargs_optimize() {
                         i) overwrite="";;
                         M) moveorig="1";;
                         n) overwrite="-n";;
+                        o) norepeat="1";;
                         r) remove="1";;
                         t) shift; assertarg "-t" "FILE" "$1"; target="$1";;
                         *) printusage "-$opt" "optimize";;
@@ -347,6 +350,7 @@ parseargs_optimize() {
                     interactive) overwrite="";;
                     move-to-original) moveorig="1";;
                     no-clobber) overwrite="-n";;
+                    no-repeat) norepeat="1";;
                     remove) remove="1";;
                     target) shift; assertarg "-t" "FILE" "$1"; target="$1";;
                     "") shift; break;;
@@ -907,6 +911,13 @@ optimize() {
         [ "$outfl" = "$fl" ] && {
             printf 'INFILE and TEMPOUTFILE [%s] cannot be the same.\n' "$fl"
             exit 1
+        }
+        [ "$norepeat" = "1" ] && {
+            ffprobe -hide_banner -v error -select_streams v:0 -show_entries stream_tags=encoder -of default=nokey=1:noprint_wrappers=1 -i "file:$fl" | grep -Exq 'Lavc[0-9.]+\s+libx265' && {
+                printf "File [%s] is already encoded with libx265, skipping.\n" "$fl" >&2
+                printf "%s\n" "$fl"
+                continue
+            }
         }
         $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -q:v 0 "file:$outfl" >&2 || {
             printf 'ffmpeg failed, exiting.\n'
