@@ -148,8 +148,9 @@ int main(int argc, char* argv[])
     std::vector<std::vector<double>> func_argvs;
 
     bool opt_multi = false;
+    bool opt_nostdin = false;
 
-    for (int i; (i = getopt(argc, argv, "f:hLmp:")) != -1;) {
+    for (int i; (i = getopt(argc, argv, "f:hLmp:s")) != -1;) {
         switch (i) {
             case 'f': {
                 function func;
@@ -170,7 +171,7 @@ int main(int argc, char* argv[])
                     << " [OPTION]... [NUMBER]...\n"
                        "Do mathematical calculations on all given numbers.\n"
                        "\n"
-                       "With no NUMBER, read standard input. Empty lines are ignored\n"
+                       "With no NUMBER, read standard input unless -s is given. Empty lines are ignored\n"
                        "when reading standard input.\n"
                        "\n"
                        "Option -f must be given. If FUNC requires additional arguments,\n"
@@ -181,7 +182,8 @@ int main(int argc, char* argv[])
                        "  -L        list all supported functions and exit\n"
                        "  -m        do not chain functions, output multiple results instead\n"
                        "  -p  ARG   pass additional arguments to FUNC. this option can be\n"
-                       "            given multiple times, and has to be given after -f.\n";
+                       "            given multiple times, and has to be given after -f.\n"
+                       "  -s        do not read numbers from standard input\n";
                 return EXIT_SUCCESS;
             }
             case 'L': {
@@ -196,6 +198,10 @@ int main(int argc, char* argv[])
             }
             case 'p': {
                 func_argvs.back().push_back(xph::lexical_cast<char*, double>(optarg));
+                break;
+            }
+            case 's': {
+                opt_nostdin = true;
                 break;
             }
             default: {
@@ -234,7 +240,7 @@ int main(int argc, char* argv[])
                                   return xph::lexical_cast<char*, double>(arg);
                               }),
                           std::back_inserter(nums));
-    } else {
+    } else if (!opt_nostdin) {
         for (double num; std::cin >> num; nums.push_back(num)) {}
     }
 
