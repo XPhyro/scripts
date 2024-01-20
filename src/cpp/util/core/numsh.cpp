@@ -361,9 +361,8 @@ namespace func {
     {
         std::vector<double> partsum;
         partsum.reserve(nums.size() - argv[0] + 1);
-        for (const auto& window : nums | std::views::slide(argv[0])) {
+        for (const auto& window : nums | std::views::slide(argv[0]))
             partsum.push_back(std::accumulate(window.begin(), window.end(), 0.0));
-        }
         nums.swap(partsum);
     }
 
@@ -371,10 +370,9 @@ namespace func {
     {
         std::vector<double> partprod;
         partprod.reserve(nums.size() - argv[0] + 1);
-        for (const auto& window : nums | std::views::slide(argv[0])) {
+        for (const auto& window : nums | std::views::slide(argv[0]))
             partprod.push_back(
                 std::accumulate(window.begin(), window.end(), 1.0, std::multiplies<>()));
-        }
         nums.swap(partprod);
     }
 
@@ -399,7 +397,6 @@ namespace func {
         xph::transform(nums, [](double num) {
             return std::ranges::fold_left(std::views::iota(1ull, static_cast<std::uintmax_t>(num) + 1ull),
                                           std::multiplies<>());
-            ;
         });
 #endif
 
