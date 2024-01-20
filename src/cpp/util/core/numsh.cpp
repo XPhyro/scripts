@@ -43,10 +43,12 @@ namespace func {
     // many to many
     DECL_FUNC(difference);
     DECL_FUNC(partsum);
+    DECL_FUNC(partaltsum);
     DECL_FUNC(partprod);
 
     // one to one
     DECL_FUNC(cumsum);
+    DECL_FUNC(cumaltsum);
     DECL_FUNC(cumprod);
     DECL_FUNC(factorial);
     DECL_FUNC(degrees);
@@ -82,6 +84,7 @@ namespace func {
     DECL_FUNC(max);
     DECL_FUNC(min);
     DECL_FUNC(sum);
+    DECL_FUNC(altsum);
     DECL_FUNC(product);
     DECL_FUNC(mean);
     DECL_FUNC(std);
@@ -112,10 +115,14 @@ constexpr Tret get_functions(void) noexcept
         // many to many
         { "difference", { "Map all elements to their difference.", func::difference, 0, 0 } },
         { "partsum", { "Map all elements to their partial sum.", func::partsum, 1, 1 } },
+        { "partaltsum",
+          { "Map all elements to their partial alternating sum.", func::partaltsum, 1, 1 } },
         { "partprod", { "Map all elements to their partial product.", func::partprod, 1, 1 } },
 
         // one to one
         { "cumsum", { "Map all elements to their cumulative sum.", func::cumsum, 0, 0 } },
+        { "cumaltsum",
+          { "Map all elements to their cumulative alternating sum.", func::cumaltsum, 0, 0 } },
         { "cumprod", { "Map all elements to their cumulative product.", func::cumprod, 0, 0 } },
         { "factorial",
           { "Map all elements to their factorial. If elements are not integers, truncate them first.",
@@ -155,6 +162,7 @@ constexpr Tret get_functions(void) noexcept
         { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
         { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
         { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
+        { "altsum", { "Reduce to the alternating sum of the elements.", func::altsum, 0, 0 } },
         { "product", { "Reduce to the product of the elements.", func::product, 0, 0 } },
         { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
         { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
@@ -366,6 +374,20 @@ namespace func {
         nums.swap(partsum);
     }
 
+    void partaltsum(std::span<double> argv, std::vector<double>& nums)
+    {
+        std::vector<double> partaltsum;
+        partaltsum.reserve(nums.size() - argv[0] + 1);
+        for (const auto& window : nums | std::views::slide(argv[0])) {
+            partaltsum.push_back(std::accumulate(
+                window.begin(), window.end(), 0.0, [&](double cumaltsum, double num) {
+                    static double sign = -1.0;
+                    return cumaltsum + num * (sign = -sign);
+                }));
+        }
+        nums.swap(partaltsum);
+    }
+
     void partprod(std::span<double> argv, std::vector<double>& nums)
     {
         std::vector<double> partprod;
@@ -382,6 +404,14 @@ namespace func {
         double cumsum = 0.0;
         for (double& num : nums)
             num = cumsum += num;
+    }
+
+    void cumaltsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        double cumaltsum = 0.0;
+        double sign = -1.0;
+        for (double& num : nums)
+            num = cumaltsum += num * (sign = -sign);
     }
 
     void cumprod([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
@@ -560,6 +590,14 @@ namespace func {
     void sum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         nums = { std::accumulate(nums.begin(), nums.end(), 0.0) };
+    }
+
+    void altsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        nums = { std::accumulate(nums.begin(), nums.end(), 0.0, [&](double altsum, double num) {
+            static double sign = -1.0;
+            return altsum + num * (sign = -sign);
+        }) };
     }
 
     void product([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
