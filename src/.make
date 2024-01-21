@@ -1128,7 +1128,7 @@ for i; do
 done
 
 CC="gcc"
-C_INCLUDE_FLAGS="-Iinclude -I'$rootdir/lib/hedley'"
+C_INCLUDE_FLAGS="-I'$rootdir/lib/hedley'"
 CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wall -Wextra -Werror -Wabi=11 \
        -Wno-unused-parameter -Wno-unused-result -Wswitch-default \
@@ -1143,8 +1143,7 @@ C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
 export C_INCLUDE_PATH
 
 CXX="g++"
-CXX_INCLUDE_FLAGS="-Iinclude -I'$rootdir/src/c/include' \
-                   -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
+CXX_INCLUDE_FLAGS="-I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=18 \
           -Wswitch-default \
