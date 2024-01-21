@@ -10,8 +10,8 @@
 #include <stdutil.h>
 #include <strutil.h>
 
-#include <exec_info.h>
-#include <paramutil.h>
+#include <xph/exec_info.h>
+#include <xph/paramutil.h>
 
 DEFINE_EXEC_INFO()
 

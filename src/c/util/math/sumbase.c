@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <ioutil.h>
-#include <stdutil.h>
+#include <xph/ioutil.h>
+#include <xph/stdutil.h>
 
 #define EXECNAME "sumbase"
 

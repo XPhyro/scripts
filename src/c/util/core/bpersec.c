@@ -9,9 +9,9 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <exec_info.h>
-#include <paramutil.h>
-#include <stdutil.h>
+#include <xph/exec_info.h>
+#include <xph/paramutil.h>
+#include <xph/stdutil.h>
 
 DEFINE_EXEC_INFO()
 

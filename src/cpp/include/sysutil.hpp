@@ -13,7 +13,7 @@
 
 #include <unistd.h>
 
-#include <strutil.h>
+#include <xph/strutil.h>
 
 namespace xph::sys {
     void swapfile(const std::filesystem::path& path1, const std::filesystem::path& path2);

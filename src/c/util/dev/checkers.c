@@ -2,7 +2,7 @@
 #include <sys/param.h>
 #include <unistd.h>
 
-#include <strutil.h>
+#include <xph/strutil.h>
 
 int main(int argc, char *argv[])
 {

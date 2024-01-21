@@ -10,9 +10,10 @@
 #include <sys/param.h>
 #include <unistd.h>
 
+#include <xph/stdutil.h>
+#include <xph/sysutil.h>
+
 #include <hedley.h>
-#include <stdutil.h>
-#include <sysutil.h>
 
 #define EXECNAME "getpath"
 

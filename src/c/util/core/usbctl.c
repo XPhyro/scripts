@@ -8,8 +8,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#include <exec_info.h>
-#include <stdutil.h>
+#include <xph/exec_info.h>
+#include <xph/stdutil.h>
 
 DEFINE_EXEC_INFO()
 

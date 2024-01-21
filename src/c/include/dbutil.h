@@ -14,9 +14,9 @@
 
 #include <hedley.h>
 
-#include <meta.h>
-#include <strutil.h>
-#include <sysutil.h>
+#include "meta.h"
+#include "strutil.h"
+#include "sysutil.h"
 
 const char *const db_scriptsprefix = "/scripts/";
 const char *const db_locksprefix = "/locks/";

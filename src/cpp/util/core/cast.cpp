@@ -18,12 +18,12 @@
 #include <unistd.h>
 
 // libraries
-#include <consts.hpp>
-#include <die.hpp>
-#include <exec_info.hpp>
-#include <lexical_cast.hpp>
-#include <strutil.hpp>
-#include <tuple_hash.hpp>
+#include <xph/consts.hpp>
+#include <xph/die.hpp>
+#include <xph/exec_info.hpp>
+#include <xph/lexical_cast.hpp>
+#include <xph/strutil.hpp>
+#include <xph/tuple_hash.hpp>
 
 static_assert(PIPE_BUF % 8 == 0);
 static_assert(sizeof(char) == 1 && sizeof(unsigned char) == 1);

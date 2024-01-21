@@ -27,8 +27,8 @@
 
 #include <magic.h>
 
-#include <ioutil.h>
-#include <strutil.h>
+#include <xph/ioutil.h>
+#include <xph/strutil.h>
 
 #ifndef S_ISVTX
 #define S_ISVTX 01000

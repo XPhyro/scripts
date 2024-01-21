@@ -13,7 +13,7 @@
 
 #include <hedley.h>
 
-#include <strutil.h>
+#include "strutil.h"
 
 /* path is modified in the process, but restored to original */
 void rmkparent(char *path, mode_t mode)

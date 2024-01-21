@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <stdutil.h>
+#include <xph/stdutil.h>
 
 #define EXECNAME "truecolor"
 #define DIE(ERRMSG)                               \

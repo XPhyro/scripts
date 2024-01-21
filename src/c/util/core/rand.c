@@ -13,7 +13,7 @@
 #include <sys/random.h>
 #endif
 
-#include <stdutil.h>
+#include <xph/stdutil.h>
 
 #define EXECNAME "rand"
 

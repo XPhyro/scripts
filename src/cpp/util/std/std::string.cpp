@@ -8,10 +8,10 @@
 
 #include <unistd.h>
 
-#include <die.hpp>
-#include <exec_info.hpp>
-#include <macros.hpp>
-#include <strutil.hpp>
+#include <xph/die.hpp>
+#include <xph/exec_info.hpp>
+#include <xph/macros.hpp>
+#include <xph/strutil.hpp>
 
 DEFINE_EXEC_INFO();
 

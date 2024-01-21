@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include <exec_info.h>
+#include "exec_info.h"
 
 void die(const char *restrict format, ...)
 {

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <wordexp.h>
 
-#include <ioutil.h>
+#include <xph/ioutil.h>
 
 int safewordexp(const char *restrict s, wordexp_t *restrict result, int flags)
 {

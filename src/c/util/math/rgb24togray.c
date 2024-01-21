@@ -12,9 +12,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <exec_info.h>
+#include <xph/exec_info.h>
+#include <xph/strutil.h>
+
 #include <hedley.h>
-#include <strutil.h>
 
 DEFINE_EXEC_INFO()
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <strutil.h>
+#include <xph/strutil.h>
 
 int main(int argc, const char *argv[])
 {

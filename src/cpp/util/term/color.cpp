@@ -7,9 +7,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include <die.hpp>
-#include <exec_info.hpp>
-#include <strutil.hpp>
+#include <xph/die.hpp>
+#include <xph/exec_info.hpp>
+#include <xph/strutil.hpp>
 
 const std::unordered_map<std::string, std::string> colors = {
     { "black", "\x1b[0;30m" },   { "red", "\x1b[0;31m" },    { "green", "\x1b[0;32m" },

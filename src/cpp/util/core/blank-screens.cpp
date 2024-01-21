@@ -25,15 +25,15 @@
 #include <unistd.h>
 
 // C++ libraries
-#include <auto_charptr.hpp>
-#include <die.hpp>
-#include <iteratorutil.hpp>
-#include <lexical_cast.hpp>
-#include <mathutil.hpp>
-#include <sysutil.hpp>
+#include <xph/auto_charptr.hpp>
+#include <xph/die.hpp>
+#include <xph/iteratorutil.hpp>
+#include <xph/lexical_cast.hpp>
+#include <xph/mathutil.hpp>
+#include <xph/sysutil.hpp>
 
 // C libraries
-#include <ioutil.h>
+#include <xph/ioutil.h>
 
 // third-party
 #include <X11/Xatom.h>

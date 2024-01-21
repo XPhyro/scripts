@@ -1,8 +1,8 @@
 #ifndef HEADER_SCRIPTS_CXX_AUTO_TIMER_
 #define HEADER_SCRIPTS_CXX_AUTO_TIMER_
 
-#include <logger.hpp>
-#include <unitutil.hpp>
+#include "logger.hpp"
+#include "unitutil.hpp"
 
 namespace xph {
     class auto_timer {

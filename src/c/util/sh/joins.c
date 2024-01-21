@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stdutil.h>
-#include <strutil.h>
+#include <xph/stdutil.h>
+#include <xph/strutil.h>
 
 int main(int argc, const char *argv[])
 {

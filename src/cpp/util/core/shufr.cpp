@@ -14,10 +14,10 @@
 
 #include <unistd.h>
 
-#include <die.hpp>
-#include <exec_info.hpp>
-#include <nullable.hpp>
-#include <parse.hpp>
+#include <xph/die.hpp>
+#include <xph/exec_info.hpp>
+#include <xph/nullable.hpp>
+#include <xph/parse.hpp>
 
 void parseargs(int& argc, char**& argv);
 

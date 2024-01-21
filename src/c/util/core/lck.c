@@ -8,10 +8,10 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <dbutil.h>
-#include <exec_info.h>
-#include <stdutil.h>
-#include <strutil.h>
+#include <xph/dbutil.h>
+#include <xph/exec_info.h>
+#include <xph/stdutil.h>
+#include <xph/strutil.h>
 
 DEFINE_EXEC_INFO()
 

@@ -17,7 +17,7 @@
 #include <ranges>
 #endif // if __cplusplus >= 202002L
 
-#include <consts.hpp>
+#include "consts.hpp"
 
 namespace xph::str {
     std::unique_ptr<std::string> getlower(const std::string& str);

@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <stdutil.h>
+#include <xph/stdutil.h>
 
 #define DIE(ERRMSG)                           \
     {                                         \

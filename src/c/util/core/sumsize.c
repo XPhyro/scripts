@@ -7,10 +7,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <exec_info.h>
-#include <ioutil.h>
-#include <stdutil.h>
-#include <strutil.h>
+#include <xph/exec_info.h>
+#include <xph/ioutil.h>
+#include <xph/stdutil.h>
+#include <xph/strutil.h>
 
 #include <hedley.h>
 

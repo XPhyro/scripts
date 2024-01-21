@@ -1,10 +1,10 @@
 #ifndef HEADER_SCRIPTS_C_VECTOR_
 #define HEADER_SCRIPTS_C_VECTOR_
 
+#include <stddef.h>
 #include <sys/param.h>
 
-#include <stddef.h>
-#include <stdutil.h>
+#include "stdutil.h"
 
 /* if managed manually, the following functions might not work correctly. */
 /* only works for members of constant size. if using strings, allocate a constant-size buffer for them. */
