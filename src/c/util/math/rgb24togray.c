@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 #include <xph/exec_info.h>
-#include <xph/strutil.h>
+#include <xph/string.h>
 
 #include <hedley.h>
 

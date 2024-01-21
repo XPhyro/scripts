@@ -2,7 +2,7 @@
 #define HEADER_SCRIPTS_CXX_AUTO_TIMER_
 
 #include "logger.hpp"
-#include "unitutil.hpp"
+#include "units.hpp"
 
 namespace xph {
     class auto_timer {

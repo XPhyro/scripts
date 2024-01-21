@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_PARAMUTIL_
-#define HEADER_SCRIPTS_C_PARAMUTIL_
+#ifndef HEADER_SCRIPTS_C_PARAM_
+#define HEADER_SCRIPTS_C_PARAM_
 
 #define STRINGIFY_IMPL_(VAL) #VAL
 #define STRINGIFY(VAL) STRINGIFY_IMPL_(VAL)
@@ -8,4 +8,4 @@
 
 extern int _iso_c_forbids_an_empty_translation_unit;
 
-#endif /* ifndef HEADER_SCRIPTS_C_PARAMUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_C_PARAM_ */

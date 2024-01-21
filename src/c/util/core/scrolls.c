@@ -16,8 +16,8 @@
 #include <unistd.h>
 
 #include <xph/exec_info.h>
-#include <xph/paramutil.h>
-#include <xph/stdutil.h>
+#include <xph/param.h>
+#include <xph/stdlib.h>
 
 DEFINE_EXEC_INFO()
 

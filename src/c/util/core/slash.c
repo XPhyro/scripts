@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 
-#include <xph/ioutil.h>
-#include <xph/sysutil.h>
+#include <xph/io.h>
+#include <xph/sys.h>
 
 int main(int argc, char *argv[])
 {

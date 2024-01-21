@@ -8,8 +8,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <xph/ioutil.h>
-#include <xph/stdutil.h>
+#include <xph/io.h>
+#include <xph/stdlib.h>
 
 #define DIE(...)                       \
     {                                  \

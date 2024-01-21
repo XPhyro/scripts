@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_DBUTIL_
-#define HEADER_SCRIPTS_C_DBUTIL_
+#ifndef HEADER_SCRIPTS_C_DATABASE_
+#define HEADER_SCRIPTS_C_DATABASE_
 
 #include <assert.h>
 #include <errno.h>
@@ -15,8 +15,8 @@
 #include <hedley.h>
 
 #include "meta.h"
-#include "strutil.h"
-#include "sysutil.h"
+#include "string.h"
+#include "sys.h"
 
 const char *const db_scriptsprefix = "/scripts/";
 const char *const db_locksprefix = "/locks/";
@@ -254,4 +254,4 @@ bool ulckdb(const char *hash, lckdb_t type)
     return ret;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_DBUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_C_DATABASE_ */

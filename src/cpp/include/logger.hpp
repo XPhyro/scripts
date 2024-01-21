@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_LOG_
-#define HEADER_SCRIPTS_CXX_LOG_
+#ifndef HEADER_SCRIPTS_CXX_LOGGER_
+#define HEADER_SCRIPTS_CXX_LOGGER_
 
 #include <cstddef>
 #include <cstdlib>
@@ -120,4 +120,4 @@ namespace xph {
 
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_LOG_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_LOGGER_ */

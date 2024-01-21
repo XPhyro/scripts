@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_ALGORITHMUTIL_
-#define HEADER_SCRIPTS_CXX_ALGORITHMUTIL_
+#ifndef HEADER_SCRIPTS_CXX_ALGORITHM_
+#define HEADER_SCRIPTS_CXX_ALGORITHM_
 
 #include <algorithm>
 #include <functional>
@@ -16,4 +16,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_ALGORITHMUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_ALGORITHM_ */

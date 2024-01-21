@@ -9,9 +9,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <xph/ioutil.h>
-#include <xph/stdutil.h>
-#include <xph/strutil.h>
+#include <xph/io.h>
+#include <xph/stdlib.h>
+#include <xph/string.h>
 
 #define NUSERSINIT 10
 

@@ -8,9 +8,9 @@
 #include <unistd.h>
 
 #include <xph/exec_info.h>
-#include <xph/ioutil.h>
-#include <xph/stdutil.h>
-#include <xph/strutil.h>
+#include <xph/io.h>
+#include <xph/stdlib.h>
+#include <xph/string.h>
 
 #include <hedley.h>
 

@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_EXECINFO_
-#define HEADER_SCRIPTS_C_EXECINFO_
+#ifndef HEADER_SCRIPTS_C_EXEC_INFO_
+#define HEADER_SCRIPTS_C_EXEC_INFO_
 
 #include <stdio.h>
 #include <string.h>
@@ -24,4 +24,4 @@ void init_exec_info(int argc, char **argv)
     }
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_EXECINFO_ */
+#endif /* ifndef HEADER_SCRIPTS_C_EXEC_INFO_ */

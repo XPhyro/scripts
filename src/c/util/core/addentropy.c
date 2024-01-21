@@ -6,7 +6,7 @@
 #include <sys/param.h>
 #include <unistd.h>
 
-#include <xph/stdutil.h>
+#include <xph/stdlib.h>
 
 int main(void)
 {

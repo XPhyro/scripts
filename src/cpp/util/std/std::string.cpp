@@ -11,7 +11,7 @@
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
 #include <xph/macros.hpp>
-#include <xph/strutil.hpp>
+#include <xph/string.hpp>
 
 DEFINE_EXEC_INFO();
 

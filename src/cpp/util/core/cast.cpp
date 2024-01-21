@@ -22,7 +22,7 @@
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
 #include <xph/lexical_cast.hpp>
-#include <xph/strutil.hpp>
+#include <xph/string.hpp>
 #include <xph/tuple_hash.hpp>
 
 static_assert(PIPE_BUF % 8 == 0);

@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_SYSUTIL_
-#define HEADER_SCRIPTS_CXX_SYSUTIL_
+#ifndef HEADER_SCRIPTS_CXX_TICTOC_
+#define HEADER_SCRIPTS_CXX_TICTOC_
 
 #include <chrono>
 #include <string>
@@ -33,4 +33,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_SYSUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_TICTOC_ */

@@ -29,13 +29,13 @@
 #include <xph/lexical_cast.hpp>
 #include <xph/macros.hpp>
 #include <xph/nullable.hpp>
-#include <xph/strutil.hpp>
-#include <xph/sysutil.hpp>
-#include <xph/vecutil.hpp>
+#include <xph/string.hpp>
+#include <xph/sys.hpp>
+#include <xph/vector.hpp>
 
 // C libraries
-#include <xph/dbutil.h>
-#include <xph/strutil.h>
+#include <xph/database.h>
+#include <xph/string.h>
 
 // third-party
 #include <pstream.h>

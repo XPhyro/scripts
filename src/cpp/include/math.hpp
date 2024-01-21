@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_MATHUTIL_
-#define HEADER_SCRIPTS_CXX_MATHUTIL_
+#ifndef HEADER_SCRIPTS_CXX_MATH_
+#define HEADER_SCRIPTS_CXX_MATH_
 
 namespace xph {
     inline bool approx_zero(float x, float e = 1e-6f)
@@ -23,4 +23,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_MATHUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_MATH_ */

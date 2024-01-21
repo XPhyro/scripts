@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_SYSUTIL_
-#define HEADER_SCRIPTS_CXX_SYSUTIL_
+#ifndef HEADER_SCRIPTS_CXX_SYS_
+#define HEADER_SCRIPTS_CXX_SYS_
 
 #include <algorithm>
 #include <array>
@@ -13,7 +13,7 @@
 
 #include <unistd.h>
 
-#include "strutil.h"
+#include "string.h"
 
 namespace xph::sys {
     void swapfile(const std::filesystem::path& path1, const std::filesystem::path& path2);
@@ -65,4 +65,4 @@ namespace xph::sys {
     }
 } // namespace xph::sys
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_SYSUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_SYS_ */

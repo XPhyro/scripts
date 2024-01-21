@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_STRUTIL_
-#define HEADER_SCRIPTS_C_STRUTIL_
+#ifndef HEADER_SCRIPTS_C_STRING_
+#define HEADER_SCRIPTS_C_STRING_
 
 #include <assert.h>
 #include <ctype.h>
@@ -13,7 +13,7 @@
 
 #include <hedley.h>
 
-#include "stdutil.h"
+#include "stdlib.h"
 
 HEDLEY_MALLOC HEDLEY_ALWAYS_INLINE void *amallocset(size_t size, int c)
 {
@@ -538,4 +538,4 @@ char *vstrcatbuf(char *buf, size_t bufsize, size_t n, ...)
     return o;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_STRUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_C_STRING_ */

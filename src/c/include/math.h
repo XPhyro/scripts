@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_MATHUTIL_
-#define HEADER_SCRIPTS_C_MATHUTIL_
+#ifndef HEADER_SCRIPTS_C_MATH_
+#define HEADER_SCRIPTS_C_MATH_
 
 #include <stdbool.h>
 
@@ -23,4 +23,4 @@ bool approxeqf(float x, float y)
     return approxzerof(x - y);
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_MATHUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_C_MATH_ */

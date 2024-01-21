@@ -7,11 +7,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <stdutil.h>
-#include <strutil.h>
-
 #include <xph/exec_info.h>
-#include <xph/paramutil.h>
+#include <xph/param.h>
+#include <xph/stdlib.h>
+#include <xph/string.h>
 
 DEFINE_EXEC_INFO()
 

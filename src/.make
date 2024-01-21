@@ -1139,7 +1139,7 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -ffp-contract=on -fassociative-math -ffast-math -flto \
        $C_INCLUDE_FLAGS"
 CLDFLAGS=""
-C_INCLUDE_PATH="$PWD/c/include:$rootdir/lib/hedley"
+C_INCLUDE_PATH="$rootdir/lib/hedley:$C_INCLUDE_PATH"
 export C_INCLUDE_PATH
 
 CXX="g++"
@@ -1155,7 +1155,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -fpermissive -fvtable-verify=none \
           $CXX_INCLUDE_FLAGS"
 CXXLDFLAGS=""
-CPLUS_INCLUDE_PATH="$PWD/cpp/include:$PWD/c/include:$rootdir/lib/hedley:$rootdir/lib/pstreams"
+CPLUS_INCLUDE_PATH="$rootdir/lib/hedley:$rootdir/lib/pstreams:$CPLUS_INCLUDE_PATH"
 export CPLUS_INCLUDE_PATH
 
 C_CPPCHECK_SUPPRESS="--suppress=variableScope"

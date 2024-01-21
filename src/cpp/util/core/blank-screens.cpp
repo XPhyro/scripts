@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <csignal>
 #include <cstdlib>
-#include <exec_info.hpp>
 #include <filesystem>
 #include <fstream>
 #include <future>
@@ -27,13 +26,14 @@
 // C++ libraries
 #include <xph/auto_charptr.hpp>
 #include <xph/die.hpp>
-#include <xph/iteratorutil.hpp>
+#include <xph/exec_info.hpp>
+#include <xph/iterator.hpp>
 #include <xph/lexical_cast.hpp>
-#include <xph/mathutil.hpp>
-#include <xph/sysutil.hpp>
+#include <xph/math.hpp>
+#include <xph/sys.hpp>
 
 // C libraries
-#include <xph/ioutil.h>
+#include <xph/io.h>
 
 // third-party
 #include <X11/Xatom.h>

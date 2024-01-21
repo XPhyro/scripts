@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <xph/stdutil.h>
+#include <xph/stdlib.h>
 
 #define EXECNAME "argn"
 #define DIE(ERRMSG)                               \

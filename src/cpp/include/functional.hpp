@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_FUNCTIONALUTIL_
-#define HEADER_SCRIPTS_CXX_FUNCTIONALUTIL_
+#ifndef HEADER_SCRIPTS_CXX_FUNCTIONAL_
+#define HEADER_SCRIPTS_CXX_FUNCTIONAL_
 
 #include <functional>
 
@@ -28,4 +28,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_FUNCTIONALUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_FUNCTIONAL_ */

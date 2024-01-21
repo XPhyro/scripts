@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_VECUTIL_
-#define HEADER_SCRIPTS_CXX_VECUTIL_
+#ifndef HEADER_SCRIPTS_CXX_UNITS_
+#define HEADER_SCRIPTS_CXX_UNITS_
 
 #include <cstdint>
 #include <string>
@@ -40,4 +40,4 @@ namespace xph::unit {
     }
 } // namespace xph::unit
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_VECUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_UNITS_ */

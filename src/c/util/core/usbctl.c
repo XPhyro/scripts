@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 #include <xph/exec_info.h>
-#include <xph/stdutil.h>
+#include <xph/stdlib.h>
 
 DEFINE_EXEC_INFO()
 

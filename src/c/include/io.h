@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_IOUTIL_
-#define HEADER_SCRIPTS_C_IOUTIL_
+#ifndef HEADER_SCRIPTS_C_IO_
+#define HEADER_SCRIPTS_C_IO_
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -31,4 +31,4 @@ char *getstr(int argc, char *argv[], int delim)
 }
 #endif /* #if _POSIX_C_SOURCE >= 200809L */
 
-#endif /* ifndef HEADER_SCRIPTS_C_IOUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_C_IO_ */

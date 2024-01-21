@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_CXX_ITERATORUTIL_
-#define HEADER_SCRIPTS_CXX_ITERATORUTIL_
+#ifndef HEADER_SCRIPTS_CXX_ITERATOR_
+#define HEADER_SCRIPTS_CXX_ITERATOR_
 
 #include <iterator>
 
@@ -14,4 +14,4 @@ namespace xph {
     }
 } // namespace xph
 
-#endif /* ifndef HEADER_SCRIPTS_CXX_ITERATORUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_CXX_ITERATOR_ */

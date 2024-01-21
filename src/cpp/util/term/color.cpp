@@ -9,7 +9,7 @@
 
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
-#include <xph/strutil.hpp>
+#include <xph/string.hpp>
 
 const std::unordered_map<std::string, std::string> colors = {
     { "black", "\x1b[0;30m" },   { "red", "\x1b[0;31m" },    { "green", "\x1b[0;32m" },

@@ -23,11 +23,11 @@
 
 #include <boost/range/combine.hpp>
 
-#include <xph/algorithmutil.hpp>
+#include <xph/algorithm.hpp>
 #include <xph/die.hpp>
-#include <xph/functionalutil.hpp>
+#include <xph/functional.hpp>
 #include <xph/lexical_cast.hpp>
-#include <xph/mathutil.hpp>
+#include <xph/math.hpp>
 
 DEFINE_EXEC_INFO();
 

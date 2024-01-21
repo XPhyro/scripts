@@ -1,4 +1,4 @@
-#include <sysutil.h>
+#include <xph/sys.h>
 
 int main(int argc, char *argv[])
 {

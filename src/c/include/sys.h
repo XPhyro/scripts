@@ -1,5 +1,5 @@
-#ifndef HEADER_SCRIPTS_C_SYSUTIL_
-#define HEADER_SCRIPTS_C_SYSUTIL_
+#ifndef HEADER_SCRIPTS_C_SYS_
+#define HEADER_SCRIPTS_C_SYS_
 
 #include <assert.h>
 #include <fcntl.h>
@@ -13,7 +13,7 @@
 
 #include <hedley.h>
 
-#include "strutil.h"
+#include "string.h"
 
 /* path is modified in the process, but restored to original */
 void rmkparent(char *path, mode_t mode)
@@ -181,4 +181,4 @@ HEDLEY_MALLOC char *dirslash(const char *path)
     return s;
 }
 
-#endif /* ifndef HEADER_SCRIPTS_C_SYSUTIL_ */
+#endif /* ifndef HEADER_SCRIPTS_C_SYS_ */

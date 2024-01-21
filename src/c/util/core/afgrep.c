@@ -9,8 +9,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <xph/stdutil.h>
-#include <xph/strutil.h>
+#include <xph/stdlib.h>
+#include <xph/string.h>
 
 #define EXECNAME "afgrep"
 #define DIE(...)                      \
