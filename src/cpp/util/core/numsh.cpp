@@ -91,6 +91,12 @@ DEFINE_EXEC_INFO();
     X_FUNCTION(gcd, 0, 0, "Reduce to the greatest common denominator of the elements.")
 
 #define X_FUNCTION(FUNC, MIN, MAX, DESC) \
+    static_assert(MIN >= 0);             \
+    static_assert(MIN <= MAX);           \
+    FUNCTIONS
+#undef X_FUNCTION
+
+#define X_FUNCTION(FUNC, MIN, MAX, DESC) \
     void FUNC(std::span<double> argv, std::vector<double>& nums);
 
 namespace func {
