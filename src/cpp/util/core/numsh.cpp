@@ -31,69 +31,73 @@
 
 DEFINE_EXEC_INFO();
 
-#define DECL_FUNC(FUNC_NAME) void FUNC_NAME(std::span<double> argv, std::vector<double>& nums);
+#define FUNCTIONS                                                                        \
+    X_FUNCTION(arange, 1, 2, "Append [MIN, MAX) to elements.")                           \
+                                                                                         \
+    X_FUNCTION(factor, 0, 0, "Map all elements to their factors.")                       \
+                                                                                         \
+    X_FUNCTION(difference, 0, 0, "Map all elements to their difference.")                \
+    X_FUNCTION(partsum, 1, 1, "Map all elements to their partial sum.")                  \
+    X_FUNCTION(partaltsum, 1, 1, "Map all elements to their partial alternating sum.")   \
+    X_FUNCTION(partprod, 1, 1, "Map all elements to their partial product.")             \
+                                                                                         \
+    X_FUNCTION(cumsum, 0, 0, "Map all elements to their cumulative sum.")                \
+    X_FUNCTION(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.") \
+    X_FUNCTION(cumprod, 0, 0, "Map all elements to their cumulative product.")           \
+    X_FUNCTION(factorial,                                                                \
+               0,                                                                        \
+               0,                                                                        \
+               "Map all elements to their factorial. "                                   \
+               "If elements are not integers, truncate them first.")                     \
+    X_FUNCTION(degrees, 0, 0, "Map all elements to their degrees.")                      \
+    X_FUNCTION(radians, 0, 0, "Map all elements to their radians.")                      \
+    X_FUNCTION(acos, 0, 0, "Map all elements to their acos. See `man 3 acos`.")          \
+    X_FUNCTION(asin, 0, 0, "Map all elements to their asin. See `man 3 asin`.")          \
+    X_FUNCTION(atan, 0, 0, "Map all elements to their atan. See `man 3 atan`.")          \
+    X_FUNCTION(cbrt, 0, 0, "Map all elements to their cbrt. See `man 3 cbrt`.")          \
+    X_FUNCTION(ceil, 0, 0, "Map all elements to their ceil. See `man 3 ceil`.")          \
+    X_FUNCTION(cos, 0, 0, "Map all elements to their cos. See `man 3 cos`.")             \
+    X_FUNCTION(cosh, 0, 0, "Map all elements to their cosh. See `man 3 cosh`.")          \
+    X_FUNCTION(exp, 0, 0, "Map all elements to their exp. See `man 3 exp`.")             \
+    X_FUNCTION(abs, 0, 0, "Map all elements to their abs. See `man 3 fabs`.")            \
+    X_FUNCTION(floor, 0, 0, "Map all elements to their floor. See `man 3 floor`.")       \
+    X_FUNCTION(log, 0, 0, "Map all elements to their log. See `man 3 log`.")             \
+    X_FUNCTION(log10, 0, 0, "Map all elements to their log10. See `man 3 log10`.")       \
+    X_FUNCTION(log2, 0, 0, "Map all elements to their log2. See `man 3 log2`.")          \
+    X_FUNCTION(log1p, 0, 0, "Map all elements to their log1p.")                          \
+    X_FUNCTION(pow, 1, 1, "Map all elements to their pow. See `man 3 pow`.")             \
+    X_FUNCTION(round, 0, 0, "Map all elements to their round. See `man 3 round`.")       \
+    X_FUNCTION(sin, 0, 0, "Map all elements to their sin. See `man 3 sin`.")             \
+    X_FUNCTION(sinh, 0, 0, "Map all elements to their sinh. See `man 3 sinh`.")          \
+    X_FUNCTION(sqrt, 0, 0, "Map all elements to their sqrt. See `man 3 sqrt`.")          \
+    X_FUNCTION(tan, 0, 0, "Map all elements to their tan. See `man 3 tan`.")             \
+    X_FUNCTION(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")          \
+    X_FUNCTION(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")       \
+                                                                                         \
+    X_FUNCTION(zero, 0, 0, "Reduce to zero elements.")                                   \
+    X_FUNCTION(nonzero, 0, 0, "Reduce to non-zero elements.")                            \
+                                                                                         \
+    X_FUNCTION(count, 0, 0, "Reduce to count of elements.")                              \
+    X_FUNCTION(max, 0, 0, "Reduce to the maximum element.")                              \
+    X_FUNCTION(min, 0, 0, "Reduce to the minimum element.")                              \
+    X_FUNCTION(sum, 0, 0, "Reduce to the sum of the elements.")                          \
+    X_FUNCTION(altsum, 0, 0, "Reduce to the alternating sum of the elements.")           \
+    X_FUNCTION(product, 0, 0, "Reduce to the product of the elements.")                  \
+    X_FUNCTION(mean, 0, 0, "Reduce to the mean of the elements.")                        \
+    X_FUNCTION(std, 0, 0, "Reduce to the standard deviation of the elements.")           \
+    X_FUNCTION(median, 0, 0, "Reduce to the median of the elements.")                    \
+    X_FUNCTION(gmean, 0, 0, "Reduce to the geometric mean of the elements.")             \
+    X_FUNCTION(hmean, 0, 0, "Reduce to the harmonic mean of the elements.")              \
+    X_FUNCTION(gcd, 0, 0, "Reduce to the greatest common denominator of the elements.")
+
+#define X_FUNCTION(FUNC, MIN, MAX, DESC) \
+    void FUNC(std::span<double> argv, std::vector<double>& nums);
 
 namespace func {
-    // none to many
-    DECL_FUNC(arange);
-
-    // one to many
-    DECL_FUNC(factor);
-
-    // many to many
-    DECL_FUNC(difference);
-    DECL_FUNC(partsum);
-    DECL_FUNC(partaltsum);
-    DECL_FUNC(partprod);
-
-    // one to one
-    DECL_FUNC(cumsum);
-    DECL_FUNC(cumaltsum);
-    DECL_FUNC(cumprod);
-    DECL_FUNC(factorial);
-    DECL_FUNC(degrees);
-    DECL_FUNC(radians);
-    DECL_FUNC(acos);
-    DECL_FUNC(asin);
-    DECL_FUNC(atan);
-    DECL_FUNC(cbrt);
-    DECL_FUNC(ceil);
-    DECL_FUNC(cos);
-    DECL_FUNC(cosh);
-    DECL_FUNC(exp);
-    DECL_FUNC(fabs);
-    DECL_FUNC(floor);
-    DECL_FUNC(log);
-    DECL_FUNC(log10);
-    DECL_FUNC(log2);
-    DECL_FUNC(log1p);
-    DECL_FUNC(pow);
-    DECL_FUNC(round);
-    DECL_FUNC(sin);
-    DECL_FUNC(sinh);
-    DECL_FUNC(sqrt);
-    DECL_FUNC(tan);
-    DECL_FUNC(tanh);
-    DECL_FUNC(trunc);
-
-    // one to optional one
-    DECL_FUNC(zero);
-    DECL_FUNC(nonzero);
-
-    // many to one
-    DECL_FUNC(count);
-    DECL_FUNC(max);
-    DECL_FUNC(min);
-    DECL_FUNC(sum);
-    DECL_FUNC(altsum);
-    DECL_FUNC(product);
-    DECL_FUNC(mean);
-    DECL_FUNC(std);
-    DECL_FUNC(median);
-    DECL_FUNC(gmean);
-    DECL_FUNC(hmean);
-    DECL_FUNC(gcd);
+    FUNCTIONS
 } // namespace func
+
+#undef X_FUNCTION
 
 struct function {
 public:
@@ -106,74 +110,9 @@ public:
 template <typename Tret>
 constexpr Tret get_functions(void) noexcept
 {
-    return {
-        // none to many
-        { "arange", { "Append [MIN, MAX) to elements.", func::arange, 1, 2 } },
-
-        // one to many
-        { "factor", { "Map all elements to their factors.", func::factor, 0, 0 } },
-
-        // many to many
-        { "difference", { "Map all elements to their difference.", func::difference, 0, 0 } },
-        { "partsum", { "Map all elements to their partial sum.", func::partsum, 1, 1 } },
-        { "partaltsum",
-          { "Map all elements to their partial alternating sum.", func::partaltsum, 1, 1 } },
-        { "partprod", { "Map all elements to their partial product.", func::partprod, 1, 1 } },
-
-        // one to one
-        { "cumsum", { "Map all elements to their cumulative sum.", func::cumsum, 0, 0 } },
-        { "cumaltsum",
-          { "Map all elements to their cumulative alternating sum.", func::cumaltsum, 0, 0 } },
-        { "cumprod", { "Map all elements to their cumulative product.", func::cumprod, 0, 0 } },
-        { "factorial",
-          { "Map all elements to their factorial. If elements are not integers, truncate them first.",
-            func::factorial,
-            0,
-            0 } },
-        { "degrees", { "Map all elements to their degrees.", func::degrees, 0, 0 } },
-        { "radians", { "Map all elements to their radians.", func::radians, 0, 0 } },
-        { "acos", { "Map all elements to their acos. See `man 3 acos`.", func::acos, 0, 0 } },
-        { "asin", { "Map all elements to their asin. See `man 3 asin`.", func::asin, 0, 0 } },
-        { "atan", { "Map all elements to their atan. See `man 3 atan`.", func::atan, 0, 0 } },
-        { "cbrt", { "Map all elements to their cbrt. See `man 3 cbrt`.", func::cbrt, 0, 0 } },
-        { "ceil", { "Map all elements to their ceil. See `man 3 ceil`.", func::ceil, 0, 0 } },
-        { "cos", { "Map all elements to their cos. See `man 3 cos`.", func::cos, 0, 0 } },
-        { "cosh", { "Map all elements to their cosh. See `man 3 cosh`.", func::cosh, 0, 0 } },
-        { "exp", { "Map all elements to their exp. See `man 3 exp`.", func::exp, 0, 0 } },
-        { "abs", { "Map all elements to their fabs. See `man 3 fabs`.", func::fabs, 0, 0 } },
-        { "floor", { "Map all elements to their floor. See `man 3 floor`.", func::floor, 0, 0 } },
-        { "log", { "Map all elements to their log. See `man 3 log`.", func::log, 0, 0 } },
-        { "log10", { "Map all elements to their log10. See `man 3 log10`.", func::log10, 0, 0 } },
-        { "log2", { "Map all elements to their log2. See `man 3 log2`.", func::log2, 0, 0 } },
-        { "log1p", { "Map all elements to their log1p.", func::log1p, 0, 0 } },
-        { "pow", { "Map all elements to their pow. See `man 3 pow`.", func::pow, 1, 1 } },
-        { "round", { "Map all elements to their round. See `man 3 round`.", func::round, 0, 0 } },
-        { "sin", { "Map all elements to their sin. See `man 3 sin`.", func::sin, 0, 0 } },
-        { "sinh", { "Map all elements to their sinh. See `man 3 sinh`.", func::sinh, 0, 0 } },
-        { "sqrt", { "Map all elements to their sqrt. See `man 3 sqrt`.", func::sqrt, 0, 0 } },
-        { "tan", { "Map all elements to their tan. See `man 3 tan`.", func::tan, 0, 0 } },
-        { "tanh", { "Map all elements to their tanh. See `man 3 tanh`.", func::tanh, 0, 0 } },
-        { "trunc", { "Map all elements to their trunc. See `man 3 trunc`.", func::trunc, 0, 0 } },
-
-        // one to optional one
-        { "zero", { "Reduce to zero elements.", func::zero, 0, 0 } },
-        { "nonzero", { "Reduce to non-zero elements.", func::nonzero, 0, 0 } },
-
-        // many to one
-        { "count", { "Reduce to count of elements.", func::count, 0, 0 } },
-        { "max", { "Reduce to the maximum element.", func::max, 0, 0 } },
-        { "min", { "Reduce to the minimum element.", func::min, 0, 0 } },
-        { "sum", { "Reduce to the sum of the elements.", func::sum, 0, 0 } },
-        { "altsum", { "Reduce to the alternating sum of the elements.", func::altsum, 0, 0 } },
-        { "product", { "Reduce to the product of the elements.", func::product, 0, 0 } },
-        { "mean", { "Reduce to the mean of the elements.", func::mean, 0, 0 } },
-        { "std", { "Reduce to the standard deviation of the elements.", func::std, 0, 0 } },
-        { "median", { "Reduce to the median of the elements.", func::median, 0, 0 } },
-        { "gmean", { "Reduce to the geometric mean of the elements.", func::gmean, 0, 0 } },
-        { "hmean", { "Reduce to the harmonic mean of the elements.", func::hmean, 0, 0 } },
-        { "gcd",
-          { "Reduce to the greatest common denominator of the elements.", func::gcd, 0, 0 } },
-    };
+#define X_FUNCTION(FUNC, MIN, MAX, DESC) { #FUNC, { DESC, func::FUNC, MIN, MAX } },
+    return { FUNCTIONS };
+#undef X_FUNCTION
 }
 
 std::unordered_map<std::string_view, function> functions =
@@ -497,7 +436,7 @@ namespace func {
         xph::transform(nums, [](double num) { return std::exp(num); });
     }
 
-    void fabs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    void abs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         xph::transform(nums, [](double num) { return std::fabs(num); });
     }
