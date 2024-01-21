@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
                        "when reading standard input.\n"
                        "\n"
                        "Option -f must be given. If FUNC requires additional arguments,\n"
-                       "option -o must be given exactly as many times as required.\n"
+                       "option -p must be given exactly as many times as required.\n"
                        "\n"
                        "  -f  FUNC  function to pass numbers through. pass -L to see the list.\n"
                        "  -h        display this help and exit\n"
