@@ -66,6 +66,7 @@ namespace func {
     DECL_FUNC(log);
     DECL_FUNC(log10);
     DECL_FUNC(log2);
+    DECL_FUNC(log1p);
     DECL_FUNC(pow);
     DECL_FUNC(round);
     DECL_FUNC(sin);
@@ -144,6 +145,7 @@ constexpr Tret get_functions(void) noexcept
         { "log", { "Map all elements to their log. See `man 3 log`.", func::log, 0, 0 } },
         { "log10", { "Map all elements to their log10. See `man 3 log10`.", func::log10, 0, 0 } },
         { "log2", { "Map all elements to their log2. See `man 3 log2`.", func::log2, 0, 0 } },
+        { "log1p", { "Map all elements to their log1p.", func::log1p, 0, 0 } },
         { "pow", { "Map all elements to their pow. See `man 3 pow`.", func::pow, 1, 1 } },
         { "round", { "Map all elements to their round. See `man 3 round`.", func::round, 0, 0 } },
         { "sin", { "Map all elements to their sin. See `man 3 sin`.", func::sin, 0, 0 } },
@@ -518,6 +520,11 @@ namespace func {
     void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
         xph::transform(nums, [](double num) { return std::log2(num); });
+    }
+
+    void log1p([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    {
+        xph::transform(nums, [](double num) { return std::log(1.0 + num); });
     }
 
     void pow(std::span<double> argv, std::vector<double>& nums)
