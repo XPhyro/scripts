@@ -146,6 +146,37 @@ install() {
     done
 
     printf "\n%s\n" \
+        "Installing C libraries:"
+
+    (
+        cd c/include
+        [ -d "$includeprefix/xph" ] || mkdir -- "$includeprefix/xph"
+
+        # shellcheck disable=SC2069
+        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            printf "\0%s\0" "$includeprefix/xph/$fl"
+            printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
+            cp -f -t "$includeprefix/xph" -- "$fl"
+        ' -- 2>&1 >> "$rootdir/src/.installed"
+    )
+
+    printf "\n%s\n" \
+        "Installing C++ libraries:"
+
+    (
+        cd cpp/include
+
+        # shellcheck disable=SC2069
+        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
+            fl="$1"
+            printf "\0%s\0" "$includeprefix/xph/$fl"
+            printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
+            cp -f -t "$includeprefix/xph" -- "$fl"
+        ' -- 2>&1 >> "$rootdir/src/.installed"
+    )
+
+    printf "\n%s\n" \
         "Preparing to install C programs:"
 
     (
@@ -277,37 +308,6 @@ install() {
                 '"$CXX"' '"$CXXFLAGS"' $flags $extraflags "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out" \
                     && printf "\0%s\0" "$installprefix/$out" >> ../.installed
             ' --
-    )
-
-    printf "\n%s\n" \
-        "Installing C libraries:"
-
-    (
-        cd c/include
-        [ -d "$includeprefix/xph" ] || mkdir -- "$includeprefix/xph"
-
-        # shellcheck disable=SC2069
-        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
-            fl="$1"
-            printf "\0%s\0" "$includeprefix/xph/$fl"
-            printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
-            cp -f -t "$includeprefix/xph" -- "$fl"
-        ' -- 2>&1 >> "$rootdir/src/.installed"
-    )
-
-    printf "\n%s\n" \
-        "Installing C++ libraries:"
-
-    (
-        cd cpp/include
-
-        # shellcheck disable=SC2069
-        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
-            fl="$1"
-            printf "\0%s\0" "$includeprefix/xph/$fl"
-            printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
-            cp -f -t "$includeprefix/xph" -- "$fl"
-        ' -- 2>&1 >> "$rootdir/src/.installed"
     )
 
     printf "\n%s\n" \
