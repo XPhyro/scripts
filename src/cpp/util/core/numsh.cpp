@@ -28,6 +28,7 @@
 #include <xph/die.hpp>
 #include <xph/functional.hpp>
 #include <xph/lexical_cast.hpp>
+#include <xph/linalg.hpp>
 #include <xph/math.hpp>
 
 DEFINE_EXEC_INFO();
@@ -271,23 +272,27 @@ namespace func {
     // none to many
     void arange(std::span<double> argv, std::vector<double>& nums)
     {
-        std::intmax_t min, max;
+        double start, stop, step;
         switch (argv.size()) {
             case 1:
-                min = 0;
-                max = argv[0];
+                start = 0;
+                stop = argv[0];
+                step = 1;
                 break;
             case 2:
-                min = argv[0];
-                max = argv[1];
+                start = argv[0];
+                stop = argv[1];
+                step = 1;
+                break;
+            case 3:
+                start = argv[0];
+                stop = argv[1];
+                step = argv[2];
                 break;
             default:
                 return;
         }
-
-        nums.reserve(nums.size() + max - min);
-        for (auto&& i : std::views::iota(min, max))
-            nums.push_back(i);
+        xph::linalg::arange<double>(start, stop, step, nums);
     }
 
     // one to many
@@ -366,24 +371,17 @@ namespace func {
     // one to one
     void cumsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double cumsum = 0.0;
-        for (double& num : nums)
-            num = cumsum += num;
+        xph::linalg::cumsum<double>(nums);
     }
 
     void cumaltsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double cumaltsum = 0.0;
-        double sign = -1.0;
-        for (double& num : nums)
-            num = cumaltsum += num * (sign = -sign);
+        xph::linalg::cumaltsum<double>(nums);
     }
 
     void cumprod([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double cumprod = 1.0;
-        for (double& num : nums)
-            num = cumprod *= num;
+        xph::linalg::cumprod<double>(nums);
     }
 
     void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
@@ -411,123 +409,123 @@ namespace func {
 
     void degrees([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return num * 180.0 / std::numbers::pi; });
+        xph::linalg::degrees<double>(nums);
     }
 
     void radians([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return num * std::numbers::pi / 180.0; });
+        xph::linalg::radians<double>(nums);
     }
 
     void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
 
     {
-        xph::transform(nums, [](double num) { return std::acos(num); });
+        xph::linalg::acos<double>(nums);
     }
 
     void asin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::asin(num); });
+        xph::linalg::asin<double>(nums);
     }
 
     void atan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::atan(num); });
+        xph::linalg::atan<double>(nums);
     }
 
     void cbrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::cbrt(num); });
+        xph::linalg::cbrt<double>(nums);
     }
 
     void ceil([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::ceil(num); });
+        xph::linalg::ceil<double>(nums);
     }
 
     void cos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::cos(num); });
+        xph::linalg::cos<double>(nums);
     }
 
     void cosh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::cosh(num); });
+        xph::linalg::cosh<double>(nums);
     }
 
     void exp([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::exp(num); });
+        xph::linalg::exp<double>(nums);
     }
 
     void abs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::fabs(num); });
+        xph::linalg::abs<double>(nums);
     }
 
     void floor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::floor(num); });
+        xph::linalg::floor<double>(nums);
     }
 
     void log([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log(num); });
+        xph::linalg::log<double>(nums);
     }
 
     void log10([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log10(num); });
+        xph::linalg::log10<double>(nums);
     }
 
     void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log2(num); });
+        xph::linalg::log2<double>(nums);
     }
 
     void log1p([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::log(1.0 + num); });
+        xph::linalg::log1p<double>(nums);
     }
 
     void pow(std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [&](double num) { return std::pow(num, argv[0]); });
+        xph::linalg::pow<double>(nums, argv[0]);
     }
 
     void round([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::round(num); });
+        xph::linalg::round<double>(nums);
     }
 
     void sin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::sin(num); });
+        xph::linalg::sin<double>(nums);
     }
 
     void sinh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::sinh(num); });
+        xph::linalg::sinh<double>(nums);
     }
 
     void sqrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::sqrt(num); });
+        xph::linalg::sqrt<double>(nums);
     }
 
     void tan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::tan(num); });
+        xph::linalg::tan<double>(nums);
     }
 
     void tanh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::tanh(num); });
+        xph::linalg::tanh<double>(nums);
     }
 
     void trunc([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        xph::transform(nums, [](double num) { return std::trunc(num); });
+        xph::linalg::trunc<double>(nums);
     }
 
     // one to optional one
