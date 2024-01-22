@@ -200,11 +200,10 @@ int main(int argc, char* argv[])
     argv += optind;
 
     for (const auto&& [sel_func, func_argv] : boost::combine(sel_funcs, func_argvs)) {
-        const char* err = func_argv.size() < sel_func.min_argc ? "few" :
-                          func_argv.size() > sel_func.max_argc ? "many" :
-                                                                 nullptr;
-
-        if (err) {
+        if (const char* err = func_argv.size() < sel_func.min_argc ? "few" :
+                              func_argv.size() > sel_func.max_argc ? "many" :
+                                                                     nullptr;
+            err) {
             // this is very inefficient, but we die anyways
             std::string func_name = "NULL";
             for (const auto& [name, func] : functions) {
