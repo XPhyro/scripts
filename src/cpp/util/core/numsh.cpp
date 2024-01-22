@@ -34,7 +34,7 @@
 DEFINE_EXEC_INFO();
 
 #define FUNCTIONS                                                                        \
-    X_FUNCTION(arange, 1, 2, "Append [MIN, MAX) to elements.")                           \
+    X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")             \
                                                                                          \
     X_FUNCTION(factor, 0, 0, "Map all elements to their factors.")                       \
                                                                                          \
