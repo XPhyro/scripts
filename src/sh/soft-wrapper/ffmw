@@ -20,6 +20,8 @@ printhelp() {
 "  optimize [INFILE]... [TEMPOUTFILE]
    Optimize INFILEs and write to TEMPOUTFILE, then move TEMPOUTFILE to respective INFILE.
 
+    -b, --backup
+        Back up original file.
     -f, --force
         Overwrite the output file if it exists.
     -h, --help
@@ -328,6 +330,7 @@ parseargs_optimize() {
                     opt="${sopt%"${sopt#?}"}"
 
                     case "$opt" in
+                        b) backup="1";;
                         f) overwrite="-y";;
                         h) printhelp "optimize"; exit 0;;
                         i) overwrite="";;
@@ -345,6 +348,7 @@ parseargs_optimize() {
                 opt="${1#??}"
 
                 case "$opt" in
+                    backup) backup="1";;
                     force) overwrite="-y";;
                     help) printhelp "optimize"; exit 0;;
                     interactive) overwrite="";;
@@ -930,7 +934,13 @@ optimize() {
                 printf "Not removing input file [%s] as output file [%s] is larger.\n" "$fl" "$outfl" >&2
                 rm -f -- "$outfl"
             else
-                rm -f -- "$fl"
+                if [ "$backup" = '1' ]; then
+                    backupfl="$(backuppath -- "$fl.original")"
+                    printf "Backing up input file [%s] to [%s].\n" "$fl" "$backupfl" >&2
+                    mv -- "$fl" "$backupfl"
+                else
+                    rm -f -- "$fl"
+                fi
             fi
         }
         if [ "$moveorig" = '1' ]; then
@@ -939,6 +949,11 @@ optimize() {
                 rm -f -- "$outfl"
                 printf "%s\n" "$fl"
             else
+                [ "$backup" = '1' ] && {
+                    backupfl="$(backuppath -- "$fl.original")"
+                    printf "Backing up input file [%s] to [%s].\n" "$fl" "$backupfl" >&2
+                    mv -- "$fl" "$backupfl"
+                }
                 mv "$mvoverwrite" -- "$outfl" "${fl%.*}.${outfl##*.}"
                 printf "%s\n" "${fl%.*}.${outfl##*.}"
             fi
