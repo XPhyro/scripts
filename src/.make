@@ -472,6 +472,8 @@ install() {
             done
         )
     )
+
+    sort -uz .installed | sponge .installed
 }
 
 uninstall() {
