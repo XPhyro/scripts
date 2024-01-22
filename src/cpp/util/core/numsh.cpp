@@ -31,18 +31,24 @@
 #include <xph/linalg.hpp>
 #include <xph/math.hpp>
 
+#include <xph/meta.h>
+
 DEFINE_EXEC_INFO();
 
 #define FUNCTIONS                                                                        \
+    COMMENT("none to many")                                                              \
     X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")             \
                                                                                          \
+    COMMENT("one to many")                                                               \
     X_FUNCTION(factor, 0, 0, "Map all elements to their factors.")                       \
                                                                                          \
+    COMMENT("many to many")                                                              \
     X_FUNCTION(difference, 0, 0, "Map all elements to their difference.")                \
     X_FUNCTION(partsum, 1, 1, "Map all elements to their partial sum.")                  \
     X_FUNCTION(partaltsum, 1, 1, "Map all elements to their partial alternating sum.")   \
     X_FUNCTION(partprod, 1, 1, "Map all elements to their partial product.")             \
                                                                                          \
+    COMMENT("one to one")                                                                \
     X_FUNCTION(cumsum, 0, 0, "Map all elements to their cumulative sum.")                \
     X_FUNCTION(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.") \
     X_FUNCTION(cumprod, 0, 0, "Map all elements to their cumulative product.")           \
@@ -76,9 +82,11 @@ DEFINE_EXEC_INFO();
     X_FUNCTION(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")          \
     X_FUNCTION(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")       \
                                                                                          \
+    COMMENT("one to optional one")                                                       \
     X_FUNCTION(zero, 0, 0, "Reduce to zero elements.")                                   \
     X_FUNCTION(nonzero, 0, 0, "Reduce to non-zero elements.")                            \
                                                                                          \
+    COMMENT("many to one")                                                               \
     X_FUNCTION(count, 0, 0, "Reduce to count of elements.")                              \
     X_FUNCTION(max, 0, 0, "Reduce to the maximum element.")                              \
     X_FUNCTION(min, 0, 0, "Reduce to the minimum element.")                              \
