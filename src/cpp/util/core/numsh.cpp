@@ -250,13 +250,17 @@ int main(int argc, char* argv[])
         for (const auto& num : nums)
             std::cout << std::setprecision(opt_precision) << num << '\n';
     } else {
+        decltype(nums) nums_dup;
+        nums_dup.reserve(nums.size());
         for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs)) {
-            auto nums_dup = nums;
+            std::copy(nums.begin(), nums.end(), std::back_inserter(nums_dup));
 
             func.function(func_argv, nums_dup);
 
             for (const auto& num : nums_dup)
                 std::cout << std::setprecision(opt_precision) << num << '\n';
+
+            nums_dup.clear();
         }
     }
 
