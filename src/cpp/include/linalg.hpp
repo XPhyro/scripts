@@ -9,11 +9,11 @@
 
 // TODO: Tdata must be numeric
 
-namespace xph {
+namespace xph::linalg {
     // None to Many
 
-    template <typename Tdata>
-    inline void arange(Tdata start, Tdata stop, Tdata step, std::vector<Tdata>& container)
+    template <typename Tdata, typename Tcontainer>
+    inline void arange(Tdata start, Tdata stop, Tdata step, Tcontainer& container)
     {
         container.reserve(container.size() + (stop - start) / step);
         for (auto current = start; current < stop; current += step)
@@ -56,157 +56,158 @@ namespace xph {
             val = cumaltsum += val * (sign = -sign);
     }
 
-    inline void cumprod([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
+    template <typename Tdata>
+    inline void cumprod(std::span<Tdata> arr)
     {
         double cumprod = 1.0;
-        for (double& num : nums)
+        for (double& num : arr)
             num = cumprod *= num;
     }
 
     // TODO: factorial
 
     template <typename Tdata>
-    inline void degrees(std::span<Tdata>& arr)
+    inline void degrees(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return val * Tdata{ 180.0 / std::numbers::pi }; });
+        xph::transform(arr, [](Tdata val) { return val * Tdata{ 180.0 / std::numbers::pi }; });
     }
 
     template <typename Tdata>
-    inline void radians(std::span<Tdata>& arr)
+    inline void radians(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return val * Tdata{ std::numbers::pi / 180.0 }; });
+        xph::transform(arr, [](Tdata val) { return val * Tdata{ std::numbers::pi / 180.0 }; });
     }
 
     template <typename Tdata>
-    inline void acos(std::span<Tdata>& arr)
+    inline void acos(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::acos(val); });
+        xph::transform(arr, [](Tdata val) { return std::acos(val); });
     }
 
     template <typename Tdata>
-    inline void asin(std::span<Tdata>& arr)
+    inline void asin(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::asin(val); });
+        xph::transform(arr, [](Tdata val) { return std::asin(val); });
     }
 
     template <typename Tdata>
-    inline void atan(std::span<Tdata>& arr)
+    inline void atan(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::atan(val); });
+        xph::transform(arr, [](Tdata val) { return std::atan(val); });
     }
 
     template <typename Tdata>
-    inline void cbrt(std::span<Tdata>& arr)
+    inline void cbrt(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::cbrt(val); });
+        xph::transform(arr, [](Tdata val) { return std::cbrt(val); });
     }
 
     template <typename Tdata>
-    inline void ceil(std::span<Tdata>& arr)
+    inline void ceil(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::ceil(val); });
+        xph::transform(arr, [](Tdata val) { return std::ceil(val); });
     }
 
     template <typename Tdata>
-    inline void cos(std::span<Tdata>& arr)
+    inline void cos(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::cos(val); });
+        xph::transform(arr, [](Tdata val) { return std::cos(val); });
     }
 
     template <typename Tdata>
-    inline void cosh(std::span<Tdata>& arr)
+    inline void cosh(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::cosh(val); });
+        xph::transform(arr, [](Tdata val) { return std::cosh(val); });
     }
 
     template <typename Tdata>
-    inline void exp(std::span<Tdata>& arr)
+    inline void exp(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::exp(val); });
+        xph::transform(arr, [](Tdata val) { return std::exp(val); });
     }
 
     template <typename Tdata>
-    inline void abs(std::span<Tdata>& arr)
+    inline void abs(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::fabs(val); });
+        xph::transform(arr, [](Tdata val) { return std::fabs(val); });
     }
 
     template <typename Tdata>
-    inline void floor(std::span<Tdata>& arr)
+    inline void floor(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::floor(val); });
+        xph::transform(arr, [](Tdata val) { return std::floor(val); });
     }
 
     template <typename Tdata>
-    inline void log(std::span<Tdata>& arr)
+    inline void log(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::log(val); });
+        xph::transform(arr, [](Tdata val) { return std::log(val); });
     }
 
     template <typename Tdata>
-    inline void log10(std::span<Tdata>& arr)
+    inline void log10(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::log10(val); });
+        xph::transform(arr, [](Tdata val) { return std::log10(val); });
     }
 
     template <typename Tdata>
-    inline void log2(std::span<Tdata>& arr)
+    inline void log2(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::log2(val); });
+        xph::transform(arr, [](Tdata val) { return std::log2(val); });
     }
 
     template <typename Tdata>
-    inline void log1p(std::span<Tdata>& arr)
+    inline void log1p(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::log(Tdata{ 1.0 } + val); });
+        xph::transform(arr, [](Tdata val) { return std::log(Tdata{ 1.0 } + val); });
     }
 
     template <typename Tdata, typename Texponent>
-    inline void pow(std::span<Tdata>& arr, Texponent exponent)
+    inline void pow(std::span<Tdata> arr, Texponent exponent)
     {
-        xph::transform(arr, [&](Tdata& val) { return std::pow(val, exponent); });
+        xph::transform(arr, [&](Tdata val) { return std::pow(val, exponent); });
     }
 
     template <typename Tdata>
-    inline void round(std::span<Tdata>& arr)
+    inline void round(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::round(val); });
+        xph::transform(arr, [](Tdata val) { return std::round(val); });
     }
 
     template <typename Tdata>
-    inline void sin(std::span<Tdata>& arr)
+    inline void sin(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::sin(val); });
+        xph::transform(arr, [](Tdata val) { return std::sin(val); });
     }
 
     template <typename Tdata>
-    inline void sinh(std::span<Tdata>& arr)
+    inline void sinh(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::sinh(val); });
+        xph::transform(arr, [](Tdata val) { return std::sinh(val); });
     }
 
     template <typename Tdata>
-    inline void sqrt(std::span<Tdata>& arr)
+    inline void sqrt(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::sqrt(val); });
+        xph::transform(arr, [](Tdata val) { return std::sqrt(val); });
     }
 
     template <typename Tdata>
-    inline void tan(std::span<Tdata>& arr)
+    inline void tan(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::tan(val); });
+        xph::transform(arr, [](Tdata val) { return std::tan(val); });
     }
 
     template <typename Tdata>
-    inline void tanh(std::span<Tdata>& arr)
+    inline void tanh(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::tanh(val); });
+        xph::transform(arr, [](Tdata val) { return std::tanh(val); });
     }
 
     template <typename Tdata>
-    inline void trunc(std::span<Tdata>& arr)
+    inline void trunc(std::span<Tdata> arr)
     {
-        xph::transform(arr, [](Tdata& val) { return std::trunc(val); });
+        xph::transform(arr, [](Tdata val) { return std::trunc(val); });
     }
 
     // One to Optional One
@@ -216,6 +217,6 @@ namespace xph {
     // Many to One
 
     // TODO:
-} // namespace xph
+} // namespace xph::linalg
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_LINALG_ */
