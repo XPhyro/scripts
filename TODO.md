@@ -21,11 +21,6 @@
   path not to be `wordexp`ed. Use `shell-escape` to escape the given path
   before adding it to the database if the path is known to be a path.
   - Perhaps also add a flag to signal no-escaping, and escape by default?
-- `ffmw optimize` can increase the size of the file.
-  - Check if the resulting size is greater than the original size, if so, do
-    not overwrite.
-  - If the original size is less than the new size, the shown size difference
-    is incorrect.
 - `vstrcatbuf` and other similar functions do not return the new `bufsize` or edit
   the original variable.
   - Consecutive calls to these functions reallocates memory when it should not
@@ -249,10 +244,15 @@
 ## Refactoring / Rewriting / Reworking
 
 - Optimise `dbutil.h` to do less allocations.
-  - [ ] Reuse built paths.
+  - Reuse built paths.
 - Rewrite `ffmw`.
-  - Use `vector`.
+  - Make it saner.
+  - Share default options between subcommands.
+  - Perhaps use C/C++/Python?
+  - Use `std::vector` if using sh.
   - Use `-nostdin` and `file:` for `ffmpeg`.
+  - Make `ffmpeg` less verbose.
+  - Use `parallel` with verbose progress & running commands.
 - Optimise `breadth-find` to not search the same initial depths multiple times.
 - Make `editpath` and related scripts as easy to use as `_m` and others.
 - Rewrite the pathfinding suite with `std::unordered_map`, or with the
