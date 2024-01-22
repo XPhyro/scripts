@@ -2,6 +2,8 @@
 #define HEADER_SCRIPTS_CXX_LINALG_
 
 #include <cmath>
+#include <cstddef>
+#include <numeric>
 #include <span>
 #include <vector>
 
@@ -34,7 +36,59 @@ namespace xph::linalg {
 
     // Many to Many
 
-    // TODO:
+    template <typename Tcontainer>
+    inline void difference(Tcontainer& arr)
+    {
+        Tcontainer difference;
+
+        difference.reserve(arr.size() - 1);
+        for (auto&& window : arr | std::views::slide(2))
+            difference.push_back(window[1] - window[0]);
+
+        arr.swap(difference);
+    }
+
+    template <typename Tcontainer>
+    inline void partsum(Tcontainer& arr, std::size_t window_size)
+    {
+        Tcontainer partsum;
+
+        partsum.reserve(arr.size() - window_size + 1);
+        for (const auto& window : arr | std::views::slide(window_size))
+            partsum.push_back(std::accumulate(window.begin(), window.end(), 0.0));
+
+        arr.swap(partsum);
+    }
+
+    template <typename Tcontainer>
+    inline void partaltsum(Tcontainer& arr, std::size_t window_size)
+    {
+        Tcontainer partaltsum;
+
+        partaltsum.reserve(arr.size() - window_size + 1);
+        for (const auto& window : arr | std::views::slide(window_size)) {
+            partaltsum.push_back(std::accumulate(
+                window.begin(), window.end(), 0.0, [&](double cumaltsum, double num) {
+                    static double sign = -1.0;
+                    return cumaltsum + num * (sign = -sign);
+                }));
+        }
+
+        arr.swap(partaltsum);
+    }
+
+    template <typename Tcontainer>
+    inline void partprod(Tcontainer& arr, std::size_t window_size)
+    {
+        Tcontainer partprod;
+
+        partprod.reserve(arr.size() - window_size + 1);
+        for (const auto& window : arr | std::views::slide(window_size))
+            partprod.push_back(
+                std::accumulate(window.begin(), window.end(), 1.0, std::multiplies<>()));
+
+        arr.swap(partprod);
+    }
 
     // One to One
 
