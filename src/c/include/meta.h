@@ -7,6 +7,8 @@
 #define META_NONNULL
 #endif /* ifndef __GNUC__ */
 
+#define COMMENT(X)
+
 extern int _iso_c_forbids_an_empty_translation_unit;
 
 #endif /* ifndef HEADER_SCRIPTS_C_META_ */
