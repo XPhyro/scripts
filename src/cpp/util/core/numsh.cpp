@@ -306,29 +306,7 @@ namespace func {
     // one to many
     void factor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        std::vector<double> factors;
-
-        for (std::intmax_t num : nums) {
-            if (!num)
-                continue;
-
-            if (num < 0)
-                num = -num;
-
-            while (!(num % 2)) {
-                num /= 2;
-                factors.push_back(2);
-            }
-
-            for (auto fac = 3; fac <= num; fac += 2) {
-                while (!(num % fac)) {
-                    num /= fac;
-                    factors.push_back(fac);
-                }
-            }
-        }
-
-        nums.swap(factors);
+        xph::linalg::factor(nums);
     }
 
     // many to many
@@ -370,25 +348,7 @@ namespace func {
 
     void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-#if false // no gcc feature-test for fold_left
-        xph::transform(nums, [](double num) {
-            return std::ranges::fold_left(std::views::iota(1ull, static_cast<std::uintmax_t>(num) + 1ull),
-                                          std::multiplies<>());
-        });
-#endif
-
-        class factorial_impl final {
-        public:
-            static inline std::uintmax_t factorial(std::uintmax_t num)
-            {
-                std::uintmax_t fac = 1;
-                for (auto&& i : std::views::iota(1ull, num + 1ull))
-                    fac *= i;
-                return fac;
-            }
-        };
-
-        xph::transform(nums, [](double num) { return factorial_impl::factorial(num); });
+        xph::linalg::factorial<double>(nums);
     }
 
     void degrees([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
@@ -515,111 +475,72 @@ namespace func {
     // one to optional one
     void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        std::erase_if(nums, [](double num) { return !xph::approx_zero(num); });
+        xph::linalg::zero(nums);
     }
 
     void nonzero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        std::erase_if(nums, [](double num) { return xph::approx_zero(num); });
+        xph::linalg::nonzero(nums);
     }
 
     // many to one
     void count([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { static_cast<double>(nums.size()) };
+        xph::linalg::count(nums);
     }
 
     void max([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { *std::max_element(nums.begin(), nums.end()) };
+        xph::linalg::max(nums);
     }
 
     void min([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { *std::min_element(nums.begin(), nums.end()) };
+        xph::linalg::min(nums);
     }
 
     void sum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { std::accumulate(nums.begin(), nums.end(), 0.0) };
+        xph::linalg::sum(nums);
     }
 
     void altsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { std::accumulate(nums.begin(), nums.end(), 0.0, [&](double altsum, double num) {
-            static double sign = -1.0;
-            return altsum + num * (sign = -sign);
-        }) };
+        xph::linalg::altsum(nums);
     }
 
     void product([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { std::accumulate(nums.begin(), nums.end(), 1.0, std::multiplies<>()) };
+        xph::linalg::product(nums);
     }
 
     void mean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { std::accumulate(nums.begin(), nums.end(), 0.0) / nums.size() };
+        xph::linalg::mean(nums);
     }
 
     void std([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double mean = std::accumulate(nums.begin(), nums.end(), 0.0) / nums.size();
-        nums = { std::sqrt(std::accumulate(nums.begin(),
-                                           nums.end(),
-                                           0.0,
-                                           [&](double accum, double num) {
-                                               double diff = num - mean;
-                                               return accum + diff * diff;
-                                           }) /
-                           (nums.size() - 1)) };
+        xph::linalg::std(nums);
     }
 
     void median([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        std::sort(nums.begin(), nums.end());
-        nums = { nums.size() % 2 ? nums[nums.size() / 2] :
-                                   (nums[nums.size() / 2 - 1] + nums[nums.size() / 2]) / 2 };
+        xph::linalg::median(nums);
     }
 
     void gmean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { std::pow(std::accumulate(nums.begin(),
-                                          nums.end(),
-                                          1.0,
-                                          [&](double accum, double num) { return accum * num; }),
-                          1.0 / nums.size()) };
+        xph::linalg::gmean(nums);
     }
 
     void hmean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        nums = { nums.size() /
-                 std::accumulate(nums.begin(), nums.end(), 0.0, [&](double accum, double num) {
-                     return accum + 1.0 / num;
-                 }) };
+        xph::linalg::hmean(nums);
     }
 
     void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        double min = std::numeric_limits<double>::max();
-        double max = std::numeric_limits<double>::min();
-
-        for (double num : nums) {
-            num = std::abs(num);
-            if (num < min)
-                min = num;
-            if (num > max)
-                max = num;
-        }
-
-        class gcd_impl final {
-        public:
-            static inline std::uintmax_t gcd_pair(std::uintmax_t min, std::uintmax_t max)
-            {
-                return !max ? min : gcd_pair(max, min % max);
-            }
-        };
-
-        nums = { static_cast<double>(gcd_impl::gcd_pair(std::abs(min), std::abs(max))) };
+        xph::linalg::gcd(nums);
     }
 } // namespace func
