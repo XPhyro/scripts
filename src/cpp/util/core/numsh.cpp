@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <numbers>
@@ -126,6 +127,10 @@ std::unordered_map<std::string_view, function> functions =
 
 int main(int argc, char* argv[])
 {
+    const constexpr int min_precision = 1;
+    const constexpr int default_precision = 6;
+    const constexpr int max_precision = std::numeric_limits<double>::digits10 + 1;
+
     xph::gather_exec_info(argc, argv);
 
     std::vector<function> sel_funcs;
@@ -133,9 +138,16 @@ int main(int argc, char* argv[])
 
     bool opt_multi = false;
     bool opt_nostdin = false;
+    int opt_precision = default_precision;
 
-    for (int i; (i = getopt(argc, argv, "f:hLmp:s")) != -1;) {
+    for (int i; (i = getopt(argc, argv, "d:f:hLmp:s")) != -1;) {
         switch (i) {
+            case 'd': {
+                opt_precision = xph::lexical_cast<char*, int>(optarg);
+                if (opt_precision < min_precision || opt_precision > max_precision)
+                    xph::die("invalid precision given: ", optarg);
+                break;
+            }
             case 'f': {
                 function func;
                 try {
@@ -161,6 +173,9 @@ int main(int argc, char* argv[])
                        "Option -f must be given. If FUNC requires additional arguments,\n"
                        "option -p must be given exactly as many times as required.\n"
                        "\n"
+                       "  -d  NUM   set the precision of output numbers. does not affect computation. default is "
+                    << default_precision << ", range is [" << min_precision << ", " << max_precision
+                    << "].\n"
                        "  -f  FUNC  function to pass numbers through. pass -L to see the list.\n"
                        "  -h        display this help and exit\n"
                        "  -L        list all supported functions and exit\n"
@@ -233,7 +248,7 @@ int main(int argc, char* argv[])
             func.function(func_argv, nums);
 
         for (const auto& num : nums)
-            std::cout << num << '\n';
+            std::cout << std::setprecision(opt_precision) << num << '\n';
     } else {
         for (const auto&& [func, func_argv] : boost::combine(sel_funcs, func_argvs)) {
             auto nums_dup = nums;
@@ -241,7 +256,7 @@ int main(int argc, char* argv[])
             func.function(func_argv, nums_dup);
 
             for (const auto& num : nums_dup)
-                std::cout << num << '\n';
+                std::cout << std::setprecision(opt_precision) << num << '\n';
         }
     }
 
