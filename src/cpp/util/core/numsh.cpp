@@ -326,46 +326,22 @@ namespace func {
     // many to many
     void difference([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
     {
-        std::vector<double> difference;
-
-        difference.reserve(nums.size() - 1);
-        for (auto&& window : nums | std::views::slide(2))
-            difference.push_back(window[1] - window[0]);
-
-        nums.swap(difference);
+        xph::linalg::difference(nums);
     }
 
     void partsum(std::span<double> argv, std::vector<double>& nums)
     {
-        std::vector<double> partsum;
-        partsum.reserve(nums.size() - argv[0] + 1);
-        for (const auto& window : nums | std::views::slide(argv[0]))
-            partsum.push_back(std::accumulate(window.begin(), window.end(), 0.0));
-        nums.swap(partsum);
+        xph::linalg::partsum(nums, argv[0]);
     }
 
     void partaltsum(std::span<double> argv, std::vector<double>& nums)
     {
-        std::vector<double> partaltsum;
-        partaltsum.reserve(nums.size() - argv[0] + 1);
-        for (const auto& window : nums | std::views::slide(argv[0])) {
-            partaltsum.push_back(std::accumulate(
-                window.begin(), window.end(), 0.0, [&](double cumaltsum, double num) {
-                    static double sign = -1.0;
-                    return cumaltsum + num * (sign = -sign);
-                }));
-        }
-        nums.swap(partaltsum);
+        xph::linalg::partaltsum(nums, argv[0]);
     }
 
     void partprod(std::span<double> argv, std::vector<double>& nums)
     {
-        std::vector<double> partprod;
-        partprod.reserve(nums.size() - argv[0] + 1);
-        for (const auto& window : nums | std::views::slide(argv[0]))
-            partprod.push_back(
-                std::accumulate(window.begin(), window.end(), 1.0, std::multiplies<>()));
-        nums.swap(partprod);
+        xph::linalg::partprod(nums, argv[0]);
     }
 
     // one to one
