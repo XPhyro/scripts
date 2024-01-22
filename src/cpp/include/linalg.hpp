@@ -3,23 +3,23 @@
 
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <numeric>
 #include <span>
 #include <vector>
 
 #include "algorithm.hpp"
-
-// TODO: Tdata must be numeric
+#include "math.hpp"
 
 namespace xph::linalg {
     // None to Many
 
-    template <typename Tdata, typename Tcontainer>
-    inline void arange(Tdata start, Tdata stop, Tdata step, Tcontainer& container)
+    template <typename Tdata, typename Tarr>
+    inline void arange(Tdata start, Tdata stop, Tdata step, Tarr& arr)
     {
-        container.reserve(container.size() + (stop - start) / step);
+        arr.reserve(arr.size() + (stop - start) / step);
         for (auto current = start; current < stop; current += step)
-            container.push_back(current);
+            arr.push_back(current);
     }
 
     template <typename Tdata>
@@ -32,14 +32,40 @@ namespace xph::linalg {
 
     // One to Many
 
-    // TODO:
+    template <typename Tarr>
+    void factor(Tarr& arr)
+    {
+        Tarr factors;
+
+        for (std::intmax_t num : arr) {
+            if (!num)
+                continue;
+
+            if (num < 0)
+                num = -num;
+
+            while (!(num % 2)) {
+                num /= 2;
+                factors.push_back(2);
+            }
+
+            for (auto fac = 3; fac <= num; fac += 2) {
+                while (!(num % fac)) {
+                    num /= fac;
+                    factors.push_back(fac);
+                }
+            }
+        }
+
+        arr.swap(factors);
+    }
 
     // Many to Many
 
-    template <typename Tcontainer>
-    inline void difference(Tcontainer& arr)
+    template <typename Tarr>
+    inline void difference(Tarr& arr)
     {
-        Tcontainer difference;
+        Tarr difference;
 
         difference.reserve(arr.size() - 1);
         for (auto&& window : arr | std::views::slide(2))
@@ -48,10 +74,10 @@ namespace xph::linalg {
         arr.swap(difference);
     }
 
-    template <typename Tcontainer>
-    inline void partsum(Tcontainer& arr, std::size_t window_size)
+    template <typename Tarr>
+    inline void partsum(Tarr& arr, std::size_t window_size)
     {
-        Tcontainer partsum;
+        Tarr partsum;
 
         partsum.reserve(arr.size() - window_size + 1);
         for (const auto& window : arr | std::views::slide(window_size))
@@ -60,10 +86,10 @@ namespace xph::linalg {
         arr.swap(partsum);
     }
 
-    template <typename Tcontainer>
-    inline void partaltsum(Tcontainer& arr, std::size_t window_size)
+    template <typename Tarr>
+    inline void partaltsum(Tarr& arr, std::size_t window_size)
     {
-        Tcontainer partaltsum;
+        Tarr partaltsum;
 
         partaltsum.reserve(arr.size() - window_size + 1);
         for (const auto& window : arr | std::views::slide(window_size)) {
@@ -77,10 +103,10 @@ namespace xph::linalg {
         arr.swap(partaltsum);
     }
 
-    template <typename Tcontainer>
-    inline void partprod(Tcontainer& arr, std::size_t window_size)
+    template <typename Tarr>
+    inline void partprod(Tarr& arr, std::size_t window_size)
     {
-        Tcontainer partprod;
+        Tarr partprod;
 
         partprod.reserve(arr.size() - window_size + 1);
         for (const auto& window : arr | std::views::slide(window_size))
@@ -100,10 +126,10 @@ namespace xph::linalg {
             val = cumsum += val;
     }
 
-    // TODO: Tdata must be signed
     template <typename Tdata>
     inline void cumaltsum(std::span<Tdata> arr)
     {
+        static_assert(Tdata(-1.0) < 0);
         Tdata cumaltsum = 0.0;
         Tdata sign = -1.0;
         for (Tdata& val : arr)
@@ -118,7 +144,30 @@ namespace xph::linalg {
             num = cumprod *= num;
     }
 
-    // TODO: factorial
+    template <typename Tdata>
+    void factorial(std::span<Tdata> arr)
+    {
+#if false // no gcc feature-test for fold_left
+        xph::transform(arr, [](Tdata num) {
+            return std::ranges::fold_left(std::views::iota(1ull, static_cast<std::uintmax_t>(num) + 1ull),
+                                          std::multiplies<>());
+        });
+#endif
+
+        class factorial_impl final {
+        public:
+            static inline std::uintmax_t factorial(std::uintmax_t num)
+            {
+                std::uintmax_t fac = 1;
+                for (auto&& i : std::views::iota(1ull, num + 1ull))
+                    fac *= i;
+                return fac;
+            }
+        };
+
+        xph::transform(arr,
+                       [](Tdata num) { return factorial_impl::factorial(num >= 0 ? num : -num); });
+    }
 
     template <typename Tdata>
     inline void degrees(std::span<Tdata> arr)
@@ -266,11 +315,130 @@ namespace xph::linalg {
 
     // One to Optional One
 
-    // TODO:
+    template <typename Tarr>
+    void zero(Tarr& arr)
+    {
+        std::erase_if(arr, [](auto val) { return !xph::approx_zero(val); });
+    }
+
+    template <typename Tarr>
+    void nonzero(Tarr& arr)
+    {
+        std::erase_if(arr, [](auto val) { return xph::approx_zero(val); });
+    }
 
     // Many to One
 
-    // TODO:
+    template <typename Tarr>
+    void count(Tarr& arr)
+    {
+        arr = { arr.size() };
+    }
+
+    template <typename Tarr>
+    void max(Tarr& arr)
+    {
+        arr = { *std::max_element(arr.begin(), arr.end()) };
+    }
+
+    template <typename Tarr>
+    void min(Tarr& arr)
+    {
+        arr = { *std::min_element(arr.begin(), arr.end()) };
+    }
+
+    template <typename Tarr>
+    void sum(Tarr& arr)
+    {
+        arr = { std::accumulate(arr.begin(), arr.end(), 0.0) };
+    }
+
+    template <typename Tarr>
+    void altsum(Tarr& arr)
+    {
+        static_assert(typename Tarr::value_type(-1.0) < 0);
+        arr = { std::accumulate(arr.begin(), arr.end(), 0.0, [&](auto altsum, auto val) {
+            static decltype(val) sign = -1.0;
+            return altsum + val * (sign = -sign);
+        }) };
+    }
+
+    template <typename Tarr>
+    void product(Tarr& arr)
+    {
+        arr = { std::accumulate(arr.begin(), arr.end(), 1.0, std::multiplies<>()) };
+    }
+
+    template <typename Tarr>
+    void mean(Tarr& arr)
+    {
+        arr = { std::accumulate(arr.begin(), arr.end(), 0.0) / arr.size() };
+    }
+
+    template <typename Tarr>
+    void std(Tarr& arr)
+    {
+        const auto mean = std::accumulate(arr.begin(), arr.end(), 0.0) / arr.size();
+        arr = { std::sqrt(std::accumulate(arr.begin(),
+                                          arr.end(),
+                                          0.0,
+                                          [&](auto accum, auto val) {
+                                              auto diff = val - mean;
+                                              return accum + diff * diff;
+                                          }) /
+                          (arr.size() - 1)) };
+    }
+
+    template <typename Tarr>
+    void median(Tarr& arr)
+    {
+        std::sort(arr.begin(), arr.end());
+        arr = { arr.size() % 2 ? arr[arr.size() / 2] :
+                                 (arr[arr.size() / 2 - 1] + arr[arr.size() / 2]) / 2 };
+    }
+
+    template <typename Tarr>
+    void gmean(Tarr& arr)
+    {
+        arr = { std::pow(
+            std::accumulate(
+                arr.begin(), arr.end(), 1.0, [&](auto accum, auto num) { return accum * num; }),
+            1.0 / arr.size()) };
+    }
+
+    template <typename Tarr>
+    void hmean(Tarr& arr)
+    {
+        arr = { arr.size() /
+                std::accumulate(arr.begin(), arr.end(), 0.0, [&](auto accum, auto num) {
+                    return accum + 1.0 / num;
+                }) };
+    }
+
+    template <typename Tarr>
+    void gcd(Tarr& arr)
+    {
+        auto min = std::numeric_limits<typename Tarr::value_type>::max();
+        auto max = std::numeric_limits<typename Tarr::value_type>::min();
+
+        for (auto num : arr) {
+            num = std::abs(num);
+            if (num < min)
+                min = num;
+            if (num > max)
+                max = num;
+        }
+
+        class gcd_impl final {
+        public:
+            static inline std::uintmax_t gcd_pair(std::uintmax_t min, std::uintmax_t max)
+            {
+                return !max ? min : gcd_pair(max, min % max);
+            }
+        };
+
+        arr = { gcd_impl::gcd_pair(std::abs(min), std::abs(max)) };
+    }
 } // namespace xph::linalg
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_LINALG_ */
