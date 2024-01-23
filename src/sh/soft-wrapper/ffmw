@@ -917,14 +917,14 @@ optimize() {
             exit 1
         }
         [ "$norepeat" = "1" ] && {
-            [ "$backup" = "1" ] && [ -f "$fl.original" ] && {
-                printf "File [%s] already has an original variant, skipping.\n" "$fl" >&2
+            ffprobe -hide_banner -v error -select_streams v:0 -show_entries stream_tags=encoder -of default=nokey=1:noprint_wrappers=1 -i "file:$fl" | grep -Exq 'Lavc[0-9.]+\s+libx265' && {
+                printf "File [%s] is already encoded with libx265, skipping.\n" "$fl" >&2
                 printf "%s\n" "$fl"
                 continue
             }
 
-            ffprobe -hide_banner -v error -select_streams v:0 -show_entries stream_tags=encoder -of default=nokey=1:noprint_wrappers=1 -i "file:$fl" | grep -Exq 'Lavc[0-9.]+\s+libx265' && {
-                printf "File [%s] is already encoded with libx265, skipping.\n" "$fl" >&2
+            [ "$backup" = "1" ] && [ -f "$fl.original" ] && {
+                printf "File [%s] already has an original variant, skipping.\n" "$fl" >&2
                 printf "%s\n" "$fl"
                 continue
             }
