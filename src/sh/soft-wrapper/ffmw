@@ -26,6 +26,8 @@ printhelp() {
         Overwrite the output file if it exists.
     -h, --help
         Print help message.
+    -I, --ignore-outfile
+        Ignore TEMPOUTFILE if given in [INFILE]...
     -i, --interactive
         Prompt before overwriting the output file if it exists.
     -M, --move-to-original
@@ -333,6 +335,7 @@ parseargs_optimize() {
                         b) backup="1";;
                         f) overwrite="-y";;
                         h) printhelp "optimize"; exit 0;;
+                        I) ignoreoutfl="1";;
                         i) overwrite="";;
                         M) moveorig="1";;
                         n) overwrite="-n";;
@@ -351,6 +354,7 @@ parseargs_optimize() {
                     backup) backup="1";;
                     force) overwrite="-y";;
                     help) printhelp "optimize"; exit 0;;
+                    ignore-outfile) ignoreoutfl="1";;
                     interactive) overwrite="";;
                     move-to-original) moveorig="1";;
                     no-clobber) overwrite="-n";;
@@ -913,8 +917,13 @@ optimize() {
             exit 1
         }
         [ "$outfl" = "$fl" ] && {
-            printf 'INFILE and TEMPOUTFILE [%s] cannot be the same.\n' "$fl"
-            exit 1
+            if [ "$ignoreoutfl" = "1" ]; then
+                printf "Ignoring TEMPOUTFILE [%s] in INFILEs.\n" "$fl" >&2
+                continue
+            else
+                printf 'INFILE and TEMPOUTFILE [%s] cannot be the same.\n' "$fl"
+                exit 1
+            fi
         }
         [ "$norepeat" = "1" ] && {
             ffprobe -hide_banner -v error -select_streams v:0 -show_entries stream_tags=encoder -of default=nokey=1:noprint_wrappers=1 -i "file:$fl" | grep -Exq 'Lavc[0-9.]+\s+libx265' && {
