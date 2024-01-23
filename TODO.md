@@ -253,6 +253,7 @@
   - Use `-nostdin` and `file:` for `ffmpeg`.
   - Make `ffmpeg` less verbose.
   - Use segments (`-f segment`, `-segment_time TIME`, -segment_list `FILENAME.csv`).
+    - See <https://video.stackexchange.com/questions/32297/resuming-a-partially-completed-encode-with-ffmpeg>
   - Use `parallel` with verbose progress & running commands.
 - Optimise `breadth-find` to not search the same initial depths multiple times.
 - Make `editpath` and related scripts as easy to use as `_m` and others.
