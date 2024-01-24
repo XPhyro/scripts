@@ -35,5 +35,7 @@ int main(int argc, const char *argv[])
 
     puts(s);
 
+    free(s);
+
     return EXIT_FAILURE;
 }
