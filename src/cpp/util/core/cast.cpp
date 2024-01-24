@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
             case 'h':
                 help();
             default:
-                invalid_args(xph::consts::str::empty);
+                invalid_args("");
         }
     }
 
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
     argc -= optind;
 
     if (argc < 2)
-        invalid_args(xph::consts::str::empty);
+        invalid_args("");
 
     using func_t = typename std::decay<decltype((*funcs.begin()).second)>::type;
     func_t func;

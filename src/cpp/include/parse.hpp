@@ -6,15 +6,13 @@
 #include <string_view>
 #include <utility>
 
-#include "consts.hpp"
-
 namespace xph {
     template <typename T>
     [[gnu::always_inline, nodiscard]] inline T _parse(const std::string_view& s)
     {
         static std::stringstream ss;
 
-        ss.str(xph::consts::str::empty);
+        ss.str("");
         ss.clear();
 
         ss << s;
