@@ -939,7 +939,7 @@ optimize() {
             }
         }
         before_size="$(stat --printf="%s\n" -- "$fl")"
-        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -q:v 0 "file:$outfl" >&2 || {
+        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -map 0 -q:v 0 "file:$outfl" >&2 || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
@@ -1002,7 +1002,7 @@ compress() {
             printf 'No such file [%s], exiting.\n' \"\$i\"
             exit 1
         }
-        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 $libx265_opts -c:a copy '$outfl' || {
+        $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i \"\$i\" -safe 0 -preset '$preset' -crf '$factor' -c:v libx265 $libx265_opts -c:a copy -map 0 '$outfl' || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
@@ -1033,7 +1033,7 @@ concat() {
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -f concat -safe 0 -i "$lstfl" -c copy "$outfl" || {
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -f concat -safe 0 -i "$lstfl" -c copy -map 0 "$outfl" || {
         printferr "ffmpeg failed, exiting.\n"
         [ -f "$lstfl" ] && rm -- "$lstfl"
         exit 1
@@ -1054,7 +1054,7 @@ crop() {
         codec="copy"
     fi
 
-    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v $codec -c:a copy "$outfl" \
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -ss "$beginmark" -i "$infl" $endmark -safe 0 -c:v $codec -c:a copy -map 0 "$outfl" \
         || printferrq "ffmpeg failed, exiting.\n"
     touch --reference="$infl" -- "$outfl"
 
@@ -1067,7 +1067,7 @@ decat() {
         printf "%s\n" "$marks" | head -n 1
     )" -safe 0 -c copy "$(
         printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\11/g'
-    )" || printferrq "ffmpeg failed, exiting.\n"
+    )" -map 0 || printferrq "ffmpeg failed, exiting.\n"
 
     n=2
     [ "$(printf "%s\n" "$marks" | wc -l)" -ne 1 ] \
@@ -1087,7 +1087,7 @@ EOF2
         printf "%s\n" "$marks" | tail -n 1
     )" -i "$infl" -safe 0 -c copy "$(
         printf "%s" "$outpat" | sed 's/\([^%\\]*\)%d/\1'"$n"'/g'
-    )" || printferrq "ffmpeg failed, exiting.\n"
+    )" -map 0 || printferrq "ffmpeg failed, exiting.\n"
 
     [ "$remove" = "1" ] && rm -- "$infl"
 }
@@ -1107,7 +1107,7 @@ trim() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
 
     $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -vf "$(
-        ffmpeg -hide_banner -ss "$seekto" -i "$infl" -vframes "$framecount" -vf cropdetect -f null - 2>&1 \
+        ffmpeg -hide_banner -ss "$seekto" -i "$infl" -vframes "$framecount" -vf cropdetect -f null -map 0 - 2>&1 \
             | grep "^.Parsed_cropdetect_0 @ 0x[0-9a-f].*crop=.*$" \
             | awk '{print $NF}' \
             | LC_ALL=C sort \
@@ -1126,7 +1126,7 @@ trim() {
 reverse() {
     [ -f "$infl" ] || printferrq "No such file [%s], exiting.\n" "$infl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -vf reverse -af areverse "$outfl"
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -i "$infl" -vf reverse -af areverse -map 0 "$outfl"
     touch --reference="$infl" -- "$outfl"
 
     [ "$remove" = "1" ] && rm -- "$infl"
