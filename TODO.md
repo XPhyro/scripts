@@ -115,6 +115,10 @@
 - `tabutils`:
   - Replace last tab if it is `about:blank` when pasting to the end.
   - Replace current tab if it is `about:blank` when pasting inline.
+- Add alternate workflow targets for macOS on GitHub.
+  - <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>
+  - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md>
+  - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-arm64-Readme.md>
 
 ## New Scripts
 
