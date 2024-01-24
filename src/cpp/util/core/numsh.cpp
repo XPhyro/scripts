@@ -35,70 +35,84 @@
 
 DEFINE_EXEC_INFO();
 
-#define FUNCTIONS                                                                        \
-    COMMENT("none to many")                                                              \
-    X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")             \
-                                                                                         \
-    COMMENT("one to many")                                                               \
-    X_FUNCTION(factor, 0, 0, "Map all elements to their factors.")                       \
-                                                                                         \
-    COMMENT("many to many")                                                              \
-    X_FUNCTION(difference, 0, 0, "Map all elements to their difference.")                \
-    X_FUNCTION(partsum, 1, 1, "Map all elements to their partial sum.")                  \
-    X_FUNCTION(partaltsum, 1, 1, "Map all elements to their partial alternating sum.")   \
-    X_FUNCTION(partprod, 1, 1, "Map all elements to their partial product.")             \
-                                                                                         \
-    COMMENT("one to one")                                                                \
-    X_FUNCTION(cumsum, 0, 0, "Map all elements to their cumulative sum.")                \
-    X_FUNCTION(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.") \
-    X_FUNCTION(cumprod, 0, 0, "Map all elements to their cumulative product.")           \
-    X_FUNCTION(factorial,                                                                \
-               0,                                                                        \
-               0,                                                                        \
-               "Map all elements to their factorial. "                                   \
-               "If elements are not integers, truncate them first.")                     \
-    X_FUNCTION(degrees, 0, 0, "Map all elements to their degrees.")                      \
-    X_FUNCTION(radians, 0, 0, "Map all elements to their radians.")                      \
-    X_FUNCTION(acos, 0, 0, "Map all elements to their acos. See `man 3 acos`.")          \
-    X_FUNCTION(asin, 0, 0, "Map all elements to their asin. See `man 3 asin`.")          \
-    X_FUNCTION(atan, 0, 0, "Map all elements to their atan. See `man 3 atan`.")          \
-    X_FUNCTION(cbrt, 0, 0, "Map all elements to their cbrt. See `man 3 cbrt`.")          \
-    X_FUNCTION(ceil, 0, 0, "Map all elements to their ceil. See `man 3 ceil`.")          \
-    X_FUNCTION(cos, 0, 0, "Map all elements to their cos. See `man 3 cos`.")             \
-    X_FUNCTION(cosh, 0, 0, "Map all elements to their cosh. See `man 3 cosh`.")          \
-    X_FUNCTION(exp, 0, 0, "Map all elements to their exp. See `man 3 exp`.")             \
-    X_FUNCTION(abs, 0, 0, "Map all elements to their abs. See `man 3 fabs`.")            \
-    X_FUNCTION(floor, 0, 0, "Map all elements to their floor. See `man 3 floor`.")       \
-    X_FUNCTION(log, 0, 0, "Map all elements to their log. See `man 3 log`.")             \
-    X_FUNCTION(log10, 0, 0, "Map all elements to their log10. See `man 3 log10`.")       \
-    X_FUNCTION(log2, 0, 0, "Map all elements to their log2. See `man 3 log2`.")          \
-    X_FUNCTION(log1p, 0, 0, "Map all elements to their log1p.")                          \
-    X_FUNCTION(pow, 1, 1, "Map all elements to their pow. See `man 3 pow`.")             \
-    X_FUNCTION(round, 0, 0, "Map all elements to their round. See `man 3 round`.")       \
-    X_FUNCTION(sin, 0, 0, "Map all elements to their sin. See `man 3 sin`.")             \
-    X_FUNCTION(sinh, 0, 0, "Map all elements to their sinh. See `man 3 sinh`.")          \
-    X_FUNCTION(sqrt, 0, 0, "Map all elements to their sqrt. See `man 3 sqrt`.")          \
-    X_FUNCTION(tan, 0, 0, "Map all elements to their tan. See `man 3 tan`.")             \
-    X_FUNCTION(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")          \
-    X_FUNCTION(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")       \
-                                                                                         \
-    COMMENT("one to optional one")                                                       \
-    X_FUNCTION(zero, 0, 0, "Reduce to zero elements.")                                   \
-    X_FUNCTION(nonzero, 0, 0, "Reduce to non-zero elements.")                            \
-                                                                                         \
-    COMMENT("many to one")                                                               \
-    X_FUNCTION(count, 0, 0, "Reduce to count of elements.")                              \
-    X_FUNCTION(max, 0, 0, "Reduce to the maximum element.")                              \
-    X_FUNCTION(min, 0, 0, "Reduce to the minimum element.")                              \
-    X_FUNCTION(sum, 0, 0, "Reduce to the sum of the elements.")                          \
-    X_FUNCTION(altsum, 0, 0, "Reduce to the alternating sum of the elements.")           \
-    X_FUNCTION(product, 0, 0, "Reduce to the product of the elements.")                  \
-    X_FUNCTION(mean, 0, 0, "Reduce to the mean of the elements.")                        \
-    X_FUNCTION(std, 0, 0, "Reduce to the standard deviation of the elements.")           \
-    X_FUNCTION(median, 0, 0, "Reduce to the median of the elements.")                    \
-    X_FUNCTION(gmean, 0, 0, "Reduce to the geometric mean of the elements.")             \
-    X_FUNCTION(hmean, 0, 0, "Reduce to the harmonic mean of the elements.")              \
-    X_FUNCTION(gcd, 0, 0, "Reduce to the greatest common denominator of the elements.")
+#define X_FUNCTION_VECTOR_0(FUNC, MIN, MAX, DESC) \
+    X_FUNCTION(FUNC, MIN, MAX, DESC) Y_FUNCTION_VECTOR_0(FUNC)
+#define X_FUNCTION_VECTOR_1(FUNC, MIN, MAX, DESC) \
+    X_FUNCTION(FUNC, MIN, MAX, DESC) Y_FUNCTION_VECTOR_1(FUNC)
+#define X_FUNCTION_SPAN_0(FUNC, MIN, MAX, DESC) \
+    X_FUNCTION(FUNC, MIN, MAX, DESC) Y_FUNCTION_SPAN_0(FUNC)
+#define X_FUNCTION_SPAN_1(FUNC, MIN, MAX, DESC) \
+    X_FUNCTION(FUNC, MIN, MAX, DESC) Y_FUNCTION_SPAN_1(FUNC)
+
+#define FUNCTIONS                                                                               \
+    COMMENT("none to many")                                                                     \
+    X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")                    \
+                                                                                                \
+    COMMENT("one to many")                                                                      \
+    X_FUNCTION_VECTOR_0(factor, 0, 0, "Map all elements to their factors.")                     \
+                                                                                                \
+    COMMENT("many to many")                                                                     \
+    X_FUNCTION_VECTOR_0(difference, 0, 0, "Map all elements to their difference.")              \
+    X_FUNCTION_VECTOR_1(partsum, 1, 1, "Map all elements to their partial sum.")                \
+    X_FUNCTION_VECTOR_1(partaltsum, 1, 1, "Map all elements to their partial alternating sum.") \
+    X_FUNCTION_VECTOR_1(partprod, 1, 1, "Map all elements to their partial product.")           \
+                                                                                                \
+    COMMENT("one to one")                                                                       \
+    X_FUNCTION_SPAN_0(cumsum, 0, 0, "Map all elements to their cumulative sum.")                \
+    X_FUNCTION_SPAN_0(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.") \
+    X_FUNCTION_SPAN_0(cumprod, 0, 0, "Map all elements to their cumulative product.")           \
+    X_FUNCTION_SPAN_0(factorial,                                                                \
+                      0,                                                                        \
+                      0,                                                                        \
+                      "Map all elements to their factorial. "                                   \
+                      "If elements are not integers, truncate them first.")                     \
+    X_FUNCTION_SPAN_0(degrees, 0, 0, "Map all elements to their degrees.")                      \
+    X_FUNCTION_SPAN_0(radians, 0, 0, "Map all elements to their radians.")                      \
+    X_FUNCTION_SPAN_0(acos, 0, 0, "Map all elements to their acos. See `man 3 acos`.")          \
+    X_FUNCTION_SPAN_0(asin, 0, 0, "Map all elements to their asin. See `man 3 asin`.")          \
+    X_FUNCTION_SPAN_0(atan, 0, 0, "Map all elements to their atan. See `man 3 atan`.")          \
+    X_FUNCTION_SPAN_0(cbrt, 0, 0, "Map all elements to their cbrt. See `man 3 cbrt`.")          \
+    X_FUNCTION_SPAN_0(ceil, 0, 0, "Map all elements to their ceil. See `man 3 ceil`.")          \
+    X_FUNCTION_SPAN_0(cos, 0, 0, "Map all elements to their cos. See `man 3 cos`.")             \
+    X_FUNCTION_SPAN_0(cosh, 0, 0, "Map all elements to their cosh. See `man 3 cosh`.")          \
+    X_FUNCTION_SPAN_0(exp, 0, 0, "Map all elements to their exp. See `man 3 exp`.")             \
+    X_FUNCTION_SPAN_0(abs, 0, 0, "Map all elements to their abs. See `man 3 fabs`.")            \
+    X_FUNCTION_SPAN_0(floor, 0, 0, "Map all elements to their floor. See `man 3 floor`.")       \
+    X_FUNCTION_SPAN_0(log, 0, 0, "Map all elements to their log. See `man 3 log`.")             \
+    X_FUNCTION_SPAN_0(log10, 0, 0, "Map all elements to their log10. See `man 3 log10`.")       \
+    X_FUNCTION_SPAN_0(log2, 0, 0, "Map all elements to their log2. See `man 3 log2`.")          \
+    X_FUNCTION_SPAN_0(log1p, 0, 0, "Map all elements to their log1p.")                          \
+    X_FUNCTION_SPAN_1(pow, 1, 1, "Map all elements to their pow. See `man 3 pow`.")             \
+    X_FUNCTION_SPAN_0(round, 0, 0, "Map all elements to their round. See `man 3 round`.")       \
+    X_FUNCTION_SPAN_0(sin, 0, 0, "Map all elements to their sin. See `man 3 sin`.")             \
+    X_FUNCTION_SPAN_0(sinh, 0, 0, "Map all elements to their sinh. See `man 3 sinh`.")          \
+    X_FUNCTION_SPAN_0(sqrt, 0, 0, "Map all elements to their sqrt. See `man 3 sqrt`.")          \
+    X_FUNCTION_SPAN_0(tan, 0, 0, "Map all elements to their tan. See `man 3 tan`.")             \
+    X_FUNCTION_SPAN_0(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")          \
+    X_FUNCTION_SPAN_0(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")       \
+                                                                                                \
+    COMMENT("one to optional one")                                                              \
+    X_FUNCTION_VECTOR_0(zero, 0, 0, "Reduce to zero elements.")                                 \
+    X_FUNCTION_VECTOR_0(nonzero, 0, 0, "Reduce to non-zero elements.")                          \
+                                                                                                \
+    COMMENT("many to one")                                                                      \
+    X_FUNCTION_VECTOR_0(count, 0, 0, "Reduce to count of elements.")                            \
+    X_FUNCTION_VECTOR_0(max, 0, 0, "Reduce to the maximum element.")                            \
+    X_FUNCTION_VECTOR_0(min, 0, 0, "Reduce to the minimum element.")                            \
+    X_FUNCTION_VECTOR_0(sum, 0, 0, "Reduce to the sum of the elements.")                        \
+    X_FUNCTION_VECTOR_0(altsum, 0, 0, "Reduce to the alternating sum of the elements.")         \
+    X_FUNCTION_VECTOR_0(product, 0, 0, "Reduce to the product of the elements.")                \
+    X_FUNCTION_VECTOR_0(mean, 0, 0, "Reduce to the mean of the elements.")                      \
+    X_FUNCTION_VECTOR_0(std, 0, 0, "Reduce to the standard deviation of the elements.")         \
+    X_FUNCTION_VECTOR_0(median, 0, 0, "Reduce to the median of the elements.")                  \
+    X_FUNCTION_VECTOR_0(gmean, 0, 0, "Reduce to the geometric mean of the elements.")           \
+    X_FUNCTION_VECTOR_0(hmean, 0, 0, "Reduce to the harmonic mean of the elements.")            \
+    X_FUNCTION_VECTOR_0(gcd, 0, 0, "Reduce to the greatest common denominator of the elements.")
+
+#define Y_FUNCTION_VECTOR_0(FUNC)
+#define Y_FUNCTION_VECTOR_1(FUNC)
+#define Y_FUNCTION_SPAN_0(FUNC)
+#define Y_FUNCTION_SPAN_1(FUNC)
 
 #define X_FUNCTION(FUNC, MIN, MAX, DESC) \
     static_assert(MIN >= 0);             \
@@ -130,6 +144,11 @@ constexpr Tret get_functions(void) noexcept
     return { FUNCTIONS };
 #undef X_FUNCTION
 }
+
+#undef Y_FUNCTION_VECTOR_0
+#undef Y_FUNCTION_VECTOR_1
+#undef Y_FUNCTION_SPAN_0
+#undef Y_FUNCTION_SPAN_1
 
 std::unordered_map<std::string_view, function> functions =
     get_functions<std::unordered_map<std::string_view, function>>();
@@ -176,13 +195,16 @@ int main(int argc, char* argv[])
                     << " [OPTION]... [NUMBER]...\n"
                        "Do mathematical calculations on all given numbers.\n"
                        "\n"
-                       "With no NUMBER, read standard input unless -s is given. Empty lines are ignored\n"
-                       "when reading standard input.\n"
+                       "With no NUMBER, read standard input unless -s is given. Empty lines are\n"
+                       "ignored when reading standard input.\n"
                        "\n"
                        "Option -f must be given. If FUNC requires additional arguments,\n"
                        "option -p must be given exactly as many times as required.\n"
                        "\n"
-                       "  -d  NUM   set the precision of output numbers. does not affect computation. default is "
+                       "  -a  NUM   enable arbitrary precision computation with NUM figures.\n"
+                       "            will hinder performance by many orders of magnitudes.\n"
+                       "  -d  NUM   set the precision of output numbers. does not affect computation.\n"
+                       "            default is "
                     << default_precision << ", range is [" << min_precision << ", " << max_precision
                     << "].\n"
                        "  -f  FUNC  function to pass numbers through. pass -L to see the list.\n"
@@ -277,7 +299,6 @@ int main(int argc, char* argv[])
 }
 
 namespace func {
-    // none to many
     void arange(std::span<double> argv, std::vector<double>& nums)
     {
         double start, stop, step;
@@ -303,244 +324,37 @@ namespace func {
         xph::linalg::arange<double>(start, stop, step, nums);
     }
 
-    // one to many
-    void factor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::factor(nums);
+#define X_FUNCTION(FUNC, MIN, MAX, DESC)
+
+#define Y_FUNCTION_SPAN_0(FUNC)                                                   \
+    void FUNC([[maybe_unused]] std::span<double> argv, std::vector<double>& nums) \
+    {                                                                             \
+        xph::linalg::FUNC<double>(nums);                                          \
     }
 
-    // many to many
-    void difference([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::difference(nums);
+#define Y_FUNCTION_SPAN_1(FUNC)                                  \
+    void FUNC(std::span<double> argv, std::vector<double>& nums) \
+    {                                                            \
+        xph::linalg::FUNC<double>(nums, argv[0]);                \
     }
 
-    void partsum(std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::partsum(nums, argv[0]);
+#define Y_FUNCTION_VECTOR_0(FUNC)                                                 \
+    void FUNC([[maybe_unused]] std::span<double> argv, std::vector<double>& nums) \
+    {                                                                             \
+        xph::linalg::FUNC(nums);                                                  \
     }
 
-    void partaltsum(std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::partaltsum(nums, argv[0]);
+#define Y_FUNCTION_VECTOR_1(FUNC)                                \
+    void FUNC(std::span<double> argv, std::vector<double>& nums) \
+    {                                                            \
+        xph::linalg::FUNC(nums, argv[0]);                        \
     }
 
-    void partprod(std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::partprod(nums, argv[0]);
-    }
+    FUNCTIONS
 
-    // one to one
-    void cumsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::cumsum<double>(nums);
-    }
-
-    void cumaltsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::cumaltsum<double>(nums);
-    }
-
-    void cumprod([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::cumprod<double>(nums);
-    }
-
-    void factorial([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::factorial<double>(nums);
-    }
-
-    void degrees([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::degrees<double>(nums);
-    }
-
-    void radians([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::radians<double>(nums);
-    }
-
-    void acos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-
-    {
-        xph::linalg::acos<double>(nums);
-    }
-
-    void asin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::asin<double>(nums);
-    }
-
-    void atan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::atan<double>(nums);
-    }
-
-    void cbrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::cbrt<double>(nums);
-    }
-
-    void ceil([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::ceil<double>(nums);
-    }
-
-    void cos([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::cos<double>(nums);
-    }
-
-    void cosh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::cosh<double>(nums);
-    }
-
-    void exp([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::exp<double>(nums);
-    }
-
-    void abs([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::abs<double>(nums);
-    }
-
-    void floor([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::floor<double>(nums);
-    }
-
-    void log([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::log<double>(nums);
-    }
-
-    void log10([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::log10<double>(nums);
-    }
-
-    void log2([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::log2<double>(nums);
-    }
-
-    void log1p([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::log1p<double>(nums);
-    }
-
-    void pow(std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::pow<double>(nums, argv[0]);
-    }
-
-    void round([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::round<double>(nums);
-    }
-
-    void sin([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::sin<double>(nums);
-    }
-
-    void sinh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::sinh<double>(nums);
-    }
-
-    void sqrt([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::sqrt<double>(nums);
-    }
-
-    void tan([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::tan<double>(nums);
-    }
-
-    void tanh([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::tanh<double>(nums);
-    }
-
-    void trunc([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::trunc<double>(nums);
-    }
-
-    // one to optional one
-    void zero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::zero(nums);
-    }
-
-    void nonzero([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::nonzero(nums);
-    }
-
-    // many to one
-    void count([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::count(nums);
-    }
-
-    void max([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::max(nums);
-    }
-
-    void min([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::min(nums);
-    }
-
-    void sum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::sum(nums);
-    }
-
-    void altsum([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::altsum(nums);
-    }
-
-    void product([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::product(nums);
-    }
-
-    void mean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::mean(nums);
-    }
-
-    void std([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::std(nums);
-    }
-
-    void median([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::median(nums);
-    }
-
-    void gmean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::gmean(nums);
-    }
-
-    void hmean([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::hmean(nums);
-    }
-
-    void gcd([[maybe_unused]] std::span<double> argv, std::vector<double>& nums)
-    {
-        xph::linalg::gcd(nums);
-    }
+#undef X_FUNCTION
+#undef Y_FUNCTION_VECTOR_0
+#undef Y_FUNCTION_VECTOR_1
+#undef Y_FUNCTION_SPAN_0
+#undef Y_FUNCTION_SPAN_1
 } // namespace func
