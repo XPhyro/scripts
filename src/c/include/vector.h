@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <sys/param.h>
 
-#include "stdutil.h"
+#include "stdlib.h"
 
 /* if managed manually, the following functions might not work correctly. */
 /* only works for members of constant size. if using strings, allocate a constant-size buffer for them. */
