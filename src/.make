@@ -458,7 +458,7 @@ install() {
             cd firefox
 
             command -v pandoc > /dev/null 2>&1 || {
-                printf "  %s\n" '`web-ext` is not installed, build Firefox addons.'
+                printf "  %s\n" '`web-ext` is not installed, cannot build Firefox addons.'
                 exit 0
             }
 
