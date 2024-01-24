@@ -112,6 +112,7 @@
   (command & subcommand)/flag for it)
 - Support stdin in `gcc-otg`.
 - Add support for arbitrary precision computation in `numsh`.
+  - First create `linalg_mp.hpp`, then use it.
 - `tabutils`:
   - Replace last tab if it is `about:blank` when pasting to the end.
   - Replace current tab if it is `about:blank` when pasting inline.
@@ -119,6 +120,7 @@
   - <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-arm64-Readme.md>
+- Add manuals.
 
 ## New Scripts
 
@@ -323,6 +325,7 @@
   current desktop, even if it's in another monitor's focused desktop.
 - `.make`: `.installed` grows indefinitely unless `uninstall` is issued, fix.
 - `latexd` does not work with files containing `'`, fix.
+- `std::string` segfaults if given alignment is not contained in the input.
 
 ## Features
 
@@ -428,6 +431,8 @@
 - In `rgb24togray`, add `METHOD_HSL_S` and `METHOD_HSL_L`.
 - In `sandwichline`, add `-s, --same-dough` option to make the top and bottom
   of the sandwich the same when randomised.
+- `std::string` should have a help message.
+- Alternative to `make stats` that lists individual file statistics.
 
 ## New Scripts
 
