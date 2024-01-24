@@ -1,7 +1,10 @@
 #ifndef HEADER_SCRIPTS_CXX_AUTO_TIMER_
 #define HEADER_SCRIPTS_CXX_AUTO_TIMER_
 
+#include <memory>
+
 #include "logger.hpp"
+#include "tictoc.hpp"
 #include "units.hpp"
 
 namespace xph {

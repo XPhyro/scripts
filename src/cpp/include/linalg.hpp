@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <numeric>
+#include <ranges>
 #include <span>
 #include <vector>
 
