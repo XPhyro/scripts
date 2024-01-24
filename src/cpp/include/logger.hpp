@@ -4,8 +4,6 @@
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
-#include <memory>
-#include <sstream>
 #include <string>
 #include <string_view>
 
@@ -13,7 +11,6 @@
 
 #include "exec_info.hpp"
 #include "macros.hpp"
-#include "tictoc.hpp"
 
 namespace xph {
     using log_level_underlying_t = int;

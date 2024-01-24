@@ -1,6 +1,5 @@
 // C++
 #include <algorithm>
-#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -8,20 +7,17 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
-#include <optional>
 #include <ranges>
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 // C
 #include <pwd.h>
-#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 

@@ -2,8 +2,6 @@
 #define HEADER_SCRIPTS_CXX_ALGORITHM_
 
 #include <algorithm>
-#include <functional>
-#include <ranges>
 
 namespace xph {
     template <std::ranges::range Tit, class Top>

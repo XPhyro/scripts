@@ -4,15 +4,11 @@
 // TODO: enforce stuff in man page and help dialog
 
 #include <algorithm>
-#include <cmath>
 #include <cstddef>
-#include <cstdint>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <numbers>
-#include <numeric>
 #include <ranges>
 #include <span>
 #include <tuple>

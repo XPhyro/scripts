@@ -1,7 +1,6 @@
 #ifndef HEADER_SCRIPTS_CXX_SYS_
 #define HEADER_SCRIPTS_CXX_SYS_
 
-#include <algorithm>
 #include <array>
 #include <cerrno>
 #include <csignal>

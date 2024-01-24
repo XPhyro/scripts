@@ -1,7 +1,6 @@
 #ifndef HEADER_SCRIPTS_CXX_UNITS_
 #define HEADER_SCRIPTS_CXX_UNITS_
 
-#include <cstdint>
 #include <string>
 
 namespace xph::unit {
