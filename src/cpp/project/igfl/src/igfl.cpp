@@ -1,17 +1,34 @@
+#include <cerrno>
 #include <cstdlib>
+
+#include <unistd.h>
 
 #include <imgui/imgui.h>
 #include <imtui/imtui-impl-ncurses.h>
 #include <imtui/imtui.h>
 
-int main()
+#include <xph/die.hpp>
+#include <xph/exec_info.hpp>
+
+#include "options.hpp"
+
+DEFINE_EXEC_INFO()
+
+int main(int argc, char* argv[])
 {
+    xph::gather_exec_info(argc, argv);
+
+    igfl::Options options(argc, argv);
+
+    if (errno = 0; options.get_init_dir() && (chdir(options.get_init_dir()->data()) || errno))
+        xph::die("could not change directory to ", *options.get_init_dir());
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    const auto mouse_support = true;
-    const auto active_fps = 144.0f;
-    const auto idle_fps = 24.0f;
+    const auto mouse_support = options.get_mouse_support();
+    const auto active_fps = options.get_active_fps();
+    const auto idle_fps = options.get_idle_fps();
     const auto screen = ImTui_ImplNcurses_Init(mouse_support, active_fps, idle_fps);
     ImTui_ImplText_Init();
 
