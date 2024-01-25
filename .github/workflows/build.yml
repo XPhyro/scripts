@@ -24,7 +24,7 @@ jobs:
     - name: dep
       run: |
         sudo apt-get update --fix-missing
-        sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo
+        sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev
         git submodule update --init --recursive
     - name: build
       run: |
