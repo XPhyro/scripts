@@ -707,6 +707,7 @@ analyse() {
                 pylint --rcfile py/.pylintrc --score=false -- "$fl" | sed "s/^/    /"
             ) | sponge
         ' --
+    ec="$((ec | $?))"
 
     tmpout="$(mktemp)"
     trap "rm -f -- '$tmpout'" INT EXIT TERM
@@ -737,9 +738,13 @@ analyse() {
             (
                 printf "  %s\n" "$fl"
                 "$CC" $CFLAGS "$fl" $CLDFLAGS -o "$tmpout" \
-                    || printf "    %s\n" "Does not compile."
+                    || {
+                        printf "    %s\n" "Does not compile."
+                        exit 1
+                    }
             ) | sponge
         ' --
+    ec="$((ec | $?))"
 
     printf "\n%s\n" \
         "Analysing C source files:"
@@ -794,9 +799,13 @@ analyse() {
                     (
                         printf "  %s\n" "$fl"
                         "$CXX" $CXXFLAGS "$fl" $CXXLDFLAGS -o "$tmpout" \
-                            || printf "    %s\n" "Does not compile."
+                            || {
+                                printf "    %s\n" "Does not compile."
+                                exit 1
+                            }
                     ) | sponge
                 ' --
+            ec="$((ec | $?))"
     fi
 
     printf "\n%s\n" \
@@ -897,72 +906,84 @@ stats() {
     files="$(find 'awk' -mindepth 1 -type f -executable)"
     awkn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    awkbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     awkloc="$(wc -l < "$tmp")"
     awksloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'bash' -mindepth 1 -type f -executable)"
     bashn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    bashbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     bashloc="$(wc -l < "$tmp")"
     bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \))"
     cn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    cbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     cloc="$(wc -l < "$tmp")"
     csloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     files="$(find 'cpp' -mindepth 1 -type f \( -iname "*.cpp" -o -iname "*.hpp" \))"
     cppn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    cppbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     cpploc="$(wc -l < "$tmp")"
     cppsloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     files="$(find 'el' -mindepth 1 -type f -executable)"
     eln="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    elbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     elloc="$(wc -l < "$tmp")"
     elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'js' -mindepth 1 -type f -iname "*.js")"
     jsn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    jsbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     jsloc="$(wc -l < "$tmp")"
     jssloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'pl' -mindepth 1 -type f -executable)"
     pln="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    plbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     plloc="$(wc -l < "$tmp")"
     plsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'py' -mindepth 1 -type f -executable)"
     pyn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    pybytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     pyloc="$(wc -l < "$tmp")"
     pysloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'rs' -mindepth 1 -type f -iname "*.rs")"
     rsn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    rsbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     rsloc="$(wc -l < "$tmp")"
     rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     files="$(find 'sh' -mindepth 1 -type f -executable)"
     shn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    shbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     shloc="$(wc -l < "$tmp")"
     shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find 'systemd' -mindepth 1 -type f -iname "*.service")"
     systemdn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    systemdbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
     systemdloc="$(wc -l < "$tmp")"
     systemdsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    totaln="$((bashn + eln + pyn + pln + shn + cn + cppn + systemdn))"
-    totalloc="$((bashloc + elloc + pyloc + plloc + shloc + cloc + cpploc + systemdloc))"
-    totalsloc="$((bashsloc + elsloc + pysloc + plsloc + shsloc + csloc + cppsloc + systemdsloc))"
+    totaln="$((awkn + bashn + cn + cppn + eln + jsn + pln + pyn + rsn + shn + systemdn))"
+    totalbytes="$((awkbytes + bashbytes + cbytes + cppbytes + elbytes + jsbytes + plbytes + pybytes + rsbytes + shbytes + systemdbytes))"
+    totalloc="$((awkloc + bashloc + cloc + cpploc + elloc + jsloc + plloc + pyloc + rsloc + shloc + systemdloc))"
+    totalsloc="$((awksloc + bashsloc + csloc + cppsloc + elsloc + jssloc + plsloc + pysloc + rssloc + shsloc + systemdsloc))"
 
     printf "%s\n" \
         "Git:" \
@@ -983,6 +1004,20 @@ stats() {
         "  shell:      $shn" \
         "  systemd:    $systemdn" \
         "  Total:      $totaln" \
+        "" \
+        "Non-Whitespace Bytes:" \
+        "  Awk:        $awkbytes" \
+        "  Bash:       $bashbytes" \
+        "  C:          $cbytes" \
+        "  C++:        $cppbytes" \
+        "  execline:   $elbytes" \
+        "  JavaScript: $jsbytes" \
+        "  Perl:       $plbytes" \
+        "  Python:     $pybytes" \
+        "  Rust:       $rsbytes" \
+        "  shell:      $shbytes" \
+        "  systemd:    $systemdbytes" \
+        "  Total:      $totalbytes" \
         "" \
         "Lines of Code:" \
         "  Awk:        $awkloc" \
