@@ -15,12 +15,12 @@ following languages:
 - Bash
 - C
 - C++
+- execline
 - JavaScript
 - POSIX Shell
 - Perl
 - Python
 - Rust
-- execline
 
 ## Installation
 
