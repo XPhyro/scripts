@@ -339,7 +339,7 @@ install() {
                 cd "$dir"
                 name="${dir%/}"
 
-                [ -f ".no-runner" ] && [ -n "$RUNNER_OS" ] && [ -d "/home/runner" ] && {
+                [ -f ".no-runner" ] && [ -d "/home/runner" ] && {
                     printf "  %s\n" "Runner detected, not compiling $name."
                     exit 0
                 }
