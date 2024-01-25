@@ -1,6 +1,7 @@
 #ifndef HEADER_SCRIPTS_CXX_LINALG_
 #define HEADER_SCRIPTS_CXX_LINALG_
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -66,11 +67,21 @@ namespace xph::linalg {
     template <typename Tarr>
     inline void difference(Tarr& arr)
     {
+        // TODO: remove version check after gcc 14 is officially released
+        // TODO: add pure ranges implementations for the other functions too
+#if __GNUC__ >= 14
+        Tarr difference = arr | std::views::slide(2) |
+                          std::views::transform([](auto window) { return window[1] - window[0]; }) |
+                          std::ranges::to<std::vector>();
+#else
         Tarr difference;
 
         difference.reserve(arr.size() - 1);
-        for (auto&& window : arr | std::views::slide(2))
-            difference.push_back(window[1] - window[0]);
+        std::ranges::copy(arr | std::views::slide(2) | std::views::transform([](auto window) {
+                              return window[1] - window[0];
+                          }),
+                          std::back_inserter(difference));
+#endif
 
         arr.swap(difference);
     }
@@ -81,8 +92,11 @@ namespace xph::linalg {
         Tarr partsum;
 
         partsum.reserve(arr.size() - window_size + 1);
-        for (const auto& window : arr | std::views::slide(window_size))
-            partsum.push_back(std::accumulate(window.begin(), window.end(), 0.0));
+        std::ranges::copy(arr | std::views::slide(window_size) |
+                              std::views::transform([](auto window) {
+                                  return std::accumulate(window.begin(), window.end(), 0.0);
+                              }),
+                          std::back_inserter(partsum));
 
         arr.swap(partsum);
     }
@@ -93,13 +107,15 @@ namespace xph::linalg {
         Tarr partaltsum;
 
         partaltsum.reserve(arr.size() - window_size + 1);
-        for (const auto& window : arr | std::views::slide(window_size)) {
-            partaltsum.push_back(std::accumulate(
-                window.begin(), window.end(), 0.0, [&](double cumaltsum, double num) {
-                    static double sign = -1.0;
-                    return cumaltsum + num * (sign = -sign);
-                }));
-        }
+        std::ranges::copy(
+            arr | std::views::slide(window_size) | std::views::transform([](auto window) {
+                return std::accumulate(
+                    window.begin(), window.end(), 0.0, [&](double cumaltsum, double num) {
+                        static double sign = -1.0;
+                        return cumaltsum + num * (sign = -sign);
+                    });
+            }),
+            std::back_inserter(partaltsum));
 
         arr.swap(partaltsum);
     }
@@ -110,9 +126,11 @@ namespace xph::linalg {
         Tarr partprod;
 
         partprod.reserve(arr.size() - window_size + 1);
-        for (const auto& window : arr | std::views::slide(window_size))
-            partprod.push_back(
-                std::accumulate(window.begin(), window.end(), 1.0, std::multiplies<>()));
+        std::ranges::copy(
+            arr | std::views::slide(window_size) | std::views::transform([](auto window) {
+                return std::accumulate(window.begin(), window.end(), 1.0, std::multiplies<>());
+            }),
+            std::back_inserter(partprod));
 
         arr.swap(partprod);
     }
@@ -122,9 +140,7 @@ namespace xph::linalg {
     template <typename Tdata>
     inline void cumsum(std::span<Tdata> arr)
     {
-        Tdata cumsum = { 0.0 };
-        for (Tdata& val : arr)
-            val = cumsum += val;
+        std::partial_sum(arr);
     }
 
     template <typename Tdata>
@@ -133,16 +149,18 @@ namespace xph::linalg {
         static_assert(Tdata(-1.0) < 0);
         Tdata cumaltsum = 0.0;
         Tdata sign = -1.0;
-        for (Tdata& val : arr)
+        for (Tdata& val : arr) {
+            // cppcheck-suppress useStlAlgorithm
             val = cumaltsum += val * (sign = -sign);
+        }
     }
 
     template <typename Tdata>
     inline void cumprod(std::span<Tdata> arr)
     {
-        double cumprod = 1.0;
-        for (double& num : arr)
-            num = cumprod *= num;
+        std::partial_sum(arr.begin(), arr.end(), arr.begin(), [](const Tdata& x, const Tdata& y) {
+            return x * y;
+        });
     }
 
     template <typename Tdata>
@@ -154,15 +172,12 @@ namespace xph::linalg {
                                           std::multiplies<>());
         });
 #endif
-
         class factorial_impl final {
         public:
             static inline std::uintmax_t factorial(std::uintmax_t num)
             {
-                std::uintmax_t fac = 1;
-                for (auto&& i : std::views::iota(1ull, num + 1ull))
-                    fac *= i;
-                return fac;
+                auto range = std::views::iota(1ull, num + 1ull);
+                return std::accumulate(range.begin(), range.end(), 1ull, std::multiplies<>());
             }
         };
 
