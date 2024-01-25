@@ -9,7 +9,7 @@ printf "%s\n" "$changed_files" \
     | grep -E "^src/c(pp)?/.*\.[ch](pp)?$" \
     | while IFS= read -r path; do
         full_path="$PWD/$path"
-        [ -e "$full_path" ] || continue
+        { [ -f "$full_path" ] && [ ! -L "$full_path" ]; } || continue
         file_content="$(cat -- "$full_path")"
         (cd "$(dirname -- "$full_path")" \
              && clang-format -i --style=file -- "$full_path" \
