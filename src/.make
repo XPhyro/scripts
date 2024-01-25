@@ -272,6 +272,7 @@ install() {
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
+                                     -not -path "*/project/*" \
                                      -printf "%P\0" \
             | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 '"$FUNC_PARSEFLAGS"'
@@ -325,6 +326,22 @@ install() {
                 printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
                 cp -rf -t "$includeprefix" -- "$fl"
             ' -- 2>&1 >> "$rootdir/src/.installed"
+    )
+
+    printf "\n%s\n" \
+        "Installing C++ projects:"
+
+    (
+        cd cpp/project
+
+        for dir in */; do
+            (
+                cd "$dir"
+                name="${dir%/}"
+                make -j"$(nproc --ignore=2)" "$name"
+                cp -f -t "$binprefix" -- "$name"
+            )
+        done
     )
 
     printf "\n%s\n" \
