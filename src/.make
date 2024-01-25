@@ -338,6 +338,12 @@ install() {
             (
                 cd "$dir"
                 name="${dir%/}"
+
+                [ -f ".no-runner" ] && [ -n "$RUNNER_OS" ] && [ "$USER" = "runner" ] && {
+                    printf "  %s\n" "Runner detected, not compiling $name."
+                    exit 0
+                }
+
                 make -j"$(nproc --ignore=2)" "$name"
                 cp -f -t "$binprefix" -- "$name"
             )
