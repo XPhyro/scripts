@@ -140,7 +140,7 @@ namespace xph::linalg {
     template <typename Tdata>
     inline void cumsum(std::span<Tdata> arr)
     {
-        std::partial_sum(arr);
+        std::partial_sum(arr.begin(), arr.end(), arr.begin());
     }
 
     template <typename Tdata>
