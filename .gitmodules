@@ -4,3 +4,6 @@
 [submodule "lib/pstreams"]
 	path = lib/pstreams
 	url = https://git.code.sf.net/p/pstreams/code
+[submodule "lib/imtui-xphyro"]
+	path = lib/imtui-xphyro
+	url = https://github.com/XPhyro/imtui.git
