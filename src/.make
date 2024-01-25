@@ -318,11 +318,12 @@ install() {
         printf "%s\0" \
             "$rootdir/lib/hedley/hedley.h" \
             "$rootdir/lib/pstreams/pstream.h" \
+            "$rootdir/lib/imtui-xphyro/include/imtui/" \
             | xargs -r0 -n 1 -P 0 sh -c '
                 fl="$1"
                 printf "\0%s\0" "$includeprefix/${fl##*/}"
                 printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
-                cp -f -t "$includeprefix" -- "$fl"
+                cp -rf -t "$includeprefix" -- "$fl"
             ' -- 2>&1 >> "$rootdir/src/.installed"
     )
 
