@@ -296,6 +296,8 @@
     - `sxhkd` examples for hotkey scripts
     - Script/excerpt examples for utilities & libraries
     - etc.
+  - Table of everything in README.md with 3 fields: name, very brief
+    description and (if possible) very brief example.
 - At this point perhaps rename the repository from `scripts` to `utils`?
 - Move `src/{man,tests,.make}/` to the root of the repository?
 - Consider changing the extension of shell headers from `.sh` to `.shh` or
