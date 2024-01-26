@@ -3,8 +3,9 @@
 . shellverbose.sh
 
 players="$(playerctl -l -i "$PLAYERCTLSELIGNORE")"
-if [ "$(printf "%s\n" "$players" | wc -l)" -lt 2 ]; then
-    playerctl "$@"
-else
-    printf "%s\n" "$players" | execmenu | xargs -d '\n' -rI PLAYER playerctl -p PLAYER "$@"
-fi
+
+case "$(printf "%s\n" "$players" | wc -l)" in
+    0) [ -n "$PLAYERCTLSELFALLBACK" ] && [ "$PLAYERCTLSELFALLBACK" -ne 0 ] && playerctl -p "$PLAYERCTLSELIGNORE" "$@";;
+    1) playerctl "$@";;
+    *) printf "%s\n" "$players" | execmenu | xargs -d '\n' -rI PLAYER playerctl -p PLAYER "$@";;
+esac
