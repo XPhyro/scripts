@@ -43,6 +43,15 @@ printhelp() {
     -t FILE, --target FILE
         Specify TEMPOUTFILE as an option instead of a positional argument. Useful for integrating with \`xargs\`."
             ;;
+        optimise-audio)
+            printf "%s\n" \
+"  optimise-audio [INFILE]... [TEMPOUTFILE]
+   Alias for optimize-audio."
+            ;;
+        optimize-audio)
+            # TODO:
+            echo TODO
+            ;;
         compress)
             printf "%s\n" \
 "  compress [INFILE]... [TEMPOUTFILE]
@@ -317,7 +326,7 @@ parseargs() {
     mvoverwrite="${overwrite:-"-i"}"
     [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
 
-    libx265_opts_map="$(grep -Fq 'avx512' /proc/cpuinfo && printf "%s " asm=avx512)"
+    libx265_opts_map="$(grep -Fq 'avx512' /proc/cpuinfo && printf "%s" asm=avx512)"
     [ -n "$libx265_opts_map" ] && libx265_opts="-x265-params $libx265_opts_map"
 }
 
@@ -953,7 +962,7 @@ optimize() {
             fi
         fi
         before_size="$(stat --printf="%s\n" -- "$fl")"
-        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 -$optimize_libx265_opts -c:a copy -map 0 -q:v 0 "file:$outfl" >&2 || {
+        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $optimize_libx265_opts -c:a copy -map 0 -q:v 0 "file:$outfl" >&2 || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
