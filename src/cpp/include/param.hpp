@@ -34,6 +34,70 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
+    constexpr Treturn coalesce_call_pre(const Ts&... args)
+    {
+        Treturn ret{};
+
+        ([&]() {
+            auto args_ret = args();
+            bool condition = static_cast<bool>(args_ret);
+            if (condition)
+                ret = static_cast<Treturn>(args_ret);
+            return condition;
+        }() ||
+         ...);
+
+        return ret;
+    }
+
+    template <typename Treturn, typename... Ts>
+    inline constexpr Treturn reverse_coalesce_pre(const Ts&... args)
+    {
+        Treturn ret{};
+
+        (... || [&]() {
+            auto args_ret = args();
+            bool condition = static_cast<bool>(args_ret);
+            if (condition)
+                ret = static_cast<Treturn>(args_ret);
+            return condition;
+        }());
+
+        return ret;
+    }
+
+    template <typename Treturn, typename... Ts>
+    constexpr Treturn coalesce_call_post(const Ts&... args)
+    {
+        Treturn ret{};
+
+        ([&]() {
+            bool condition = static_cast<bool>(args);
+            if (condition)
+                ret = static_cast<Treturn>(args());
+            return condition;
+        }() ||
+         ...);
+
+        return ret;
+    }
+
+    template <typename Treturn, typename... Ts>
+    inline constexpr Treturn reverse_coalesce_post(const Ts&... args)
+    {
+        Treturn ret{};
+
+        (... || [&]() {
+            bool condition = static_cast<bool>(args);
+            if (condition)
+                ret = static_cast<Treturn>(args());
+            return condition;
+        }());
+
+        return ret;
+    }
+
+    template <typename Treturn, typename... Ts>
     inline constexpr Treturn coalesce_deref(const Ts&... args)
     {
         Treturn ret{};
