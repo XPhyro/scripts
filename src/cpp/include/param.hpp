@@ -1,8 +1,6 @@
 #ifndef HEADER_SCRIPTS_CXX_PARAM_
 #define HEADER_SCRIPTS_CXX_PARAM_
 
-#include <string_view>
-
 namespace xph {
     template <typename Treturn, typename... Ts>
     inline constexpr Treturn coalesce(const Ts&... args)
