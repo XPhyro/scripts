@@ -15,12 +15,15 @@ igfl::Options::Options(int& argc, char**& argv)
         switch (i) {
             case 'd': {
                 init_dir = { optarg };
+                xph::die_if(!init_dir->size(), "initial directory cannot be empty (-d)");
             } break;
             case 'F': {
                 idle_fps = xph::lexical_cast<char*, decltype(idle_fps)>(optarg);
+                xph::die_if(idle_fps <= 0, "idle FPS must be positive (-F)");
             } break;
             case 'f': {
                 active_fps = xph::lexical_cast<char*, decltype(active_fps)>(optarg);
+                xph::die_if(active_fps <= 0, "active FPS must be positive (-f)");
             } break;
             case 'h': {
                 // TODO: show defaults
