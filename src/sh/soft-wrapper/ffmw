@@ -30,6 +30,8 @@ printhelp() {
         Ignore TEMPOUTFILE if given in [INFILE]...
     -i, --interactive
         Prompt before overwriting the output file if it exists.
+    -l, --lossless
+        Encode without losses.
     -M, --move-to-original
         Move TEMPOUTFILE to respective INFILE after the operation succeeds. If the extensions of the respective INFILE and TEMPOUTFILE differ, TEMPOUTFILE is moved to INFILE with its extension changed to TEMPOUTFILE's.
     -n, --no-clobber
@@ -315,7 +317,8 @@ parseargs() {
     mvoverwrite="${overwrite:-"-i"}"
     [ "$mvoverwrite" = "-y" ] && mvoverwrite="-f"
 
-    libx265_opts="$(grep -Fq 'avx512' /proc/cpuinfo && printf "%s " -x265-params asm=avx512)"
+    libx265_opts_map="$(grep -Fq 'avx512' /proc/cpuinfo && printf "%s " asm=avx512)"
+    [ -n "$libx265_opts_map" ] && libx265_opts="-x265-params $libx265_opts_map"
 }
 
 parseargs_optimise() {
@@ -337,6 +340,7 @@ parseargs_optimize() {
                         h) printhelp "optimize"; exit 0;;
                         I) ignoreoutfl="1";;
                         i) overwrite="";;
+                        l) lossless="lossless=1";;
                         M) moveorig="1";;
                         n) overwrite="-n";;
                         o) norepeat="1";;
@@ -356,6 +360,7 @@ parseargs_optimize() {
                     help) printhelp "optimize"; exit 0;;
                     ignore-outfile) ignoreoutfl="1";;
                     interactive) overwrite="";;
+                    lossless) lossless="lossless=1";;
                     move-to-original) moveorig="1";;
                     no-clobber) overwrite="-n";;
                     no-repeat) norepeat="1";;
@@ -938,8 +943,17 @@ optimize() {
                 continue
             }
         }
+        if [ -n "$libx265_opts_map" ]; then
+            optimize_libx265_opts="-x265-params $libx265_opts_map:$lossless"
+        else
+            if [ -n "$lossless" ]; then
+                optimize_libx265_opts="-x265-params $lossless"
+            else
+                optimize_libx265_opts=""
+            fi
+        fi
         before_size="$(stat --printf="%s\n" -- "$fl")"
-        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 $libx265_opts -c:a copy -map 0 -q:v 0 "file:$outfl" >&2 || {
+        $pperf ffmpeg -hide_banner -nostdin $threads $overwrite $FFMW_FFMPEG_ARGS -i "file:$fl" -c:v libx265 -$optimize_libx265_opts -c:a copy -map 0 -q:v 0 "file:$outfl" >&2 || {
             printf 'ffmpeg failed, exiting.\n'
             exit 1
         }
