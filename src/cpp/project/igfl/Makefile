@@ -7,8 +7,14 @@ warnings = -Wall -Wextra -Werror \
            -Wdisabled-optimization -Wsign-promo
 libs = -lm -lncurses
 
+ifdef includeprefix
+	include = -I$(includeprefix)
+else
+	include =
+endif
+
 CXXFLAGS_LIB = -Wno-deprecated-enum-enum-conversion
-CXXFLAGS_NOWARN = -O3 -DNDEBUG -std=c++23 -pedantic -Ilib -I$(includeprefix)
+CXXFLAGS_NOWARN = -O3 -DNDEBUG -std=c++23 -pedantic -Ilib $(include)
 CXXFLAGS = $(warnings) $(CXXFLAGS_NOWARN)
 LDFLAGS = $(libs)
 
