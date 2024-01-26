@@ -6,31 +6,26 @@
 
 namespace igfl {
     class Options {
-    public:
-        static const constexpr float default_idle_fps = 24.0f;
-        static const constexpr float default_active_fps = 144.0f;
-        static const constexpr bool default_mouse_support = true;
+#define DECLARE_FIELD(TYPE, NAME, DEFAULT)                \
+public:                                                   \
+    static const constexpr TYPE default_##NAME = DEFAULT; \
+                                                          \
+private:                                                  \
+    TYPE NAME = default_##NAME;                           \
+                                                          \
+public:                                                   \
+    [[nodiscard]] TYPE get_##NAME() const noexcept
 
-    private:
-        std::optional<std::string_view> init_dir = {};
-        float idle_fps = default_idle_fps;
-        float active_fps = default_active_fps;
-        std::optional<std::string_view> ini_file = {};
-        std::optional<std::string_view> log_file = {};
-        bool mouse_support = default_mouse_support;
+        DECLARE_FIELD(std::optional<std::string_view>, init_dir, {});
+        DECLARE_FIELD(float, idle_fps, 24.0f);
+        DECLARE_FIELD(float, active_fps, 144.0f);
+        DECLARE_FIELD(std::optional<std::string_view>, ini_file, {});
+        DECLARE_FIELD(std::optional<std::string_view>, log_file, {});
+        DECLARE_FIELD(bool, mouse_support, true);
 
     public:
         Options() = delete;
         Options(int& argc, char**& argv);
-
-#define DECLARE_GET(FIELD) [[nodiscard]] decltype(FIELD) get_##FIELD() const noexcept
-        DECLARE_GET(init_dir);
-        DECLARE_GET(idle_fps);
-        DECLARE_GET(active_fps);
-        DECLARE_GET(ini_file);
-        DECLARE_GET(log_file);
-        DECLARE_GET(mouse_support);
-#undef DECLARE_GET
     };
 
 } // namespace igfl
