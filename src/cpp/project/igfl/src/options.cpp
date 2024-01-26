@@ -11,7 +11,7 @@
 
 igfl::Options::Options(int& argc, char**& argv)
 {
-    for (int i; (i = getopt(argc, argv, "d:F:f:h")) != -1;) {
+    for (int i; (i = getopt(argc, argv, "d:F:f:hI:L:m")) != -1;) {
         switch (i) {
             case 'd': {
                 init_dir = { optarg };
@@ -33,9 +33,23 @@ igfl::Options::Options(int& argc, char**& argv)
                              "  -d DIR   change directory to DIR on startup\n"
                              "  -F FPS   set idle FPS\n"
                              "  -f FPS   set active FPS\n"
-                             "  -h       display this help and exit\n";
+                             "  -h       display this help and exit\n"
+                             "  -I FILE  set ini file path for ImGui\n"
+                             "  -L FILE  set log file path for ImGui\n"
+                             "  -m       disable mouse support\n";
                 std::exit(EXIT_SUCCESS);
             }
+            case 'I': {
+                ini_file = { optarg };
+                xph::die_if(!ini_file->size(), "ini file cannot be empty (-I)");
+            } break;
+            case 'L': {
+                log_file = { optarg };
+                xph::die_if(!log_file->size(), "log file cannot be empty (-L)");
+            } break;
+            case 'm': {
+                mouse_support = true;
+            } break;
             default: {
                 std::cerr << "Try '" << xph::exec_path << " -h' for more information.\n";
                 std::exit(EXIT_FAILURE);
@@ -56,6 +70,8 @@ igfl::Options::Options(int& argc, char**& argv)
 IMPLEMENT_GET(init_dir)
 IMPLEMENT_GET(idle_fps)
 IMPLEMENT_GET(active_fps)
+IMPLEMENT_GET(ini_file)
+IMPLEMENT_GET(log_file)
 IMPLEMENT_GET(mouse_support)
 
 #undef IMPLEMENT_GET

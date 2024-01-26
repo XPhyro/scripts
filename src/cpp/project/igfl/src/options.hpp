@@ -15,6 +15,8 @@ namespace igfl {
         std::optional<std::string_view> init_dir = {};
         float idle_fps = default_idle_fps;
         float active_fps = default_active_fps;
+        std::optional<std::string_view> ini_file = {};
+        std::optional<std::string_view> log_file = {};
         bool mouse_support = default_mouse_support;
 
     public:
@@ -25,6 +27,8 @@ namespace igfl {
         DECLARE_GET(init_dir);
         DECLARE_GET(idle_fps);
         DECLARE_GET(active_fps);
+        DECLARE_GET(ini_file);
+        DECLARE_GET(log_file);
         DECLARE_GET(mouse_support);
 #undef DECLARE_GET
     };

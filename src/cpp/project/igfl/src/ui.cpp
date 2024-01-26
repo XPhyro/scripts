@@ -23,6 +23,8 @@ application_target igfl::UI::new_frame(ImGuiIO& io, float delta_time, std::size_
     ImGui::Text("%.3fms (%.1f FPS)",
                 static_cast<double>(delta_time),
                 static_cast<double>(1.0f / delta_time));
+    ImGui::TextUnformatted(io.IniFilename);
+    ImGui::TextUnformatted(io.LogFilename);
 
     static float slider_float = 1.23f;
     ImGui::Text("Float:");
@@ -35,7 +37,8 @@ application_target igfl::UI::new_frame(ImGuiIO& io, float delta_time, std::size_
     ImGui::SameLine();
     ImGui::Checkbox("##space_pressed", &space_pressed);
 
-    if (ImGui::Button("Exit program", { ImGui::GetContentRegionAvail().x, 2 }))
+    if (ImGui::IsKeyPressed('q') ||
+        ImGui::Button("Exit program", { ImGui::GetContentRegionAvail().x, 2 }))
         return application_target::exit;
 
     return application_target::none;

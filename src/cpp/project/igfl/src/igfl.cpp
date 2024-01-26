@@ -9,6 +9,7 @@
 
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
+#include <xph/param.hpp>
 
 #include "options.hpp"
 #include "types.hpp"
@@ -35,8 +36,11 @@ int main(int argc, char* argv[])
     ImTui_ImplText_Init();
 
     auto& io = ImGui::GetIO();
-    io.IniFilename = nullptr;
-    io.LogFilename = nullptr;
+
+    io.IniFilename = xph::coalesce_deref_map<const char*>([&](auto x) { return x.data(); },
+                                                          options.get_ini_file());
+    io.LogFilename = xph::coalesce_deref_map<const char*>([&](auto x) { return x.data(); },
+                                                          options.get_log_file());
 
     igfl::UI ui;
 
