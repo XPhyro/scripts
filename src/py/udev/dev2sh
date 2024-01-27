@@ -438,7 +438,7 @@ def dev_read_loop_impl(args, dev_path, config_path):
             if button == event_type == value == 0:
                 continue
 
-            last_timestamp = last_timestamps.get((button, value, event_type), (0, 0))
+            last_timestamp = last_timestamps.get((button, event_type, value), (0, 0))
 
             sec = event.sec + event.usec / 1e6
             delta_sec = sec - (last_timestamp[0] + last_timestamp[1] / 1e6)

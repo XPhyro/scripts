@@ -27,7 +27,6 @@
     due to not updating `bufsize`. See `fizzbuzz` as an example.
 - `make analyse` does not exit with non-zero code even if some analyses fail.
 - Analyse target on GitHub does not work correctly.
-- In `dev2sh`, dispatched `delta_sec` value for events is incorrect.
 
 ## Features
 
