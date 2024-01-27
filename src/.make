@@ -320,6 +320,7 @@ install() {
             "$rootdir/lib/hedley/hedley.h" \
             "$rootdir/lib/pstreams/pstream.h" \
             "$rootdir/lib/imtui-xphyro/include/imtui/" \
+            "$rootdir/lib/lyra-xphyro/include/lyra/" \
             | xargs -r0 -n 1 -P 0 sh -c '
                 fl="$1"
                 printf "\0%s\0" "$includeprefix/${fl##*/}"
@@ -1204,7 +1205,7 @@ C_INCLUDE_PATH="$rootdir/lib/hedley:$C_INCLUDE_PATH"
 export C_INCLUDE_PATH
 
 CXX="g++"
-CXX_INCLUDE_FLAGS="-I'$includeprefix' -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams'"
+CXX_INCLUDE_FLAGS="-I'$includeprefix' -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams' -I'$rootdir/lib/lyra-xphyro/include'"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=18 \
           -Wswitch-default \
