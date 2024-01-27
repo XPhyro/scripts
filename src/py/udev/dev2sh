@@ -214,12 +214,13 @@ class CallbackData:
     EVENT_TYPE_HOLD = 2
     EVENT_TYPE_NAMES = {0: "up", 1: "down", 2: "hold"}
 
-    def __init__(self, button, event_type, value, sec, delta_sec):
+    def __init__(self, button, event_type, value, sec, delta_sec, hold_sec):
         self.button = button
         self.event_type = event_type
         self.value = value
         self.sec = sec
         self.delta_sec = delta_sec
+        self.hold_sec = hold_sec
 
     def __str__(self):
         event_type_str = (
@@ -230,11 +231,19 @@ class CallbackData:
         return (
             f"{{button: {self.button}, event_type: {event_type_str}, "
             + f"value: {self.value}, sec: {self.sec:.4f}, "
-            + f"delta_sec: {self.delta_sec:.4f}}}"
+            + f"delta_sec: {self.delta_sec:.4f}, "
+            + f"hold_sec: {self.hold_sec:.4f}}}"
         )
 
     def __eq__(self, other):
-        props = (self.button, self.event_type, self.value, self.sec, self.delta_sec)
+        props = (
+            self.button,
+            self.event_type,
+            self.value,
+            self.sec,
+            self.delta_sec,
+            self.hold_sec,
+        )
         other_type = type(other)
 
         if other_type in [tuple, list]:
@@ -255,6 +264,7 @@ class CallbackData:
                 other.event_type,
                 other.sec,
                 other.delta_sec,
+                other.hold_sec,
             )
 
         return self.button == other
@@ -432,6 +442,7 @@ def dev_read_loop_impl(args, dev_path, config_path):
     with dev.grab_context():
         ui = ev.UInput.from_device(dev, name=f"{PROGRAM_NAME} {dev.name}")
         last_timestamps = {}
+        last_inverse_timestamps = {}
         i = 0
         for event in dev.read_loop():
             button, event_type, value = event.code, event.value, event.type
@@ -439,10 +450,18 @@ def dev_read_loop_impl(args, dev_path, config_path):
                 continue
 
             last_timestamp = last_timestamps.get((button, event_type, value), (0, 0))
+            last_inverse_timestamp = last_inverse_timestamps.get(
+                (button, event_type), (0, 0)
+            )
 
             sec = event.sec + event.usec / 1e6
             delta_sec = sec - (last_timestamp[0] + last_timestamp[1] / 1e6)
-            callback_data = CallbackData(button, event_type, value, sec, delta_sec)
+            hold_sec = sec - (
+                last_inverse_timestamp[0] + last_inverse_timestamp[1] / 1e6
+            )
+            callback_data = CallbackData(
+                button, event_type, value, sec, delta_sec, hold_sec
+            )
 
             if args.verbose:
                 print(f"{i}: received event {callback_data}")
@@ -466,6 +485,11 @@ def dev_read_loop_impl(args, dev_path, config_path):
                     print(string, file=file)
 
             last_timestamps[(button, event_type, value)] = (event.sec, event.usec)
+            if event_type in [CallbackData.EVENT_TYPE_DOWN, CallbackData.EVENT_TYPE_UP]:
+                last_inverse_timestamps[(button, int(not event_type))] = (
+                    event.sec,
+                    event.usec,
+                )
 
             i += 1
 
