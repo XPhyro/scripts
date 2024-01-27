@@ -7,3 +7,6 @@
 [submodule "lib/imtui-xphyro"]
 	path = lib/imtui-xphyro
 	url = https://github.com/XPhyro/imtui.git
+[submodule "lib/lyra-xphyro"]
+	path = lib/lyra-xphyro
+	url = https://github.com/XPhyro/lyra.git
