@@ -23,23 +23,23 @@ int main(int argc, char* argv[])
 
     igfl::Options options(argc, argv);
 
-    if (errno = 0; options.get_init_dir() && (chdir(options.get_init_dir()->data()) || errno))
+    if (errno = 0; options.get_init_dir() && (chdir(options.get_init_dir()->c_str()) || errno))
         xph::die("could not change directory to ", *options.get_init_dir());
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    const auto mouse_support = options.get_mouse_support();
+    const auto disable_mouse_support = options.get_disable_mouse_support();
     const auto active_fps = options.get_active_fps();
     const auto idle_fps = options.get_idle_fps();
-    const auto screen = ImTui_ImplNcurses_Init(mouse_support, active_fps, idle_fps);
+    const auto screen = ImTui_ImplNcurses_Init(!disable_mouse_support, active_fps, idle_fps);
     ImTui_ImplText_Init();
 
     auto& io = ImGui::GetIO();
 
-    io.IniFilename = xph::coalesce_deref_map<const char*>([&](auto x) { return x.data(); },
+    io.IniFilename = xph::coalesce_deref_map<const char*>([&](auto x) { return x.c_str(); },
                                                           options.get_ini_file());
-    io.LogFilename = xph::coalesce_deref_map<const char*>([&](auto x) { return x.data(); },
+    io.LogFilename = xph::coalesce_deref_map<const char*>([&](auto x) { return x.c_str(); },
                                                           options.get_log_file());
 
     igfl::UI ui;

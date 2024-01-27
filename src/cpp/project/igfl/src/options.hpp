@@ -2,7 +2,7 @@
 #define HEADER_SCRIPTS_CXX_IGFL_OPTIONS_
 
 #include <optional>
-#include <string_view>
+#include <string>
 
 namespace igfl {
     class Options {
@@ -16,16 +16,16 @@ private:                                                  \
 public:                                                   \
     [[nodiscard]] TYPE get_##NAME() const noexcept
 
-        DECLARE_FIELD(std::optional<std::string_view>, init_dir, {});
+        DECLARE_FIELD(std::optional<std::string>, init_dir, {});
         DECLARE_FIELD(float, idle_fps, 24.0f);
         DECLARE_FIELD(float, active_fps, 144.0f);
-        DECLARE_FIELD(std::optional<std::string_view>, ini_file, {});
-        DECLARE_FIELD(std::optional<std::string_view>, log_file, {});
-        DECLARE_FIELD(bool, mouse_support, true);
+        DECLARE_FIELD(std::optional<std::string>, ini_file, {});
+        DECLARE_FIELD(std::optional<std::string>, log_file, {});
+        DECLARE_FIELD(bool, disable_mouse_support, false);
 
     public:
         Options() = delete;
-        Options(int& argc, char**& argv);
+        Options(int argc, char** argv);
     };
 
 } // namespace igfl
