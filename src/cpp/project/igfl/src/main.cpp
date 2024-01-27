@@ -3,9 +3,9 @@
 
 #include <unistd.h>
 
-#include <imgui/imgui.h>
-#include <imtui/imtui-impl-ncurses.h>
-#include <imtui/imtui.h>
+#include "lib/imgui.h"
+#include "lib/imtui-impl-ncurses.h"
+#include "lib/imtui.h"
 
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
