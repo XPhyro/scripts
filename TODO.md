@@ -284,6 +284,15 @@
 - Instead of including `shellverbose.sh` in all shell scripts, include
   `stdlib.sh`. Make this library include other standard features.
   - Maybe even merge `shellverbose.sh` into `stdlib.sh`?
+- Rewrite the pathfinding suite fully in C as a single program.
+  - Don't require building a "database". Parse the configuration file on-the-go
+    (or generate the database on-the-go and regenerate if mtime of database is
+    less than the mtime of the configuration file).
+  - Make mark support first-party and eliminate the distinction between
+    permanent items and marks (or support setting marks as const).
+  - Add built-in special marks such as `-`, `@`, etc. Make sure these marks are
+    not catched or expanded by the POSIX Shell or mainstream shells like Bash
+    or Zsh.
 
 ## Other
 
