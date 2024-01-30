@@ -121,6 +121,8 @@
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-arm64-Readme.md>
 - Add manuals.
+- In `wallpaper`, support different sources for different monitors and
+  different sources for landscape/portrait monitors.
 
 ## New Scripts
 
