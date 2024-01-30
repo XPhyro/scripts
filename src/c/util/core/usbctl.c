@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         case 2:
             optbus = astrtol(argv[0], "invalid bus number");
             optdev = astrtol(argv[1], "invalid device number");
-            sprintf(flbuf, "/dev/bus/usb/%.3d/%.3d", optbus, optdev);
+            snprintf(flbuf, sizeof(flbuf), "/dev/bus/usb/%.3d/%.3d", optbus, optdev);
             fl = flbuf;
             break;
         default:
