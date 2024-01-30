@@ -291,7 +291,7 @@
   - Make mark support first-party and eliminate the distinction between
     permanent items and marks (or support setting marks as const).
   - Add built-in special marks such as `-`, `@`, etc. Make sure these marks are
-    not catched or expanded by the POSIX Shell or mainstream shells like Bash
+    not caught or expanded by the POSIX Shell or mainstream shells like Bash
     or Zsh.
 
 ## Other
