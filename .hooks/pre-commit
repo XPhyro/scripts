@@ -5,6 +5,11 @@ COLOR_CLEAR='\033[0m'
 
 changed_files="$(git diff --cached --name-only)"
 
+make spell || {
+    printf "${COLOR_RED}Commit introduces typos.${COLOR_CLEAR}\n"
+    exit 1
+}
+
 printf "%s\n" "$changed_files" \
     | grep -E "^src/c(pp)?/.*\.[ch](pp)?$" \
     | while IFS= read -r path; do
