@@ -7,7 +7,7 @@
 
 # scripts
 
-This repository holds a collection of over 400 scripts, utilities and libraries
+This repository holds a collection of over 450 scripts, utilities and libraries
 for Unix-like operating systems, OBS plugins and Firefox addons, written in the
 following languages:
 
@@ -74,17 +74,13 @@ the source code.
   offset.
 - [bspwm-autokblayout](src/sh/integration/bspwm/daemon/bspwm-autokblayout): Automatically switch between keyboard layouts for different windows in [bspwm](https://github.com/baskerville/bspwm).
 - [bspwmpad](src/sh/integration/bspwm/util/bspwmpad): Dynamic scratch pads for
-  bspwm. For optimum operation, include
-  `seq 0 9 | while IFS= read -r i; do bspc rule -a "*:bspwmpad$i" state=floating hidden=true; done` in your `bspwmrc`. bspwm is not required
-  for operation, but the script was designed with it in mind. There is also
-  [dwmpad](src/sh/.archived/dwm/util/dwmpad).
+  bspwm.
 - [cast](src/cpp/util/core/cast.cpp): Cast data between different data types.
 - [clplog](src/sh/daemon/clplog): Log clipboard history.
 - [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
   clipboard history.
 - [contexec](src/sh/daemon/contexec): Continuously execute a file every time it
-  is modified. This is especially useful if you are iteratively processing data
-  using an interpreted or hot-compiled language.
+  is modified.
 - [eln](src/sh/ishell/eln): Batch edit or create symlinks.
 - [expandpath](src/c/util/core/expandpath.c): Like `wordexp`, but only expands
   `~`.
@@ -99,27 +95,21 @@ the source code.
   asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
   more versatile.
 - [maptouch](src/sh/udev/maptouch): Map touchscreen and stylus devices to the
-  touch-enabled display. Best used in `.xinitrc` or as a `udev` rule. Here's an
-  example rule for Microsoft Surface Pen EYU-000001 and ASUS ROG Flow X13
-  GVE301RC: `ACTION=="change", KERNEL=="hid-0018:04F3:2C82.0002-battery", SUBSYSTEM=="power_supply", DRIVER=="", ENV{MAPTOUCH_ROOT_DEVNAME}="ELAN9008:00 04F3:2C82", ENV{XRH_EDP}="eDP-1", RUN+="/usr/local/bin/maptouch"`.
+  touch-enabled display. Best used in `.xinitrc` or as a `udev` rule.
 - [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a
   path.
 - [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use
-  [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`. Add `macro compose A "<shell-escape>neomuttpick<enter><enter-command>source /tmp/neomuttpick<enter>" "Attach With File Manager"` to your `muttrc` file to
-  use.
+  [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`.
 - [notiflog](src/py/daemon/notiflog): Log notifications on the dbus interface
-  `org.freedesktop.Notifications`. Supports locking logging: after initiating
-  the lock, the next notification is not logged. Then it unlocks itself
-  automatically. Supports blacklisting: certain notifications can be blacklisted
-  and logged to a different file.
+  `org.freedesktop.Notifications`. Supports incognito and blacklisting.
 - [numsh](src/cpp/util/core/numsh.cpp): A NumPy-like interface for the shell.
-- [rgb24togray](src/c/util/math/rgb24togray.c): Convert RGB24 images/video to
+- [rgb24togray](src/c/util/math/rgb24togray.c): Convert RGB24 pixels to
   greyscale with selectable algorithms.
 - [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
   `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
 - [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
 - [shufr](src/cpp/util/core/shufr.cpp): Like `shuf -r`, but supports outputting
-  unique sequences.
+  unique sequences of tuples.
 - [std::unordered_map](src/cpp/util/std/std::unordered_map.cpp): Wrapper for
   `std::unordered_map<std::string, std::string>` for shells.
 - [std::vector](src/cpp/util/std/std::vector.cpp): Wrapper for
@@ -150,15 +140,14 @@ executed and all executed commands are printed to standard error.
 ## Caveats
 
 - Some scripts assume that some of the other scripts are in your `$PATH`.
-- None of the scripts pre-check for the availability of their dependencies.
 - In some scripts, GNU extensions like `sed -i` or `strcasestr` are used.
 - Some scripts were written with only Linux in mind, although they may be
   compatible with other Unixes and Unix-likes, or may be ported with minimal
   modification.
 - All scripts/programs are only tested on Linux.
-- C code are only tested with GCC & clang, and C++ code are only tested with
-  GCC. Most C/C++ programs should be compatible with any POSIX/ISO-conforming
-  compilers. Some programs use non-standard GNU/LLVM extensions.
+- C and C++ code are only tested with the latest release of GCC. Most programs
+  are compatible with any POSIX/ISO-conforming compilers but some use
+  non-standard GNU/LLVM extensions.
 
 ## License
 
