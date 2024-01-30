@@ -916,7 +916,7 @@ spell() {
             | xargs -r0 \
                 codespell \
                     --builtin "clear,rare,informal" \
-                    -L "ans,erformance,crate,ond" \
+                    -L "ans,ba,crate,doas,erformance,hist,ond" \
                     --
     )
 }
