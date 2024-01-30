@@ -5,8 +5,15 @@
 
 assertroot || exit 1
 
+[ "$(lsusb | grep -Ec "iPhone|iPad")" -gt 1 ] && {
+    printf "%s\n" "Cannot handle combinations of or multiple iPhones or iPads at the same time." \
+        | execmenu -i -p "ERROR"
+    exit 1
+}
+
 chosen="$(
     {   mountpoint -q -- /mnt/iPhone || lsusb | grep -Fo "iPhone" | head -n 1
+        mountpoint -q -- /mnt/iPhone || lsusb | grep -Fo "iPad" | head -n 1
         lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n",$1,$3}'
     } | execmenu -i -p "Drive to mount:" | cut -d' ' -f1
 )"
@@ -19,6 +26,12 @@ if [ "$chosen" = "iPhone" ]; then
     done
     mkdir -p -- /mnt/iPhone
     ifuse -o allow_other,default_permissions /mnt/iPhone
+elif [ "$chosen" = "iPad" ]; then
+    until idevicepair pair; do
+        sleep 5
+    done
+    mkdir -p -- /mnt/iPad
+    ifuse -o allow_other,default_permissions /mnt/iPad
 else
     mount "$chosen" 2>/dev/null && exit 0
 
