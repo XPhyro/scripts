@@ -17,6 +17,7 @@
     std_includeprefix="$std_prefix/include"
     std_manprefix="$std_prefix/share/man"
     std_dataprefix="$std_prefix/share/scripts"
+    std_tmpprefix="${TMPDIR:-/tmp}/scripts/$std_execname"
 
     std_assert_can_query_prefix() {
         [ "$std_can_query_prefix" -eq 0 ] && std_logferrq 'cannot query prefix. $0 is %s.\n' "$0"
