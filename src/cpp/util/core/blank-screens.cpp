@@ -43,6 +43,9 @@
 std::string lock_file;
 static Display* display;
 static std::vector<Window> windows;
+static double last_alpha = 0.0;
+const static struct Options* options;
+const constexpr double epsilon = 0.0001;
 
 DEFINE_EXEC_INFO();
 
@@ -115,7 +118,8 @@ public:
                     alpha_path = optarg;
                     break;
                 case 'a':
-                    alpha = xph::lexical_cast<decltype(optarg), decltype(alpha)>(optarg);
+                    alpha = std::clamp(
+                        xph::lexical_cast<decltype(optarg), decltype(alpha)>(optarg), 0.0, 1.0);
                     break;
                 case 'e':
                     exit_if_none_selected = true;
@@ -154,12 +158,44 @@ public:
     }
 };
 
+void set_window_alpha(Window window, double alpha)
+{
+    unsigned long opacity = 0xFFFFFFFFul * alpha;
+    auto opacity_atom = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
+    XChangeProperty(display,
+                    window,
+                    opacity_atom,
+                    XA_CARDINAL,
+                    32,
+                    PropModeReplace,
+                    reinterpret_cast<unsigned char*>(&opacity),
+                    1L);
+    last_alpha = alpha;
+}
+
+void lerp_alpha(double alpha)
+{
+    auto current_alpha = last_alpha;
+    while (!xph::approx_eq(current_alpha, alpha, epsilon)) {
+        current_alpha += (alpha - current_alpha) * options->lerp_factor;
+        current_alpha = std::clamp(current_alpha, 0.0, 1.0);
+        std::for_each(windows.begin(), windows.end(), [&](auto window) {
+            set_window_alpha(window, current_alpha);
+            XFlush(display);
+        });
+        std::this_thread::sleep_for(options->frame_time);
+    }
+}
+
 void cleanup(void)
 {
+    std::filesystem::remove(lock_file);
+
+    lerp_alpha(0.0);
+
     for (auto& window : windows)
         XDestroyWindow(display, window);
     XCloseDisplay(display);
-    std::filesystem::remove(lock_file);
 }
 
 [[noreturn]] void terminate(void)
@@ -180,10 +216,10 @@ void handle_signals([[maybe_unused]] int sig)
     terminate();
 }
 
-std::optional<int> force_single_instance(const Options& options)
+std::optional<int> force_single_instance()
 {
-    if (!options.lock_path.empty()) {
-        lock_file = options.lock_path;
+    if (!options->lock_path.empty()) {
+        lock_file = options->lock_path;
     } else {
         const auto tmpdir = std::getenv("TMPDIR");
         lock_file = tmpdir ? tmpdir : "/tmp";
@@ -197,33 +233,25 @@ std::optional<int> force_single_instance(const Options& options)
     if (std::ifstream ifl(lock_file); ifl.is_open()) {
         pid_t pid;
         ifl >> pid;
-        kill(pid, SIGTERM);
-        ifl.close();
-        return { EXIT_SUCCESS };
-    } else if (std::ofstream ofl(lock_file); ofl.is_open()) {
+
+        errno = 0;
+        if (!kill(pid, 0) && !errno) {
+            kill(pid, SIGTERM);
+            ifl.close();
+            return { EXIT_SUCCESS };
+        }
+    }
+
+    if (std::ofstream ofl(lock_file); ofl.is_open()) {
         pid_t pid = getpid();
         ofl << pid;
         return std::nullopt;
-    } else {
-        return { EXIT_FAILURE };
     }
+
+    return { EXIT_FAILURE };
 }
 
-void set_window_alpha(Window window, double alpha)
-{
-    unsigned long opacity = 0xFFFFFFFFul * alpha;
-    auto opacity_atom = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
-    XChangeProperty(display,
-                    window,
-                    opacity_atom,
-                    XA_CARDINAL,
-                    32,
-                    PropModeReplace,
-                    reinterpret_cast<unsigned char*>(&opacity),
-                    1L);
-}
-
-void create_windows(const Options& options)
+void create_windows()
 {
     xph::die_if(!(display = XOpenDisplay(NULL)), "unable to open display");
 
@@ -236,7 +264,7 @@ void create_windows(const Options& options)
     RROutput primary_output = XRRGetOutputPrimary(display, root_window);
 
     for (decltype(screen_resources->noutput) i = 0; i < screen_resources->noutput; ++i) {
-        if (options.ignore_primary && screen_resources->outputs[i] == primary_output)
+        if (options->ignore_primary && screen_resources->outputs[i] == primary_output)
             continue;
 
         auto output_info =
@@ -246,9 +274,9 @@ void create_windows(const Options& options)
             continue;
         }
 
-        if (output_info->connection || options.ignored_monitors.contains(output_info->name) ||
-            (!options.selected_monitors.empty() &&
-             !options.selected_monitors.contains(output_info->name)))
+        if (output_info->connection || options->ignored_monitors.contains(output_info->name) ||
+            (!options->selected_monitors.empty() &&
+             !options->selected_monitors.contains(output_info->name)))
             goto next;
 
         XRRCrtcInfo* crtc_info;
@@ -292,11 +320,13 @@ next:
         XMapWindow(display, window);
         XFlush(display);
 
-        set_window_alpha(window, options.alpha);
+        set_window_alpha(window, 0.0);
         XSetWindowBackground(display, window, BlackPixel(display, default_screen));
         XClearWindow(display, window);
         XFlush(display);
     }
+
+    lerp_alpha(options->alpha);
 }
 
 [[nodiscard]] bool watch_alpha(const char* path)
@@ -339,11 +369,12 @@ int main(int argc, char* argv[])
     xph::gather_exec_info(argc, argv);
 
     Options options(xph::exec_name, argc, argv);
+    ::options = &options;
 
-    if (std::optional<int> optional_ret; (optional_ret = force_single_instance(options)))
+    if (std::optional<int> optional_ret; (optional_ret = force_single_instance()))
         return *optional_ret;
 
-    create_windows(options);
+    create_windows();
 
     if (options.exit_if_none_selected && windows.empty())
         terminate();
@@ -390,7 +421,6 @@ int main(int argc, char* argv[])
 
             read_alpha();
 
-            const constexpr double epsilon = 0.0001;
             while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
                 alpha += (new_alpha - alpha) * options.lerp_factor;
                 alpha = std::clamp(alpha, 0.0, 1.0);
