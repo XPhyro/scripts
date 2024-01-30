@@ -258,7 +258,8 @@ void create_windows(const Options& options)
             goto next;
         }
 
-        windows.push_back(XCreateSimpleWindow(display,
+        {
+            auto window = XCreateSimpleWindow(display,
                                               root_window,
                                               crtc_info->x,
                                               crtc_info->y,
@@ -266,7 +267,16 @@ void create_windows(const Options& options)
                                               crtc_info->height,
                                               0,
                                               0,
-                                              0));
+                                              0);
+
+            auto* class_hint = XAllocClassHint();
+            static std::string class_name(xph::exec_name);
+            class_hint->res_name = class_name.data();
+            class_hint->res_class = class_name.data();
+            XSetClassHint(display, window, class_hint);
+
+            windows.push_back(window);
+        }
 
         XRRFreeCrtcInfo(crtc_info);
 next:
