@@ -7,6 +7,7 @@
 . config.sh
 . execinfo.sh
 . io.sh
+. prefix.sh
 . x11.sh
 
 unset keycode optfallback optkeymap
@@ -34,5 +35,13 @@ shift "$((OPTIND - 1))"
 
 config_path="$std_config_home/$keycode.sxhkdrc"
 
+mkdir -p -- "$std_tmpprefix" && [ -d "$std_tmpprefix" ] \
+    || std_logerrq "Failed to create temporary directory: $std_tmpprefix\n"
+redir_file="$std_tmpprefix/redir"
+status_fifo="$std_tmpprefix/status"
+rm -f -- "$redir_file" "$status_fifo"
+touch -- "$redir_file"
+mkfifo -- "$status_fifo"
+
 [ -n "$optfallback" ] && ! [ -f "$config_path" ] && exec sxhkd "$@"
-exec sxhkd -c "$config_path" "$@"
+exec sxhkd -r "$redir_file" -s "$status_fifo" -c "$config_path" "$@"
