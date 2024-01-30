@@ -903,18 +903,20 @@ spell() {
         cd .. || exit 1
 
         printf "%s\n" \
-            "Checking files and files in directories for spelling mistakes:"
-        find '.' -type f -not -path "*/.git/*" \
+            "Checking for typos:"
+        find '.' -type f -not -name "tags" \
+                         -not -path "*/.git/*" \
+                         -not -path "*/rsrc/*" \
                          -not -path "*/lib/*" \
                          -not -path "*/.archived/*" \
                          -not -path "*/rs/*/target/*" \
-                         -not -name "tags" \
+                         -not -path "*/src/tests/*/out" \
             -print0 \
+            | sort -z \
             | xargs -r0 \
                 codespell \
-                    -e \
                     --builtin "clear,rare,informal" \
-                    -L "ans,ba,erformance,crate,doas,ond,hist" \
+                    -L "ans,erformance,crate,ond" \
                     --
     )
 }
