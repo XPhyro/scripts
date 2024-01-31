@@ -516,9 +516,15 @@ uninstall() {
     printf "%s\n" \
         "Uninstalling all installed files."
 
-    xargs -r0 -n 2 sh -c 'printf "%s\0" "$2"' -- < .installed | xargs -r0 sh -c '
-        printf "  %s\n" "$@"
-        rm -f -- "$@"
+    xargs -r0 -n 2 sh -c 'printf "%s\0" "$2"' -- < .installed | sort -ruVz | xargs -r0 sh -c '
+        for i; do
+            printf "  %s\n" "$i"
+            if [ -d "$i" ]; then
+                rmdir -- "$i"
+            else
+                rm -f -- "$i"
+            fi
+        done
     ' --
 
     rm -f .installed
