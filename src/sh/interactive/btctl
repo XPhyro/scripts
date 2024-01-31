@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+
+print_help() {
+    cat << EOF
+j) power off
+k) power on
+i) connect
+d) disconnect
+c) list connected
+p) list paired
+q) quit
+*) help
+EOF
+}
+
+choose_device() {
+    list="$(bluetoothctl devices Paired | awk 'BEGIN {x = 0} {sub(/^Device [0-9A-F:]+ /, ""); printf("%d. ", ++x); print}')"
+    count="$(printf "%s\n" "$list" | wc -l)"
+    while :; do
+        printf "%s\n" \
+            "Select a device:" \
+            "$list" >&2
+
+        char="$(readchar)"
+        [ "$char" -ge 0 ] 2> /dev/null && [ "$char" -le "$count" ] 2> /dev/null && {
+            printf "%s\n" "$list" | sed -n "${char}p"
+            break
+        }
+
+        printf "%s\n" "Invalid choice." >&2
+    done
+}
+
+main() {
+    case "$1" in
+        j) bluetoothctl power off;;
+        k) bluetoothctl power on;;
+        i) [ -n "$(bluetoothctl devices Paired)" ] \
+            && bluetoothctl connect "$(choose_device)";;
+        d) [ -n "$(bluetoothctl devices Connected)" ] \
+            && bluetoothctl disconnect "$(choose_device)";;
+        c) bluetoothctl devices Connected;;
+        p) bluetoothctl devices Paired;;
+        q) exit 0;;
+        *) print_help;;
+    esac
+    fillline -
+    printf "\n"
+}
+
+fillline -
+printf "\n"
+print_help
+fillline -
+printf "\n"
+while :; do
+    main "$(readchar)"
+done
