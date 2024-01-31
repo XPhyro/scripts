@@ -123,6 +123,7 @@
 - Add manuals.
 - In `wallpaper`, support different sources for different monitors and
   different sources for landscape/portrait monitors.
+- Alternatively select files with fzf in git integrations (such as gcm).
 
 ## New Scripts
 
