@@ -17,7 +17,10 @@ EOF
 
 choose_device() {
     paired_devices="$(bluetoothctl devices Paired)"
-    list="$(printf "%s\n" "$paired_devices" | awk 'BEGIN {x = 0} {sub(/^Device [0-9A-F:]+ /, ""); printf("%d. ", ++x); print}')"
+    list="$(
+        printf "%s\n" "$paired_devices" \
+            | awk 'BEGIN {x = 0} {sub(/^Device [0-9A-F:]+ /, ""); printf("%d. ", ++x); print}'
+    )"
     count="$(printf "%s\n" "$list" | wc -l)"
     while :; do
         printf "%s\n" \
