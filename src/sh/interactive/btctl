@@ -16,7 +16,8 @@ EOF
 }
 
 choose_device() {
-    list="$(bluetoothctl devices Paired | awk 'BEGIN {x = 0} {sub(/^Device [0-9A-F:]+ /, ""); printf("%d. ", ++x); print}')"
+    paired_devices="$(bluetoothctl devices Paired)"
+    list="$(printf "%s\n" "$paired_devices" | awk 'BEGIN {x = 0} {sub(/^Device [0-9A-F:]+ /, ""); printf("%d. ", ++x); print}')"
     count="$(printf "%s\n" "$list" | wc -l)"
     while :; do
         printf "%s\n" \
@@ -25,7 +26,7 @@ choose_device() {
 
         char="$(readchar)"
         [ "$char" -ge 0 ] 2> /dev/null && [ "$char" -le "$count" ] 2> /dev/null && {
-            printf "%s\n" "$list" | sed -n "${char}p"
+            printf "%s\n" "$paired_devices" | sed -n "s/^Device\s\+//;s/\s\+.*$//;${char}p"
             break
         }
 
