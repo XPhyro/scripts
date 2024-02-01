@@ -41,7 +41,7 @@ main() {
             && bluetoothctl disconnect "$(choose_device)";;
         c) bluetoothctl devices Connected;;
         p) bluetoothctl devices Paired;;
-        q) exit 0;;
+        q|"") exit 0;;
         *) print_help;;
     esac
     fillline -
