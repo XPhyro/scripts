@@ -988,7 +988,7 @@ stats() {
     bashloc="$(wc -l < "$tmp")"
     bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    files="$(find -P 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \))"
+    files="$(find -P 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \); printf "%s\n" "$rootdir/.hooks/has-shellverbose.c")"
     cn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     cbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
@@ -1037,7 +1037,7 @@ stats() {
     rsloc="$(wc -l < "$tmp")"
     rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
-    files="$(find -P 'sh' -mindepth 1 -type f -executable)"
+    files="$(find -P 'sh' -mindepth 1 -type f -executable; printf "%s\n" "$0" "$rootdir/.hooks/pre-commit")"
     shn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     shbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
