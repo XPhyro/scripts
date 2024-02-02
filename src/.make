@@ -108,7 +108,6 @@ install() {
                                          -not -path "*/wrapper/*" \
                                          -not -path "*/include/*" \
                                          -printf "%P\0$binprefix/%f\0" \
-                | tee -a ../.installed \
                 | i="$i" xargs -r0 -n 2 sh -c '
                     printf "  %s -> %s\n" "$i/$1" "$2"
                     cp -f -- "$@"
@@ -118,7 +117,6 @@ install() {
                                          -not -path "*/.archived/*" \
                                               -path "*/wrapper/*" \
                                          -printf "%P\0$binprefix/wrapper/%f\0" \
-                | tee -a ../.installed \
                 | i="$i" xargs -r0 -n 2 sh -c '
                     printf "  %s -> %s\n" "$i/$1" "$2"
                     cp -f -- "$@"
@@ -137,7 +135,6 @@ install() {
                                          -not -path "*/.archived/*" \
                                               -path "*/include/*" \
                                          -printf "%P\0$dataprefix/include/%f\0" \
-                | tee -a ../.installed \
                 | i="$i" xargs -r0 -n 2 sh -c '
                     printf "  %s -> %s\n" "$i/$1" "$2"
                     cp -f -- "$@"
@@ -158,7 +155,7 @@ install() {
             printf "\0%s\0" "$includeprefix/xph/$fl"
             printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
             cp -f -t "$includeprefix/xph" -- "$fl"
-        ' -- 2>&1 >> "$rootdir/src/.installed"
+        ' --
     )
 
     printf "\n%s\n" \
@@ -173,7 +170,7 @@ install() {
             printf "\0%s\0" "$includeprefix/xph/$fl"
             printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
             cp -f -t "$includeprefix/xph" -- "$fl"
-        ' -- 2>&1 >> "$rootdir/src/.installed"
+        ' --
     )
 
     printf "\n%s\n" \
@@ -197,7 +194,6 @@ install() {
             "" \
             "Installing C programs:"
 
-        # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
@@ -235,7 +231,7 @@ install() {
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
                 '"$CC"' '"$CFLAGS"' $flags $extraflags "$1" '"$CLDFLAGS"' $ldflags -o "$installprefix/$out" \
-                    && printf "\0%s\0" "$installprefix/$out" >> ../.installed
+                    && printf "\0%s\0" "$installprefix/$out"
             ' --
     )
 
@@ -268,7 +264,6 @@ install() {
             "" \
             "Installing C++ programs:"
 
-        # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -not -path "./.*" \
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
@@ -307,7 +302,7 @@ install() {
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
                 '"$CXX"' '"$CXXFLAGS"' $flags $extraflags "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out" \
-                    && printf "\0%s\0" "$installprefix/$out" >> ../.installed
+                    && printf "\0%s\0" "$installprefix/$out"
             ' --
     )
 
@@ -326,7 +321,7 @@ install() {
                 printf "\0%s\0" "$includeprefix/${fl##*/}"
                 printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
                 cp -rf -t "$includeprefix" -- "$fl"
-            ' -- 2>&1 >> "$rootdir/src/.installed"
+            ' --
     )
 
     printf "\n%s\n" \
@@ -364,7 +359,6 @@ install() {
             "" \
             "Installing Rust programs:"
 
-        # TODO: don't write to .installed in xargs
         find '.' -mindepth 1 -type f -name "Cargo.toml" -printf "%h\0" \
             | unbuffer="$unbuffer" xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
                 exe="${1##./}"
@@ -377,7 +371,7 @@ install() {
                 trap "rm -f -- \"$tmp\"" EXIT INT TERM
                 $unbuffer cargo build --release --all-features 2>&1 | tee -a -- "$tmp" \
                     && cp -f -t "$binprefix" -- "$out" \
-                    && printf "\0%s\0" "$binprefix/$exe" >> ../../.installed \
+                    && printf "\0%s\0" "$binprefix/$exe" \
                     || {
                         tail -n 1 -- "$tmp" \
                             | grep -E "error: package \`[a-zA-Z0-9_-] [v0-9.]+\` cannot be built because it requires rustc [v0-9.]+ or newer, while the currently active rustc version is [v0-9.]+" \
@@ -410,7 +404,7 @@ install() {
                         | pandoc --standalone --to man -o "$manpath" >&2
                     printf "\0%s\0" "$manpath"
                 ' --
-            done 2>&1 >> ../.installed
+            done
     )
 
     printf "\n%s\n" \
@@ -469,7 +463,7 @@ install() {
             | xargs -r0 -n 1 sh -c '
                 printf "  %s -> %s\n" "$1" "$dataprefix/$1" >&2
                 printf "\0%s\0" "$dataprefix/$1"
-            ' -- >> ../src/.installed
+            ' --
         rsync -abiPq -- ./ "$dataprefix/"
     )
 
@@ -498,7 +492,50 @@ install() {
         )
     )
 
-    sort -uz .installed | sponge .installed
+    {
+        [ -f .installed ] && cat .installed
+        find awk bash el py pl sh -mindepth 1 -type f \
+            -executable \
+            -not -path "*/.archived/*" \
+            -not -path "*/wrapper/*" \
+            -not -path "*/include/*" \
+            -printf "$binprefix/%f\0"
+        find awk bash el py pl sh -mindepth 1 -type f \
+            -executable \
+            -not -path "*/.archived/*" \
+            -path "*/wrapper/*" \
+            -printf "$binprefix/wrapper/%f\0"
+        find bash sh -mindepth 1 -type f \
+            -not -executable \
+            -not -path "*/.archived/*" \
+            -path "*/include/*" \
+            -printf "$dataprefix/include/%f\0"
+        find c/include -type f -printf "$includeprefix/xph/%f\0"
+        find cpp/include -type f \
+            -printf "$includeprefix/xph/%f\0"
+        find c -mindepth 1 -type f \
+            -not -path "c/.*" \
+            -not -path "*/include/*" \
+            -not -path "*/.archived/*" \
+            -printf "$binprefix/%f\0"
+        find cpp -mindepth 1 -type f \
+            -not -path "cpp/.*" \
+            -not -path "*/include/*" \
+            -not -path "*/.archived/*" \
+            -not -path "*/project/*" \
+            -printf "$binprefix/%f\0"
+        printf "%s\0" \
+            "$includeprefix/hedley.h" \
+            "$includeprefix/pstream.h"
+        find "$includeprefix/imtui/" "$includeprefix/lyra/" \
+            -print0
+        find cpp/project -mindepth 1 -maxdepth 1 -type d \
+            -printf "$binprefix/%f\0"
+        find rs -mindepth 1 -maxdepth 1 -type d \
+            -printf "$binprefix/%f\0"
+        find man -mindepth 1 -type f -printf "$manprefix/man%P\0" \
+            | sed -z 's|/man\([0-9]\+\)\(.*\)\.md$|/man\1\2.\1|'
+    } | sort -ruVz | sponge .installed
 }
 
 uninstall() {
@@ -516,12 +553,13 @@ uninstall() {
     printf "%s\n" \
         "Uninstalling all installed files."
 
-    xargs -r0 -n 2 sh -c 'printf "%s\0" "$2"' -- < .installed | sort -ruVz | xargs -r0 sh -c '
+    sort -ruVz .installed | xargs -r0 sh -c '
         for i; do
-            printf "  %s\n" "$i"
             if [ -d "$i" ]; then
+                printf "  %s/\n" "$i"
                 rmdir -- "$i"
             else
+                printf "  %s\n" "$i"
                 rm -f -- "$i"
             fi
         done
