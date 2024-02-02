@@ -71,7 +71,7 @@ else
             --progress \
             --total-jobs="$#" \
             -r0 \
-            -P "${LF_THUMBNAIL_JOBS:-"$(($(nproc) / 4 + 1))"}" \
+            -P "${LF_THUMBNAIL_JOBS:-"25%"}" \
             -n 1 \
             "$0"
 fi
