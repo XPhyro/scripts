@@ -977,77 +977,77 @@ stats() {
     files="$(find -P 'awk' -mindepth 1 -type f -executable)"
     awkn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    awkbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    awkbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     awkloc="$(wc -l < "$tmp")"
     awksloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'bash' -mindepth 1 -type f -executable)"
     bashn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    bashbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    bashbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     bashloc="$(wc -l < "$tmp")"
     bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \); printf "%s\n" "$rootdir/.hooks/has-shellverbose.c")"
     cn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    cbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    cbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     cloc="$(wc -l < "$tmp")"
     csloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'cpp' -mindepth 1 -type f \( -iname "*.cpp" -o -iname "*.hpp" \))"
     cppn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    cppbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    cppbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     cpploc="$(wc -l < "$tmp")"
     cppsloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'el' -mindepth 1 -type f -executable)"
     eln="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    elbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    elbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     elloc="$(wc -l < "$tmp")"
     elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'js' -mindepth 1 -type f -iname "*.js")"
     jsn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    jsbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    jsbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     jsloc="$(wc -l < "$tmp")"
     jssloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'pl' -mindepth 1 -type f -executable)"
     pln="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    plbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    plbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     plloc="$(wc -l < "$tmp")"
     plsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'py' -mindepth 1 -type f -executable)"
     pyn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    pybytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    pybytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     pyloc="$(wc -l < "$tmp")"
     pysloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'rs' -mindepth 1 -type f -iname "*.rs")"
     rsn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    rsbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    rsbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     rsloc="$(wc -l < "$tmp")"
     rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'sh' -mindepth 1 -type f -executable; printf "%s\n" "$0" "$rootdir/.hooks/pre-commit")"
     shn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    shbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    shbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     shloc="$(wc -l < "$tmp")"
     shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
     files="$(find -P 'systemd' -mindepth 1 -type f -iname "*.service")"
     systemdn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
-    systemdbytes="$(tr -d '[:space:]' < "$tmp" | wc -c)"
+    systemdbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     systemdloc="$(wc -l < "$tmp")"
     systemdsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
@@ -1076,7 +1076,7 @@ stats() {
         "  systemd:    $systemdn" \
         "  Total:      $totaln" \
         "" \
-        "Non-Whitespace Bytes:" \
+        "Non-Whitespace Characters:" \
         "  Awk:        $awkbytes" \
         "  Bash:       $bashbytes" \
         "  C:          $cbytes" \
