@@ -3,17 +3,23 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "exec_info.h"
 
 void die(const char *restrict format, ...)
 {
     va_list ap;
+
     fprintf(stderr, "%s: ", execname);
+
     va_start(ap, format);
     vfprintf(stderr, format, ap);
     va_end(ap);
+
     fputc('\n', stderr);
+
+    exit(EXIT_FAILURE);
 }
 
 #endif /* ifndef HEADER_SCRIPTS_C_DIE_ */
