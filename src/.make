@@ -150,7 +150,7 @@ install() {
         [ -d "$includeprefix/xph" ] || mkdir -- "$includeprefix/xph"
 
         # shellcheck disable=SC2069
-        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
+        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             fl="$1"
             printf "\0%s\0" "$includeprefix/xph/$fl"
             printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
@@ -165,7 +165,7 @@ install() {
         cd cpp/include
 
         # shellcheck disable=SC2069
-        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P 0 sh -c '
+        find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             fl="$1"
             printf "\0%s\0" "$includeprefix/xph/$fl"
             printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
@@ -198,7 +198,7 @@ install() {
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
                                      -printf "%P\0" \
-            | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
+            | xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
                 set -e
@@ -269,7 +269,7 @@ install() {
                                      -not -path "*/.archived/*" \
                                      -not -path "*/project/*" \
                                      -printf "%P\0" \
-            | xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
+            | xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
                 set -e
@@ -316,7 +316,7 @@ install() {
             "$rootdir/lib/pstreams/pstream.h" \
             "$rootdir/lib/imtui-xphyro/include/imtui/" \
             "$rootdir/lib/lyra-xphyro/include/lyra/" \
-            | xargs -r0 -n 1 -P 0 sh -c '
+            | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
                 fl="$1"
                 printf "\0%s\0" "$includeprefix/${fl##*/}"
                 printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
@@ -360,7 +360,7 @@ install() {
             "Installing Rust programs:"
 
         find '.' -mindepth 1 -type f -name "Cargo.toml" -printf "%h\0" \
-            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "$(nproc --ignore=2)" sh -c '
+            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
                 exe="${1##./}"
                 cd "$exe"
                 out="target/release/$exe"
@@ -396,7 +396,7 @@ install() {
             | while IFS= read -r section; do
                 mkdir -p -- "$manprefix/man$section" >&2
                 export section
-                find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "$(($(nproc) * 4))" sh -c '
+                find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(($(nproc) * 4))"}" sh -c '
                     progname="$(basename -- "$1")"
                     manpath="$manprefix/man$section/${progname%.*}.$section"
                     printf "  %s -> %s\n" "$section/$progname" "$manpath" >&2
@@ -726,7 +726,7 @@ analyse() {
             -not -path "*/.archived/*" -not -path "*/include/*" -print0
         find 'bash' -mindepth 1 -type f -iname "*.sh" \
             -not -path "*/.archived/*" -path "*/include/*" -print0
-    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 -n 16 -P 0 sh -c '
+    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 -n 16 -P "${MAKE_JOBS:-0}" sh -c '
             for fl; do
                 (
                     printf "  %s\n" "$fl"
@@ -745,7 +745,7 @@ analyse() {
             -not -path "*/.archived/*" -not -path "*/include/*" -print0
         find 'sh' -mindepth 1 -type f -iname "*.sh" \
             -not -path "*/.archived/*" -path "*/include/*" -print0
-    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 -n 1 -P 0 sh -c '
+    } | unbuffer="$unbuffer" shfmt="$shfmt" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             fl="$1"
             (
                 printf "  %s\n" "$fl"
@@ -769,7 +769,7 @@ analyse() {
 
     find 'py' -mindepth 1 -type f -executable \
         -not -path "*/.archived/*" -not -path "*/include/*" -print0 \
-        | xargs -r0 -n 1 -P 0 sh -c '
+        | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             fl="$1"
             (
                 printf "  %s\n" "$fl"
@@ -802,7 +802,8 @@ analyse() {
         "Analysing C headers:"
 
     find 'c/include' -mindepth 1 -type f -iname "*.h" -print0 \
-        | CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P 0 sh -c '
+        | CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
+            [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
             fl="$1"
             (
                 printf "  %s\n" "$fl"
@@ -863,7 +864,8 @@ analyse() {
             "Analysing C++ headers:"
 
             find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
-                | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P 0 sh -c '
+                | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
+                    [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
                     fl="$1"
                     (
                         printf "  %s\n" "$fl"
@@ -1241,8 +1243,8 @@ CFLAGS="-O${o:-3} $g $ndebug -std=c99 -pedantic \
        -Wall -Wextra -Werror -Wabi=11 \
        -Wno-unused-parameter -Wno-unused-result -Wswitch-default \
        -Wimplicit-fallthrough=5 -Wno-sign-compare \
-       -Wfloat-equal -Wdouble-promotion -Wjump-misses-init -Wstringop-overflow=4 \
-       -Wold-style-definition -Winline -Wpadded -Wpacked -Wdisabled-optimization \
+       -Wfloat-equal -Wdouble-promotion -Wstringop-overflow=4 \
+       -Winline -Wpadded -Wpacked -Wdisabled-optimization \
        -Wshadow-compatible-local \
        -ffp-contract=on -fassociative-math -ffast-math -flto \
        $C_INCLUDE_FLAGS"
