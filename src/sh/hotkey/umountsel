@@ -3,6 +3,13 @@
 
 . shellverbose.sh
 
+. execinfo.sh
+. sudo.sh
+
+send_notification() {
+    std_sudo_env notify-send "$@"
+}
+
 assertroot || exit 1
 
 drives="$(
@@ -27,4 +34,8 @@ chosen="$(printf "%s\n" "$drives" | execmenu -i -p "Unmount which drive?" | cut 
 
 [ -z "$chosen" ] && exit 1
 
-umount "$chosen"
+if umount "$chosen"; then
+    send_notification "$std_execname" "Successfully unmounted $chosen."
+else
+    send_notification "$std_execname" "Failed to unmount $chosen."
+fi

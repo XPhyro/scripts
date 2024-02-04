@@ -3,6 +3,13 @@
 
 . shellverbose.sh
 
+. execinfo.sh
+. sudo.sh
+
+send_notification() {
+    std_sudo_env notify-send "$@"
+}
+
 assertroot || exit 1
 
 [ "$(lsusb | grep -Ec "iPhone|iPad")" -gt 1 ] && {
@@ -25,15 +32,26 @@ if [ "$chosen" = "iPhone" ]; then
         sleep 5
     done
     mkdir -p -- /mnt/iPhone
-    ifuse -o allow_other,default_permissions /mnt/iPhone
+    if ifuse -o allow_other,default_permissions /mnt/iPhone; then
+        send_notification "$std_execname" "Successfully mounted iPhone to /mnt/iPhone."
+    else
+        send_notification "$std_execname" "Failed to mount iPhone."
+    fi
 elif [ "$chosen" = "iPad" ]; then
     until idevicepair pair; do
         sleep 5
     done
     mkdir -p -- /mnt/iPad
-    ifuse -o allow_other,default_permissions /mnt/iPad
+    if ifuse -o allow_other,default_permissions /mnt/iPad; then
+        send_notification "$std_execname" "Successfully mounted iPad to /mnt/iPad."
+    else
+        send_notification "$std_execname" "Failed to mount iPad."
+    fi
 else
-    mount "$chosen" 2>/dev/null && exit 0
+    mount "$chosen" 2>/dev/null && {
+        send_notification "$std_execname" "$chosen is already mounted."
+        exit 0
+    }
 
     label="$(
         lsblk -rpo "name,label" \
@@ -49,8 +67,11 @@ else
     [ -z "$mp" ] && exit 1
     [ -d "$mp" ] || mkdir -p -- "$mp"
 
-    mount -o gid=users,fmask=113,dmask=002 -- "$chosen" "$mp" && {
+    if mount -o gid=users,fmask=113,dmask=002 -- "$chosen" "$mp"; then
+        send_notification "$std_execname" "Successfully mounted $chosen to $mp."
         chown :wheel -- "$mp"
         chmod 770 -- "$mp"
-    }
+    else
+        send_notification "$std_execname" "Failed to mount $chosen."
+    fi
 fi
