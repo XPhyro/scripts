@@ -471,20 +471,20 @@ install() {
         cd js
 
         printf "\n%s\n" \
-            "Building Firefox addons:"
+            "Building browser extensions:"
 
         (
-            cd firefox
+            cd browser
 
             command -v pandoc > /dev/null 2>&1 || {
-                printf "  %s\n" '`web-ext` is not installed, cannot build Firefox addons.'
+                printf "  %s\n" '`web-ext` is not installed, cannot build browser extensions.'
                 exit 0
             }
 
             find '.' -mindepth 1 -maxdepth 1 -type d -not -name "build" -printf "%P\n" | while IFS= read -r addon; do
                 (
                     cd "$addon"
-                    printf "  %s -> %s\n" "$addon" "$rootdir/src/js/firefox/build/$addon-$(jq .version < manifest.json | sed 's/^"//;s/"$//').zip"
+                    printf "  %s -> %s\n" "$addon" "$rootdir/src/js/browser/build/$addon-$(jq .version < manifest.json | sed 's/^"//;s/"$//').zip"
                     web-ext --no-input --artifacts-dir=../build \
                         build --overwrite-dest > /dev/null
                 )
@@ -586,7 +586,7 @@ clean() {
 
     (
         cd js || exit 1
-        cd firefox || exit 1
+        cd browser || exit 1
         rm -rf -- build/
     )
 }
