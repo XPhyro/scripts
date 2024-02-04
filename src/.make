@@ -152,7 +152,6 @@ install() {
         # shellcheck disable=SC2069
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             fl="$1"
-            printf "\0%s\0" "$includeprefix/xph/$fl"
             printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
             cp -f -t "$includeprefix/xph" -- "$fl"
         ' --
@@ -167,7 +166,6 @@ install() {
         # shellcheck disable=SC2069
         find '.' -type f -printf "%P\0" | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             fl="$1"
-            printf "\0%s\0" "$includeprefix/xph/$fl"
             printf "  %s -> %s\n" "$fl" "$includeprefix/xph/$fl" >&2
             cp -f -t "$includeprefix/xph" -- "$fl"
         ' --
@@ -230,8 +228,7 @@ install() {
                     "$installprefix/$out" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
-                '"$CC"' '"$CFLAGS"' $flags $extraflags "$1" '"$CLDFLAGS"' $ldflags -o "$installprefix/$out" \
-                    && printf "\0%s\0" "$installprefix/$out"
+                '"$CC"' '"$CFLAGS"' $flags $extraflags "$1" '"$CLDFLAGS"' $ldflags -o "$installprefix/$out"
             ' --
     )
 
@@ -301,8 +298,7 @@ install() {
                     "$installprefix/$out" \
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
-                '"$CXX"' '"$CXXFLAGS"' $flags $extraflags "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out" \
-                    && printf "\0%s\0" "$installprefix/$out"
+                '"$CXX"' '"$CXXFLAGS"' $flags $extraflags "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out"
             ' --
     )
 
@@ -318,7 +314,6 @@ install() {
             "$rootdir/lib/lyra-xphyro/include/lyra/" \
             | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
                 fl="$1"
-                printf "\0%s\0" "$includeprefix/${fl##*/}"
                 printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
                 cp -rf -t "$includeprefix" -- "$fl"
             ' --
@@ -371,7 +366,6 @@ install() {
                 trap "rm -f -- \"$tmp\"" EXIT INT TERM
                 $unbuffer cargo build --release --all-features 2>&1 | tee -a -- "$tmp" \
                     && cp -f -t "$binprefix" -- "$out" \
-                    && printf "\0%s\0" "$binprefix/$exe" \
                     || {
                         tail -n 1 -- "$tmp" \
                             | grep -E "error: package \`[a-zA-Z0-9_-] [v0-9.]+\` cannot be built because it requires rustc [v0-9.]+ or newer, while the currently active rustc version is [v0-9.]+" \
@@ -402,7 +396,6 @@ install() {
                     printf "  %s -> %s\n" "$section/$progname" "$manpath" >&2
                     m4 -I"$rootdir" -DVERSION="$shorthash" -DTHIS="$1" "$1" \
                         | pandoc --standalone --to man -o "$manpath" >&2
-                    printf "\0%s\0" "$manpath"
                 ' --
             done
     )
@@ -437,7 +430,6 @@ install() {
                 printf "    %s -> %s\n" "$flname" "$pfx/$flname"
                 m4 -I"$rootdir" -DHOME="$realhome" -DBIN_PREFIX="$binprefix" \
                     -DDATA_PREFIX="$dataprefix" "$fl" > "$pfx/$flname"
-                printf "\0%s\0" "$pfx/$flname"
                 [ "$dir" = "user" ] && chown "$realuser:users" "$pfx/$flname"
             done
         done
@@ -462,7 +454,6 @@ install() {
         find '.' -mindepth 1 -type f -printf "%P\0" \
             | xargs -r0 -n 1 sh -c '
                 printf "  %s -> %s\n" "$1" "$dataprefix/$1" >&2
-                printf "\0%s\0" "$dataprefix/$1"
             ' --
         rsync -abiPq -- ./ "$dataprefix/"
     )
