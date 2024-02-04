@@ -81,7 +81,7 @@
     }
 
     std_get_parent_displays() {
-        w | awk -vuser="$std_get_parent_user" '{
+        w | awk -vuser="$(std_get_parent_user)" '{
                 if ($1 == user && $7 == "xinit") {
                     for (i = 8; i < NF; i++) {
                         if ($i ~ /:[0-9]+/)
