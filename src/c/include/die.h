@@ -2,6 +2,7 @@
 #define HEADER_SCRIPTS_C_DIE_
 
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,6 +21,18 @@ void die(const char *restrict format, ...)
     fputc('\n', stderr);
 
     exit(EXIT_FAILURE);
+}
+
+void die_if(bool condition, const char *restrict format, ...)
+{
+    va_list ap;
+
+    if (!condition)
+        return;
+
+    va_start(ap, format);
+    die(format, ap);
+    va_end(ap);
 }
 
 #endif /* ifndef HEADER_SCRIPTS_C_DIE_ */
