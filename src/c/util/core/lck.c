@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
                     "  -z        line delimiter is nul instead of newline\n"
                     "  -0        line delimiter is nul instead of newline\n",
                     execname);
+                return EXIT_SUCCESS;
                 break;
             case 'i':
                 optsleep = true;
