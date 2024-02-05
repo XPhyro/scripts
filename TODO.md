@@ -124,6 +124,7 @@
 - In `wallpaper`, support different sources for different monitors and
   different sources for landscape/portrait monitors.
 - Alternatively select files with fzf in git integrations (such as gcm).
+- Support `std::vector`, `std::unordered_map` and other future `std::`s in `numsh`.
 
 ## New Scripts
 
