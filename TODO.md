@@ -27,6 +27,7 @@
     due to not updating `bufsize`. See `fizzbuzz` as an example.
 - `make analyse` does not exit with non-zero code even if some analyses fail.
 - Analyse target on GitHub does not work correctly.
+- `sumsize` should not ignore decimal figures.
 
 ## Features
 
