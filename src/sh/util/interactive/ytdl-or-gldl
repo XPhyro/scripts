@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 ytdl() {
     url="$1"
     shift

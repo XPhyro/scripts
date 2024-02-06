@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 until [ -f "ProjectSettings/ProjectVersion.txt" ]; do
     [ "$PWD" = "/" ] && exit 1
     cd ..

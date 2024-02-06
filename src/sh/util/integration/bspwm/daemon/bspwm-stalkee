@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-. meta.sh
 . shellverbose.sh
+
+. meta.sh
 . x11.sh
 
 configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/stalkee/config.sh"

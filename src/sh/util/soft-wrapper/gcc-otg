@@ -1,8 +1,9 @@
 #!/usr/bin/env -S sh --
 
+. shellverbose.sh
+
 . io.sh
 . meta.sh
-. shellverbose.sh
 
 filter_flags() {
     filter_type="$1"

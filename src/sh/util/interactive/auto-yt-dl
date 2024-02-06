@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 . meta.sh
 
 command="$(std_try_choose_command yt-dlp youtube-dl)" || exit 1

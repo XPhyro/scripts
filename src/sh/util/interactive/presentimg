@@ -2,9 +2,10 @@
 
 # shellcheck disable=SC2154
 
+. shellverbose.sh
+
 . execinfo.sh
 . io.sh
-. shellverbose.sh
 
 opttextclr=red
 optborderclr=red

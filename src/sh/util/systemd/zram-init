@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 set -e
 
 assertroot

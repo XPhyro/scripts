@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 . execinfo.sh # unused, included for external configs
 . io.sh # unused, included for external configs
-. shellverbose.sh
 
 get_headsetcontrol_eval() {
     { headsetcontrol -b -m || sudo headsetcontrol -b -m; } 2> /dev/null \

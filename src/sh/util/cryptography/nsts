@@ -2,10 +2,11 @@
 
 # shellcheck disable=SC2154
 
+. shellverbose.sh
+
 . execinfo.sh
 . io.sh
 . prefix.sh
-. shellverbose.sh
 
 templates="$std_dataprefix/nsts/templates"
 

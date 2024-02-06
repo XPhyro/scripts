@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 
 # shellcheck disable=SC2154
+
+. shellverbose.sh
+
 . execinfo.sh
 . io.sh
-. shellverbose.sh
 
 testexif() {
     fl="$1"

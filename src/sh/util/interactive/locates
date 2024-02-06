@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 [ "$#" -eq 0 ] && exec locate -- ""
 [ "$#" -eq 1 ] && exec locate -- "$1"
 

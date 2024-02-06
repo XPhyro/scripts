@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 d1="$(date -d "$1" +%s)"
 d2="$(date -d "$2" +%s)"
 diff="$((d1 - d2))"

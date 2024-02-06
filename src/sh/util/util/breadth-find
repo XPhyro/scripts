@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 maxdepth="$BREADTH_FIND_MAX_DEPTH"
 [ -z "$maxdepth" ] || [ "$maxdepth" -lt 0 ] && maxdepth=2147483647
 

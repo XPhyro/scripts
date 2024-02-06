@@ -2,8 +2,10 @@
 # Toggle X keymap.
 
 # shellcheck disable=SC2154
-. execinfo.sh
+
 . shellverbose.sh
+
+. execinfo.sh
 
 setkm() {
     setxkbmap "$1"

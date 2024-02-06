@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 for i; do
     convert "$i" "$i.jpg"
     convert "$i.jpg" -colorspace sRGB -type truecolor "$i-color.jpg"

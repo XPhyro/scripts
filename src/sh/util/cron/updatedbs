@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 eval "$(getpath -ef mounts mounts)"
 
 # shellcheck disable=SC2154

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. shellverbose.sh
+
 if [ "$1" -ne 0 ]; then
     tostate=enable
 else

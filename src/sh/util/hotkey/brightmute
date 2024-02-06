@@ -2,6 +2,8 @@
 # Log the current brightness, then set it to 0 if it is not 0 else set it
 # to the previously logged value. This only affects the laptop screen on my system.
 
+. shellverbose.sh
+
 backlight() {
     sudo xbacklight $XBACKLIGHT_ARGS "$@"
 }
@@ -15,8 +17,6 @@ unmute() {
     backlight -set "$val"
     val="0"
 }
-
-. shellverbose.sh
 
 eval "$(getpath -fe -- brtcch fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 

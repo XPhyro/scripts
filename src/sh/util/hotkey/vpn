@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 
 # shellcheck disable=SC2154
+
+. shellverbose.sh
+
 . execinfo.sh
 . io.sh
-. shellverbose.sh
 
 configfl="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/vpn/config.sh"
 if [ -f "$configfl" ]; then

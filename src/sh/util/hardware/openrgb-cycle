@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 
 # shellcheck disable=SC2154
-. execinfo.sh
+
 . shellverbose.sh
+
+. execinfo.sh
 
 profiles="$OPENRGB_CYCLE_PROFILES"
 profile_symbols="$OPENRGB_CYCLE_PROFILE_SYMBOLS"
