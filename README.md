@@ -8,8 +8,8 @@
 # scripts
 
 This repository holds a collection of over 450 scripts, utilities and libraries
-for Unix-like operating systems, OBS plugins and Firefox addons, written in the
-following languages:
+for Unix-like operating systems, OBS plugins and browser extensions, written in
+the following languages:
 
 - Awk
 - Bash
