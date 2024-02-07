@@ -18,6 +18,17 @@
         cat - > "$std_stdin_backup"
     }
 
+    std_read_char() {
+        dd bs=1 count=1 2> /dev/null
+    }
+
+    std_read_char_tty() {
+        stty -icanon -echo < /dev/tty > /dev/tty
+        char="$(dd bs=1 count=1 < /dev/tty 2> /dev/null)" || exit 1
+        stty icanon echo < /dev/tty > /dev/tty
+        printf "%s" "$char"
+    }
+
     std_backup_stdin() {
         if [ "$#" -eq 0 ]; then
             __std_backup_stdin_impl
