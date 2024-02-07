@@ -63,7 +63,7 @@ shift "$((OPTIND - 1))"
         selc="$(printf "%s\n" "$possiblevpns" | wc -l)"
         sel="$(
             if [ "$selc" -lt 10 ]; then
-                readchar
+                std_read_char_tty
             else
                 readstr
             fi
@@ -130,7 +130,7 @@ hasconfig || {
                         protonvpn-cli ks --"$(
                             while :; do
                                 printf "%s\n" "Killswitch [o/k/p]: " >&2
-                                case "$(readchar)" in
+                                case "$(std_read_char_tty)" in
                                     o) printf off;;
                                     k) printf on;;
                                     p) printf permanent;;
@@ -145,7 +145,7 @@ hasconfig || {
                         protonvpn-cli ns --"$(
                             while :; do
                                 printf "%s\n" "Netshield [o/m/a]: " >&2
-                                case "$(readchar)" in
+                                case "$(std_read_char_tty)" in
                                     o) printf off;;
                                     m) printf malware;;
                                     a) printf ads-malware;;
@@ -220,5 +220,5 @@ hasconfig || {
 while :; do
     fillline "―" >&2
     printf "\n" >&2
-    on_char_read "$(readchar)" || flushterm
+    on_char_read "$(std_read_char_tty)" || flushterm
 done

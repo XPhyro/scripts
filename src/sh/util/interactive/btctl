@@ -2,6 +2,8 @@
 
 . shellverbose.sh
 
+. io.sh
+
 print_help() {
     cat << EOF
 j) power off
@@ -27,7 +29,7 @@ choose_device() {
             "Select a device:" \
             "$list" >&2
 
-        char="$(readchar)"
+        char="$(std_read_char)"
         [ "$char" -ge 0 ] 2> /dev/null && [ "$char" -le "$count" ] 2> /dev/null && {
             printf "%s\n" "$paired_devices" | sed -n "s/^Device\s\+//;s/\s\+.*$//;${char}p"
             break
@@ -60,5 +62,5 @@ print_help
 fillline -
 printf "\n"
 while :; do
-    main "$(readchar)"
+    main "$(std_read_char)"
 done

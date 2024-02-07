@@ -3,4 +3,4 @@
 . shellverbose.sh
 
 printf "$@"
-exec equals "$(readchar)" Y y
+exec equals "$(std_read_char_tty)" Y y

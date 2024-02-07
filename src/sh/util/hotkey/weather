@@ -4,6 +4,8 @@
 
 . shellverbose.sh
 
+. io.sh
+
 v1="$(mktemp)"
 v2="$(mktemp)"
 
@@ -31,4 +33,4 @@ curl v2.wttr.in/"$WTTR_LOCATION" 2> /dev/null | head -n -2 > "$v2"
 paste -- "$v1" "$v2"
 rm -f -- "$v1" "$v2"
 
-readchar > /dev/null
+std_wait_char_tty

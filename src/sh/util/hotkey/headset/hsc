@@ -2,13 +2,15 @@
 
 . shellverbose.sh
 
+. io.sh
+
 headsetcontrol > /dev/null || {
     readstr
     exit 1
 }
 
 while :; do
-    case "$(readchar)" in
+    case "$(std_read_char_tty)" in
         b) headsetcontrol -b;;
         i) printf "Value (i): " >&2; headsetcontrol -i "$(readstr)";;
         m) headsetcontrol -m;;

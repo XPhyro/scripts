@@ -3,6 +3,8 @@
 
 . shellverbose.sh
 
+. io.sh
+
 mark="$1"
 [ -z "$mark" ] && exit 1
 val="$2"
@@ -13,7 +15,7 @@ mrkfl="$(getpath -fu -- mrk)"
     [ "$curval" != "$val" ] && {
         printf "Current value: %s\nNew value    : %s\nOverwrite mark [%s]? (y/N)\n" \
                                "$curval"          "$val"              "$mark"
-        equals "$(readchar)" Y y || exit 0
+        equals "$(std_read_char_tty)" Y y || exit 0
     }
 }
 
