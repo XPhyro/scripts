@@ -41,9 +41,11 @@ get_value() {
 }
 
 default_cache_type="temporary"
+default_scale=6
+
 opt_cache_type="$default_cache_type"
 opt_default_value=0
-opt_scale=6
+opt_scale="$default_scale"
 opt_expr=0
 while getopts "c:d:ehs:" OPT; do
     case "$OPT" in
@@ -70,6 +72,7 @@ relative or percentile.
    -e        treat NEW_VALUE as an expression where current value is \`current\`.
              see \`man bc\` for more information on the expression syntax.
    -h        display this help and exit
+   -s VAL    set scale to VAL. default is $default_scale.
 " >&2
             exit 0
             ;;
