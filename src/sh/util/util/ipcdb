@@ -30,6 +30,9 @@ set_value() {
         exit 1
     }
 
+    [ -n "$opt_min" ] && [ "$(printf "%s < %s\n" "$new_value" "$opt_min" | bc)" -eq 1 ] && new_value="$opt_min"
+    [ -n "$opt_max" ] && [ "$(printf "%s > %s\n" "$new_value" "$opt_max" | bc)" -eq 1 ] && new_value="$opt_max"
+
     std::unordered_map -c "$opt_cache_type" -- \
         "$std_execname" "$database" "$key" = "$new_value"
     printf "%s" "$new_value"
@@ -47,7 +50,8 @@ opt_cache_type="$default_cache_type"
 opt_default_value=0
 opt_scale="$default_scale"
 opt_expr=0
-while getopts "c:d:ehs:" OPT; do
+unset opt_min opt_max
+while getopts "c:d:ehM:m:s:" OPT; do
     case "$OPT" in
         c)
             case "$OPTARG" in
@@ -71,11 +75,15 @@ relative or percentile.
    -d VAL    set default value
    -e        treat NEW_VALUE as an expression where current value is \`current\`.
              see \`man bc\` for more information on the expression syntax.
+   -M MAX    enforce max value
+   -m MIN    enforce min value
    -h        display this help and exit
    -s VAL    set scale to VAL. default is $default_scale.
 " >&2
             exit 0
             ;;
+        M) opt_max="$OPTARG";;
+        m) opt_min="$OPTARG";;
         s) opt_scale="$OPTARG";;
         *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
     esac
