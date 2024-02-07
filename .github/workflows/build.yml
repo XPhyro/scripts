@@ -26,16 +26,26 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev ncurses-bin
         git submodule update --init --recursive
+      env:
+        SHELL_VERBOSE: 1
     - name: build
       run: |
         make install
         make uninstall
+      env:
+        SHELL_VERBOSE: 1
     - name: sudo-build
       run: |
         sudo make install
+      env:
+        SHELL_VERBOSE: 1
     - name: test
       run: |
         make test
+      env:
+        SHELL_VERBOSE: 1
     - name: sudo-test
       run: |
         sudo make test
+      env:
+        SHELL_VERBOSE: 1

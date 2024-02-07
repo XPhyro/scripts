@@ -13,3 +13,5 @@ jobs:
     - name: stats
       run: |
         make stats
+      env:
+        SHELL_VERBOSE: 1

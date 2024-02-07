@@ -28,6 +28,10 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get -y install moreutils shellcheck pylint clang-tools cppcheck libbsd-dev
         git submodule update --init --recursive
+      env:
+        SHELL_VERBOSE: 1
     - name: analyse
       run: |
         make analyse
+      env:
+        SHELL_VERBOSE: 1
