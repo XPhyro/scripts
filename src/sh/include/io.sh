@@ -24,7 +24,7 @@
 
     std_read_char_tty() {
         stty -icanon -echo < /dev/tty > /dev/tty
-        char="$(dd bs=1 count=1 < /dev/tty 2> /dev/null)" || exit 1
+        char="$(dd bs=1 count=1 < /dev/tty 2> /dev/null)" || return 1
         stty icanon echo < /dev/tty > /dev/tty
         printf "%s" "$char"
     }
