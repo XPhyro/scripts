@@ -1115,6 +1115,27 @@ stats() {
 [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
 set -e
 
+if [ "$#" -eq 0 ]; then
+    if sh -c ': > /dev/tty 2>&1'; then
+        redirect="> /dev/tty 2>&1"
+    else
+        unset redirect
+    fi
+    xargs -r0 sh -c '
+        [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
+        [ "${1##*/}" != "make" ] && exit 0
+        shift
+        while [ "$#" -gt 0 ]; do
+            case "$1" in
+                --) shift; printf "%s\0" "$@"; exit 0;;
+                -*) shift;;
+                *) printf "%s\0" "$1"; shift;;
+            esac
+        done
+    ' -- < "/proc/$PPID/cmdline" | setsid xargs -r0 "$0" $redirect
+    exec kill -TERM "$PPID"
+fi
+
 cd ..
 rootdir="$PWD"
 shorthash="$(git rev-parse --short HEAD)"
@@ -1176,57 +1197,36 @@ mkdir -p -- "$prefix" \
     && [ -d "$manprefix" ] \
     && [ -d "$dataprefix" ]
 
-cmd="$1"
-shift
 unset o g ndebug view v
-for i; do
+while getopts "O:g:Vvm:" i; do
     case "$i" in
-        o=*)
-            val="${i#o=}"
-            case "$val" in
-                ""|0|1|2|3|g|s|fast) o="$val";;
+        O)
+            case "$OPTARG" in
+                ""|0|1|2|3|g|s|fast) o="$OPTARG";;
                 *) exit 1;;
             esac
             ;;
-        g=*)
-            val="${i#g=}"
-            case "$val" in
+        g)
+            case "$OPTARG" in
                 "") ndebug="-DNDEBUG";;
                 g) g="-g";;
                 gdb) g="-ggdb";;
                 *) exit 1;;
             esac
             ;;
-        view=*)
-            val="${i#view=}"
-            case "$val" in
-                true|1) view="--view";;
-                false|0|"") unset view;;
-                *) exit 1;;
-            esac
-            ;;
-        v=*)
-            val="${i#v=}"
-            case "$val" in
-                0|"") unset v;;
-                1) v="-v";;
-                2) v="-v -v";;
-                3) v="-v -v -v";;
-                4) v="-v -v -v -v";;
-                *) exit 1;;
-            esac
-            ;;
-        m=*)
-            val="${i#m=}"
-            if [ -z "$val" ] || [ "$val" -le 0 ]; then
+        V) view="--view";;
+        v) v="$v -v";;
+        m)
+            if [ -z "$OPTARG" ] || [ "$OPTARG" -le 0 ]; then
                 m=4
             else
-                m="$val"
+                m="$OPTARG"
             fi
             ;;
-        *) logerrq "Unrecognised argument [%s]." "$i";;
+        *) exit 1;;
     esac
 done
+shift "$((OPTIND - 1))"
 
 CC="gcc"
 C_INCLUDE_FLAGS="-I'$includeprefix' -I'$rootdir/lib/hedley'"
@@ -1274,22 +1274,21 @@ CPPCHECK_SUPPRESS="--suppress=unmatchedSuppression:\* \
 ec=0
 cancompilecpp="$(cancompilecpp "$CXX")"
 
-case "$cmd" in
-    index) :;;
-    *) all;;
-esac
+all
 
-case "$cmd" in
-    index) index;;
-    install) install;;
-    uninstall) uninstall;;
-    clean) clean;;
-    test) unittest;;
-    format) format;;
-    analyse) analyse;;
-    spell) spell;;
-    stats) stats;;
-    *) logerrq "Unkown target given: %s." "$1";;
-esac
+for cmd; do
+    case "$cmd" in
+        index) index;;
+        install) install;;
+        uninstall) uninstall;;
+        clean) clean;;
+        test) unittest;;
+        format) format;;
+        analyse) analyse;;
+        spell) spell;;
+        stats) stats;;
+        *) logerrq "Unkown target given: %s." "$cmd";;
+    esac
+done
 
 exit "${ec:-0}"
