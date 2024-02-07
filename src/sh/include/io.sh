@@ -50,6 +50,10 @@
         printf "%s" "$__str"
     }
 
+    std_wait_enter() {
+        std_read_str > /dev/null
+    }
+
     std_backup_stdin() {
         if [ "$#" -eq 0 ]; then
             __std_backup_stdin_impl
