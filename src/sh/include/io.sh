@@ -45,6 +45,11 @@
         std_read_char_tty > /dev/null
     }
 
+    std_read_str() {
+        IFS= read -r __str || return 1
+        printf "%s" "$__str"
+    }
+
     std_backup_stdin() {
         if [ "$#" -eq 0 ]; then
             __std_backup_stdin_impl
