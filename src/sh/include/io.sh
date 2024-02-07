@@ -37,6 +37,14 @@
         esac
     }
 
+    std_wait_char() {
+        std_read_char > /dev/null
+    }
+
+    std_wait_char_tty() {
+        std_read_char_tty > /dev/null
+    }
+
     std_backup_stdin() {
         if [ "$#" -eq 0 ]; then
             __std_backup_stdin_impl
