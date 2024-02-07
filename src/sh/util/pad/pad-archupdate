@@ -9,6 +9,8 @@ else
 fi
 
 "$PAD" $extraopts -t "${0##*/}" -- sh -c '
+    . io.sh
+
     update > /dev/null 2>&1 &
     if time -v yay -Syu; then
         [ -n "$YAY_ALWAYS_CLEAN_CACHE" ] \
@@ -21,5 +23,5 @@ fi
     jobs %% && printf "Waiting for [update].\n"
     wait
     color green "All done. Check for errors."
-    readstr
+    std_wait_enter
 '

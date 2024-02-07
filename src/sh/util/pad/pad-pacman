@@ -3,6 +3,8 @@
 . shellverbose.sh
 
 "$PAD" -- sh -c '
+    . io.sh
+
     if [ "$(id -u)" = "0" ]; then
         pacman() command pacman "$@"
     else
@@ -15,5 +17,5 @@
         color red "ERROR(s) encountered."
     fi
     flushterm
-    readstr
+    std_wait_enter
 '

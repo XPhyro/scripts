@@ -3,6 +3,8 @@
 . shellverbose.sh
 
 "$PAD" -- sh -c '
+    . io.sh
+
     if yay -Syu; then
         [ -n "$YAY_ALWAYS_CLEAN_CACHE" ] \
             && [ "$YAY_ALWAYS_CLEAN_CACHE" -ne 0 ] \
@@ -12,5 +14,5 @@
         color red "ERROR(s) encountered."
     fi
     flushterm
-    readstr
+    std_wait_enter
 '

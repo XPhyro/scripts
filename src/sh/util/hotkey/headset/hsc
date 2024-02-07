@@ -5,17 +5,17 @@
 . io.sh
 
 headsetcontrol > /dev/null || {
-    readstr
+    std_read_str
     exit 1
 }
 
 while :; do
     case "$(std_read_char_tty)" in
         b) headsetcontrol -b;;
-        i) printf "Value (i): " >&2; headsetcontrol -i "$(readstr)";;
+        i) printf "Value (i): " >&2; headsetcontrol -i "$(std_read_str)";;
         m) headsetcontrol -m;;
         q) exit 0;;
-        s) printf "Value (s): " >&2; tglsidetone "$(readstr)";;
+        s) printf "Value (s): " >&2; tglsidetone "$(std_read_str)";;
         *) printf "b: battery\ni: inactive time\nm: mix level\nq: quit\ns: sidetone level\n";;
     esac
 done | grep -vE --line-buffered "^(Found |$)"

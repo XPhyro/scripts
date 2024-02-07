@@ -57,7 +57,7 @@ shift "$((OPTIND - 1))"
 
     if [ -z "$possiblevpns" ]; then
         printf "Could not find any VPNs. Enter the name of the command: " >&2
-        VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
+        VPN="$(std_read_str)" && [ -n "$VPN" ] || exit 1
     else
         printf "%s\n" "Select the VPN command:" "  0 Enter manually" "$possiblevpns" >&2
         selc="$(printf "%s\n" "$possiblevpns" | wc -l)"
@@ -65,7 +65,7 @@ shift "$((OPTIND - 1))"
             if [ "$selc" -lt 10 ]; then
                 std_read_char_tty
             else
-                readstr
+                std_read_str
             fi
         )"
 
@@ -76,7 +76,7 @@ shift "$((OPTIND - 1))"
 
         if [ "$sel" -eq 0 ]; then
             printf "Enter the name of the command: " >&2
-            VPN="$(readstr)" && [ -n "$VPN" ] || exit 1
+            VPN="$(std_read_str)" && [ -n "$VPN" ] || exit 1
         elif [ "$sel" -lt "$((selc + 1))" ]; then
             VPN="$(
                 printf "%s\n" "$possiblevpns" \
@@ -121,7 +121,7 @@ hasconfig || {
                 case "$1" in
                     c)
                         printf "Enter country code: " >&2
-                        protonvpn-cli c --cc "$(readstr)"
+                        protonvpn-cli c --cc "$(std_read_str)"
                         ;;
                     d) protonvpn-cli d;;
                     f) protonvpn-cli c -f;;
