@@ -62,6 +62,7 @@ relative or percentile.
 
    -c TYPE   set cache type. must be one of {{t, tmp, temp, temporary}, {p,
              persistent}}. default is $default_cache_type.
+   -d VAL    set default value
    -h        display this help and exit
 " >&2
             exit 0
