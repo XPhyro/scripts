@@ -1,0 +1,92 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+. execinfo.sh
+. meta.sh
+. type.sh
+
+set_value() {
+    old_value="$(get_value 2> /dev/null)"
+    [ -z "$old_value" ] && old_value="$opt_default_value"
+
+    unset new_value
+    if std_is_unsigned_number "$value"; then
+        new_value="$(printf "scale=%d; %s\n" "$opt_scale" "$value" | bc)"
+    elif std_is_signed_number "$value"; then
+        new_value="$(printf "scale=%d; %s\n" "$opt_scale" "$old_value $value" | bc)"
+    elif std_is_unsigned_number "${value%\%}"; then
+        new_value="${value%\%}"
+        new_value="$(printf "scale=%d; %s\n" "$opt_scale" "$old_value * ($new_value) / 100.0" | bc)"
+    elif std_is_signed_number "${value%\%}"; then
+        new_value="${value%\%}"
+        new_value="$(printf "scale=%d; %s\n" "$opt_scale" "$old_value * (1 + (0$new_value) / 100.0)" | bc)"
+    fi
+
+    [ -z "$new_value" ] && {
+        printf "Invalid value given: %s\n" "$value" >&2
+        exit 1
+    }
+
+    std::unordered_map -c "$opt_cache_type" -- \
+        "$std_execname" "$database" "$key" = "$new_value"
+    printf "%s" "$new_value"
+}
+
+get_value() {
+    std::unordered_map -c "$opt_cache_type" -- \
+        "$std_execname" "$database" "$key"
+}
+
+default_cache_type="temporary"
+opt_cache_type="$default_cache_type"
+opt_default_value=0
+opt_scale=6
+while getopts "c:d:hs:" OPT; do
+    case "$OPT" in
+        c)
+            case "$OPTARG" in
+                t|tmp|temp|temporary) opt_cache_type="temporary";;
+                p|persistent) opt_cache_type="persistent";;
+                *) printf "Invalid cache type given: %s\n" "$OPTARG" >&2; exit 1;;
+            esac
+            ;;
+        d) opt_default_value="$OPTARG";;
+        h)
+            printf "%s" \
+"$std_execname [OPTION...] DATABASE KEY [NEW_VALUE]
+Inter-process communication database (IPCDB) for storing key-value pairs.
+
+Keys are strings and values are numeric. Given new values may be exact,
+relative or percentile.
+
+   -c TYPE   set cache type. must be one of {{t, tmp, temp, temporary}, {p,
+             persistent}}. default is $default_cache_type.
+   -h        display this help and exit
+" >&2
+            exit 0
+            ;;
+        s) opt_scale="$OPTARG";;
+        *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+case "$#" in
+    2) database="$1"; key="$2"; unset value;;
+    3) database="$1"; key="$2"; value="$3";;
+    *) printf "Invalid number of arguments given: %s\n" "$#" >&2; exit 1;;
+esac
+
+
+lck -lrq "$std_execname"
+trap 'lck -uq "$std_execname"' EXIT INT QUIT TERM
+
+std::unordered_map -c "$opt_cache_type" -- \
+    "$std_execname" "$database" ensure
+
+if std_is_set value; then
+    set_value
+else
+    get_value
+fi
