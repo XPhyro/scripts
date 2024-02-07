@@ -29,6 +29,14 @@
         printf "%s" "$char"
     }
 
+    std_yesno() {
+        [ "$#" -gt 0 ] && printf "$@"
+        case "$(std_read_char_tty)" in
+            Y|y) return 0;;
+            *) return 1;;
+        esac
+    }
+
     std_backup_stdin() {
         if [ "$#" -eq 0 ]; then
             __std_backup_stdin_impl
