@@ -11,7 +11,9 @@ set_value() {
     [ -z "$old_value" ] && old_value="$opt_default_value"
 
     unset new_value
-    if std_is_unsigned_number "$value"; then
+    if [ "$opt_expr" -ne 0 ]; then
+        new_value="$(printf "scale=%d; current=%s; %s\n" "$opt_scale" "$old_value" "$value" | bc)"
+    elif std_is_unsigned_number "$value"; then
         new_value="$(printf "scale=%d; %s\n" "$opt_scale" "$value" | bc)"
     elif std_is_signed_number "$value"; then
         new_value="$(printf "scale=%d; %s\n" "$opt_scale" "$old_value $value" | bc)"
@@ -42,7 +44,8 @@ default_cache_type="temporary"
 opt_cache_type="$default_cache_type"
 opt_default_value=0
 opt_scale=6
-while getopts "c:d:hs:" OPT; do
+opt_expr=0
+while getopts "c:d:ehs:" OPT; do
     case "$OPT" in
         c)
             case "$OPTARG" in
@@ -52,6 +55,7 @@ while getopts "c:d:hs:" OPT; do
             esac
             ;;
         d) opt_default_value="$OPTARG";;
+        e) opt_expr=1;;
         h)
             printf "%s" \
 "$std_execname [OPTION...] DATABASE KEY [NEW_VALUE]
@@ -63,6 +67,8 @@ relative or percentile.
    -c TYPE   set cache type. must be one of {{t, tmp, temp, temporary}, {p,
              persistent}}. default is $default_cache_type.
    -d VAL    set default value
+   -e        treat NEW_VALUE as an expression where current value is \`current\`.
+             see \`man bc\` for more information on the expression syntax.
    -h        display this help and exit
 " >&2
             exit 0
