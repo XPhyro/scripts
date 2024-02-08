@@ -1151,7 +1151,7 @@ if [ "$#" -eq 0 ]; then
                 *) printf "%s\0" "$1"; shift;;
             esac
         done
-    ' -- | eval "setsid xargs -r0 \"\$0\" $redirect"
+    ' -- < "/proc/$pid/cmdline" | eval "setsid xargs -r0 \"\$0\" $redirect"
     exec kill -TERM "$PPID"
 fi
 
