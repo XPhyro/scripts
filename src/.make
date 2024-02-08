@@ -1112,7 +1112,14 @@ stats() {
         "  Total:      $totalsloc"
 }
 
-[ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
+[ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && {
+    set -x
+    printf "PARENT { "
+    cat -- "/proc/$PPID/cmdline" | xargs -r0 printf '"%s", '
+    printf "}\nTHIS { "
+    printf '"%s", ' "$@"
+    printf "}\n"
+}
 set -e
 
 if [ "$#" -eq 0 ]; then
