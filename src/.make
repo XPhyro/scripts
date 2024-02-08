@@ -1127,7 +1127,7 @@ if [ "$#" -eq 0 ]; then
     while :; do
         case "$(basename -- "$(head -n 1 -z -- "/proc/$pid/cmdline")")" in
             sh|bash|dash|ksh|zsh)
-                pid="$(ps -o ppid= -p "$pid")"
+                pid="$(ps -o ppid= -p "$pid" | tr -d '[:space:]')"
                 [ -z "$pid" ] && exit 1
                 ;;
             make) break;;
