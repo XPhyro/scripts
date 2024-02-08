@@ -1125,7 +1125,7 @@ set -e
 if [ "$#" -eq 0 ]; then
     pid="$PPID"
     while :; do
-        case "$(head -n 1 -z -- "/proc/$pid/cmdline")" in
+        case "$(basename -- "$(head -n 1 -z -- "/proc/$pid/cmdline")")" in
             sh|bash|dash|ksh|zsh)
                 pid="$(ps -o ppid= -p "$pid")"
                 [ -z "$pid" ] && exit 1
