@@ -1123,14 +1123,26 @@ stats() {
 set -e
 
 if [ "$#" -eq 0 ]; then
+    pid="$PPID"
+    while :; do
+        case "$(head -n 1 -z -- "/proc/$pid/cmdline")" in
+            sh|bash|dash|ksh|zsh)
+                pid="$(ps -o ppid= -p "$pid")"
+                [ -z "$pid" ] && exit 1
+                ;;
+            make) break;;
+            *) exit 1;;
+        esac
+    done
+
     if sh -c ': > /dev/tty 2>&1'; then
         redirect="> /dev/tty 2>&1"
     else
         unset redirect
     fi
+
     xargs -r0 sh -c '
         [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
-        [ "${1##*/}" != "make" ] && exit 0
         shift
         while [ "$#" -gt 0 ]; do
             case "$1" in
@@ -1139,7 +1151,7 @@ if [ "$#" -eq 0 ]; then
                 *) printf "%s\0" "$1"; shift;;
             esac
         done
-    ' -- < "/proc/$PPID/cmdline" | eval "setsid xargs -r0 \"\$0\" $redirect"
+    ' -- | eval "setsid xargs -r0 \"\$0\" $redirect"
     exec kill -TERM "$PPID"
 fi
 
