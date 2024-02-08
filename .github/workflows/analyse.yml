@@ -3,7 +3,7 @@ name: analyse
 on:
   push:
     branches:
-      - master
+      - '**'
     paths:
       - src/*/**
       - src/.make
@@ -11,7 +11,7 @@ on:
       - .github/**
   pull_request:
     branches:
-      - master
+      - '**'
     paths:
       - src/*/**
       - src/.make
@@ -28,6 +28,11 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get -y install moreutils shellcheck pylint clang-tools cppcheck libbsd-dev
         git submodule update --init --recursive
+      env:
+        SHELL_VERBOSE: 1
     - name: analyse
       run: |
-        make analyse
+        cd src/ || exit 1
+        ./.make analyse
+      env:
+        SHELL_VERBOSE: 1

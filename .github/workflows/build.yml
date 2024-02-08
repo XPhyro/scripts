@@ -3,14 +3,14 @@ name: build
 on:
   push:
     branches:
-      - master
+      - '**'
     paths:
       - src/**
       - Makefile
       - .github/**
   pull_request:
     branches:
-      - master
+      - '**'
     paths:
       - src/**
       - Makefile
@@ -26,16 +26,30 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev ncurses-bin
         git submodule update --init --recursive
+      env:
+        SHELL_VERBOSE: 1
     - name: build
       run: |
-        make install
-        make uninstall
+        cd src/ || exit 1
+        ./.make install
+        ./.make uninstall
+      env:
+        SHELL_VERBOSE: 1
     - name: sudo-build
       run: |
-        sudo make install
+        cd src/ || exit 1
+        sudo ./.make install
+      env:
+        SHELL_VERBOSE: 1
     - name: test
       run: |
-        make test
+        cd src/ || exit 1
+        ./.make test
+      env:
+        SHELL_VERBOSE: 1
     - name: sudo-test
       run: |
-        sudo make test
+        cd src/ || exit 1
+        sudo ./.make test
+      env:
+        SHELL_VERBOSE: 1
