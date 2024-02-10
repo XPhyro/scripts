@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+set -e
+
+appid="$1"
+shift
+
+samrewritten -i "$appid" &
+pid="$!"
+
+trap 'kill -INT "$pid"' EXIT INT QUIT TERM
+
+if [ "$#" -eq 0 ]; then
+    wait
+else
+    "$@"
+fi
