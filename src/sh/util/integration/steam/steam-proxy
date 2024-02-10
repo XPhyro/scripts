@@ -15,5 +15,6 @@ trap 'kill -INT "$pid"' EXIT INT QUIT TERM
 if [ "$#" -eq 0 ]; then
     wait
 else
-    "$@"
+    # sudo to get rid of steam runtime
+    sudo -u "$USER" -- "$@"
 fi
