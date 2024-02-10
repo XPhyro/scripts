@@ -296,6 +296,7 @@
   - Add built-in special marks such as `-`, `@`, etc. Make sure these marks are
     not caught or expanded by the POSIX Shell or mainstream shells like Bash
     or Zsh.
+- Consider porting all execline scripts to shell for less dependencies.
 
 ## Other
 
