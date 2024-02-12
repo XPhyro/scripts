@@ -34,6 +34,8 @@ printhelp() {
         Encode without losses.
     -M, --move-to-original
         Move TEMPOUTFILE to respective INFILE after the operation succeeds. If the extensions of the respective INFILE and TEMPOUTFILE differ, TEMPOUTFILE is moved to INFILE with its extension changed to TEMPOUTFILE's.
+    -m, --mark-larger
+        Mark files enlarged after the optimisation and, if -o is also given, do not re-process marked files.
     -n, --no-clobber
         Do nothing if the output file exists.
     -o, --no-repeat
@@ -351,6 +353,7 @@ parseargs_optimize() {
                         i) overwrite="";;
                         l) lossless="lossless=1";;
                         M) moveorig="1";;
+                        m) marklarger="1";;
                         n) overwrite="-n";;
                         o) norepeat="1";;
                         r) remove="1";;
@@ -371,6 +374,7 @@ parseargs_optimize() {
                     interactive) overwrite="";;
                     lossless) lossless="lossless=1";;
                     move-to-original) moveorig="1";;
+                    mark-larger) marklarger="1";;
                     no-clobber) overwrite="-n";;
                     no-repeat) norepeat="1";;
                     remove) remove="1";;
@@ -940,14 +944,24 @@ optimize() {
             fi
         }
         [ "$norepeat" = "1" ] && {
+            continue=0
+
             ffprobe -hide_banner -v error -select_streams v:0 -show_entries stream_tags=encoder -of default=nokey=1:noprint_wrappers=1 -i "file:$fl" | grep -Exq 'Lavc[0-9.]+\s+libx265' && {
                 printf "File [%s] is already encoded with libx265, skipping.\n" "$fl" >&2
-                printf "%s\n" "$fl"
-                continue
+                continue=1
             }
 
             [ "$backup" = "1" ] && [ -f "$fl.original" ] && {
                 printf "File [%s] already has an original variant, skipping.\n" "$fl" >&2
+                continue=1
+            }
+
+            [ "$marklarger" = "1" ] && ls -- "$fl.larger".*-\>* > /dev/null 2>&1 && {
+                printf "File [%s] has already been processed and found larger, skipping.\n" "$fl" >&2
+                continue=1
+            }
+
+            [ "$continue" = "1" ] && {
                 printf "%s\n" "$fl"
                 continue
             }
@@ -968,6 +982,8 @@ optimize() {
         }
         touch --reference="$fl" -- "$outfl"
         after_size="$(stat --printf="%s\n" -- "$outfl")"
+        [ "$after_size" -ge "$before_size" ] && [ "$marklarger" = '1' ] \
+            && touch -- "$fl.larger.$(du -- "$fl" | awk '{print $1}')->$(du -- "$outfl" | awk '{print $1}')"
         [ "$remove" = '1' ] && {
             if [ "$after_size" -ge "$before_size" ]; then
                 printf "Not removing input file [%s] as output file [%s] is larger.\n" "$fl" "$outfl" >&2
