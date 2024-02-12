@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# For this script to have any effect, this fork must be used:
+# https://github.com/XPhyro/st-xphyro
 
 . shellverbose.sh
 
