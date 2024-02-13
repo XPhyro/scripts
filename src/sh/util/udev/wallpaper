@@ -81,14 +81,22 @@ case "$optexec" in
         ;;
     gsettings)
         moncount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
-        output_path="$(mktemp --suffix=.png)"
-        trap 'rm -f "$output_path"' EXIT INT TERM QUIT
+        output_path_1="$(mktemp --suffix=.png)"
+        output_path_2="$(mktemp --suffix=.png)"
+        trap 'rm -f "$output_path_1" "$output_path_2"' EXIT INT TERM QUIT
         find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-            | shufr -U0 \
-            | output_path="$output_path" xargs -r0 -n "$moncount" sh -c '
+            | shufr -U0 -P "$moncount" \
+            | output_path_1="$output_path_1" output_path_2="$output_path_2" xargs -r0 -n "$((moncount + 1))" sh -c '
                 . shellverbose.sh
+                index="$1"
+                shift
+                if [ "$((index % 2))" -eq 0 ]; then
+                    output_path="$output_path_1"
+                else
+                    output_path="$output_path_2"
+                fi
                 {
                     printf "%s\0" "$output_path"
                     while IFS= read -r image <&3 && IFS= read -r geometry <&4; do
