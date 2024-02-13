@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+
+. shellverbose.sh
+
+output_path="$1"
+shift 1
+# rest of the arguments are (input_path, geometry)...
+
+total_size="$(
+    printf "%s\0" "$@" \
+        | xargs -r0 argn 1 -1 2 \
+        | grep -Eoz '[0-9]+x[0-9]+\+[0-9]+\+[0-9]+' \
+        | sed -z 's/[x+]/ /g' \
+        | awk '
+            BEGIN {
+                RS = "\0";
+                max_x = 0;
+                max_y = 0;
+            } {
+                x = $1 + $3;
+                y = $2 + $4;
+                if (x > max_x)
+                    max_x = x;
+                if (y > max_y)
+                    max_y = y;
+            } END {
+                printf("%dx%d\n", max_x, max_y);
+            }
+        '
+)"
+
+# I'm sorry for what I have done...
+{
+    printf "%s\0" "$@" | xargs -r0 -n 2 sh -c '
+        tmp="$(mktemp)"
+        convert "$1" -resize "${2%%+*}^" -gravity center -crop "${2%%+*}+0+0" +repage "$tmp" >&2
+        printf "%s\0" "$tmp" "$2"
+    ' --
+} | total_size="$total_size" output_path="$output_path" xargs -r0 sh -c '
+    {
+        printf "%s\0" -size "$total_size" xc:black
+        printf "%s\0" "$@" | xargs -r0 -n 2 sh -c "
+            printf \"%s\0\" \"\$1\" -geometry \"+\${2#*+}\" -composite
+        " --
+        printf "%s\0" "$output_path"
+    } | xargs -r0 convert
+    printf "%s\0" "$@" | xargs -r0 argn 0 -1 2 | xargs -r0 rm -f --
+' --
