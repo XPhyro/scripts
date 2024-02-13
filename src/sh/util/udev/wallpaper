@@ -74,7 +74,10 @@ case "$optexec" in
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
+                . shellverbose.sh
+
                 bgs -z "$@"
+
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
@@ -83,20 +86,23 @@ case "$optexec" in
         moncount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
         output_path_1="$(mktemp --suffix=.png)"
         output_path_2="$(mktemp --suffix=.png)"
-        trap 'rm -f "$output_path_1" "$output_path_2"' EXIT INT TERM QUIT
+        trap 'rm -f -- "$output_path_1" "$output_path_2"' EXIT INT TERM QUIT
         find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 -P "$moncount" \
             | output_path_1="$output_path_1" output_path_2="$output_path_2" xargs -r0 -n "$((moncount + 1))" sh -c '
                 . shellverbose.sh
+
                 index="$1"
                 shift
+
                 if [ "$((index % 2))" -eq 0 ]; then
                     output_path="$output_path_1"
                 else
                     output_path="$output_path_2"
                 fi
+
                 {
                     printf "%s\0" "$output_path"
                     while IFS= read -r image <&3 && IFS= read -r geometry <&4; do
@@ -107,8 +113,10 @@ EOF3
 $(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")
 EOF4
                 } | xargs -r0 span-images
+
                 gsettings set org.gnome.desktop.background picture-uri "file:///$output_path"
                 gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
+
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
@@ -119,7 +127,10 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n 1 sh -c '
+                . shellverbose.sh
+
                 hsetroot -cover "$1"
+
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
                 sleep '"$opttime"'
             ' --
@@ -130,6 +141,8 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
+                . shellverbose.sh
+
                 while IFS= read -r mon <&3 && IFS= read -r fl <&4; do
                     xwallpaper --output "$mon" --zoom "$fl" &
                 done 3<<EOF3 4<<EOF4
@@ -147,53 +160,55 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "video/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
-                  clean() {
-                      printf "%s\n" "$pids" | while IFS= read -r pid; do
-                          kill "$pid"
-                      done
-                  }
+                . shellverbose.sh
 
-                  if [ -n "$WALLPAPER_XWINWRAP_ARGS_CMD" ]; then
-                      xwinwrapargs="$(eval "$WALLPAPER_XWINWRAP_ARGS_CMD")"
-                  else
-                      xwinwrapargs="-st -sp -ni -s -nf -b -un -argb -fdt"
-                  fi
+                clean() {
+                    printf "%s\n" "$pids" | while IFS= read -r pid; do
+                        kill "$pid"
+                    done
+                }
 
-                  if [ -n "$WALLPAPER_MPV_ARGS_CMD" ]; then
-                      mpvargs="$(eval "$WALLPAPER_MPV_ARGS_CMD")"
-                  else
-                      mpvargs="--vo=vaapi"
-                  fi
+                if [ -n "$WALLPAPER_XWINWRAP_ARGS_CMD" ]; then
+                    xwinwrapargs="$(eval "$WALLPAPER_XWINWRAP_ARGS_CMD")"
+                else
+                    xwinwrapargs="-st -sp -ni -s -nf -b -un -argb -fdt"
+                fi
 
-                  pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
-                      
-                      xwinwrap $xwinwrapargs -g "$geom" -sub WID -- \
-                          prime-run mpv \
-                              --loop \
-                              --no-config \
-                              --no-input-terminal \
-                              --no-input-cursor \
-                              --no-osc \
-                              --no-osd-bar \
-                              --no-input-default-bindings \
-                              --cursor-autohide=no \
-                              --mute=yes \
-                              --stop-screensaver=no \
-                              --panscan=1 \
-                              --wid=WID \
-                              $mpvargs \
-                              -- "$fl" > /dev/null 2> /dev/null &
-                      printf "%s\n" "$!"
-                  done 3<<EOF3 4<<EOF4
-$(xrandr | sed -n "s/[a-zA-Z0-9_-]\+ connected \(primary \)\?\([0-9]\+x[0-9]\++[0-9]\++[0-9]\+\) \([a-z]\+ \)\?(.*$/\2/p")
+                if [ -n "$WALLPAPER_MPV_ARGS_CMD" ]; then
+                    mpvargs="$(eval "$WALLPAPER_MPV_ARGS_CMD")"
+                else
+                    mpvargs="--vo=vaapi"
+                fi
+
+                pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
+                    
+                    xwinwrap $xwinwrapargs -g "$geom" -sub WID -- \
+                        prime-run mpv \
+                            --loop \
+                            --no-config \
+                            --no-input-terminal \
+                            --no-input-cursor \
+                            --no-osc \
+                            --no-osd-bar \
+                            --no-input-default-bindings \
+                            --cursor-autohide=no \
+                            --mute=yes \
+                            --stop-screensaver=no \
+                            --panscan=1 \
+                            --wid=WID \
+                            $mpvargs \
+                            -- "$fl" > /dev/null 2> /dev/null &
+                    printf "%s\n" "$!"
+                done 3<<EOF3 4<<EOF4
+$(xrandr | sed -"s/[a-zA-Z0-9_-]\+ connected \(primary \)\?\([0-9]\+x[0-9]\++[0-9]\++[0-9]\+\) \([a-z]\+ \)\?(.*$/\2/p")
 EOF3
-$(printf "%s\n" "$@")
+$(printf "%s\n" @")
 EOF4
 )"
-                  printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
-                  trap clean INT TERM EXIT QUIT
-                  sleep '"$opttime"'
-                  clean
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
+                trap clean INT TERM EXIT QUIT
+                sleep '"$opttime"'
+                clean
             ' --
         ;;
 esac
