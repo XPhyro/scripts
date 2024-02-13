@@ -22,8 +22,8 @@
 void parseargs(int& argc, char**& argv);
 
 char optdelim = '\n';
-bool optargisline = false, optuniquemax = false;
-xph::nullable<std::size_t> optrangelow, optrangehigh, optcount, optunique;
+bool optargisline = false, optprefixline = false, optuniquemax = false;
+xph::nullable<std::size_t> optrangelow, optrangehigh, optcount, optunique, optprefixgroup;
 
 DEFINE_EXEC_INFO();
 
@@ -61,14 +61,21 @@ int main(int argc, char* argv[])
         optunique = lines.size();
     else if (optunique && optunique > lines.size())
         xph::die("not enough lines to ensure unique sequences of size ", optunique);
+    if (optprefixgroup && static_cast<std::size_t>(optprefixgroup) == 0)
+        optprefixgroup = lines.size();
 
     std::random_device rdev;
     std::mt19937 rng(rdev());
 
     if (optunique <= 1ul) {
         std::uniform_int_distribution<std::size_t> dist(0u, lines.size() - 1);
-        for (std::size_t count = 0; !optcount || count < optcount;
-             std::cout << lines[dist(rng)] << optdelim, ++count) {}
+        for (std::size_t count = 0; !optcount || count < optcount; ++count) {
+            if (optprefixgroup && !(count % static_cast<std::size_t>(optprefixgroup)))
+                std::cout << count / static_cast<std::size_t>(optprefixgroup) + 1 << optdelim;
+            if (optprefixline)
+                std::cout << count + 1 << ": ";
+            std::cout << lines[dist(rng)] << optdelim;
+        }
     } else {
         std::vector<std::size_t> index_turns(lines.size());
         std::set<std::size_t> inactive_indices;
@@ -97,6 +104,10 @@ int main(int argc, char* argv[])
             index_turns[i] = optunique;
             inactive_indices.insert(i);
 
+            if (optprefixgroup && !(count % static_cast<std::size_t>(optprefixgroup)))
+                std::cout << count / static_cast<std::size_t>(optprefixgroup) + 1 << optdelim;
+            if (optprefixline)
+                std::cout << count + 1 << ": ";
             std::cout << lines[i] << optdelim;
         }
     }
@@ -108,7 +119,7 @@ void parseargs(int& argc, char**& argv)
 {
     int i;
 
-    while ((i = getopt(argc, argv, "ehi:n:rUu:z0")) != -1) {
+    while ((i = getopt(argc, argv, "ehi:n:P:prUu:z0")) != -1) {
         switch (i) {
             case 'e':
                 optargisline = true;
@@ -134,6 +145,8 @@ void parseargs(int& argc, char**& argv)
                        "  -i LO-HI  treat each number LO through HI as an input line. LO must be less than HI. if HI is negative, it is interpreted as ("
                     << std::numeric_limits<std::size_t>::max() << " - (|HI| - 1)).\n"
                     << "  -n COUNT  output at most COUNT lines\n"
+                       "  -P        prefix unique groups of lines with group number\n"
+                       "  -p        prefix lines with line number\n"
                        "  -r        ignored. provided for partial compatibility with GNU shuf.\n"
                        "  -U        alias for `-u $line_count`. overrides -u.\n"
                        "  -u COUNT  make sure any sequence of COUNT lines have unique indices. if lines are unique, the output lines will also be unique. COUNT must be less than or equal to the count of lines provided via stdin.\n"
@@ -150,6 +163,12 @@ void parseargs(int& argc, char**& argv)
             } break;
             case 'n':
                 optcount = xph::parse<std::size_t>(optarg);
+                break;
+            case 'P':
+                optprefixgroup = xph::parse<std::size_t>(optarg);
+                break;
+            case 'p':
+                optprefixline = true;
                 break;
             case 'r':
                 break;
