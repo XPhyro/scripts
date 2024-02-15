@@ -48,4 +48,10 @@
 
         return 1
     }
+
+    # argv is provided via stdin with nul delimiter, output should be `eval`ed.
+    std_build_set() {
+        printf "set -- "
+        xargs -r0 shell-escape <&0
+    }
 }
