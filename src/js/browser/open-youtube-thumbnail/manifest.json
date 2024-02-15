@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Open YouTube Thumbnail",
+  "version": "1.0",
+  "description": "Open the thumbnail of the current YouTube video in a new tab.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "open-youtube-thumbnail@xphyro.github.io"
+    }
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": ["tabs", "activeTab"],
+  "browser_action": {
+    "default_title": "Open YouTube Thumbnail"
+  }
+}
