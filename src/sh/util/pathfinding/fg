@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 [ "$#" -eq 0 ] && exit 0
 

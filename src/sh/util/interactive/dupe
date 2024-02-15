@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Duplicate given files and print the duplicate's paths in the format the originals were input.
 
-. shellverbose.sh
+. std.sh
 
 for i; do
     newpath="$(backuppath "$i")"

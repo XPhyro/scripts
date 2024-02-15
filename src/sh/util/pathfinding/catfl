@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 printf "%s\n" "$@" | xargs -d '\n' -rn 1 getpath -fu -- | xargs -d '\n' -r cat 2> /dev/null
 exit $?

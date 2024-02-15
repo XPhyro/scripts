@@ -2,7 +2,7 @@
 # List clipped text logged by clplog and copy a selected one using dmenu.
 # This script and clplog assume that the copied string does not contain the character \r.
 
-. shellverbose.sh
+. std.sh
 
 sel="$(
     perl -0777 -pe 's/### END CLIP ###\n: [0-9]{10};\n### BEGIN CLIP ###\n//g;' -- "$(getpath -f -- clplog)" \

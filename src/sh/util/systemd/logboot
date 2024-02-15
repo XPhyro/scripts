@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 conf_dir="${XDG_CACHE_HOME:-"$HOME/.cache"}/scripts/logboot"
 mkdir -p -- "$conf_dir"

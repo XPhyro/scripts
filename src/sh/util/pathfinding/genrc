@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Generate rc files.
 
-. shellverbose.sh
+. std.sh
 
 confdir="${XDG_CONFIG_HOME:-"$HOME/.config"}/scripts/pathfinding"
 locations="$confdir/directories"

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 if lshw -C display 2>&1 | grep -Fq 'Advanced Micro Devices'; then
     export DRI_PRIME=1

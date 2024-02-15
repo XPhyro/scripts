@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 pretty_df() {
     header="$1"

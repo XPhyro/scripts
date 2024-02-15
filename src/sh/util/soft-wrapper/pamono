@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Create a mono sink from the default sink and make the new sink the default.
 
-. shellverbose.sh
+. std.sh
 
 pacmd load-module module-remap-sink \
     master="$(voldefsink)" \

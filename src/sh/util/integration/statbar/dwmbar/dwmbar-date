@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Query date.
 
-. shellverbose.sh
+. std.sh
 
 date +"%a %F %R" > "$(getpath -du -- statbar)/11_statbardate"

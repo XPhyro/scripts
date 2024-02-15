@@ -15,7 +15,7 @@
 #
 # FIXME: rewrite this mess
 
-. shellverbose.sh
+. std.sh
 
 execname="${0##*/}"
 

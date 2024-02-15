@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Dump all packages that can be updated.
 
-. shellverbose.sh
+. std.sh
 
 yay -Qu | wc -l > "$HOME/.avlsyu"

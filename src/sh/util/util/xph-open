@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # xdg-open wrapper.
 
-. shellverbose.sh
+. std.sh
 
 open() {
     if [ "$(grep -E -m 1 "^Terminal=.*" -- "$2" | sed 's/^Terminal=//')" = "true" ]; then

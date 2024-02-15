@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Select a file using fzf and open them in "$EDITOR".
 
-. shellverbose.sh
+. std.sh
 . util.sh
 
 main() {

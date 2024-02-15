@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Connect to a previously paired bluetooth device.
 
-. shellverbose.sh
+. std.sh
 
 seldev="$(
     bluetoothctl paired-devices | while read -r _ i devname; do

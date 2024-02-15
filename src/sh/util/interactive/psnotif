@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Watches processes and notifies when none of the given processes are present.
 
-. shellverbose.sh
+. std.sh
 
 for i; do
     while [ -n "$(ps -o pid= "$i")" ]; do

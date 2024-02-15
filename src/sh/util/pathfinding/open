@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Open executable files.
 
-. shellverbose.sh
+. std.sh
 
 paths="$(whereis -b "$@" | cut -d' ' -f2 | grep '^/')"
 

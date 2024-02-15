@@ -2,7 +2,7 @@
 # For this script to have any effect, this fork must be used:
 # https://github.com/XPhyro/st-xphyro
 
-. shellverbose.sh
+. std.sh
 
 { [ -z "$TABBED_XID" ] \
     || [ -z "$REUSE_TABBED_XID" ] \

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 "$PAD" -g 1450x900 -- neomutt

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Overwrite a file.
 
-. shellverbose.sh
+. std.sh
 
 cp "$@" || {
     printf "%s\n" "Could not overwrite:" "$@"

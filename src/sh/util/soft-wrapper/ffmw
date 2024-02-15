@@ -3,7 +3,7 @@
 # TODO: Add rm (inverse of crop).
 # TODO: ffmw might fail to work with symlink infiles for the concat and split subcommands, test and if so fix.
 
-. shellverbose.sh
+. std.sh
 
 subcommands="compress concat crop decat help optimise optimize split trim reverse"
 execname="${0##*/}"

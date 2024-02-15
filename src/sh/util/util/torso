@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 method="${3:-"-n"}"
 [ "$method" != "-n" ] && [ "$method" != "-c" ] && exit 1

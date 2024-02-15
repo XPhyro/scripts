@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 loc="$(getdirall "$1")" || exit $?
 exec realpath -P -- "${loc:?}"

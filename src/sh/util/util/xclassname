@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 . x11.sh
 
 std_x11_evalable_prop "$@"

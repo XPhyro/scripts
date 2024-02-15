@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Toggle the mute status of the default pulseaudio source.
 
-. shellverbose.sh
+. std.sh
 
 . config.sh
 . prefix.sh

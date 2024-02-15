@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 fzf --preview "printf '%s\n' {}
                    | awk '{for (i=2; i<NF; i++) printf \$i \" \"; print \$NF}'

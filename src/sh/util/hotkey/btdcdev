@@ -2,7 +2,7 @@
 # Disconnect from a bluetooth device. Prompts a selection if more than
 # one device is connected or if the only device connected is a keyboard.
 
-. shellverbose.sh
+. std.sh
 
 devs="$(
     bluetoothctl paired-devices | while read -r _ i devname; do

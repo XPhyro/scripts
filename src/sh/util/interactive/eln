@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Edit given links.
 
-. shellverbose.sh
+. std.sh
 
 clean() {
     rm -f -- "$tmpfl" "$origtmpfl" 2> /dev/null

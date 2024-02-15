@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Sync a remote drive with rclone based on the given drive code.
 
-. shellverbose.sh
+. std.sh
 
 case "$1" in
     one) name="onedrive";;

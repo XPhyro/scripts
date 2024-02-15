@@ -3,7 +3,7 @@
 # $2: image width
 # $3: image height
 
-. shellverbose.sh
+. std.sh
 
 printf "%s  %s  %s\n" \
     "$(du -Hh -- "$1" | cut -f1)" \

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 config_dir="$HOME/.config/scripts/taskellctl"
 mkdir -p "$config_dir" || exit 1

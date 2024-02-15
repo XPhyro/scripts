@@ -3,7 +3,7 @@
 # TODO: Make -d respect -g.
 # TODO: Add support for multiple -e.
 
-. shellverbose.sh
+. std.sh
 . util.sh
 
 execname="${0##*/}"

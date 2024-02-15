@@ -6,7 +6,7 @@
 #       would work both when -e is passed and otherwise. Alternatively, make this the default
 #       behaviour.
 
-. shellverbose.sh
+. std.sh
 
 execname="${0##*/}"
 

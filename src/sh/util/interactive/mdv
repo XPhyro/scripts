@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 for i; do
     tmp="$(mktemp --suffix=.html)" # not cleaning after is intentional

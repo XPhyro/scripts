@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 eval "$(getpath -fe -- zoom fl 1 "[ERROR]: getpath -f -- failed, aborting.")"
 

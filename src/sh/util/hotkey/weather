@@ -2,7 +2,7 @@
 # Show weather forecast.
 # Designed to be used with $PAD.
 
-. shellverbose.sh
+. std.sh
 
 . io.sh
 

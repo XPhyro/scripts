@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Like tail, but for words.
 
-. shellverbose.sh
+. std.sh
 
 if [ "$#" = 0 ]; then
     end=3

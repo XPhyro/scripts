@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Pull updates from git and compile programs. Used list file is the file coded upabl.
 
-. shellverbose.sh
+. std.sh
 
 cleanexit() {
     lck -uq -- update

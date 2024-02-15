@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 stdinfl="$(mktemp)"
 [ ! -t 0 ] && cp -- /dev/stdin "$stdinfl"

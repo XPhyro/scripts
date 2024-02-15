@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 bspc subscribe monitor_focus | while IFS= read -r _; do
     polybar-msg action '#bspwmmonf.hook.0'

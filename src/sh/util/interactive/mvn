@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Force move without overwriting.
 
-. shellverbose.sh
+. std.sh
 
 mv -n -- "$1" "$(backuppath "$2")"

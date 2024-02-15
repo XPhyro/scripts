@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 thumbnail() {
     realfl="$(realpath -P -- "$1")"

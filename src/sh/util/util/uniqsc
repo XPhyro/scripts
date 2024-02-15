@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Same as sort -utk but does not sort.
 
-. shellverbose.sh
+. std.sh
 
 f="$1"
 c="$2"

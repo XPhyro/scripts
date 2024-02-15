@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 exec st -n pad-edit -t pad-edit -e "$EDITOR" "$@"

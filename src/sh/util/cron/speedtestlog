@@ -2,7 +2,7 @@
 # Use speedtest to test internet connection and log the results.
 # speedtestlogp can be used to print the logs.
 
-. shellverbose.sh
+. std.sh
 
 ping -c 1 speedtest.net > /dev/null 2>&1 || {
     printf "%s\n" "Cannot reach speedtest.net servers, exiting."

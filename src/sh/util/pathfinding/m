@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Mark directory.
 
-. shellverbose.sh
+. std.sh
 
 logerrq() {
     printf "[ERROR]: %s\n" "$*"

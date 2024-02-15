@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC2154
 
-. shellverbose.sh
+. std.sh
 
 . execinfo.sh
 . io.sh
@@ -74,7 +74,7 @@ case "$optexec" in
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
-                . shellverbose.sh
+                . std.sh
 
                 bgs -z "$@"
 
@@ -92,7 +92,7 @@ case "$optexec" in
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 -P "$moncount" \
             | output_path_1="$output_path_1" output_path_2="$output_path_2" xargs -r0 -n "$((moncount + 1))" sh -c '
-                . shellverbose.sh
+                . std.sh
 
                 index="$1"
                 shift
@@ -127,7 +127,7 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n 1 sh -c '
-                . shellverbose.sh
+                . std.sh
 
                 hsetroot -cover "$1"
 
@@ -141,7 +141,7 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
-                . shellverbose.sh
+                . std.sh
 
                 while IFS= read -r mon <&3 && IFS= read -r fl <&4; do
                     xwallpaper --output "$mon" --zoom "$fl" &
@@ -160,7 +160,7 @@ EOF4
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "video/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
             | xargs -r0 -n "$optcount" sh -c '
-                . shellverbose.sh
+                . std.sh
 
                 clean() {
                     printf "%s\n" "$pids" | while IFS= read -r pid; do

@@ -2,7 +2,7 @@
 # Take and manage notes.
 # Used most optimally with bspwmpad/dwmpad.
 
-. shellverbose.sh
+. std.sh
 
 dir="$HOME/documents/notes/scratchpad"
 

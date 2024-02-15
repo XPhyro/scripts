@@ -10,7 +10,7 @@
 #
 # bspwm is not required for operation, but the script was designed with it in mind.
 
-. shellverbose.sh
+. std.sh
 . x11.sh
 
 execname="${0##*/}"

@@ -4,7 +4,7 @@
 # Put this script in /usr/lib/systemd/system-sleep/ or an equivalent location
 # depending on your distribution and init system.
 
-. shellverbose.sh
+. std.sh
 
 tmp=/tmp/x13kbdsleep-kbdbrt
 

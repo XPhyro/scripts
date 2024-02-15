@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 exec pactl set-sink-volume "$1" "$(volgetsinkraw "$1")"

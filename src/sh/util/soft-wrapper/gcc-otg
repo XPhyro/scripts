@@ -1,6 +1,6 @@
 #!/usr/bin/env -S sh --
 
-. shellverbose.sh
+. std.sh
 
 . io.sh
 . meta.sh

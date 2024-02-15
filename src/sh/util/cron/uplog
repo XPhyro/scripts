@@ -2,6 +2,6 @@
 # Log the current time in UNIX timestamp. uplogp can be used to print these logs.
 # Designed to be used with crond to log every minute my system is powered on.
 
-. shellverbose.sh
+. std.sh
 
 date +%s >> "$(getpath -f -- uplog)"

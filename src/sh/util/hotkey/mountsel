@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Gives a dmenu prompt to automatically mount drives.
 
-. shellverbose.sh
+. std.sh
 
 . execinfo.sh
 . sudo.sh

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 vector() {
     std::vector -c t -n bspwm-stalker stalkees "$@"

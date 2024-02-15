@@ -6,7 +6,7 @@
 . execinfo.sh
 . io.sh
 . prefix.sh
-. shellverbose.sh
+. std.sh
 
 config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/setxkb"
 modmap_dir="$config_dir/xmodmap"

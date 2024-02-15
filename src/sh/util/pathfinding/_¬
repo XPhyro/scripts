@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 awk '/^¬ / {print substr($0, 3)}' "$(getpath -fu -- mrk)"

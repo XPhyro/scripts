@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 d1="$(date -d "$1" +%s)"
 d2="$(date -d "$2" +%s)"

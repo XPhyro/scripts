@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 {   grep "^Exec=" "$(getpath -du -- lsa)/browser.desktop" | grep -q -- '--new-window' && printf "%s\n" "💞"
 } > "$(getpath -du -- statbar)/7.5_statbarbrowser"

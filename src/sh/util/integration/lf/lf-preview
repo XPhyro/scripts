@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 # TODO: svg preview does not work, fix.
 # TODO: scope.sh does not handle on-demand files such as /proc/*. create a

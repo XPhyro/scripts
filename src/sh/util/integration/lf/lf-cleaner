@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 [ "$#" -eq 0 ] && exit 1
 # TODO: if next file is current file, don't clean and inhibit next preview

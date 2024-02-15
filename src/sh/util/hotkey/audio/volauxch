@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Change the volume of the secondary pulseaudio sink.
 
-. shellverbose.sh
+. std.sh
 
 exec pactl set-sink-volume "$(volauxsink)" "$@"

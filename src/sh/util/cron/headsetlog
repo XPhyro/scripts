@@ -3,7 +3,7 @@
 set -e
 exec 2> /dev/null
 
-. shellverbose.sh
+. std.sh
 
 battery="$(headsetcontrol -cb)"
 printf "%s;%s\n" "$(date +%s)" "$battery" >> "$(getpath -f -- headsetlog)"

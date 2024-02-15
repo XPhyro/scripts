@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. shellverbose.sh
+. std.sh
 
 tmp="$(mktemp)"
 trap 'rm -f -- "$tmp"' EXIT INT QUIT TERM

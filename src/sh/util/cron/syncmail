@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Sync mail and notify if new mail exists.
 
-. shellverbose.sh
+. std.sh
 
 timefile="$HOME/.config/mutt/.syncmailtime"
 maildir="$HOME/.local/share/mail"
