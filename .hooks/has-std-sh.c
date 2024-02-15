@@ -61,12 +61,12 @@ int main(int argc, char *argv[])
                             break;
                     }
 
-                    if (strcmp(line + i, "shellverbose.sh")) {
-                        printf("File %s does not have shellverbose.sh at the top\n", filename);
+                    if (strcmp(line + i, "std.sh")) {
+                        printf("File %s does not have std.sh at the top\n", filename);
                         ret = EXIT_FAILURE;
                     }
                 } else {
-                    printf("File %s does not have shellverbose.sh at the top\n", filename);
+                    printf("File %s does not have std.sh at the top\n", filename);
                     ret = EXIT_FAILURE;
                 }
 

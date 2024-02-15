@@ -55,7 +55,7 @@ printf "%s\n" "$changed_files" \
 printf "%s\n" "$changed_files" \
     | grep "^src/sh/.*[^/]" \
     | grep -v '\.sh$' \
-    | xargs -r -d '\n' -n 1 .hooks/has-shellverbose.c
+    | xargs -r -d '\n' -n 1 .hooks/has-std-sh.c
 
 current_year="$(date '+%Y')"
 grep -Fq -- "2020-$current_year" LICENSE \
