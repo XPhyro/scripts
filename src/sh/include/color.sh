@@ -1,3 +1,5 @@
+. std.sh
+
 # shellcheck disable=SC2034
 
 [ -z "${HEADER_SCRIPTS_SH_COLOR_+x}" ] && {

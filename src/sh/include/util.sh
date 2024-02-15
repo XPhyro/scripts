@@ -1,3 +1,5 @@
+. std.sh
+
 [ -z "${HEADER_SCRIPTS_SH_UTIL_+x}" ] && {
     HEADER_SCRIPTS_SH_UTIL_=
 
