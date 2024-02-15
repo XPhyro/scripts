@@ -981,7 +981,7 @@ stats() {
     bashloc="$(wc -l < "$tmp")"
     bashsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    files="$(find -P 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \); printf "%s\n" "$rootdir/.hooks/has-shellverbose.c")"
+    files="$(find -P 'c' -mindepth 1 -type f \( -iname "*.c" -o -iname "*.h" \); printf "%s\n" "$rootdir/.hooks/has-std-sh.c")"
     cn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     cbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
