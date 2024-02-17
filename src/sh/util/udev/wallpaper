@@ -11,7 +11,9 @@ execs="'bgs', 'gsettings', 'hsetroot', 'xwallpaper' or 'mpv'"
 
 unset optdepth optdir optcount opttime
 defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
-while getopts "D:d:hn:t:x:" OPT; do
+optgamemode=0
+gamemodetime=30
+while getopts "D:d:g:hn:t:x:" OPT; do
     case "$OPT" in
         D)
             [ "$OPTARG" -ge 1 ] || std_logerrq "DEPTH must be a valid positive integer."
@@ -21,11 +23,13 @@ while getopts "D:d:hn:t:x:" OPT; do
             [ -d "$OPTARG" ] || std_logerrq "DIR must be a valid directory."
             optdir="$OPTARG"
             ;;
+        g) optgamemode="1";;
         h)
             printf "%s" \
 "$execname [OPTION...]
    -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is $defaultdepth.
    -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`/{image,video} depending on the selected executable.
+   -g         Do not change wallpaper if there is currently an application that uses libgamemodeauto. This is the case if running a game with \`gamemoderun\`. Ignored if -x is not gsettings. Applications are checked every $gamemodetime seconds.
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'gsettings' or 'hsetroot'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
@@ -68,7 +72,10 @@ shift "$((OPTIND - 1))"
 }
 
 export optdir
+export optgamemode
 export opttime
+
+export gamemodetime
 
 case "$optexec" in
     bgs)
@@ -116,6 +123,12 @@ EOF3
 $(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")
 EOF4
                 } | xargs -r0 span-images
+
+                [ "$optgamemode" -ne 0 ] && {
+                    while [ -n "$(gamemodelist 2> /dev/null)" ]; do
+                        sleep "$gamemodetime"
+                    done
+                }
 
                 gsettings set org.gnome.desktop.background picture-uri "file:///$output_path"
                 gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
