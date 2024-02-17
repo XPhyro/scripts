@@ -9,7 +9,7 @@
 
 execs="'bgs', 'gsettings', 'hsetroot', 'xwallpaper' or 'mpv'"
 
-unset optdepth optcount opttime
+unset optdepth optdir optcount opttime
 defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
 while getopts "D:d:hn:t:x:" OPT; do
     case "$OPT" in
@@ -67,6 +67,9 @@ shift "$((OPTIND - 1))"
     optdir="$optdir/$(printf "%s\n" "$optexec" | DEF=image fmaps mpv=video)"
 }
 
+export optdir
+export opttime
+
 case "$optexec" in
     bgs)
         find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
@@ -78,14 +81,14 @@ case "$optexec" in
 
                 bgs -z "$@"
 
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
-                sleep '"$opttime"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                sleep "$opttime"
             ' --
         ;;
     gsettings)
         moncount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
-        output_path_1="$(mktemp --suffix=.png)"
-        output_path_2="$(mktemp --suffix=.png)"
+        output_path_1="$(mktemp --suffix=.jpg)"
+        output_path_2="$(mktemp --suffix=.jpg)"
         trap 'rm -f -- "$output_path_1" "$output_path_2"' EXIT INT TERM QUIT
         find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
@@ -117,8 +120,8 @@ EOF4
                 gsettings set org.gnome.desktop.background picture-uri "file:///$output_path"
                 gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
 
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
-                sleep '"$opttime"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                sleep "$opttime"
             ' --
         ;;
     hsetroot)
@@ -131,8 +134,8 @@ EOF4
 
                 hsetroot -cover "$1"
 
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
-                sleep '"$opttime"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                sleep "$opttime"
             ' --
         ;;
     xwallpaper)
@@ -150,8 +153,8 @@ $(xrandr | grep -Fw "connected" | cut -d" " -f1)
 EOF3
 $(printf "%s\n" "$@")
 EOF4
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
-                sleep '"$opttime"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                sleep "$opttime"
             ' --
         ;;
     mpv)
@@ -205,9 +208,9 @@ EOF3
 $(printf "%s\n" @")
 EOF4
 )"
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to '"$optdir"' > '"$optdir/.current-wallpapers"'
+                printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
                 trap clean INT TERM EXIT QUIT
-                sleep '"$opttime"'
+                sleep "$opttime"
                 clean
             ' --
         ;;
