@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+PLAYERCTLSELIGNORE=spotify PLAYERCTLSELFALLBACK=1 playerctlsel play-pause
