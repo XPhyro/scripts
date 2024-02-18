@@ -12,6 +12,8 @@
         export TABBED_XID
     }
 
+[ -n "$ST_TABBED_XID_FILE" ] && printf "%s" "$TABBED_XID" > "$ST_TABBED_XID_FILE"
+
 if [ -z "$TABBED_XID" ]; then
     exec execaux "$0" "$@"
 else
