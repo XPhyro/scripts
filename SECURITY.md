@@ -1,14 +1,13 @@
 # Reporting Security Issues
 
-If you believe you found a security issue, please send details to the following
-e-mail address encrypted with its public and your private PGP keys.
+If you believe you found a security issue, please provide the details
+privately by
 
-```email
-berke.kocaoglu@metu.edu.tr
-```
-
-The public PGP key associated with this address can be found in most mainstream
-key databases or at the end of this document.
+- either using the private vulnerability reporting feature of GitHub,
+- or sending them to the e-mail address `berke.kocaoglu@metu.edu.tr`
+  encrypted with its public and your private PGP keys. The public PGP key
+  associated with this address can be found in most mainstream databases or at
+  the end of this document.
 
 Please include the following details if possible:
 
