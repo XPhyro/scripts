@@ -149,6 +149,10 @@ executed and all executed commands are printed to standard error.
   are compatible with any POSIX/ISO-conforming compilers but some use
   non-standard GNU/LLVM extensions.
 
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 Unless otherwise stated, all software found in this repository are
