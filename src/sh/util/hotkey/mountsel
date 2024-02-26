@@ -33,6 +33,7 @@ if [ "$chosen" = "iPhone" ]; then
     done
     mkdir -p -- /mnt/iPhone
     if ifuse -o allow_other,default_permissions /mnt/iPhone; then
+        # shellcheck disable=SC2154
         send_notification "$std_execname" "Successfully mounted iPhone to /mnt/iPhone."
     else
         send_notification "$std_execname" "Failed to mount iPhone."

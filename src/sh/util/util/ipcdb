@@ -33,6 +33,7 @@ set_value() {
     [ -n "$opt_min" ] && [ "$(printf "%s < %s\n" "$new_value" "$opt_min" | bc)" -eq 1 ] && new_value="$opt_min"
     [ -n "$opt_max" ] && [ "$(printf "%s > %s\n" "$new_value" "$opt_max" | bc)" -eq 1 ] && new_value="$opt_max"
 
+    # shellcheck disable=SC2154
     std::unordered_map -c "$opt_cache_type" -- \
         "$std_execname" "$database" "$key" = "$new_value"
     printf "%s" "$new_value"

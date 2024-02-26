@@ -35,6 +35,7 @@ chosen="$(printf "%s\n" "$drives" | execmenu -i -p "Unmount which drive?" | cut 
 [ -z "$chosen" ] && exit 1
 
 if umount "$chosen"; then
+    # shellcheck disable=SC2154
     send_notification "$std_execname" "Successfully unmounted $chosen."
 else
     send_notification "$std_execname" "Failed to unmount $chosen."
