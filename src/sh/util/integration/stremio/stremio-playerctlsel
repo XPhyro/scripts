@@ -3,9 +3,32 @@
 xdotool search --name "^Stremio - Freedom to Stream$" | while IFS= read -r id; do
     [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "stremio", "Stremio"' ]
     ret="$?"
-    [ "$ret" -eq 0 ] && xdotool \
-        windowactivate --sync "$id" \
-        key space \
-        windowactivate --sync "$(xdotool getactivewindow)"
+    [ "$ret" -eq 0 ] && {
+        ctrl_done=0
+        shift_done=0
+        alt_done=0
+        xinput list | grep -Fi keyboard | grep -o "id=[0-9]\+" | awk -F= '{print $2}' \
+        | while IFS= read -r keyboard_id; do
+            state="$(xinput query-state "$keyboard_id")"
+            [ "$ctrl_done" -eq 0 ] && printf "%s\n" "$state" | grep -Fq 'key[37]=down' && {
+                ctrl_done=1
+                xdotool keyup Control_L
+            }
+            [ "$shift_done" -eq 0 ] && printf "%s\n" "$state" | grep -Fq 'key[50]=down' && {
+                shift_done=1
+                xdotool keyup Shift_L
+            }
+            [ "$alt_done" -eq 0 ] && printf "%s\n" "$state" | grep -Fq 'key[64]=down' && {
+                alt_done=1
+                xdotool keyup Alt_L
+            }
+            [ "$ctrl_done" -ne 0 ] && [ "$shift_done" -ne 0 ] && [ "$alt_done" -ne 0 ] && break
+        done
+
+        xdotool \
+            windowactivate --sync "$id" \
+            key space \
+            windowactivate --sync "$(xdotool getactivewindow)"
+    }
     (exit "$ret")
 done || playerctlsel "$@"
