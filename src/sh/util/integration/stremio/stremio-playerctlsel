@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+xdotool search --name "^Stremio - Freedom to Stream$" | while IFS= read -r id; do
+    [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "stremio", "Stremio"' ]
+    ret="$?"
+    [ "$ret" -eq 0 ] && xdotool \
+        windowactivate --sync "$id" \
+        key space \
+        windowactivate --sync "$(xdotool getactivewindow)"
+    (exit "$ret")
+done || playerctlsel "$@"
