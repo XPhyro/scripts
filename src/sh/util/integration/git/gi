@@ -149,7 +149,7 @@ while :; do
             && printf "%s\n" "Reset"
         [ -n "$(git diff --name-only --staged)" ] \
             && printf "%s\n" "Commit"
-        git status -sb | head -n 1 | grep -Eq '\[(ahead|behind [0-9]+)\]$' \
+        git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
             && printf "%s\n" "Push"
     )"
 
