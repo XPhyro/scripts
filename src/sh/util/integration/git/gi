@@ -111,11 +111,14 @@ git_commit() {
 
 git_push() {
     selection="$(
-        printf "%s\n" \
-            "Normal" \
-            "Force With Lease" \
-            "Force" \
-        | fzf --multi --preview="unbuffer git status"
+        {
+            printf "%s\n" \
+                "Normal"
+            git status -sb | head -n 1 | grep -Eq '\[.*behind [0-9]+.*\]$' \
+                && printf "%s\n" \
+                    "Force With Lease" \
+                    "Force"
+        } | fzf --multi --preview="unbuffer git status"
     )"
 
     case "$selection" in
