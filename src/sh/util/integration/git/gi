@@ -32,7 +32,18 @@ fzf() {
 
 git_show() {
     git log --color=always --pretty="%h %cs %s" \
-        | fzf --multi --preview="printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git show --color=always"
+        | fzf --preview="printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git show --color=always" > /dev/null
+}
+
+git_diff() {
+    {
+        printf "%s\n" "*"
+        git diff --name-only --staged
+        git diff --name-only
+    } | fzf --preview="
+            printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git diff --staged --color=always --
+            printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git diff --color=always --
+        " > /dev/null
 }
 
 # TODO: most functions have the same template, clean them up.
@@ -45,7 +56,14 @@ git_add() {
 
     selection="$(
         printf "%s\n" "*" "$files" \
-            | fzf --multi --preview="$PREVIEW" --bind=one:accept
+            | fzf --multi --preview='
+                diff="$(printf "%s\n" {} | awk "{print \$2}" | xargs -r -d "\n" -n 1 git diff --color=always --)"
+                if [ -n "$diff" ]; then
+                    printf "%s\n" "$diff"
+                else
+                    printf "%s\n" {} | awk "{print \$2}" | xargs -r -d "\n" -n 1 bat --color=always --style=header,grid --line-range :500 --
+                fi
+            ' --bind=one:accept
     )"
 
     [ -z "$selection" ] && return
@@ -60,7 +78,9 @@ git_partial_add() {
 
     selection="$(
         printf "%s\n" "$files" \
-            | fzf --multi --preview="$PREVIEW" --bind=one:accept
+            | fzf --multi --preview="
+                printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git diff --color=always --
+            " --bind=one:accept
     )"
 
     [ -z "$selection" ] && return
@@ -141,6 +161,11 @@ while :; do
     available_commands="$(
         printf "%s\n" "Show"
         [ -n "$(
+            git diff --name-only --staged
+            git diff --name-only
+        )" ] \
+            && printf "%s\n" "Diff"
+        [ -n "$(
             git ls-files --others --exclude-standard
             git diff --name-only
         )" ] \
@@ -162,6 +187,7 @@ while :; do
 
     case "$command" in
         "Show")        git_show;;
+        "Diff")        git_diff;;
         "Add")         git_add;;
         "Partial Add") git_partial_add;;
         "Unstage")     git_unstage;;
