@@ -45,7 +45,7 @@ git_add() {
 
     selection="$(
         printf "%s\n" "*" "$files" \
-            | fzf --multi --preview="$PREVIEW"
+            | fzf --multi --preview="$PREVIEW" --bind=one:accept
     )"
 
     [ -z "$selection" ] && return
@@ -60,7 +60,7 @@ git_partial_add() {
 
     selection="$(
         printf "%s\n" "$files" \
-            | fzf --multi --preview="$PREVIEW"
+            | fzf --multi --preview="$PREVIEW" --bind=one:accept
     )"
 
     [ -z "$selection" ] && return
@@ -75,7 +75,7 @@ git_unstage() {
 
     selection="$(
         printf "%s\n" "$files" \
-            | fzf --multi --preview="$PREVIEW"
+            | fzf --multi --preview="$PREVIEW" --bind=one:accept
     )"
 
     [ -z "$selection" ] && return
@@ -104,7 +104,7 @@ git_commit() {
         printf "%s\n" \
             "Custom" \
             "Create" \
-        | fzf --multi --preview="unbuffer git status"
+        | fzf --multi --preview="unbuffer git status" --bind=one:accept
     )"
 
     case "$selection" in
@@ -119,7 +119,7 @@ git_push() {
             printf "%s\n" "Normal"
             git status -sb | head -n 1 | grep -Eq '\[.*behind [0-9]+.*\]$' \
                 && printf "%s\n" "Force With Lease" "Force"
-        } | fzf --select-1 --multi --preview="unbuffer git status"
+        } | fzf --select-1 --multi --preview="unbuffer git status" --bind=one:accept
     )"
 
     case "$selection" in
@@ -157,7 +157,7 @@ while :; do
             && printf "%s\n" "Push"
     )"
 
-    command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status")"
+    command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status" --bind=one:accept)"
 
     case "$command" in
         "Show")        git_show;;
