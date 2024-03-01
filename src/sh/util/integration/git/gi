@@ -27,7 +27,12 @@ fzf() {
         | sed 's/^\s*[0-9]\+\. //'
 }
 
-# TODO: every function has the same template, clean them up.
+git_show() {
+    git log --color=always --pretty="%h %cs %s" \
+        | fzf --multi --preview="printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git show --color=always"
+}
+
+# TODO: most functions have the same template, clean them up.
 git_add() {
     files="$(
         git ls-files --others --exclude-standard
@@ -142,6 +147,7 @@ git_pull() {
 
 while :; do
     available_commands="$(
+        printf "%s\n" "Show"
         [ -n "$(
             git ls-files --others --exclude-standard
             git diff --name-only
@@ -162,6 +168,7 @@ while :; do
     command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status")"
 
     case "$command" in
+        "Show")        git_show;;
         "Add")         git_add;;
         "Partial Add") git_partial_add;;
         "Unstage")     git_unstage;;
