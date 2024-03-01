@@ -1,0 +1,141 @@
+#!/usr/bin/env sh
+
+. std.sh
+
+PREVIEW='
+    file="$(
+        printf "%s\n" {} \
+            | sed "s/^\s*[0-9]\+\. //"
+    )"
+    if [ -d "$file" ]; then
+        ls -lA -- "$file"
+    else
+        bat --color=always --style=header,grid --line-range :500 -- "$file"
+    fi
+'
+
+fzf() {
+    stdin="$(cat)"
+    width="$(printf "%s\n" "$available_commands" | wc -l | wc -c)"
+    printf "%s\n" "$stdin" \
+        | nl -n rn -w "$width" -s ". " \
+        | command fzf \
+            --layout=reverse \
+            --height="65%" \
+            --preview-window="right:65%" \
+            "$@" \
+        | sed 's/^\s*[0-9]\+\. //'
+}
+
+# TODO: every function has the same template, clean them up.
+git_add() {
+    files="$(
+        git ls-files --others --exclude-standard
+        git ls-files --others --exclude-standard --directory
+        git diff --name-only
+    )"
+    [ -z "$files" ] && return
+
+    selection="$(
+        printf "%s\n" "$files" \
+            | sort -Vu \
+            | fzf --multi --preview="$PREVIEW"
+    )"
+
+    [ -z "$selection" ] && return
+
+    printf "%s\n" "$selection" | xargs -r -d '\n' git add --
+    git_add
+}
+
+git_partial_add() {
+    files="$(git diff --name-only)"
+    [ -z "$files" ] && return
+
+    selection="$(
+        printf "%s\n" "$files" \
+            | sort -Vu \
+            | fzf --multi --preview="$PREVIEW"
+    )"
+
+    [ -z "$selection" ] && return
+
+    printf "%s\n" "$selection" | xargs -r -d '\n' -o git add -p --
+    git_partial_add
+}
+
+git_unstage() {
+    files="$(git diff --name-only --staged)"
+    [ -z "$files" ] && return
+
+    selection="$(
+        printf "%s\n" "$files" \
+            | sort -Vu \
+            | fzf --multi --preview="$PREVIEW"
+    )"
+
+    [ -z "$selection" ] && return
+
+    printf "%s\n" "$selection" | xargs -r -d '\n' git restore --staged --
+    git_unstage
+}
+
+git_reset() {
+    files="$(git diff --name-only)"
+    [ -z "$files" ] && return
+
+    selection="$(
+        printf "%s\n" "$files" \
+            | sort -Vu \
+            | fzf --multi --preview="$PREVIEW"
+    )"
+
+    [ -z "$selection" ] && return
+
+    printf "%s\n" "$selection" | xargs -r -d '\n' git restore --
+    git_reset
+}
+
+git_commit() {
+    selection="$(
+        printf "%s\n" \
+            "Custom" \
+            "Create" \
+        | fzf --multi --preview="unbuffer git status"
+    )"
+
+    case "$selection" in
+        "Custom") git commit;;
+        "Create") printf "%s\n" "$(git diff --name-only --staged)" | xargs -r -d '\n' gacma Create;;
+    esac
+}
+
+while :; do
+    available_commands="$(
+        [ -n "$(
+            git ls-files --others --exclude-standard
+            git ls-files --others --exclude-standard --directory
+            git diff --name-only
+        )" ] \
+            && printf "%s\n" "Add"
+        [ -n "$(git diff --name-only)" ] \
+            && printf "%s\n" "Partial Add"
+        [ -n "$(git diff --name-only --staged)" ] \
+            && printf "%s\n" "Unstage"
+        [ -n "$(git diff --name-only)" ] \
+            && printf "%s\n" "Reset"
+        [ -n "$(git diff --name-only --staged)" ] \
+            && printf "%s\n" "Commit"
+    )"
+
+    command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status")"
+
+    case "$command" in
+        "Add")         git_add;;
+        "Partial Add") git_partial_add;;
+        "Unstage")     git_unstage;;
+        "Reset")       git_reset;;
+        "Commit")      git_commit;;
+        *) break;;
+    esac
+done
