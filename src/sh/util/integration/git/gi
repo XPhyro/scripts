@@ -20,6 +20,7 @@ fzf() {
     printf "%s\n" "$stdin" \
         | nl -n rn -w "$width" -s ". " \
         | command fzf \
+            --no-sort \
             --layout=reverse \
             --height="65%" \
             --preview-window="right:65%" \
@@ -35,14 +36,13 @@ git_show() {
 # TODO: most functions have the same template, clean them up.
 git_add() {
     files="$(
-        git ls-files --others --exclude-standard
         git diff --name-only
+        git ls-files --others --exclude-standard
     )"
     [ -z "$files" ] && return
 
     selection="$(
         printf "%s\n" "*" "$files" \
-            | sort -Vu \
             | fzf --multi --preview="$PREVIEW"
     )"
 
@@ -58,7 +58,6 @@ git_partial_add() {
 
     selection="$(
         printf "%s\n" "$files" \
-            | sort -Vu \
             | fzf --multi --preview="$PREVIEW"
     )"
 
@@ -74,7 +73,6 @@ git_unstage() {
 
     selection="$(
         printf "%s\n" "$files" \
-            | sort -Vu \
             | fzf --multi --preview="$PREVIEW"
     )"
 
@@ -90,7 +88,6 @@ git_reset() {
 
     selection="$(
         printf "%s\n" "$files" \
-            | sort -Vu \
             | fzf --multi --preview="$PREVIEW"
     )"
 
