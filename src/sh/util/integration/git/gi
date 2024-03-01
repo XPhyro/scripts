@@ -170,7 +170,7 @@ while :; do
         "Push")        git_push;;
         "Fetch")       git_fetch;;
         "Pull")        git_pull;;
-        "Quit")        break;;
+        ""|"Quit")     break;;
         *)             continue;;
     esac
 done
