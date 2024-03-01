@@ -115,20 +115,13 @@ git_commit() {
 }
 
 git_push() {
-    git status -sb | head -n 1 | grep -Eq '\[.*behind [0-9]+.*\]$'
-    ret="$?"
-
-    if [ "$ret" -ne 0 ]; then
-        selection="Normal"
-    else
-        selection="$(
-            {
-                printf "%s\n" "Normal"
-                [ "$ret" -eq 0 ] \
-                    && printf "%s\n" "Force With Lease" "Force"
-            } | fzf --multi --preview="unbuffer git status"
-        )"
-    fi
+    selection="$(
+        {
+            printf "%s\n" "Normal"
+            git status -sb | head -n 1 | grep -Eq '\[.*behind [0-9]+.*\]$' \
+                && printf "%s\n" "Force With Lease" "Force"
+        } | fzf --select-1 --multi --preview="unbuffer git status"
+    )"
 
     case "$selection" in
         "Normal") git push;;
