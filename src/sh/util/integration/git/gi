@@ -155,6 +155,7 @@ while :; do
             && printf "%s\n" "Commit"
         git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
             && printf "%s\n" "Push"
+        printf "%s\n" "Quit"
     )"
 
     command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status" --bind=one:accept)"
@@ -169,6 +170,7 @@ while :; do
         "Push")        git_push;;
         "Fetch")       git_fetch;;
         "Pull")        git_pull;;
-        *) break;;
+        "Quit")        break;;
+        *)             continue;;
     esac
 done
