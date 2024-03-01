@@ -41,7 +41,7 @@ git_add() {
     [ -z "$files" ] && return
 
     selection="$(
-        printf "%s\n" "$files" \
+        printf "%s\n" "*" "$files" \
             | sort -Vu \
             | fzf --multi --preview="$PREVIEW"
     )"
