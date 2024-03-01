@@ -140,7 +140,6 @@ while :; do
     available_commands="$(
         [ -n "$(
             git ls-files --others --exclude-standard
-            git ls-files --others --exclude-standard --directory
             git diff --name-only
         )" ] \
             && printf "%s\n" "Add"
