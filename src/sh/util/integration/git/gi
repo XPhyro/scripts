@@ -7,7 +7,9 @@ PREVIEW='
         printf "%s\n" {} \
             | sed "s/^\s*[0-9]\+\. //"
     )"
-    if [ -d "$file" ]; then
+    if [ "$file" = "*" ]; then
+        printf "%s\n" "Select all files."
+    elif [ -d "$file" ]; then
         ls -lA -- "$file"
     else
         bat --color=always --style=header,grid --line-range :500 -- "$file"
