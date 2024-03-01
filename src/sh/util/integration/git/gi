@@ -31,7 +31,6 @@ fzf() {
 git_add() {
     files="$(
         git ls-files --others --exclude-standard
-        git ls-files --others --exclude-standard --directory
         git diff --name-only
     )"
     [ -z "$files" ] && return
