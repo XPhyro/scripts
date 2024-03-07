@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+. std.sh
+
+active_id="$(xdotool getactivewindow)"
+if xprop -id "$active_id" | grep -q '^_NET_WM_STATE.*\s\+_NET_WM_STATE_ABOVE\s*'; then
+    # toggle,above does not work
+    wmctrl -i -r "$active_id" -b remove,above
+else
+    wmctrl -i -r "$active_id" -b add,above
+fi
