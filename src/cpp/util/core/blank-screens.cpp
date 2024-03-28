@@ -160,7 +160,14 @@ public:
 
 void set_window_alpha(Window window, double alpha)
 {
-    unsigned long opacity = 0xFFFFFFFFul * alpha;
+    unsigned long opacity;
+    if (alpha > 0.99)
+        opacity = 0xFFFFFFFFul;
+    else if (alpha < 0.01)
+        opacity = 0x00000000ul;
+    else
+        opacity = 0xFFFFFFFFul * alpha;
+
     auto opacity_atom = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
     XChangeProperty(display,
                     window,
