@@ -72,6 +72,10 @@ else
         send_notification "$std_execname" "Successfully mounted $chosen to $mp."
         chown :wheel -- "$mp"
         chmod 770 -- "$mp"
+    elif mount -- "$chosen" "$mp"; then
+        send_notification "$std_execname" "Successfully mounted $chosen to $mp."
+        chown :wheel -- "$mp"
+        chmod 770 -- "$mp"
     else
         send_notification "$std_execname" "Failed to mount $chosen."
     fi
