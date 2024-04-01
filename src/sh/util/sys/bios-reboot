@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+assertroot || exit 1
+
+systemd-notify --booted && exec systemctl reboot --firmware-setup
+
+efifl="/sys/firmware/efi/efivars/OsIndications-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+printf "\x7\x0\x0\x0\x1\x0\x0\x0\x0\x0\x0\x0" > "$efifl"
+reboot
