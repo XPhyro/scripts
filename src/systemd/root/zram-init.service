@@ -4,6 +4,7 @@ Description=Initialise zram.
 [Service]
 Type=simple
 ExecStart=BIN_PREFIX/zram-init
+Environment=PATH=/usr/bin:BIN_PREFIX:DATA_PREFIX/include
 
 [Install]
 WantedBy=default.target
