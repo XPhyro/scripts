@@ -4,7 +4,7 @@
 
 . std.sh
 
-. config.sh
+. basedir.sh
 . execinfo.sh
 . io.sh
 . prefix.sh

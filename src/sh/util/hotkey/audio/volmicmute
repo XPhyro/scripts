@@ -3,7 +3,7 @@
 
 . std.sh
 
-. config.sh
+. basedir.sh
 . prefix.sh
 
 play_audio() {
