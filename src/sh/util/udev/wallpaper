@@ -4,6 +4,7 @@
 
 . std.sh
 
+. basedir.sh
 . execinfo.sh
 . io.sh
 
@@ -13,7 +14,8 @@ unset optdepth optdir optcount opttime
 defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
 optgamemode=0
 gamemodetime=30
-while getopts "D:d:g:hn:t:x:" OPT; do
+optpersist=0
+while getopts "D:d:g:hn:pt:x:" OPT; do
     case "$OPT" in
         D)
             [ "$OPTARG" -ge 1 ] || std_logerrq "DEPTH must be a valid positive integer."
@@ -23,7 +25,7 @@ while getopts "D:d:g:hn:t:x:" OPT; do
             [ -d "$OPTARG" ] || std_logerrq "DIR must be a valid directory."
             optdir="$OPTARG"
             ;;
-        g) optgamemode="1";;
+        g) optgamemode=1;;
         h)
             printf "%s" \
 "$execname [OPTION...]
@@ -32,6 +34,7 @@ while getopts "D:d:g:hn:t:x:" OPT; do
    -g         Do not change wallpaper if there is currently an application that uses libgamemodeauto. This is the case if running a game with \`gamemoderun\`. Ignored if -x is not gsettings. Applications are checked every $gamemodetime seconds.
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'gsettings' or 'hsetroot'.
+   -p         Make GNOME wallpapers persistent
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
    -x EXEC    Executable to use. Can be one of $execs. If not given, the aforementioned executables are searched for in the given order and the first installed one is used. At least one must be installed.
 "
@@ -41,6 +44,7 @@ while getopts "D:d:g:hn:t:x:" OPT; do
             [ "$OPTARG" -gt 0 ] || std_logerrq "COUNT must be a valid positive integer."
             optcount="$OPTARG"
             ;;
+        p) optpersist=1;;
         t) opttime="$OPTARG";;
         x) optexec="$OPTARG";;
         *) printf "Invalid option given: %s\n" "$OPT"; exit 1;;
@@ -63,6 +67,7 @@ shift "$((OPTIND - 1))"
 
 export optdir
 export optgamemode
+export optpersist
 export opttime
 
 export gamemodetime
@@ -87,15 +92,20 @@ case "$optexec" in
         prev_wallpaper="$(gsettings get org.gnome.desktop.background picture-uri)"
         prev_wallpaper_dark="$(gsettings get org.gnome.desktop.background picture-uri-dark)"
 
-        output_path_1="$(mktemp --suffix=.jpg)"
-        output_path_2="$(mktemp --suffix=.jpg)"
+        if [ "$optpersist" -eq 0 ]; then
+            output_path_1="$(mktemp --suffix=.jpg)"
+            output_path_2="$(mktemp --suffix=.jpg)"
 
-        trap '
-            gsettings set org.gnome.desktop.background picture-options "$prev_wallpaper_mode"
-            gsettings set org.gnome.desktop.background picture-uri "$prev_wallpaper"
-            gsettings set org.gnome.desktop.background picture-uri-dark "$prev_wallpaper_dark"
-            rm -f -- "$output_path_1" "$output_path_2"
-        ' EXIT INT TERM QUIT
+            trap '
+                gsettings set org.gnome.desktop.background picture-options "$prev_wallpaper_mode"
+                gsettings set org.gnome.desktop.background picture-uri "$prev_wallpaper"
+                gsettings set org.gnome.desktop.background picture-uri-dark "$prev_wallpaper_dark"
+                rm -f -- "$output_path_1" "$output_path_2"
+            ' EXIT INT TERM QUIT
+        else
+            output_path_1="$std_cache_home/wallpaper-1.jpg"
+            output_path_2="$std_cache_home/wallpaper-2.jpg"
+        fi
 
         [ "$prev_wallpaper_mode" != "spanned" ] \
             && gsettings set org.gnome.desktop.background picture-options spanned
