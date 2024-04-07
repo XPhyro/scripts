@@ -1017,6 +1017,13 @@ stats() {
     jsloc="$(wc -l < "$tmp")"
     jssloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
+    files="$(find -P '../man' -mindepth 1 -type f)"
+    mann="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    manbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
+    manloc="$(wc -l < "$tmp")"
+    mansloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
+
     files="$(find -P 'pl' -mindepth 1 -type f -executable)"
     pln="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
@@ -1052,10 +1059,10 @@ stats() {
     systemdloc="$(wc -l < "$tmp")"
     systemdsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    totaln="$((awkn + bashn + cn + cppn + eln + jsn + pln + pyn + rsn + shn + systemdn))"
-    totalbytes="$((awkbytes + bashbytes + cbytes + cppbytes + elbytes + jsbytes + plbytes + pybytes + rsbytes + shbytes + systemdbytes))"
-    totalloc="$((awkloc + bashloc + cloc + cpploc + elloc + jsloc + plloc + pyloc + rsloc + shloc + systemdloc))"
-    totalsloc="$((awksloc + bashsloc + csloc + cppsloc + elsloc + jssloc + plsloc + pysloc + rssloc + shsloc + systemdsloc))"
+    totaln="$((awkn + bashn + cn + cppn + eln + jsn + mann + pln + pyn + rsn + shn + systemdn))"
+    totalbytes="$((awkbytes + bashbytes + cbytes + cppbytes + elbytes + jsbytes + manbytes + plbytes + pybytes + rsbytes + shbytes + systemdbytes))"
+    totalloc="$((awkloc + bashloc + cloc + cpploc + elloc + jsloc + manloc + plloc + pyloc + rsloc + shloc + systemdloc))"
+    totalsloc="$((awksloc + bashsloc + csloc + cppsloc + elsloc + jssloc + mansloc + plsloc + pysloc + rssloc + shsloc + systemdsloc))"
 
     printf "%s\n" \
         "Git:" \
@@ -1070,6 +1077,7 @@ stats() {
         "  C++:        $cppn" \
         "  execline:   $eln" \
         "  JavaScript: $jsn" \
+        "  groff:      $mann" \
         "  Perl:       $pln" \
         "  Python:     $pyn" \
         "  Rust:       $rsn" \
@@ -1084,6 +1092,7 @@ stats() {
         "  C++:        $cppbytes" \
         "  execline:   $elbytes" \
         "  JavaScript: $jsbytes" \
+        "  groff:      $manbytes" \
         "  Perl:       $plbytes" \
         "  Python:     $pybytes" \
         "  Rust:       $rsbytes" \
@@ -1098,6 +1107,7 @@ stats() {
         "  C++:        $cpploc" \
         "  execline:   $elloc" \
         "  JavaScript: $jsloc" \
+        "  groff:      $manloc" \
         "  Perl:       $plloc" \
         "  Python:     $pyloc" \
         "  Rust:       $rsloc" \
@@ -1112,6 +1122,7 @@ stats() {
         "  C++:        $cppsloc" \
         "  execline:   $elsloc" \
         "  JavaScript: $jssloc" \
+        "  groff:      $mansloc" \
         "  Perl:       $plsloc" \
         "  Python:     $pysloc" \
         "  Rust:       $rssloc" \
