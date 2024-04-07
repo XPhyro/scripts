@@ -508,13 +508,15 @@ install() {
             -not -path "c/.*" \
             -not -path "*/include/*" \
             -not -path "*/.archived/*" \
-            -printf "$binprefix/%f\0"
+            -printf "$binprefix/%f\0" \
+            | sed -z 's/\.c$//'
         find cpp -mindepth 1 -type f \
             -not -path "cpp/.*" \
             -not -path "*/include/*" \
             -not -path "*/.archived/*" \
             -not -path "*/project/*" \
-            -printf "$binprefix/%f\0"
+            -printf "$binprefix/%f\0" \
+            | sed -z 's/\.cpp$//'
         printf "%s\0" \
             "$includeprefix/hedley.h" \
             "$includeprefix/pstream.h"
