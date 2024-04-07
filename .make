@@ -600,7 +600,7 @@ unittest() {
         tmpin="$(mktemp)"
         tmpout="$(mktemp)"
         tmperr="$(mktemp)"
-        trap "rm -f -- '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
+        trap "rm -f -- '$tmpin' '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
 
         printf "%s\n" \
             "Testing scripts and programs:"
@@ -640,7 +640,7 @@ unittest() {
             done
         done | sponge
 
-        rm -f -- "$tmpout" "$tmperr"
+        rm -f -- "$tmpin" "$tmpout" "$tmperr"
         trap - INT EXIT HUP TERM
     )
 }
