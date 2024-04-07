@@ -67,7 +67,7 @@ parseflags() {
 '
 
 all() {
-    ! command -v ctags > /dev/null 2>&1 || index
+    command -v ctags > /dev/null 2>&1 && index
 }
 
 index() {
