@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-printf "%s\n" \
-    'XXXXXX' \
-    'XXXXXX/YYYYYY' \
-    '~root' \
-    '~root/XXXXXX' \
-    '/home/XXXXXX' \
-    '/home/XXXXXX/YYYYYY'

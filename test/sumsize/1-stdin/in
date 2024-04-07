@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-printf "%s\n" \
-    '1MiB' \
-    '1MB'

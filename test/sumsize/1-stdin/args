@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-printf "%s " \
-    -d \
-    -f 6

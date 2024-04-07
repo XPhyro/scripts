@@ -590,6 +590,7 @@ clean() {
     )
 }
 
+# shellcheck disable=SC2120
 unittest() {
     printf "%s\n" \
         "====" \
@@ -607,39 +608,40 @@ unittest() {
         printf "%s\n" \
             "Testing scripts and programs:"
 
-        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -V | while IFS= read -r cmd; do
-            printf "%s\n" \
-                "  $cmd:"
-            command -v -- "$cmd" > /dev/null 2>&1 || {
-                printf "%s\n" \
-                    "    Not installed, cannot test."
-                continue
-            }
+        # shellcheck disable=SC2154
+        for test in *.sh; do
+            (
+                . "./$test"
 
-            find "$cmd" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -V | while IFS= read -r testname; do
                 printf "%s" \
-                    "    $testname: "
+                    "  $test_binary"
 
-                testdir="$cmd/$testname"
+                command -v -- "$cmd" > /dev/null 2>&1 || {
+                    printf "\n%s\n" \
+                        "Not installed, cannot test."
+                    exit 0
+                }
 
-                "$testdir/in" > "$tmpin"
-                eval "'$cmd' $("$testdir/args") > '$tmpout' 2> '$tmperr' < '$tmpin'"
-                evalec="$?"
+                printf "%s\n" \
+                    " - $test_name:"
+
+                test_stdin > "$tmpin"
+                "$test_binary" "$@" < "$tmpin" 1> "$tmpout" 2> "$tmperr"
+                cmdec="$?"
 
                 failstr=
-                "$testdir/err" | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
-                "$testdir/out" | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
-                testec="$("$testdir/ec")"
-                [ "$evalec" -ne "$testec" ] && failstr="Expected exit code $testec, got $evalec. $failstr"
+                test_stderr | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
+                test_stdout | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
+                [ "$cmdec" -ne "$test_exit_code" ] && failstr="Expected exit code $test_exit_code, got $cmdec. $failstr"
 
                 if [ -n "$failstr" ]; then
                     printf "%s\n" \
-                        "Failed. $failstr"
+                        "    Failed: $failstr"
                 else
                     printf "%s\n" \
-                        "Passed."
+                        "    Passed."
                 fi
-            done
+            )
         done | sponge
 
         rm -f -- "$tmpin" "$tmpout" "$tmperr"
