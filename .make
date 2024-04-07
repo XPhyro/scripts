@@ -1038,14 +1038,14 @@ stats() {
     rsloc="$(wc -l < "$tmp")"
     rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
-    files="$(find -P 'sh' -mindepth 1 -type f -executable; printf "%s\n" "$0" "$rootdir/.hooks/pre-commit")"
+    files="$(find -P 'sh' -mindepth 1 -type f -executable; printf "%s\n" "$realexecpath" "$rootdir/.hooks/pre-commit")"
     shn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     shbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
     shloc="$(wc -l < "$tmp")"
     shsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    files="$(find -P 'systemd' -mindepth 1 -type f -iname "*.service")"
+    files="$(find -P '../systemd' -mindepth 1 -type f -iname "*.service")"
     systemdn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     systemdbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
@@ -1162,6 +1162,8 @@ if [ "$#" -eq 0 ]; then
     ' -- < "/proc/$pid/cmdline" | eval "setsid xargs -r0 \"\$0\" $redirect"
     exec kill -TERM "$PPID"
 fi
+
+realexecpath="$(realpath -- "$0")"
 
 rootdir="$PWD"
 shorthash="$(git rev-parse --short HEAD)"
