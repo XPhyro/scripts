@@ -54,12 +54,15 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "hm:")) != -1) {
         switch (i) {
             case 'h':
-                printf(
-                    "Usage: %s [OPTION...]\n"
-                    "Convert RGB24 to GRAY with the given method.\n"
-                    "\n"
-                    "  -m METHOD  method to use. can be one of: mean, coeff, srgb, red, green, blue, hue, saturation, value. default is srgb.\n",
-                    execname);
+                printf("Usage: %s [OPTION...]\n"
+                       "Convert between color spaces.\n"
+                       "\n"
+                       "  -m METHOD    method to use. can be one of:\n"
+                       "                   mean, coeff, srgb,\n"
+                       "                   red, green, blue,\n"
+                       "                   hue, saturation, value.\n"
+                       "               default is srgb.\n",
+                       execname);
                 exit(EXIT_SUCCESS);
                 break;
             case 'm':

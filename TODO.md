@@ -344,7 +344,6 @@
 - Into the pathfinding suite, add a system for custom
   aliases/functions/variables depending on the current directory of the user.
   This could be done by modifying the currently provided `cd` function.
-- In `rgb24togray`, add `METHOD_HSL_S` and `METHOD_HSL_L`.
 - In `sandwichline`, add `-s, --same-dough` option to make the top and bottom
   of the sandwich the same when randomised.
 - `std::string` should have a help message.
@@ -440,7 +439,6 @@
   - Maybe create a helper script for this?
 - Do not print error messages when `get*` fails in scripts as those already
   print errors to stderr.
-- Rename `rgb24togray` to be more sensible to its features.
 
 # Low Priority
 
