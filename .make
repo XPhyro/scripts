@@ -77,7 +77,9 @@ index() {
         "=====" \
         "Indexing all source files."
 
-    ctags -R --c++-kinds=+p --fields=+iaS --extras=+q .
+    for i in */; do
+        (cd -- "$i" && ctags -R --c++-kinds=+p --fields=+iaS --extras=+q .)
+    done
 }
 
 install() {
