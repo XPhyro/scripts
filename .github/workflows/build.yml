@@ -30,26 +30,22 @@ jobs:
         SHELL_VERBOSE: 1
     - name: build
       run: |
-        cd src/ || exit 1
         ./.make install
         ./.make uninstall
       env:
         SHELL_VERBOSE: 1
     - name: sudo-build
       run: |
-        cd src/ || exit 1
         sudo ./.make install
       env:
         SHELL_VERBOSE: 1
     - name: test
       run: |
-        cd src/ || exit 1
         ./.make test
       env:
         SHELL_VERBOSE: 1
     - name: sudo-test
       run: |
-        cd src/ || exit 1
         sudo ./.make test
       env:
         SHELL_VERBOSE: 1

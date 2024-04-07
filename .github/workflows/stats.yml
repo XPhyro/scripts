@@ -12,7 +12,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: stats
       run: |
-        cd src/ || exit 1
         ./.make stats
       env:
         SHELL_VERBOSE: 1

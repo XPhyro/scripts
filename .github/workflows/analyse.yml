@@ -32,7 +32,6 @@ jobs:
         SHELL_VERBOSE: 1
     - name: analyse
       run: |
-        cd src/ || exit 1
         ./.make analyse
       env:
         SHELL_VERBOSE: 1

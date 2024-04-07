@@ -18,7 +18,6 @@ jobs:
         sudo apt-get -y install codespell
     - name: spell
       run: |
-        cd src/ || exit 1
         ./.make spell
       env:
         SHELL_VERBOSE: 1
