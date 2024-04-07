@@ -224,7 +224,6 @@
   - Table of everything in README.md with 3 fields: name, very brief
     description and (if possible) very brief example.
 - At this point perhaps rename the repository from `scripts` to `utils`?
-- Move `src/{man,tests,systemd}/` to the root of the repository?
 - Consider changing the extension of shell headers from `.sh` to `.shh`, `.hsh`
   or something similar.
 - Add a commit hook that catches entries in the readme becoming broken or

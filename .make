@@ -378,7 +378,7 @@ install() {
         "Installing man pages:"
 
     (
-        cd man
+        cd ../man
 
         command -v pandoc > /dev/null 2>&1 || {
             printf "%s\n" '  `pandoc` is not installed, cannot generate man pages.'
@@ -404,7 +404,7 @@ install() {
         "Installing systemd services:"
 
     (
-        cd systemd
+        cd ../systemd
         for dir in root user; do
             printf "  %s\n" "$dir:"
 
@@ -524,7 +524,7 @@ install() {
             -printf "$binprefix/%f\0"
         find rs -mindepth 1 -maxdepth 1 -type d \
             -printf "$binprefix/%f\0"
-        find man -mindepth 1 -type f -printf "$manprefix/man%P\0" \
+        find ../man -mindepth 1 -type f -printf "$manprefix/man%P\0" \
             | sed -z 's|/man\([0-9]\+\)\(.*\)\.md$|/man\1\2.\1|'
     } | sort -ruVz | sponge .installed
 }
@@ -589,7 +589,7 @@ unittest() {
         "===="
 
     (
-        cd tests
+        cd ../test
 
         tmpin="$(mktemp)"
         tmpout="$(mktemp)"
