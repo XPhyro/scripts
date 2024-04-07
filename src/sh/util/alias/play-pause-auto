@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+. std.sh
+
 PLAYERCTLSELIGNORE=spotify PLAYERCTLSELFALLBACK=1 stremio-playerctlsel play-pause
