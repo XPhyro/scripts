@@ -195,6 +195,7 @@ install() {
             "Installing C programs:"
 
         find '.' -mindepth 1 -type f -not -path "./.*" \
+                                     -not -name "tags" \
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
                                      -printf "%P\0" \
@@ -264,6 +265,7 @@ install() {
             "Installing C++ programs:"
 
         find '.' -mindepth 1 -type f -not -path "./.*" \
+                                     -not -name "tags" \
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
                                      -not -path "*/project/*" \
