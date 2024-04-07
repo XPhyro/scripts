@@ -1,2 +1,2 @@
-output = $(shell cd src/ && ./.make)
+output = $(shell ./.make)
 $(info $(output))

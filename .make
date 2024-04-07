@@ -1155,10 +1155,9 @@ if [ "$#" -eq 0 ]; then
     exec kill -TERM "$PPID"
 fi
 
-cd ..
 rootdir="$PWD"
 shorthash="$(git rev-parse --short HEAD)"
-cd "$OLDPWD"
+cd src/ || exit 1
 export rootdir
 export shorthash
 

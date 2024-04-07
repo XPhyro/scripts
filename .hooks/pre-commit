@@ -5,7 +5,7 @@ COLOR_CLEAR='\033[0m'
 
 changed_files="$(git diff --cached --name-only)"
 
-(cd src/ && ./.make spell) || {
+(./.make spell) || {
     printf "${COLOR_RED}Commit introduces typos.${COLOR_CLEAR}\n"
     exit 1
 }
