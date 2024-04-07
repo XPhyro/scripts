@@ -39,7 +39,6 @@
 - In `bspwmpad`, add an option to start in some desktop.
 - In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
   numbers.
-- Support arbitrary counts of warnings and configurations in `warnbattery`.
 - In `tglapp`, support terminating the X window instead of the run process.
 - Support custom lock directory prefix in `dbutil.h`.
 - Support custom lock directory prefix in `lck`.
@@ -75,14 +74,6 @@
   - `td` may be `printf "%s\n" TODO*(N) TODO.md | head -n 1` (zsh)
   - `rdm` may be `printf "%s\n" README*(N) README.md | head -n 1` (zsh)
   - `lc` may be `find . -mindepth 1 -maxdepth 1 -type f -iname "*license*" -print0 | head -z -n 1 | head -c -2` (sh)
-- Support non-absolute values for `-l` and `-p` in `scrolls`.
-  - Syntax should support `x%` where `0.0 <= x <= 100.0` or `y` where `y >= 0`.
-- Add new events in `bspwm-autokblayout`:
-  - `on_focused(has_different_km, has_different_name)`
-    - `has_different_km`: whether the user manually overwrote the automatic
-      state
-    - `has_different_name`: whether the name of the window is different from
-      the last time it was focused
 - Make the interfaces of `std::*` (mostly) compliant with those of C++, even if
   it duplicates current interfaces.
 - Make `std::*` easier to use in shells with aliases similar to `ensure`.
@@ -96,9 +87,6 @@
 - Support anonymous (non-numbered) pads in `bspwmpad`.
   - In `latexd`, if `$TABBED_XID` is set and non-empty, use request an
     anonymous pad.
-- In `bspwmpad`, if floating, center the window respecting `window_gap` and
-  status bar.
-  - Also support manual offsets.
 - Support globbing and regex in `exif-filter`.
 - Support mounting/unmounting Android devices in `mountsel`/`umountsel`.
 - `exif-filter`: support custom filter functions in place of the default
@@ -106,9 +94,6 @@
 - `tglapp`: run applications in a `tmux` session.
   - Still capture stdout/stderr to temporary files.
     - Or, don't capture them, but query them from `tmux` if it is supported.
-- `headsetcontrol2mpris`: only resume automatically-paused players.
-- MAYBE: `headsetcontrol2mpris`: if the game side is active, use 100% as
-  indicator, otherwise use 0% as indicator.
 - `termctl`: include commands, subcommands, etc. in help dialog (or add a
   (command & subcommand)/flag for it)
 - Support stdin in `gcc-otg`.
@@ -121,7 +106,6 @@
   - <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-arm64-Readme.md>
-- Add manuals.
 - In `wallpaper`, support different sources for different monitors and
   different sources for landscape/portrait monitors.
 - Alternatively select files with fzf in git integrations (such as gcm).
@@ -129,16 +113,9 @@
 
 ## New Scripts
 
-- Finish `registernotif`.
-- `loginfo`, `logwarn` and `logerr`; similar to `registernotif`.
-- `logTYPEnotif`: wrapper for `logTYPE "$@"; registernotif "$@"`.
-- Gesture-like daemon for built-in mixer states via `headsetcontrol`.
-- Write an `xsetwacom` wrapper. See
-  [this](https://wiki.archlinux.org/title/wacom_tablet#Configuration).
 - Write a C program that takes in argv through argv and parsing configuration
   through stdin and outputs shell `eval`able code, then replace all applicable
   existing argument parsing in shell scripts with this program.
-- Same as `warnbattery`, except for `headsetcontrol`.
 - Create a script for enabling/disabling/toggling/querying xinput devices. Use
   this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
   scripts.
@@ -183,70 +160,6 @@
   the script file is touched.
   - Similar to `polybar`, `picom`, etc.
   - Use this header in daemons like `headsetcontrol2mpris`.
-- Create an `fzf`/`execmenu` wrapper that automatically chooses between the two
-  depending on whether stdin is a TTY.
-- Create an nothing/`$PAD` wrapper that automatically chooses between the two
-  depending on whether stdin is a TTY.
-- Create a `vit` profile manager similar to `taskellctl`.
-- Delegate config reading/parsing/writing/etc. to headers.
-  - Languages:
-    - Create a C header for configs.
-      - There is `dbutil.h`, but a more abstracted version would be better.
-    - Create a C++ header for configs.
-    - Create a shell header for configs.
-  - Support the following features:
-    - Checking if the config exists
-    - Initialising a default config
-    - Reading the config in raw form
-    - Parsing the config
-      - Use an easy-to-parse, sufficiently extensible and sufficiently
-        human-readable format.
-        - Maybe DOS INI or a variant?
-- Create a hotkey manager similar to `sxhkd`.
-  - Config syntax ideas:
-    - Similar to `sxhkd`, with `Down`, `Hold`, `Up` suffixes and other modifications.
-      - Syntax draft:
-        - `A = (E +)? KeyDown      (; D)?`
-        - `B = (E +)? KeyHold (F)? (; D)?`
-        - `C = (E +)? KeyUp        (; D)?`
-        - `D = ((A)|(B)|(C))?`
-        - `E = Modifier (+ E)?`
-        - `F = ((/ (G)(m(il(l(i)?)?)?)?s(ec(ond(s)?)?)?)|(* (G)hz))`
-        - `G = N(.N)?(e[-+]?N)?`
-        - `N = [0-9](N)?`
-        - Also support `{..., ...}` from `sxhkd`.
-      - Example:
-        - `super + EscapeDown`
-        - `    bspc desktop -l next`
-        - `super + EscapeUp`
-        - `    bspc desktop -l prev`
-        - `super + {Down, Up, Left, Right}Hold / 200ms`
-        - `    xdotool mousemove_relative -- {0 5, 0 -5, -5 0, 5 0}`
-    - DOS INI variant, similar to `systemd` service unit files.
-      - Unit files can be enabled/disabled on events or on demand.
-      - Hotkeys can be enabled/disabled on events or on demand.
-      - Possible parameters in unit files, with mandatory ones marked with `*`:
-        - `[LABEL]*`
-        - `Name=NAME`
-        - `Description=DESCRIPTION`
-        - `Hotkey=HOTKEY*`
-        - `Exec=EXEC*`
-        - `Frequency=FREQUENCY**`
-        - `Period=PERIOD**`
-      - Example:
-        - `[next_desktop]`
-        - `Hotkey = super + EscapeDown`
-        - `Exec = bspc desktop -l next`
-        - ``
-        - `[prev_desktop]`
-        - `Hotkey = super + EscapeUp`
-        - `Exec = bspc desktop -l prev`
-        - ``
-        - `[move_mouse]`
-        - `Hotkey = super + {Down, Up, Left, Right}Hold`
-        - `Exec = xdotool mousemove_relative -- {0 5, 0 -5, -5 0, 5 0}`
-        - `Period = 200ms`
-      - Handling complex hotkeys with a DOS INI variant could be too complex.
 - Write a script that is key based like `tglapp` that caches the output of a
   command with the given key and re-uses the output.
   - Support output invalidation after a set (per key or global default) amount
@@ -284,9 +197,6 @@
 - Merge `fillline` and `fillterm` into `fillcol`.
 - `prefix.sh`: don't query paths at runtime, make `.make` insert them in via
   `m4` during installation instead.
-- Instead of including `shellverbose.sh` in all shell scripts, include
-  `stdlib.sh`. Make this library include other standard features.
-  - Maybe even merge `shellverbose.sh` into `stdlib.sh`?
 - Rewrite the pathfinding suite fully in C as a single program.
   - Don't require building a "database". Parse the configuration file on-the-go
     (or generate the database on-the-go and regenerate if mtime of database is
@@ -315,8 +225,8 @@
     description and (if possible) very brief example.
 - At this point perhaps rename the repository from `scripts` to `utils`?
 - Move `src/{man,tests,.make}/` to the root of the repository?
-- Consider changing the extension of shell headers from `.sh` to `.shh` or
-  something similar.
+- Consider changing the extension of shell headers from `.sh` to `.shh`, `.hsh`
+  or something similar.
 - Add a commit hook that catches entries in the readme becoming broken or
   stale.
   - If entries become broken with the commit, the hook should:
@@ -326,7 +236,6 @@
     - Warn about entries possibly becoming stale
 - Generate multiple `tags` files instead of a repository-wide one to split up
   languages, projects, programs, etc.
-- Try out `nim`, `zig` and `#!/usr/bin/env -S tcc -run`.
 - Consider integrating `cpplint`.
 
 # Normal Priority
@@ -339,8 +248,6 @@
 - Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty
   arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr.
-- In `bspwm-flwall`, do not follow if the node added or removed is not in the
-  current desktop, even if it's in another monitor's focused desktop.
 - `.make`: `.installed` grows indefinitely unless `uninstall` is issued, fix.
 - `latexd` does not work with files containing `'`, fix.
 - `std::string` segfaults if given alignment is not contained in the input.
@@ -404,7 +311,6 @@
   shell side, before exiting, `cp -f "$somedir/$$" "$somedir/0"` and when
   initialising, `cp "$somedir/0" "$somedir/$$"` can respectively be used to save
   and load.
-- In `tglapp`, implement `-F, --fork` using `setsid --fork -- "$realshell" -c`.
 - In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the
   same keycode is currently active, check that the given command is the same as
   the currently running application. If the commands do not check out, exit with
@@ -419,11 +325,8 @@
 - Do not assume a font size in `rofifit`. The new calculation should still be
   generous such that it would not make the same mistake as `rofi` trimming
   _very_ short.
-- In `bspwmpad`, add an option to hide the cursor.
 - In `tglapp`, add an option that disables auto-unlocking, allowing the user to
   review the stdout/stderr of the command.
-- In `syncmail`, allow adding temporary and permanent blacklist. If a lock is
-  present, do not send a notification for the blacklisted senders/titles/bodies.
 - In `latexd`, allow passing arguments to `bspwmpad`.
 - In `bspwmpad`, support killing the command running in the given pad number.
 - In `bspwmpad`, support killing the command running in the given pad number and
@@ -444,8 +347,6 @@
 - Into the pathfinding suite, add a system for custom
   aliases/functions/variables depending on the current directory of the user.
   This could be done by modifying the currently provided `cd` function.
-- Support more parameters in `reddit-fetch`, see
-  <https://pushshift.io/api-parameters/>.
 - In `rgb24togray`, add `METHOD_HSL_S` and `METHOD_HSL_L`.
 - In `sandwichline`, add `-s, --same-dough` option to make the top and bottom
   of the sandwich the same when randomised.
@@ -454,7 +355,6 @@
 
 ## New Scripts
 
-- Write a variant of `volappch` that toggles mute status.
 - Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink
   them to the original locations.
   - Support multiple systems:
@@ -484,23 +384,12 @@
   hashmaps. Currently `getdir`, `getfl` and other scripts use directory/file
   structures as a workaround. This script would need to perform at least as well
   as the workaround, if not better, and be convenient to use.
-- Timer, chronometer, alarm.
-- Implement a crop subcommand in `ffmw`.
 - Write a script similar to `bspwmpad` that would register/deregister the
   focused node if the key (1-9) is empty, else it will deregister that key;
   then, write a script that would hide/show these nodes per key. Key 0 should be
   similar to the key 0 of `bspwmpad`.
-- Write a script to check an sxhkdrc file (by default
-  `"$HOME/.config/sxhkd/sxhkdrc"`) that would check for duplicate hotkeys, _not_
-  assuming the modifiers are in a particular order, and print the hotkeys along
-  with their commands.
 - Using `mapexec`, write a batch renaming tool that passes the name through
   `stat --printf=` if the line starts with ` `.
-- `volauxdefset`
-- `volauxsetarr`: like `volauxset`, but moves in predefined volume levels (given
-  via arguments).
-- `volauxdefsetarr`: like `volauxdefset`, but moves in predefined volume levels
-  (given via arguments).
 
 ## Refactoring / Rewriting / Reworking
 
@@ -578,19 +467,11 @@
 
 ## New Scripts
 
-- Write a _layout manager_ for dwm and/or bspwm. This manager would pop-up some
-  sort of window showing (icon-ic) previews of the different available layouts.
-  When one is selected, it would change the wm to that layout. You may want to
-  use `rofi` or a `dialog` menu.
 - Port `unitutil.hpp` to C.
   - Maybe use the new C header in the C++ header as the backend?
 
 ## Refactoring / Rewriting / Reworking
 
-- In `weather`, pad the first and last lines to prevent the clashes of the two
-  versions. If the whole output is padded, the lines do not look nice. See
-  [this](https://www.unix.com/shell-programming-and-scripting/257005-how-add-extra-spaces-make-all-lines-same-length.html)
-  for easy padding.
 - In all C files (except, perhaps, those under `*/include/*`), move variable
   declarations as close as possible to the first usage, i.e. reduce their scope
   as much as possible. Still use C89 style declarations.
