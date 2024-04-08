@@ -322,6 +322,18 @@ next:
     for (auto& window : windows) {
         XSetWindowAttributes window_attributes;
         window_attributes.override_redirect = True;
+
+        auto wm_state = XInternAtom(display, "_NET_WM_STATE", False);
+        auto wm_state_above = XInternAtom(display, "_NET_WM_STATE_ABOVE", False);
+        XChangeProperty(display,
+                        window,
+                        wm_state,
+                        XA_ATOM,
+                        32,
+                        PropModeAppend,
+                        reinterpret_cast<unsigned char*>(&wm_state_above),
+                        1);
+
         XChangeWindowAttributes(display, window, CWOverrideRedirect, &window_attributes);
 
         XMapWindow(display, window);
