@@ -168,7 +168,7 @@ void set_window_alpha(Window window, double alpha)
     else
         opacity = 0xFFFFFFFFul * alpha;
 
-    auto opacity_atom = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
+    const auto opacity_atom = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
     XChangeProperty(display,
                     window,
                     opacity_atom,
@@ -200,7 +200,7 @@ void cleanup(void)
 
     lerp_alpha(0.0);
 
-    for (auto& window : windows)
+    for (const auto window : windows)
         XDestroyWindow(display, window);
     XCloseDisplay(display);
 }
@@ -238,7 +238,7 @@ std::optional<int> force_single_instance()
     }
 
     if (std::ifstream ifl(lock_file); ifl.is_open()) {
-        pid_t pid;
+        ::pid_t pid;
         ifl >> pid;
 
         errno = 0;
@@ -250,7 +250,7 @@ std::optional<int> force_single_instance()
     }
 
     if (std::ofstream ofl(lock_file); ofl.is_open()) {
-        pid_t pid = getpid();
+        const auto pid = getpid();
         ofl << pid;
         return std::nullopt;
     }
@@ -262,19 +262,19 @@ void create_windows()
 {
     xph::die_if(!(display = XOpenDisplay(NULL)), "unable to open display");
 
-    auto default_screen = DefaultScreen(display);
-    auto root_window = RootWindow(display, default_screen);
+    const auto default_screen = DefaultScreen(display);
+    const auto root_window = RootWindow(display, default_screen);
 
-    XRRScreenResources* screen_resources = XRRGetScreenResources(display, root_window);
+    const auto screen_resources = XRRGetScreenResources(display, root_window);
     xph::die_if(!screen_resources, "unable to get screen resources");
 
-    RROutput primary_output = XRRGetOutputPrimary(display, root_window);
+    auto primary_output = XRRGetOutputPrimary(display, root_window);
 
     for (decltype(screen_resources->noutput) i = 0; i < screen_resources->noutput; ++i) {
         if (options->ignore_primary && screen_resources->outputs[i] == primary_output)
             continue;
 
-        auto output_info =
+        const auto output_info =
             XRRGetOutputInfo(display, screen_resources, screen_resources->outputs[i]);
         if (!output_info) {
             std::cerr << xph::exec_name << ": unable to get information for monitor " << i << '\n';
@@ -294,15 +294,15 @@ void create_windows()
         }
 
         {
-            auto window = XCreateSimpleWindow(display,
-                                              root_window,
-                                              crtc_info->x,
-                                              crtc_info->y,
-                                              crtc_info->width,
-                                              crtc_info->height,
-                                              0,
-                                              0,
-                                              0);
+            const auto window = XCreateSimpleWindow(display,
+                                                    root_window,
+                                                    crtc_info->x,
+                                                    crtc_info->y,
+                                                    crtc_info->width,
+                                                    crtc_info->height,
+                                                    0,
+                                                    0,
+                                                    0);
 
             auto* class_hint = XAllocClassHint();
             static std::string class_name(xph::exec_name);
@@ -319,19 +319,19 @@ next:
     }
     XRRFreeScreenResources(screen_resources);
 
-    for (auto& window : windows) {
+    for (const auto window : windows) {
         XSetWindowAttributes window_attributes;
         window_attributes.override_redirect = True;
 
-        auto wm_state = XInternAtom(display, "_NET_WM_STATE", False);
-        auto wm_state_above = XInternAtom(display, "_NET_WM_STATE_ABOVE", False);
+        const auto wm_state = XInternAtom(display, "_NET_WM_STATE", False);
+        const auto wm_state_above = XInternAtom(display, "_NET_WM_STATE_ABOVE", False);
         XChangeProperty(display,
                         window,
                         wm_state,
                         XA_ATOM,
                         32,
                         PropModeAppend,
-                        reinterpret_cast<unsigned char*>(&wm_state_above),
+                        reinterpret_cast<const unsigned char*>(&wm_state_above),
                         1);
 
         XChangeWindowAttributes(display, window, CWOverrideRedirect, &window_attributes);
@@ -370,7 +370,7 @@ next:
 
     std::remove_const<decltype(length)>::type i = 0;
     while (i < length) {
-        auto event = reinterpret_cast<const struct inotify_event*>(&buf[i]);
+        const auto event = reinterpret_cast<const struct inotify_event*>(&buf[i]);
         if (event->len)
             goto cleanup;
         i += eventsize + event->len;
@@ -387,7 +387,7 @@ int main(int argc, char* argv[])
 {
     xph::gather_exec_info(argc, argv);
 
-    Options options(xph::exec_name, argc, argv);
+    const Options options(xph::exec_name, argc, argv);
     ::options = &options;
 
     if (std::optional<int> optional_ret; (optional_ret = force_single_instance()))
@@ -407,7 +407,7 @@ int main(int argc, char* argv[])
             die("could not create fifo at ", options.alpha_path);
         }
 
-        auto fd = ::open(options.alpha_path.data(), O_RDONLY | O_NONBLOCK);
+        const auto fd = ::open(options.alpha_path.data(), O_RDONLY | O_NONBLOCK);
         if (fd == -1) {
             std::perror("open");
             die("could not open ", options.alpha_path);
@@ -429,7 +429,7 @@ int main(int argc, char* argv[])
             static auto alpha = options.alpha;
             static std::stringstream ss;
             static double new_alpha;
-            static auto read_alpha = [&](void) {
+            const static auto read_alpha = [&](void) {
                 for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
                      ss << buf) {}
                 ss >> new_alpha;
