@@ -1,5 +1,5 @@
 test_binary=fmapc
-test_name="Binary 2"
+test_name="Binary"
 test_exit_code=0
 
 set -- -b
