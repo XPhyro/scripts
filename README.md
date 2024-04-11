@@ -161,9 +161,9 @@ licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 ## Star History
 
 <a href="https://star-history.com/#XPhyro/scripts&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date" />
- </picture>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date" />
+  </picture>
 </a>
