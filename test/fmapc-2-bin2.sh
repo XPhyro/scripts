@@ -5,12 +5,14 @@ test_exit_code=0
 set -- -b
 
 test_stdin() {
-    printf 00102030405060708090a0b0c0d0e0f0
+    seq 255 -1 0 | xargs -d '\n' -n 1 printf '%02x' | rev
 }
 
 test_stdout() {
-    printf "\0%s" '	
-'
+    seq 0 255 \
+        | xargs -d '\n' -n 1 printf "%x\n" \
+        | sed 's/^/\\x/' \
+        | xargs -d '\n' -n 1 printf
 }
 
 test_stderr() {
