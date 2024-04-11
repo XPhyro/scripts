@@ -157,3 +157,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Unless otherwise stated, all software found in this repository are
 licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=XPhyro/scripts&type=Date)](https://star-history.com/#XPhyro/scripts&Date)
