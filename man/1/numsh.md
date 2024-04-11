@@ -49,7 +49,8 @@ Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
 # BUGS & ISSUES
 
 Report at <https://github.com/XPhyro/scripts/issues> or
-<https://codeberg.org/XPhyro/scripts/issues>.
+<https://codeberg.org/XPhyro/scripts/issues>, or mail the author.
+GitHub is preferred.
 
 # COPYRIGHT
 
