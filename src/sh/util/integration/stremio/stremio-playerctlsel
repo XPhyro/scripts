@@ -6,6 +6,8 @@ if ! ids="$(xdotool search --name "^Stremio - Freedom to Stream$")"; then
     playerctlsel "$@"
 else
     printf "%s\n" "$ids" | while IFS= read -r id; do
+        [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "mutter-x11-frames", "mutter-x11-frames"' ] && break
+    done && printf "%s\n" "$ids" | while IFS= read -r id; do
         [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "stremio", "Stremio"' ]
         ret="$?"
         [ "$ret" -eq 0 ] && {
