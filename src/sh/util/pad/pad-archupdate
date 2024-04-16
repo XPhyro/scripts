@@ -13,6 +13,7 @@ fi
 
     noconfirm=
     yesno -- "Pass \`--noconfirm?\`" && noconfirm="--noconfirm"
+    printf "\n"
 
     update > /dev/null 2>&1 &
     if time -v yay -Syu $noconfirm; then
