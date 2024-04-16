@@ -11,8 +11,11 @@ fi
 "$PAD" $extraopts -t "${0##*/}" -- sh -c '
     . io.sh
 
+    noconfirm=
+    yesno -- "Pass \`--noconfirm?\`" && noconfirm="--noconfirm"
+
     update > /dev/null 2>&1 &
-    if time -v yay -Syu; then
+    if time -v yay -Syu $noconfirm; then
         [ -n "$YAY_ALWAYS_CLEAN_CACHE" ] \
             && [ "$YAY_ALWAYS_CLEAN_CACHE" -ne 0 ] \
             && yay -Scc --noconfirm > /dev/null 2>&1
