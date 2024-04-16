@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 . std.sh
+. io.sh
 
 printf "$@"
 exec equals "$(std_read_char_tty)" Y y
