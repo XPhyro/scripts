@@ -325,6 +325,8 @@ next:
 
         const auto wm_state = XInternAtom(display, "_NET_WM_STATE", False);
         const auto wm_state_above = XInternAtom(display, "_NET_WM_STATE_ABOVE", False);
+        const auto wm_window_type = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
+        const auto wm_window_type_dock = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DOCK", False);
         XChangeProperty(display,
                         window,
                         wm_state,
@@ -333,10 +335,27 @@ next:
                         PropModeAppend,
                         reinterpret_cast<const unsigned char*>(&wm_state_above),
                         1);
+        XChangeProperty(display,
+                        window,
+                        wm_window_type,
+                        XA_ATOM,
+                        32,
+                        PropModeReplace,
+                        reinterpret_cast<const unsigned char*>(&wm_window_type),
+                        1);
+        XChangeProperty(display,
+                        window,
+                        wm_window_type_dock,
+                        XA_ATOM,
+                        32,
+                        PropModeReplace,
+                        reinterpret_cast<const unsigned char*>(&wm_window_type_dock),
+                        1);
 
         XChangeWindowAttributes(display, window, CWOverrideRedirect, &window_attributes);
 
         XMapWindow(display, window);
+        XRaiseWindow(display, window);
         XFlush(display);
 
         set_window_alpha(window, 0.0);
