@@ -1,5 +1,5 @@
 test_binary=unexpandpath
-test_name="Pipe"
+test_name="Short Pipe"
 test_exit_code=0
 
 set -- \
