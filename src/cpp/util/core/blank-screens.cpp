@@ -54,15 +54,21 @@ private:
     static const constexpr double k_default_alpha = 1.0;
     static const constexpr double k_default_frame_rate = 100.0;
     static const constexpr double k_default_lerp_factor = 0.10;
+    static const constexpr double k_default_low = 0.0;
+    static const constexpr double k_default_high = 1.0;
+    static const constexpr double k_default_snap_threshold = 0.01;
 
 public:
     std::string_view alpha_path;
     double alpha = k_default_alpha;
     bool exit_if_none_selected = false;
     std::chrono::duration<double> frame_time{ 1.0 / k_default_frame_rate };
+    double low = k_default_low;
+    double high = k_default_high;
     std::string_view lock_path;
     std::unordered_set<std::string> ignored_monitors;
     bool ignore_primary = false;
+    double snap_threshold = k_default_snap_threshold;
     double lerp_factor = k_default_lerp_factor;
     std::unordered_set<std::string> selected_monitors;
 
@@ -93,12 +99,21 @@ public:
                "  -f FPS       set frame rate of alpha interpolation to FPS. default is "
             << k_default_frame_rate
             << ".\n"
+               "  -H HIGH      set upper bound. default is "
+            << k_default_high
+            << ".\n"
                "  -h           display this help and exit\n"
+               "  -L LOW       set lower bound. default is "
+            << k_default_low
+            << ".\n"
                "  -l PATH      path to lock file. default is \"${TMPDIR:-/tmp}/"
             << exec_name
             << ".lock\"\n"
                "  -m NAME      don't blank monitor with name NAME, can be given multiple times\n"
                "  -p           don't blank primary monitor\n"
+               "  -S SNAP      set snap threshold. default is "
+            << k_default_snap_threshold
+            << ".\n"
                "  -t FACTOR    set alpha interpolation factor to FACTOR. default is "
             << k_default_lerp_factor << ".\n";
         std::exit(EXIT_SUCCESS);
@@ -112,7 +127,7 @@ public:
 
     void parse_args(int& argc, char**& argv)
     {
-        for (int i; (i = getopt(argc, argv, "A:a:ef:hl:m:pt:")) != -1;) {
+        for (int i; (i = getopt(argc, argv, "A:a:ef:H:hL:l:m:pS:t:")) != -1;) {
             switch (i) {
                 case 'A':
                     alpha_path = optarg;
@@ -129,8 +144,16 @@ public:
                         1.0 /
                         xph::lexical_cast<decltype(optarg), decltype(frame_time)::rep>(optarg));
                     break;
+                case 'H':
+                    high = std::clamp(
+                        xph::lexical_cast<decltype(optarg), decltype(high)>(optarg), 0.0, 1.0);
+                    break;
                 case 'h':
                     help();
+                    break;
+                case 'L':
+                    low = std::clamp(
+                        xph::lexical_cast<decltype(optarg), decltype(low)>(optarg), 0.0, 1.0);
                     break;
                 case 'l':
                     lock_path = optarg;
@@ -140,6 +163,10 @@ public:
                     break;
                 case 'p':
                     ignore_primary = true;
+                    break;
+                case 'S':
+                    snap_threshold =
+                        xph::lexical_cast<decltype(optarg), decltype(snap_threshold)>(optarg);
                     break;
                 case 't':
                     lerp_factor =
@@ -160,10 +187,12 @@ public:
 
 void set_window_alpha(Window window, double alpha)
 {
+    alpha = std::clamp(alpha, options->low, options->high);
+
     unsigned long opacity;
-    if (alpha > 0.99)
+    if (alpha > 1 - options->snap_threshold)
         opacity = 0xFFFFFFFFul;
-    else if (alpha < 0.01)
+    else if (alpha < options->snap_threshold)
         opacity = 0x00000000ul;
     else
         opacity = 0xFFFFFFFFul * alpha;
