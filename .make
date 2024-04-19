@@ -348,6 +348,36 @@ install() {
     )
 
     printf "\n%s\n" \
+        "Preparing to install Go programs:"
+
+    (
+        cd go
+
+        printf "%s\n" \
+            "  Using Go toolchain:" \
+            "    Compiler: go" \
+            "    Compiler version: $(go version | awk '{print $3}' | sed 's/^go//')" \
+            "" \
+            "Installing Go programs:"
+
+        find '.' -mindepth 1 -type f -name "*.go" -print0 \
+            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
+                in="$1"
+                out="${in##*/}"
+                out="$binprefix/${out%.go}"
+                printf "  %s -> %s\n" \
+                    "$in" \
+                    "$out"
+                [ "$out" -ot "$in" ] || {
+                    printf "    %s\n" \
+                        "Already up-to-date."
+                    exit 0
+                }
+                $unbuffer go build -o "$binprefix/$out" "$in"
+            ' --
+    )
+
+    printf "\n%s\n" \
         "Preparing to install Rust programs:"
 
     (
@@ -529,6 +559,8 @@ install() {
         find "$includeprefix/imtui/" "$includeprefix/lyra/" \
             -print0
         find cpp/project -mindepth 1 -maxdepth 1 -type d \
+            -printf "$binprefix/%f\0"
+        find go -mindepth 1 -type f -name "*.go" \
             -printf "$binprefix/%f\0"
         find rs -mindepth 1 -maxdepth 1 -type d \
             -printf "$binprefix/%f\0"
