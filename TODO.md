@@ -210,6 +210,7 @@
 
 ## Other
 
+- *Add support for installing single programs, plugins, etc.*
 - Documentation:
   - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
