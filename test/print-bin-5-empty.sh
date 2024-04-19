@@ -1,5 +1,5 @@
 test_binary=print-bin
-test_name="Out of Range - Empty"
+test_name="Empty"
 test_exit_code=0
 
 set --
