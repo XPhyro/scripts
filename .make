@@ -1087,7 +1087,11 @@ stats() {
     rsloc="$(wc -l < "$tmp")"
     rssloc="$(sed '/^\s*$/d' < "$tmp" | wc -l)"
 
-    files="$(find -P 'sh' -mindepth 1 -type f -executable; printf "%s\n" "$realexecpath" "$rootdir/.hooks/pre-commit")"
+    files="$(
+        find -P 'sh' -mindepth 1 -type f -executable
+        find -P '../test' -mindepth 1 -type f -iname "*.sh"
+        printf "%s\n" "$realexecpath" "$rootdir/.hooks/pre-commit"
+    )"
     shn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
     shbytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
