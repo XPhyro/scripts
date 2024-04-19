@@ -368,12 +368,12 @@ install() {
                 printf "  %s -> %s\n" \
                     "$in" \
                     "$out"
-                [ "$out" -ot "$in" ] || {
+                [ -f "$out" ] && [ "$out" -nt "$in" ] && {
                     printf "    %s\n" \
                         "Already up-to-date."
                     exit 0
                 }
-                $unbuffer go build -o "$binprefix/$out" "$in"
+                $unbuffer go build -o "$out" "$in"
             ' --
     )
 
