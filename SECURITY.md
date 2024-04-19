@@ -4,10 +4,10 @@ If you believe you found a security issue, please provide the details
 privately by
 
 - either using the private vulnerability reporting feature of GitHub,
-- or sending them to the e-mail address `berke.kocaoglu@metu.edu.tr`
-  encrypted with its public and your private PGP keys. The public PGP key
-  associated with this address can be found in most mainstream databases or at
-  the end of this document.
+- or sending them to the e-mail address `berke.kocaoglu@metu.edu.tr`,
+  preferably encrypted with its public and your private PGP keys. The public
+  PGP key associated with this address can be found in most mainstream
+  databases or at the end of this document.
 
 Please include the following details if possible:
 
