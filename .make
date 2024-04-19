@@ -632,10 +632,9 @@ unittest() {
     (
         cd ../test
 
-        tmpin="$(mktemp)"
         tmpout="$(mktemp)"
         tmperr="$(mktemp)"
-        trap "rm -f -- '$tmpin' '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
+        trap "rm -f -- '$tmpout' '$tmperr'; exit 1" INT EXIT HUP TERM
 
         printf "%s\n" \
             "Testing scripts and programs:"
@@ -657,8 +656,7 @@ unittest() {
                 printf "%s\n" \
                     " - $test_name:"
 
-                test_stdin > "$tmpin"
-                "$test_binary" "$@" < "$tmpin" 1> "$tmpout" 2> "$tmperr"
+                test_stdin | "$test_binary" "$@" 1> "$tmpout" 2> "$tmperr"
                 cmdec="$?"
 
                 failstr=
@@ -676,7 +674,7 @@ unittest() {
             )
         done | sponge
 
-        rm -f -- "$tmpin" "$tmpout" "$tmperr"
+        rm -f -- "$tmpout" "$tmperr"
         trap - INT EXIT HUP TERM
     )
 }
