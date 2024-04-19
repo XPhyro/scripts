@@ -1052,6 +1052,13 @@ stats() {
     elloc="$(wc -l < "$tmp")"
     elsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
+    files="$(find -P 'go' -mindepth 1 -type f -name "*.go")"
+    gon="$(printf "%s\n" "$files" | wc -l)"
+    printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
+    gobytes="$(tr -d '[:space:]' < "$tmp" | wc -m)"
+    goloc="$(wc -l < "$tmp")"
+    gosloc="$(sed '/^\s*$/d;/^\s*\/\//d' < "$tmp" | wc -l)"
+
     files="$(find -P 'js' -mindepth 1 -type f -iname "*.js")"
     jsn="$(printf "%s\n" "$files" | wc -l)"
     printf "%s\n" "$files" | xargs -r -d '\n' cat -- > "$tmp"
@@ -1105,10 +1112,10 @@ stats() {
     systemdloc="$(wc -l < "$tmp")"
     systemdsloc="$(sed '/^\s*$/d;/^\s*#/d' < "$tmp" | wc -l)"
 
-    totaln="$((awkn + bashn + cn + cppn + eln + jsn + mann + pln + pyn + rsn + shn + systemdn))"
-    totalbytes="$((awkbytes + bashbytes + cbytes + cppbytes + elbytes + jsbytes + manbytes + plbytes + pybytes + rsbytes + shbytes + systemdbytes))"
-    totalloc="$((awkloc + bashloc + cloc + cpploc + elloc + jsloc + manloc + plloc + pyloc + rsloc + shloc + systemdloc))"
-    totalsloc="$((awksloc + bashsloc + csloc + cppsloc + elsloc + jssloc + mansloc + plsloc + pysloc + rssloc + shsloc + systemdsloc))"
+    totaln="$((awkn + bashn + cn + cppn + eln + gon + jsn + mann + pln + pyn + rsn + shn + systemdn))"
+    totalbytes="$((awkbytes + bashbytes + cbytes + cppbytes + elbytes + gobytes + jsbytes + manbytes + plbytes + pybytes + rsbytes + shbytes + systemdbytes))"
+    totalloc="$((awkloc + bashloc + cloc + cpploc + elloc + goloc + jsloc + manloc + plloc + pyloc + rsloc + shloc + systemdloc))"
+    totalsloc="$((awksloc + bashsloc + csloc + cppsloc + elsloc + gosloc + jssloc + mansloc + plsloc + pysloc + rssloc + shsloc + systemdsloc))"
 
     printf "%s\n" \
         "Git:" \
@@ -1122,6 +1129,7 @@ stats() {
         "  C:          $cn" \
         "  C++:        $cppn" \
         "  execline:   $eln" \
+        "  Go:         $gon" \
         "  JavaScript: $jsn" \
         "  groff:      $mann" \
         "  Perl:       $pln" \
@@ -1137,6 +1145,7 @@ stats() {
         "  C:          $cbytes" \
         "  C++:        $cppbytes" \
         "  execline:   $elbytes" \
+        "  Go:         $gobytes" \
         "  JavaScript: $jsbytes" \
         "  groff:      $manbytes" \
         "  Perl:       $plbytes" \
@@ -1152,6 +1161,7 @@ stats() {
         "  C:          $cloc" \
         "  C++:        $cpploc" \
         "  execline:   $elloc" \
+        "  Go:         $goloc" \
         "  JavaScript: $jsloc" \
         "  groff:      $manloc" \
         "  Perl:       $plloc" \
@@ -1167,6 +1177,7 @@ stats() {
         "  C:          $csloc" \
         "  C++:        $cppsloc" \
         "  execline:   $elsloc" \
+        "  Go:         $gosloc" \
         "  JavaScript: $jssloc" \
         "  groff:      $mansloc" \
         "  Perl:       $plsloc" \
