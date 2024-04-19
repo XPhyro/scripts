@@ -642,6 +642,7 @@ unittest() {
         # shellcheck disable=SC2154
         for test in *.sh; do
             (
+                set +e
                 . "./$test"
 
                 printf "%s" \
@@ -660,9 +661,15 @@ unittest() {
                 cmdec="$?"
 
                 failstr=
-                test_stderr | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"
-                test_stdout | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"
-                [ "$cmdec" -ne "$test_exit_code" ] && failstr="Expected exit code $test_exit_code, got $cmdec. $failstr"
+                command -v test_stderr > /dev/null 2>&1 \
+                    && { test_stderr | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"; }
+                command -v test_stdout > /dev/null 2>&1 \
+                    && { test_stdout | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"; }
+                if [ "$test_exit_code" = "nonzero" ]; then
+                    [ "$cmdec" -eq 0 ] && failstr="Expected nonzero exit code, got $cmdec. $failstr"
+                else
+                    [ "$cmdec" -ne "$test_exit_code" ] && failstr="Expected exit code $test_exit_code, got $cmdec. $failstr"
+                fi
 
                 if [ -n "$failstr" ]; then
                     printf "%s\n" \
