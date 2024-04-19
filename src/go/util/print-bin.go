@@ -7,10 +7,6 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		os.Exit(1)
-	}
-
 	for _, arg := range os.Args[1:] {
 		asciiCode, err := strconv.Atoi(arg)
 		if err != nil {
