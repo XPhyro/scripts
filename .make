@@ -639,23 +639,26 @@ unittest() {
         printf "%s\n" \
             "Testing scripts and programs:"
 
+        last_binary=
         # shellcheck disable=SC2154
         for test in *.sh; do
+            binary="$(grep '^test_binary=' "$test")"
+            binary="${binary#*=}"
+            [ -n "$last_binary" ] && [ "$binary" != "$last_binary" ] && printf "\n  %s\n" "$binary"
+            last_binary="$binary"
+
             (
                 set +e
                 . "./$test"
 
-                printf "%s" \
-                    "  $test_binary"
-
                 command -v -- "$cmd" > /dev/null 2>&1 || {
-                    printf "\n%s\n" \
-                        "Not installed, cannot test."
+                    printf "%s\n" \
+                        "    Not installed, cannot test."
                     exit 0
                 }
 
-                printf "%s\n" \
-                    " - $test_name:"
+                printf "%s" \
+                    "    $test_name: "
 
                 test_stdin | "$test_binary" "$@" 1> "$tmpout" 2> "$tmperr"
                 cmdec="$?"
@@ -673,10 +676,10 @@ unittest() {
 
                 if [ -n "$failstr" ]; then
                     printf "%s\n" \
-                        "    Failed: $failstr"
+                        "Failed: $failstr"
                 else
                     printf "%s\n" \
-                        "    Passed."
+                        "Passed."
                 fi
             )
         done | sponge
