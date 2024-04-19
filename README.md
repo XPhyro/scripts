@@ -16,6 +16,7 @@ the following languages:
 - C
 - C++
 - execline
+- Go
 - JavaScript
 - POSIX Shell
 - Perl
