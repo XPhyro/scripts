@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-int64_t ipow(int64_t base, uint8_t exp)
+int64_t ipow64(int64_t base, uint8_t exp)
 // https://gist.github.com/orlp/3551590
 {
     // anything past 63 is a guaranteed overflow with base > 1
@@ -73,8 +73,7 @@ int64_t ipow(int64_t base, uint8_t exp)
     }
 }
 
-_Static_assert(sizeof(int) == 4, "int must be 4 bytes");
-int digitcount(int x)
+int digitcount32(int32_t x)
 {
     if (x < 0)
         x = (x == INT_MIN) ? INT_MAX : -x;
@@ -99,7 +98,7 @@ int digitcount(int x)
     return 10;
 }
 
-int digitcountu(unsigned int x)
+int digitcountu32(uint32_t x)
 {
     if (x < 10)
         return 1;
@@ -122,8 +121,7 @@ int digitcountu(unsigned int x)
     return 10;
 }
 
-_Static_assert(sizeof(long int) == 8, "long int must be 8 bytes");
-int digitcountl(long int x)
+int digitcount64(int64_t x)
 {
     if (x < 0)
         x = (x == INT_MIN) ? INT_MAX : -x;
@@ -166,7 +164,7 @@ int digitcountl(long int x)
     return 19;
 }
 
-int digitcountul(unsigned long int x)
+int digitcountu64(uint64_t x)
 {
     if (x < 10)
         return 1;
@@ -205,18 +203,6 @@ int digitcountul(unsigned long int x)
     if (x < 1000000000000000000)
         return 18;
     return 19;
-}
-
-_Static_assert(sizeof(long long int) == sizeof(long int),
-               "long long int must have the same size as long int");
-int digitcountll(unsigned long long int x)
-{
-    return digitcountl(x);
-}
-
-int digitcountull(unsigned long long int x)
-{
-    return digitcountul(x);
 }
 
 int sign(int x)

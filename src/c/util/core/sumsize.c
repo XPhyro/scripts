@@ -184,7 +184,7 @@ next:;
 
     if (lowsum != 0) {
         for (; lowsum && !(lowsum % 10); lowsum /= 10) {}
-        lowdigits = digitcountll(lowsum);
+        lowdigits = digitcount64(lowsum);
     } else {
         lowdigits = 0;
     }
@@ -199,9 +199,9 @@ next:;
 
     if (lowdigits) {
         if (lowdigits > 3) {
-            lowsum /= ipow(10, lowdigits - 3);
+            lowsum /= ipow64(10, lowdigits - 3);
         } else {
-            lowsum *= ipow(10, 3 - lowdigits);
+            lowsum *= ipow64(10, 3 - lowdigits);
         }
     }
 
