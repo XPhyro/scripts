@@ -5,6 +5,7 @@ on:
     branches:
       - '**'
     paths:
+      - .make
       - src/*/**
       - src/.make
       - Makefile
@@ -13,7 +14,8 @@ on:
     branches:
       - '**'
     paths:
-      - src/*/**
+      - .make
+      - src/**
       - src/.make
       - Makefile
       - .github/**
