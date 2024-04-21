@@ -651,14 +651,14 @@ unittest() {
                 set +e
                 . "./$test"
 
-                command -v -- "$test_binary" > /dev/null 2>&1 || {
-                    printf "%s\n" \
-                        "    Not installed, cannot test."
-                    exit 0
-                }
-
                 printf "%s" \
                     "    $test_name: "
+
+                command -v -- "$test_binary" > /dev/null 2>&1 || {
+                    printf "%s\n" \
+                        "Not installed, cannot test."
+                    exit 0
+                }
 
                 test_stdin | "$test_binary" "$@" 1> "$tmpout" 2> "$tmperr"
                 cmdec="$?"
