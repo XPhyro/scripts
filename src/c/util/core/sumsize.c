@@ -9,6 +9,7 @@
 
 #include <xph/exec_info.h>
 #include <xph/io.h>
+#include <xph/math.h>
 #include <xph/stdlib.h>
 #include <xph/string.h>
 
@@ -16,7 +17,7 @@
 
 DEFINE_EXEC_INFO()
 
-typedef unsigned long long int sum_t;
+typedef long long int sum_t;
 #define SUM_T_FMT "%llu"
 
 #define PREFIX_KILO 1000ull
@@ -45,7 +46,7 @@ const char lowerpfx[pfxsize] = { 'k', 'm', 'g', 't', 'p' };
 const char upperpfx[pfxsize] = { 'K', 'M', 'G', 'T', 'P' };
 
 bool optdec = false, optboth = false, optargisline = false, optunitless = false;
-char *optfig = "2";
+long optfig = 2;
 char optdelim = '\n';
 
 HEDLEY_NO_RETURN void die(const char *fmt, ...)
@@ -76,9 +77,8 @@ void parseargs(int *restrict argc, char **restrict argv[])
                 optargisline = true;
                 break;
             case 'f':
-                if (astrtol(optarg, "invalid number given to -f") < 0)
+                if ((optfig = astrtol(optarg, "invalid number given to -f")) < 0)
                     die("invalid number given to -f\n");
-                optfig = optarg;
                 break;
             case 'h':
                 printf("usage: %s [OPTION...] [FILE...]\n"
@@ -91,6 +91,8 @@ void parseargs(int *restrict argc, char **restrict argv[])
                        "  -d      print in B instead of iB\n"
                        "  -e      treat each ARG as an input line\n"
                        "  -f FIG  decimal figure count. default is 2.\n"
+                       "          FIG is clamped if it does not make\n"
+                       "          sense for the printed prefix\n"
                        "  -h      display this help and exit\n"
                        "  -u      print summed size as raw byte count\n"
                        "  -z      line delimiter is NUL, not newline\n"
@@ -117,19 +119,19 @@ void parseargs(int *restrict argc, char **restrict argv[])
 
 sum_t parse(char *s)
 {
-    sum_t sum;
-    char *end;
+    sum_t sum, lowsum;
+    char *end = NULL, *lowend = NULL;
     unsigned char npfx[pfxsize] = { 0 };
     bool dec = true;
     char c;
-    int i;
+    int i, lowdigits;
     const sum_t *pfx = (const sum_t *)&decpfx;
 
     errno = 0;
-    sum = strtoull(s, &end, 0);
+    sum = strtoll(s, &end, 10);
 
     if (errno) {
-        perror("strtoull");
+        perror("strtoll");
         die("could not parse line: %s\n", s);
     }
 
@@ -140,6 +142,21 @@ sum_t parse(char *s)
             end++;
         else
             break;
+    }
+
+    if (c == '.' || c == ',') {
+        if ((c = *++end) == '+' || c == '-')
+            die("could not parse line: %s\n", s);
+
+        errno = 0;
+        lowsum = strtoull(end, &lowend, 10);
+
+        if (errno && lowend == end) {
+            perror("strtoull");
+            die("could not parse line: %s\n", s);
+        }
+    } else {
+        lowsum = 0;
     }
 
     for (; (c = *end) && !isspace(c); end++) {
@@ -165,14 +182,32 @@ sum_t parse(char *s)
 next:;
     }
 
+    if (lowsum != 0) {
+        for (; lowsum && !(lowsum % 10); lowsum /= 10) {}
+        lowdigits = digitcountll(lowsum);
+    } else {
+        lowdigits = 0;
+    }
+
     for (i = 0; i < pfxsize; i++) {
         while (npfx[i]) {
             sum *= pfx[i];
+            lowsum *= pfx[i];
             npfx[i]--;
         }
     }
 
-    return sum;
+    if (lowdigits) {
+        if (lowdigits > 3) {
+            lowsum /= ipow(10, lowdigits - 3);
+        } else {
+            lowsum *= ipow(10, 3 - lowdigits);
+        }
+    }
+
+    lowsum /= 1000;
+
+    return sum + lowsum * signll(sum);
 }
 
 sum_t sumargv(int argc, char *argv[])
@@ -203,9 +238,9 @@ int main(int argc, char *argv[])
     sum_t sum, maxpfx;
     const sum_t *pfx;
     long double div;
-    int i;
+    int i, j;
     FILE *fl;
-    char *s;
+    char s2[2], s64[64];
 
     init_exec_info(argc, argv);
 
@@ -234,14 +269,25 @@ int main(int argc, char *argv[])
         printf(SUM_T_FMT "\n", sum);
     } else {
         pfx = optdec ? decpfx : binpfx;
+        maxpfx = 1;
         for (i = pfxsize - 1; i >= 0; i--) {
-            if (sum >= (maxpfx = pfx[i]))
+            if (sum >= pfx[i]) {
+                maxpfx = pfx[i];
                 break;
+            }
         }
         div = sum / (long double)maxpfx;
-        s = vstrcat(3, "%.", optfig, "Lf%c%s\n");
-        // cppcheck-suppress negativeIndex
-        printf(s, div, upperpfx[i], optdec ? "B" : "iB");
+        j = (i + 1) * 3;
+        if (optfig > j)
+            optfig = j;
+        snprintf(s64, sizeof(s64) / sizeof(s64[0]), "%%.%ldLF%%s%%s\n", optfig);
+        if (i < 0) {
+            s2[0] = '\0';
+        } else {
+            s2[0] = upperpfx[i];
+            s2[1] = '\0';
+        }
+        printf(s64, div, s2, optdec || i < 0 ? "B" : "iB");
     }
 
     return EXIT_SUCCESS;

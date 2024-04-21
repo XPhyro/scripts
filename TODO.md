@@ -27,7 +27,6 @@
     due to not updating `bufsize`. See `fizzbuzz` as an example.
 - `make analyse` does not exit with non-zero code even if some analyses fail.
 - Analyse target on GitHub does not work correctly.
-- `sumsize` should not ignore decimal figures.
 
 ## Features
 
@@ -210,7 +209,7 @@
 
 ## Other
 
-- *Add support for installing single programs, plugins, etc.*
+- _Add support for installing single programs, plugins, etc._
 - Documentation:
   - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
