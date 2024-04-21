@@ -651,7 +651,7 @@ unittest() {
                 set +e
                 . "./$test"
 
-                command -v -- "$cmd" > /dev/null 2>&1 || {
+                command -v -- "$test_binary" > /dev/null 2>&1 || {
                     printf "%s\n" \
                         "    Not installed, cannot test."
                     exit 0
