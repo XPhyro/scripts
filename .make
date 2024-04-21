@@ -201,7 +201,7 @@ install() {
                                      -not -path "*/include/*" \
                                      -not -path "*/.archived/*" \
                                      -printf "%P\0" \
-            | xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
+            | xargs -r0 -n 1 -P "$CPU_PROC" sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
                 set -e
@@ -272,7 +272,7 @@ install() {
                                      -not -path "*/.archived/*" \
                                      -not -path "*/project/*" \
                                      -printf "%P\0" \
-            | xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
+            | xargs -r0 -n 1 -P "$CPU_PROC" sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
                 set -e
@@ -341,7 +341,7 @@ install() {
                     exit 0
                 }
 
-                make -j"$(nproc --ignore=2)" "$name"
+                make -j"$CPU_PROC" "$name"
                 cp -f -t "$binprefix" -- "$name"
             )
         done
@@ -361,7 +361,7 @@ install() {
             "Installing Go programs:"
 
         find '.' -mindepth 1 -type f -name "*.go" -print0 \
-            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
+            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "$CPU_PROC" sh -c '
                 in="$1"
                 out="${in##*/}"
                 out="$binprefix/${out%.go}"
@@ -391,7 +391,7 @@ install() {
             "Installing Rust programs:"
 
         find '.' -mindepth 1 -type f -name "Cargo.toml" -printf "%h\0" \
-            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(nproc --ignore=2)"}" sh -c '
+            | unbuffer="$unbuffer" xargs -r0 -n 1 -P "$CPU_PROC" sh -c '
                 exe="${1##./}"
                 cd "$exe"
                 out="target/release/$exe"
@@ -426,7 +426,7 @@ install() {
             | while IFS= read -r section; do
                 mkdir -p -- "$manprefix/man$section" >&2
                 export section
-                find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "${MAKE_JOBS:-"$(($(nproc) * 4))"}" sh -c '
+                find "$section" \( -type f -o -type l \) -print0 | xargs -r0 -n 1 -P "$IO_PROC" sh -c '
                     progname="$(basename -- "$1")"
                     manpath="$manprefix/man$section/${progname%.*}.$section"
                     printf "  %s -> %s\n" "$section/$progname" "$manpath" >&2
@@ -935,7 +935,7 @@ analyse() {
         find . \( -iname '*.c' -o -iname '*.h' \) -print0 \
             | xargs -r0 $unbuffer cppcheck \
                 --enable=warning,style,performance,portability,information,missingInclude \
-                --quiet --inline-suppr -j\"$(nproc)\" \
+                --quiet --inline-suppr -j\"$MAX_PROC\" \
                 --force --error-exitcode=1 --max-ctu-depth=16 \
                 --platform=unix64 --std=c99 -Iinclude \
                 $CPPCHECK_SUPPRESS $C_CPPCHECK_SUPPRESS" 2>&1 \
@@ -947,7 +947,7 @@ analyse() {
         find . \( -iname '*.cpp' -o -iname '*.hpp' \) -print0 \
             | xargs -r0 $unbuffer cppcheck \
                 --enable=warning,style,performance,portability,information,missingInclude \
-                --quiet --inline-suppr -j\"$(nproc)\" \
+                --quiet --inline-suppr -j\"$MAX_PROC\" \
                 --force --error-exitcode=1 --max-ctu-depth=16 \
                 --platform=unix64 --std=c++23 -Iinclude \
                 $CPPCHECK_SUPPRESS $CXX_CPPCHECK_SUPPRESS" 2>&1 \
@@ -1373,6 +1373,21 @@ CPPCHECK_SUPPRESS="--suppress=unmatchedSuppression:\* \
 
 ec=0
 cancompilecpp="$(cancompilecpp "$CXX")"
+
+if [ -n "$MAKE_JOBS" ]; then
+    MAX_PROC="$MAKE_JOBS"
+    CPU_PROC="$MAKE_JOBS"
+    IO_PROC="$MAKE_JOBS"
+else
+    MAX_PROC="$(nproc)"
+    if [ "$GITHUB_ACTIONS" = true ]; then
+        CPU_PROC="$MAX_PROC"
+        IO_PROC="$((MAX_PROC * 4))"
+    else
+        CPU_PROC="$(nproc --ignore=2)"
+        IO_PROC="$((MAX_PROC * 4))"
+    fi
+fi
 
 all
 
