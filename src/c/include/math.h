@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <hedley.h>
+
 int64_t ipow64(int64_t base, uint8_t exp)
 // https://gist.github.com/orlp/3551590
 {
@@ -45,29 +47,35 @@ int64_t ipow64(int64_t base, uint8_t exp)
                 result *= base;
             exp >>= 1;
             base *= base;
+            HEDLEY_FALL_THROUGH;
         case 5:
             if (exp & 1)
                 result *= base;
             exp >>= 1;
             base *= base;
+            HEDLEY_FALL_THROUGH;
         case 4:
             if (exp & 1)
                 result *= base;
             exp >>= 1;
             base *= base;
+            HEDLEY_FALL_THROUGH;
         case 3:
             if (exp & 1)
                 result *= base;
             exp >>= 1;
             base *= base;
+            HEDLEY_FALL_THROUGH;
         case 2:
             if (exp & 1)
                 result *= base;
             exp >>= 1;
             base *= base;
+            HEDLEY_FALL_THROUGH;
         case 1:
             if (exp & 1)
                 result *= base;
+            HEDLEY_FALL_THROUGH;
         default:
             return result;
     }
