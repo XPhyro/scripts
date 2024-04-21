@@ -1,0 +1,3 @@
+#!/usr/bin/env -S execlineb -s0
+
+auto-yt-dl --add-metadata --geo-bypass --retries inf --fragment-retries inf --download-archive ~/.config/scripts/youtube-dl-download-archive -o %(uploader)s_%(upload_date)s_%(id)s_%(title).160s_%(timestamp)s.%(ext)s --prefer-free-formats --no-part -i $@

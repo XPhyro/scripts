@@ -1,0 +1,3 @@
+#!/usr/bin/env -S execlineb -s0
+
+base-ytdl-log-no-mark --merge-output-format mkv $@
