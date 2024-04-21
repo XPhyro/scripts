@@ -1229,6 +1229,10 @@ if [ "$#" -eq 0 ]; then
         done
     ' -- < "/proc/$pid/cmdline" | eval "setsid xargs -r0 \"\$0\" $redirect"
     exec kill -TERM "$PPID"
+else
+    printf "argv:"
+    printf " %s" "$@"
+    printf "\n"
 fi
 
 realexecpath="$(realpath -- "$0")"
