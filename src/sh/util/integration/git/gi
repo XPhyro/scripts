@@ -159,46 +159,49 @@ git_pull() {
 
 while :; do
     available_commands="$(
-        printf "%s\n" "Show"
+        printf "%s\n" "[S]how"
         [ -n "$(
             git diff --name-only --staged
             git diff --name-only
         )" ] \
-            && printf "%s\n" "Diff"
+            && printf "%s\n" "[D]iff"
         [ -n "$(
             git ls-files --others --exclude-standard
             git diff --name-only
         )" ] \
-            && printf "%s\n" "Add"
+            && printf "%s\n" "[A]dd"
         [ -n "$(git diff --name-only)" ] \
-            && printf "%s\n" "Partial Add"
+            && printf "%s\n" "partia[L] add"
         [ -n "$(git diff --name-only --staged)" ] \
-            && printf "%s\n" "Unstage"
+            && printf "%s\n" "un[S]tage"
         [ -n "$(git diff --name-only)" ] \
-            && printf "%s\n" "Reset"
+            && printf "%s\n" "[R]eset"
         [ -n "$(git diff --name-only --staged)" ] \
-            && printf "%s\n" "Commit"
+            && printf "%s\n" "[C]ommit"
         git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
-            && printf "%s\n" "Push"
-        printf "%s\n" "Refresh"
-        printf "%s\n" "Quit"
+            && printf "%s\n" "[P]ush"
+        printf "%s\n" \
+            "fetc[H]" \
+            "p[U]ll" \
+            "re[F]resh" \
+            "[Q]uit"
     )"
 
     command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status" --bind=one:accept)"
 
     case "$command" in
-        "Show")        git_show;;
-        "Diff")        git_diff;;
-        "Add")         git_add;;
-        "Partial Add") git_partial_add;;
-        "Unstage")     git_unstage;;
-        "Reset")       git_reset;;
-        "Commit")      git_commit;;
-        "Push")        git_push;;
-        "Fetch")       git_fetch;;
-        "Pull")        git_pull;;
-        "Refresh")     continue;;
-        ""|"Quit")     break;;
+        "[S]how")          git_show;;
+        "[D]iff")          git_diff;;
+        "[A]dd")           git_add;;
+        "partia[L] add")   git_partial_add;;
+        "un[S]tage")       git_unstage;;
+        "[R]eset")         git_reset;;
+        "[C]ommit")        git_commit;;
+        "[P]ush")          git_push;;
+        "fetc[H]")         git_fetch;;
+        "p[U]ll")          git_pull;;
+        "re[F]resh")       continue;;
+        ""|"[Q]uit")       break;;
         *)             continue;;
     esac
 done
