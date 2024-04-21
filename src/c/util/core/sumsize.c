@@ -82,7 +82,7 @@ void parseargs(int *restrict argc, char **restrict argv[])
                 break;
             case 'h':
                 printf("usage: %s [OPTION...] [FILE...]\n"
-                       "       %s -e [OPTION...] [ARG...]"
+                       "       %s -e [OPTION...] [ARG...]\n"
                        "Sum human-readable sizes.\n"
                        "\n"
                        "If no FILE is given, read standard input.\n"
@@ -97,7 +97,7 @@ void parseargs(int *restrict argc, char **restrict argv[])
                        "  -0      line delimiter is NUL, not newline\n",
                        execname,
                        execname);
-                break;
+                exit(0);
             case 'u':
                 optunitless = true;
                 break;
