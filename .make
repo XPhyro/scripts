@@ -660,6 +660,9 @@ unittest() {
                     exit 0
                 }
 
+                command -v test_stdin > /dev/null 2>&1 || test_stdin() {
+                    :
+                }
                 test_stdin | "$test_binary" "$@" 1> "$tmpout" 2> "$tmperr"
                 cmdec="$?"
 
