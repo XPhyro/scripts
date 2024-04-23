@@ -7,7 +7,7 @@
 
 # scripts
 
-This repository holds a collection of over 490 scripts, utilities and libraries
+This repository holds a collection of over 500 scripts, utilities and libraries
 for Unix-like operating systems, OBS plugins and browser extensions, written in
 the following languages:
 
