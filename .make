@@ -1238,7 +1238,7 @@ else
     printf "\n"
 fi
 
-realexecpath="$(realpath -- "$0")"
+realexecpath="$(realpath -- "$0")" # may be used in tests
 
 rootdir="$PWD"
 shorthash="$(git rev-parse --short HEAD)"
