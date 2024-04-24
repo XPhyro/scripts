@@ -25,14 +25,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: Install Dependencies
+    - name: Install workflow dependencies
       run: |
         sudo apt-get update --fix-missing
         sudo apt-get -y install moreutils shellcheck pylint clang-tools cppcheck libbsd-dev
         git submodule update --init --recursive
       env:
         SHELL_VERBOSE: 1
-    - name: Analyse
+    - name: Analyse source files
       run: |
         ./.make analyse
       env:

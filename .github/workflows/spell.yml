@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: Install Dependencies
+    - name: Install workflow dependencies
       run: |
         sudo apt-get -y install codespell
-    - name: Check for Spelling Mistakes
+    - name: Check source files for spelling mistakes
       run: |
         ./.make spell
       env:

@@ -25,30 +25,30 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: Install Dependencies
+    - name: Install workflow dependencies
       run: |
         sudo apt-get update --fix-missing
         sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev ncurses-bin
         git submodule update --init --recursive
       env:
         SHELL_VERBOSE: 1
-    - name: Compile & Install Executables
+    - name: Compile and install executables
       run: |
         ./.make install
         ./.make uninstall
       env:
         SHELL_VERBOSE: 1
-    - name: Compile & Install Executables as Root
+    - name: Compile and install executables as root
       run: |
         sudo ./.make install
       env:
         SHELL_VERBOSE: 1
-    - name: Test Installed Executables
+    - name: Test installed executables
       run: |
         ./.make test
       env:
         SHELL_VERBOSE: 1
-    - name: Test Installed Executables as Root
+    - name: Test installed executables as root
       run: |
         sudo ./.make test
       env:
