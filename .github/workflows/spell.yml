@@ -1,4 +1,4 @@
-name: spell
+name: Check Spelling
 
 on:
   push:
@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: dep
+    - name: Install Dependencies
       run: |
         sudo apt-get -y install codespell
-    - name: spell
+    - name: Check for Spelling Mistakes
       run: |
         ./.make spell
       env:

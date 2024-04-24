@@ -1,4 +1,4 @@
-name: build
+name: Build
 
 on:
   push:
@@ -25,30 +25,30 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: dep
+    - name: Install Dependencies
       run: |
         sudo apt-get update --fix-missing
         sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev ncurses-bin
         git submodule update --init --recursive
       env:
         SHELL_VERBOSE: 1
-    - name: build
+    - name: Compile & Install Executables
       run: |
         ./.make install
         ./.make uninstall
       env:
         SHELL_VERBOSE: 1
-    - name: sudo-build
+    - name: Compile & Install Executables as Root
       run: |
         sudo ./.make install
       env:
         SHELL_VERBOSE: 1
-    - name: test
+    - name: Test Installed Executables
       run: |
         ./.make test
       env:
         SHELL_VERBOSE: 1
-    - name: sudo-test
+    - name: Test Installed Executables as Root
       run: |
         sudo ./.make test
       env:
