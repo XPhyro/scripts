@@ -120,17 +120,11 @@ git_reset() {
 }
 
 git_commit() {
-    selection="$(
-        printf "%s\n" \
-            "Custom" \
-            "Create" \
-        | fzf --multi --preview="unbuffer git status" --bind=one:accept
-    )"
+    git commit
+}
 
-    case "$selection" in
-        "Custom") git commit;;
-        "Create") printf "%s\n" "$(git diff --name-only --staged)" | xargs -r -d '\n' gacma Create;;
-    esac
+git_create() {
+    printf "%s\n" "$(git diff --name-only --staged)" | xargs -r -d '\n' gacma Create
 }
 
 git_push() {
@@ -177,7 +171,7 @@ while :; do
         [ -n "$(git diff --name-only)" ] \
             && printf "%s\n" "[R]eset"
         [ -n "$(git diff --name-only --staged)" ] \
-            && printf "%s\n" "[C]ommit"
+            && printf "%s\n" "[C]ommit" "crea[T]e"
         git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
             && printf "%s\n" "[P]ush"
         printf "%s\n" \
@@ -197,6 +191,7 @@ while :; do
         "un[S]tage")       git_unstage;;
         "[R]eset")         git_reset;;
         "[C]ommit")        git_commit;;
+        "crea[T]e")        git_create;;
         "[P]ush")          git_push;;
         "fetc[H]")         git_fetch;;
         "p[U]ll")          git_pull;;
