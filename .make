@@ -873,11 +873,11 @@ analyse() {
                     "$(printf "%s\n" "$flags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")" \
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
                 err="$(
-                    scan-build \
-                        -analyze-headers --status-bugs $v $view \
-                        -maxloop "$m" -no-failure-reports \
-                        --use-cc="$(command -v "$CC")" \
-                        "$CC" $CFLAGS $flags "$1" $CLDFLAGS $ldflags -o "$tmpout" 2>&1 > /dev/null
+                    eval '"scan-build \
+                        -analyze-headers --status-bugs \$v \$view \
+                        -maxloop \"\$m\" -no-failure-reports \
+                        --use-cc=\"\$(command -v \"\$CC\")\" \
+                        \"\$CC\" $CFLAGS $flags \"\$1\" $CLDFLAGS $ldflags -o \"\$tmpout\" 2>&1 > /dev/null"'
                 )"
                 [ -z "$err" ] || {
                     printf "%s\n" "    Analyser output:"
