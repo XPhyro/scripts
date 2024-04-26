@@ -841,11 +841,12 @@ analyse() {
         "  Analyser: clang-tidy" \
         "  Analyser version: $(clang-tidy --version | head -n 2 | tail -n 1 | cut -d' ' -f5)" \
         "  Analyser complementary compiler: clang" \
-        "  Analyser complementary compiler version: $(clang --version | head -n 1 | cut -d' ' -f3)" \
-        "" \
+        "  Analyser complementary compiler version: $(clang --version | head -n 1 | cut -d' ' -f3)"
+
+    printf "\n%s\n" \
         "Analysing C headers:"
 
-    find 'c/include' -mindepth 1 -type f -iname "*.h" -print0 \
+    find 'c/include' -mindepth 1 -type f -iname "*.h" -not -path "*/project/*" -print0 \
         | CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
             [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
             fl="$1"
@@ -863,7 +864,7 @@ analyse() {
     printf "\n%s\n" \
         "Analysing C source files:"
 
-    find 'c' -mindepth 1 -type f -iname "*.c" -print0 \
+    find 'c' -mindepth 1 -type f -iname "*.c" -not -path "*/project/*" -print0 \
         | m="$m" v="$v" view="$view" CC="$CC" CFLAGS="$CFLAGS" CLDFLAGS="$CLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 sh -c '
                 '"$FUNC_PARSEFLAGS"'
                 parseflags "$1"
@@ -903,11 +904,12 @@ analyse() {
     else
         printf "%s\n" \
             "  Compiler flags: $(printf "%s\n" "$CXXFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
-            "  Linker flags: $(printf "%s\n" "$CXXLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
-            "" \
+            "  Linker flags: $(printf "%s\n" "$CXXLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')"
+
+        printf "\n%s\n" \
             "Analysing C++ headers:"
 
-            find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -print0 \
+            find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -not -path "*/project/*" -print0 \
                 | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
                     [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
                     fl="$1"
@@ -935,7 +937,7 @@ analyse() {
 
     printf "%s\n" "Analysing C header and source files:"
     (cd c && eval "
-        find . \( -iname '*.c' -o -iname '*.h' \) -print0 \
+        find . \( -iname '*.c' -o -iname '*.h' \) -not -path '*/project/*' -print0 \
             | xargs -r0 $unbuffer cppcheck \
                 --enable=warning,style,performance,portability,information,missingInclude \
                 --quiet --inline-suppr -j\"$MAX_PROC\" \
@@ -947,7 +949,7 @@ analyse() {
 
     printf "\n%s\n" "Analysing C++ header and source files:"
     (cd cpp && eval "
-        find . \( -iname '*.cpp' -o -iname '*.hpp' \) -print0 \
+        find . \( -iname '*.cpp' -o -iname '*.hpp' \) -not -path '*/project/*' -print0 \
             | xargs -r0 $unbuffer cppcheck \
                 --enable=warning,style,performance,portability,information,missingInclude \
                 --quiet --inline-suppr -j\"$MAX_PROC\" \
