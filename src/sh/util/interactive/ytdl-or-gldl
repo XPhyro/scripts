@@ -24,11 +24,22 @@ else
     }
 fi
 
+if [ -n "$YTDL_OR_GLDL_SLEEP" ]; then
+    auto_sleep() {
+        sleep "$YTDL_OR_GLDL_SLEEP"
+    }
+else
+    auto_sleep() {
+        :
+    }
+fi
+
 while IFS= read -r url; do
     case "$url" in
         ""|"#"*) continue;;
         "@ytdl"*) ytdl "${url#"@ytdl"}" "$@";;
         "@gldl"*) gldl "${url#"@gldl"}" "$@";;
-        *) auto "$@";;
+        *) ytdl "$url" "$@" || gldl "$url" "$@";;
     esac
+    auto_sleep
 done
