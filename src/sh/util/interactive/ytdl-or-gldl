@@ -14,11 +14,21 @@ gldl() {
     command gldl "$@" -- "$url"
 }
 
+if [ -n "$YTDL_OR_GLDL_REVERSE" ] && [ "$YTDL_OR_GLDL_REVERSE" -ne 0 ]; then
+    auto() {
+        ytdl "$url" "$@" || gldl "$url" "$@"
+    }
+else
+    auto() {
+        gldl "$url" "$@" || ytdl "$url" "$@"
+    }
+fi
+
 while IFS= read -r url; do
     case "$url" in
         ""|"#"*) continue;;
         "@ytdl"*) ytdl "${url#"@ytdl"}" "$@";;
         "@gldl"*) gldl "${url#"@gldl"}" "$@";;
-        *) ytdl "$url" "$@" || gldl "$url" "$@";;
+        *) auto "$@";;
     esac
 done
