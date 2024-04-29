@@ -1,12 +1,18 @@
 #!/usr/bin/env sh
 
+. io.sh
 . std.sh
 
-maxdepth="$BREADTH_FIND_MAX_DEPTH"
-[ -z "$maxdepth" ] || [ "$maxdepth" -lt 0 ] && maxdepth=2147483647
+tmp="$(mktemp)" || exit 1
+stack="$(mktemp)" || {
+    rm -f -- "$tmp"
+    exit 1
+}
+trap 'rm -f -- "$tmp" "$stack"' EXIT
 
-depth=1
-while [ "$depth" -le "$maxdepth" ]; do
-    find '.' -mindepth "$depth" -maxdepth "$depth" "$@" | grep -F '' || exit 0
-    depth="$((depth + 1))"
+printf '%s\0' '.' > "$stack"
+while [ -s "$stack" ]; do
+    dir="$(std_fpop_headz 1 "$stack")"
+    find "$dir" -mindepth 1 -maxdepth 1 "$@" -print0 | tee -- "$tmp"
+    stest -dx0 < "$tmp" >> "$stack"
 done
