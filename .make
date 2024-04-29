@@ -644,7 +644,7 @@ unittest() {
         for test in *.sh; do
             binary="$(grep '^test_binary=' "$test")"
             binary="${binary#*=}"
-            [ -n "$last_binary" ] && [ "$binary" != "$last_binary" ] && printf "\n  %s\n" "$binary"
+            [ -z "$last_binary" ] || [ "$binary" != "$last_binary" ] && printf "\n  %s\n" "$binary"
             last_binary="$binary"
 
             (
