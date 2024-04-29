@@ -660,17 +660,26 @@ unittest() {
                     exit 0
                 }
 
-                command -v test_stdin > /dev/null 2>&1 || test_stdin() {
+                command -v command_stdin > /dev/null 2>&1 || command_stdin() {
                     :
                 }
-                test_stdin | "$test_binary" "$@" 1> "$tmpout" 2> "$tmperr"
+                command_stdin | "$test_binary" "$@" 1> "$tmpout" 2> "$tmperr"
                 cmdec="$?"
 
                 failstr=
+
+                command -v expected_stderr > /dev/null 2>&1 \
+                    && { expected_stderr | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"; }
+
+                command -v expected_stdout > /dev/null 2>&1 \
+                    && { expected_stdout | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"; }
+
                 command -v test_stderr > /dev/null 2>&1 \
-                    && { test_stderr | cmp -s -- "$tmperr" || failstr="stderr is different. $failstr"; }
+                    && { test_stderr "$tmperr" || failstr="stderr is invalid. $failstr"; }
+
                 command -v test_stdout > /dev/null 2>&1 \
-                    && { test_stdout | cmp -s -- "$tmpout" || failstr="stdout is different. $failstr"; }
+                    && { test_stdout "$tmpout" || failstr "stdout is invalid. $failstr"; }
+
                 if [ "$test_exit_code" = "nonzero" ]; then
                     [ "$cmdec" -eq 0 ] && failstr="Expected nonzero exit code, got $cmdec. $failstr"
                 else

@@ -4,14 +4,14 @@ test_exit_code=0
 
 set --
 
-test_stdin() {
+command_stdin() {
     :
 }
 
-test_stdout() {
+expected_stdout() {
     env printf "\x4"
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

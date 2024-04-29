@@ -5,7 +5,7 @@ test_exit_code=0
 set -- \
     -s
 
-test_stdin() {
+command_stdin() {
     printf "%s\n" \
         'XXXXXX' \
         'XXXXXX/YYYYYY' \
@@ -20,7 +20,7 @@ test_stdin() {
         '/home/XXXXXX/YYYYYY'
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         'XXXXXX' \
         'XXXXXX/YYYYYY' \
@@ -35,6 +35,6 @@ test_stdout() {
         '/home/XXXXXX/YYYYYY'
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

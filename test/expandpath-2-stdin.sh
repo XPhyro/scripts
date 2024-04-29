@@ -4,7 +4,7 @@ test_exit_code=0
 
 set --
 
-test_stdin() {
+command_stdin() {
     printf "%s\n" \
         "" \
         "~" \
@@ -19,7 +19,7 @@ test_stdin() {
         "/XXXXXX/"
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         "" \
         ~ \
@@ -34,6 +34,6 @@ test_stdout() {
         /XXXXXX/
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

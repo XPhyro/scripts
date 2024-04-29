@@ -16,11 +16,11 @@ set -- \
     56 \
     0
 
-test_stdin() {
+command_stdin() {
     :
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         '0' \
         '640' \
@@ -28,6 +28,6 @@ test_stdout() {
         '354.446'
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

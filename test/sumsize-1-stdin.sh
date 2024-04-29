@@ -6,17 +6,17 @@ set -- \
     -d \
     -f 6
 
-test_stdin() {
+command_stdin() {
     printf "%s\n" \
         '1MiB' \
         '1MB'
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         '2.048576MB'
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

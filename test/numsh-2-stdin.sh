@@ -13,14 +13,14 @@ set -- \
     -f \
     std
 
-test_stdin() {
+command_stdin() {
     printf "%s " \
         '640' \
         '56' \
         '0'
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         '0' \
         '640' \
@@ -28,6 +28,6 @@ test_stdout() {
         '354.446'
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

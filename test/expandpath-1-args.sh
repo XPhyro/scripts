@@ -15,11 +15,11 @@ set -- \
     "XXXXXX" \
     "/XXXXXX/"
 
-test_stdin() {
+command_stdin() {
     :
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         "" \
         ~ \
@@ -34,6 +34,6 @@ test_stdout() {
         /XXXXXX/
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }

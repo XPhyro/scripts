@@ -4,10 +4,10 @@ test_exit_code=nonzero
 
 set -- 256
 
-test_stdin() {
+command_stdin() {
     :
 }
 
-test_stdout() {
+expected_stdout() {
     :
 }

@@ -8,11 +8,11 @@ set -- \
     ////XXXXXX//// \
     "$HOME"///
 
-test_stdin() {
+command_stdin() {
     :
 }
 
-test_stdout() {
+expected_stdout() {
     printf "%s\n" \
         'XXXXXX' \
         '/XXXXXX/YYYYYY' \
@@ -20,6 +20,6 @@ test_stdout() {
         "$HOME"
 }
 
-test_stderr() {
+expected_stderr() {
     :
 }
