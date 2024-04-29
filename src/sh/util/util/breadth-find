@@ -2,6 +2,7 @@
 
 . io.sh
 . std.sh
+. util.sh
 
 tmp="$(mktemp)" || exit 1
 stack="$(mktemp)" || {
@@ -10,9 +11,16 @@ stack="$(mktemp)" || {
 }
 trap 'rm -f -- "$tmp" "$stack"' EXIT
 
-printf '%s\0' '.' > "$stack"
-while [ -s "$stack" ]; do
-    dir="$(std_fpop_headz 1 "$stack")"
-    find "$dir" -mindepth 1 -maxdepth 1 "$@" -print0 | tee -- "$tmp"
-    stest -dx0 < "$tmp" >> "$stack"
+for base_dir; do
+    (
+        std_cd "$base_dir"
+
+        printf '%s\0' '.' > "$stack"
+        while [ -s "$stack" ]; do
+            dir="$(std_fpop_headz 1 "$stack")"
+            real_dir="$(realpath -- "$dir")"
+            find "$real_dir" -mindepth 1 -maxdepth 1 -print0 | tee -- "$tmp"
+            stest -dx0 < "$tmp" >> "$stack"
+        done
+    )
 done
