@@ -27,8 +27,6 @@
 #include <xph/linalg.hpp>
 #include <xph/math.hpp>
 
-#include <xph/meta.h>
-
 DEFINE_EXEC_INFO();
 
 #define X_FUNCTION_VECTOR_0(FUNC, MIN, MAX, DESC) \
@@ -41,19 +39,19 @@ DEFINE_EXEC_INFO();
     X_FUNCTION(FUNC, MIN, MAX, DESC) Y_FUNCTION_SPAN_1(FUNC)
 
 #define FUNCTIONS                                                                               \
-    COMMENT("none to many")                                                                     \
+    /* none to many */                                                                          \
     X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")                    \
                                                                                                 \
-    COMMENT("one to many")                                                                      \
+    /* one to many */                                                                           \
     X_FUNCTION_VECTOR_0(factor, 0, 0, "Map all elements to their factors.")                     \
                                                                                                 \
-    COMMENT("many to many")                                                                     \
+    /* many to many */                                                                          \
     X_FUNCTION_VECTOR_0(difference, 0, 0, "Map all elements to their difference.")              \
     X_FUNCTION_VECTOR_1(partsum, 1, 1, "Map all elements to their partial sum.")                \
     X_FUNCTION_VECTOR_1(partaltsum, 1, 1, "Map all elements to their partial alternating sum.") \
     X_FUNCTION_VECTOR_1(partprod, 1, 1, "Map all elements to their partial product.")           \
                                                                                                 \
-    COMMENT("one to one")                                                                       \
+    /* one to one */                                                                            \
     X_FUNCTION_SPAN_0(cumsum, 0, 0, "Map all elements to their cumulative sum.")                \
     X_FUNCTION_SPAN_0(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.") \
     X_FUNCTION_SPAN_0(cumprod, 0, 0, "Map all elements to their cumulative product.")           \
@@ -87,11 +85,11 @@ DEFINE_EXEC_INFO();
     X_FUNCTION_SPAN_0(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")          \
     X_FUNCTION_SPAN_0(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")       \
                                                                                                 \
-    COMMENT("one to optional one")                                                              \
+    /* one to optional one */                                                                   \
     X_FUNCTION_VECTOR_0(zero, 0, 0, "Reduce to zero elements.")                                 \
     X_FUNCTION_VECTOR_0(nonzero, 0, 0, "Reduce to non-zero elements.")                          \
                                                                                                 \
-    COMMENT("many to one")                                                                      \
+    /* many to one */                                                                           \
     X_FUNCTION_VECTOR_0(count, 0, 0, "Reduce to count of elements.")                            \
     X_FUNCTION_VECTOR_0(max, 0, 0, "Reduce to the maximum element.")                            \
     X_FUNCTION_VECTOR_0(min, 0, 0, "Reduce to the minimum element.")                            \
