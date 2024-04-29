@@ -5,6 +5,7 @@
 
     . execinfo.sh
     . meta.sh
+    . type.sh
 
     __std_printf() {
         std_is_set SUPPRESS_PRINTF_ || printf "$@"
@@ -171,5 +172,97 @@
     std_logferrrawq() {
         __std_printf "$@" >&2
         exit "${ec:-1}"
+    }
+
+    std_fpop_head() {
+        __hn="$1"
+        std_assert_unsigned_number "$__hn"
+        __tn="$((1 + __hn))"
+        shift
+
+        for __i; do
+            head -n "$__hn" -- "$__i"
+            tail -n "+$__tn" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_headc() {
+        __hn="$1"
+        std_assert_unsigned_number "$__hn"
+        __tn="$((1 + __hn))"
+        shift
+
+        for __i; do
+            head -c "$__hn" -- "$__i"
+            tail -c "+$__tn" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_headz() {
+        __hn="$1"
+        std_assert_unsigned_number "$__hn"
+        __tn="$((1 + __hn))"
+        shift
+
+        for __i; do
+            head -z -n "$__hn" -- "$__i"
+            tail -z -n "+$__tn" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_headcz() {
+        __hn="$1"
+        std_assert_unsigned_number "$__hn"
+        __tn="$((1 + __hn))"
+        shift
+
+        for __i; do
+            head -z -c "$__hn" -- "$__i"
+            tail -z -c "+$__tn" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_tail() {
+        __n="$1"
+        std_assert_unsigned_number "$__n"
+        shift
+
+        for __i; do
+            tail -n "$__n" -- "$__i"
+            head -n "-$__n" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_tailc() {
+        __n="$1"
+        std_assert_unsigned_number "$__n"
+        shift
+
+        for __i; do
+            tail -c "$__n" -- "$__i"
+            head -c "-$__n" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_tailz() {
+        __n="$1"
+        std_assert_unsigned_number "$__n"
+        shift
+
+        for __i; do
+            tail -z -n "$__n" -- "$__i"
+            head -z -n "-$__n" -- "$__i" | sponge -- "$__i"
+        done
+    }
+
+    std_fpop_tailcz() {
+        __n="$1"
+        std_assert_unsigned_number "$__n"
+        shift
+
+        for __i; do
+            tail -z -c "$__n" -- "$__i"
+            head -z -c "-$__n" -- "$__i" | sponge -- "$__i"
+        done
     }
 }
