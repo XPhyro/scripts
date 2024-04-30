@@ -70,9 +70,7 @@ printhelp() {
     -n, --no-clobber
         Do nothing if the output file exists.
     -p PRESET, --preset PRESET
-        Set the preset to PRESET. If not given, medium is used.
-    -r, --remove
-        Remove INFILE if operation succeeded."
+        Set the preset to PRESET. If not given, medium is used."
             ;;
         concat)
             printf "%s\n" \
@@ -429,7 +427,6 @@ parseargs_compress() {
                         i) overwrite="";;
                         n) overwrite="-n";;
                         p) shift; assertarg "-p" "PRESET" "$1"; preset="$1";;
-                        r) remove="1";;
                         *) printusage "-$opt" "compress";;
                     esac
 
@@ -445,7 +442,6 @@ parseargs_compress() {
                     interactive) overwrite="";;
                     no-clobber) overwrite="-n";;
                     preset) shift; assertarg "--preset" "PRESET" "$1"; preset="$1";;
-                    remove) remove="1";;
                     "") shift; break;;
                     *) printusage "--$opt" "compress";;
                 esac
