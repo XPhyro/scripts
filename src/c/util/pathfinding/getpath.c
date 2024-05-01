@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
                 break;
             case 'h':
                 puts(
-                    "Usage: getpath [OPTION]... [KEYCODE]...\n"
-                    "  or:  getpath -e [OPTION]... [KEYCODE] [VARNAME] [EXITCODE]? [ERRMSG]?\n"
+                    "Usage: getpath    [OPTION...] KEYCODE [KEYCODE...]\n"
+                    "       getpath -e [OPTION...] KEYCODE VARNAME [EXITCODE] [ERRMSG]\n"
                     "Get paths based on keycodes.\n"
                     "\n"
                     "EXITCODE and ERRMSG are optional and respectively default to 1 and NULL.\n"
