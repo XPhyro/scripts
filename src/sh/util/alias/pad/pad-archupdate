@@ -16,11 +16,15 @@ fi
         "i) install" \
         "n) install without confirmation"
 
-    case "$(std_read_char_tty)" in
-        d) install=0;;
-        i) install=1; noconfirm=;;
-        n) install=1; noconfirm=--noconfirm;;
-    esac
+    while :; do
+        case "$(std_read_char_tty)" in
+            d) install=0;;
+            i) install=1; noconfirm=;;
+            n) install=1; noconfirm=--noconfirm;;
+            *) continue;;
+        esac
+        break
+    done
 
     update > /dev/null 2>&1 &
 
