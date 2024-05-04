@@ -98,11 +98,26 @@ while getopts "c:f:hk:p:" OPT; do
 
 Only use syncing on initialisation, such as on boot or at the beginning of xinit.
 
-   -c LIMIT     get or set charging limit. accepted LIMITs are {sync, get, get-polybar, prev, next, {20..100}}.
-   -f FORMAT    print values according to FORMAT. %c, %k and %p are replaced with the get command of their respective flags; %ec, %ek and %ep are replaced with the get-polybar command of their respective flags without the header; and %pc, %pk and %pp are replaced with the get-polybar command of their respective flags with the header.
-   -h           display help dialog and exit
-   -k LEVEL     get or set keyboard light brightness. accepted LEVELs are {sync, get, get-polybar, prev, next, {0, 48, o, {O, o}ff}, {1, 49, l, {L, l}ow}, {2, 50, m, {M, m}ed, {M, m}edium}, {3, 51, h, {H, h}igh}}.
-   -p PROFILE   get or set performance profile. accepted PROFILEs are {sync, get, get-polybar, prev, next, {I, |, 0, q, {Q, q}uiet}, {II, ||, 1, b, {B, b}alanced}, {III, |||, 2, p, {P, p}erformance}}.
+  -c LIMIT     get or set charging limit. accepted LIMITs are
+               {sync, get, get-polybar, prev, next,
+                 {20..100}}.
+  -f FORMAT    print values according to FORMAT. %c, %k and %p are replaced with
+               the get command of their respective flags; %ec, %ek and %ep are
+               replaced with the get-polybar command of their respective flags
+               without the header; and %pc, %pk and %pp are replaced with the
+               get-polybar command of their respective flags with the header.
+  -h           display help dialog and exit
+  -k LEVEL     get or set keyboard light brightness. accepted LEVELs are
+               {sync, get, get-polybar, prev, next,
+                 {0, 48, o, {O, o}ff},
+                 {1, 49, l, {L, l}ow},
+                 {2, 50, m, {M, m}ed, {M, m}edium},
+                 {3, 51, h, {H, h}igh}}.
+  -p PROFILE   get or set performance profile. accepted PROFILEs are
+               {sync, get, get-polybar, prev, next,
+                 {I, |, 0, q, {Q, q}uiet},
+                 {II, ||, 1, b, {B, b}alanced},
+                 {III, |||, 2, p, {P, p}erformance}}.
 "
             exit 0
             ;;
