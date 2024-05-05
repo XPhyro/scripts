@@ -63,7 +63,7 @@ if HI is negative, it is interpreted as (18446744073709551615 - (|HI| - 1)).
 -r
 : ignored. provided for partial compatibility with GNU shuf.
 
-# Notes
+# NOTES
 
 This program is not suitable for cryptographic use.
 
