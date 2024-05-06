@@ -694,7 +694,12 @@ unittest() {
                         "Passed."
                 fi
             )
-        done | sponge
+        done | {
+            case "$-" in
+                *x*) sponge;;
+                *) cat;;
+            esac
+        }
 
         rm -f -- "$tmpout" "$tmperr"
         trap - INT EXIT HUP TERM
