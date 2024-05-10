@@ -192,8 +192,13 @@ EOF4
 
                 image="$1"
 
-                case "$(std_get_image_aspect "$image")" in
-                    0.*|.*) printf "%s\0" "$image";;
+                case "$image" in
+                    */portrait/*) printf "%s\0" "$image";;
+                    *)
+                        case "$(std_get_image_aspect "$image")" in
+                            0.*|.*) printf "%s\0" "$image";;
+                        esac
+                        ;;
                 esac
             ' -- < "$all_images" | sort -z > "$portrait_images"
 
