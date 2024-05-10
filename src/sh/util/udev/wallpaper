@@ -14,8 +14,9 @@ unset optdepth optdir optcount opttime
 defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
 optgamemode=0
 gamemodetime=30
+optorient=0
 optpersist=0
-while getopts "D:d:g:hn:pt:x:" OPT; do
+while getopts "D:d:g:hn:opt:x:" OPT; do
     case "$OPT" in
         D)
             [ "$OPTARG" -ge 1 ] || std_logerrq "DEPTH must be a valid positive integer."
@@ -41,6 +42,8 @@ while getopts "D:d:g:hn:pt:x:" OPT; do
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display
               count as of initialisation. Ignored if -x is 'gsettings' or
               'hsetroot'.
+   -o         Match images and monitors according to orientation. Ignored if -x
+              is not 'gsettings'.
    -p         Make GNOME wallpapers persistent
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid
               sleep(1) time. Default is 15m.
@@ -55,6 +58,7 @@ while getopts "D:d:g:hn:pt:x:" OPT; do
             [ "$OPTARG" -gt 0 ] || std_logerrq "COUNT must be a valid positive integer."
             optcount="$OPTARG"
             ;;
+        o) optorient=1;;
         p) optpersist=1;;
         t) opttime="$OPTARG";;
         x) optexec="$OPTARG";;
@@ -103,16 +107,19 @@ case "$optexec" in
         prev_wallpaper="$(gsettings get org.gnome.desktop.background picture-uri)"
         prev_wallpaper_dark="$(gsettings get org.gnome.desktop.background picture-uri-dark)"
 
+        trap=""
+
         if [ "$optpersist" -eq 0 ]; then
             output_path_1="$(mktemp --suffix=.jpg)"
             output_path_2="$(mktemp --suffix=.jpg)"
 
-            trap '
+            trap='
                 gsettings set org.gnome.desktop.background picture-options "$prev_wallpaper_mode"
                 gsettings set org.gnome.desktop.background picture-uri "$prev_wallpaper"
                 gsettings set org.gnome.desktop.background picture-uri-dark "$prev_wallpaper_dark"
                 rm -f -- "$output_path_1" "$output_path_2"
-            ' EXIT INT TERM QUIT
+            '
+            trap "$trap" EXIT INT TERM QUIT
         else
             output_path_1="$std_cache_home/wallpaper-1.jpg"
             output_path_2="$std_cache_home/wallpaper-2.jpg"
@@ -121,16 +128,94 @@ case "$optexec" in
         [ "$prev_wallpaper_mode" != "spanned" ] \
             && gsettings set org.gnome.desktop.background picture-options spanned
 
-        moncount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
-        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
-            | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
-            | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
-            | shufr -U0 -P "$moncount" \
-            | output_path_1="$output_path_1" output_path_2="$output_path_2" xargs -r0 -n "$((moncount + 1))" sh -c '
-                . std.sh
+        if [ "$optorient" -eq 0 ]; then
+            moncount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
+            find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+                | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
+                | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
+                | shufr -U0 -P "$moncount" \
+                | output_path_1="$output_path_1" output_path_2="$output_path_2" xargs -r0 -n "$((moncount + 1))" sh -c '
+                    . std.sh
 
-                index="$1"
-                shift
+                    index="$1"
+                    shift
+
+                    if [ "$((index % 2))" -eq 0 ]; then
+                        output_path="$output_path_1"
+                    else
+                        output_path="$output_path_2"
+                    fi
+
+                    {
+                        printf "%s\0" "$output_path"
+                        while IFS= read -r image <&3 && IFS= read -r geometry <&4; do
+                            printf "%s\0" "$image" "$geometry"
+                        done 3<<EOF3 4<<EOF4
+$(printf "%s\n" "$@")
+EOF3
+$(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")
+EOF4
+                    } | xargs -r0 span-images
+
+                    [ "$optgamemode" -ne 0 ] && {
+                        while [ -n "$(gamemodelist 2> /dev/null)" ]; do
+                            sleep "$gamemodetime"
+                        done
+                    }
+
+                    gsettings set org.gnome.desktop.background picture-uri "file:///$output_path"
+                    gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
+
+                    printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                    sleep "$opttime"
+                ' --
+        else
+            all_images="$(mktemp)"
+            portrait_images="$(mktemp)"
+            landscape_images="$(mktemp)"
+            portrait_stack="$(mktemp)"
+            landscape_stack="$(mktemp)"
+            buf="$(mktemp)"
+
+            trap="$trap
+            "'rm -f -- "$all_images" "$portrait_images" "$landscape_images" "$portrait_stack" "$landscape_stack"'
+            trap "$trap" EXIT INT TERM QUIT
+
+            find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+                | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
+                | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
+                | sort -z > "$all_images"
+
+            xargs -r0 -n 1 -P 64 sh -c '
+                . std.sh
+                . image.sh
+
+                image="$1"
+
+                case "$(std_get_image_aspect "$image")" in
+                    0.*|.*) printf "%s\0" "$image";;
+                esac
+            ' -- < "$all_images" | sort -z > "$portrait_images"
+
+            comm -z -23 "$all_images" "$portrait_images" > "$landscape_images"
+
+            monitors="$(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")"
+
+            portrait_monitors="$(printf "%s\n" "$monitors" | awk -F 'x' '$2 > $1 {print}')"
+            landscape_monitors="$(printf "%s\n" "$monitors" | awk -F 'x' '$1 > $2 {print}')"
+
+            portrait_monitor_count="$(printf "%s\n" "$portrait_monitors" | wc -l)"
+            landscape_monitor_count="$(printf "%s\n" "$landscape_monitors" | wc -l)"
+
+            index=0
+            while :; do
+                while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
+                    shuf -z < "$portrait_images" >> "$portrait_stack"
+                done
+
+                while [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; do
+                    shuf -z < "$landscape_images" >> "$landscape_stack"
+                done
 
                 if [ "$((index % 2))" -eq 0 ]; then
                     output_path="$output_path_1"
@@ -140,27 +225,32 @@ case "$optexec" in
 
                 {
                     printf "%s\0" "$output_path"
-                    while IFS= read -r image <&3 && IFS= read -r geometry <&4; do
-                        printf "%s\0" "$image" "$geometry"
-                    done 3<<EOF3 4<<EOF4
-$(printf "%s\n" "$@")
-EOF3
-$(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")
-EOF4
+                    printf "%s\n" "$portrait_monitors" | while IFS= read -r geometry; do
+                        head -z -n 1 -- "$portrait_stack" | tee -a -- "$buf"
+                        tail -z -n +2 -- "$portrait_stack" | sponge -- "$portrait_stack"
+                        printf "%s\0" "$geometry"
+                    done
+                    printf "%s\n" "$landscape_monitors" | while IFS= read -r geometry; do
+                        head -z -n 1 -- "$landscape_stack" | tee -a -- "$buf"
+                        tail -z -n +2 -- "$landscape_stack" | sponge -- "$landscape_stack"
+                        printf "%s\0" "$geometry"
+                    done
                 } | xargs -r0 span-images
 
-                [ "$optgamemode" -ne 0 ] && {
-                    while [ -n "$(gamemodelist 2> /dev/null)" ]; do
-                        sleep "$gamemodetime"
-                    done
-                }
+                while [ -n "$(gamemodelist 2> /dev/null)" ]; do
+                    sleep "$gamemodetime"
+                done
 
                 gsettings set org.gnome.desktop.background picture-uri "file:///$output_path"
                 gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
 
-                printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                xargs -r0 realpath --relative-to "$optdir" < "$buf" > "$optdir/.current-wallpapers"
+                truncate -s 0 -- "$buf"
+
                 sleep "$opttime"
-            ' --
+                : "$((index += 1))"
+            done
+        fi
         ;;
     hsetroot)
         find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
