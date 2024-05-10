@@ -25,7 +25,7 @@ namespace xph {
     template <typename... Ts>
     inline void die_if(bool condition, const Ts&... args)
     {
-        if (condition)
+        if (condition) [[unlikely]]
             die(args...);
     }
 
@@ -35,7 +35,7 @@ namespace xph {
     template <typename... Ts>
     void die_if(std::function<bool()> func, const Ts&... args)
     {
-        if (func())
+        if (func()) [[unlikely]]
             die(args...);
     }
 } // namespace xph
