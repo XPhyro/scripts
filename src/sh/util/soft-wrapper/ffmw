@@ -31,7 +31,7 @@ printhelp() {
     -i, --interactive
         Prompt before overwriting the output file if it exists.
     -l, --lossless
-        Encode lossesly.
+        Encode losslessly.
     -M, --move-to-original
         Move TEMPOUTFILE to respective INFILE after the operation succeeds. If the extensions of the respective INFILE and TEMPOUTFILE differ, TEMPOUTFILE is moved to INFILE with its extension changed to TEMPOUTFILE's.
     -m, --mark-larger
