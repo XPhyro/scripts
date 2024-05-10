@@ -29,14 +29,25 @@ while getopts "D:d:g:hn:pt:x:" OPT; do
         h)
             printf "%s" \
 "$execname [OPTION...]
-   -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is $defaultdepth.
-   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds -- wa\`/{image,video} depending on the selected executable.
-   -g         Do not change wallpaper if there is currently an application that uses libgamemodeauto. This is the case if running a game with \`gamemoderun\`. Ignored if -x is not gsettings. Applications are checked every $gamemodetime seconds.
+   -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is
+              $defaultdepth.
+   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds --
+              wa\`/{image,video} depending on the selected executable.
+   -g         Do not change wallpaper if there is currently an application that
+              uses libgamemodeauto. This is the case if running a game with
+              \`gamemoderun\`. Ignored if -x is not gsettings. Applications are
+              checked every $gamemodetime seconds.
    -h         Print help message and exit.
-   -n COUNT   Count of unique wallpapers to dispatch. Default is your display count as of initialisation. Ignored if -x is 'gsettings' or 'hsetroot'.
+   -n COUNT   Count of unique wallpapers to dispatch. Default is your display
+              count as of initialisation. Ignored if -x is 'gsettings' or
+              'hsetroot'.
    -p         Make GNOME wallpapers persistent
-   -t TIME    Wait TIME between wallpaper changes. TIME must be a valid sleep(1) time. Default is 15m.
-   -x EXEC    Executable to use. Can be one of $execs. If not given, the aforementioned executables are searched for in the given order and the first installed one is used. At least one must be installed.
+   -t TIME    Wait TIME between wallpaper changes. TIME must be a valid
+              sleep(1) time. Default is 15m.
+   -x EXEC    Executable to use. Can be one of $execs. If not given, the
+              aforementioned executables are searched for in the given order
+              and the first installed one is used. At least one must be
+              installed.
 "
             exit 0
             ;;
