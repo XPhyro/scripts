@@ -194,6 +194,7 @@ EOF4
 
                 case "$image" in
                     */portrait/*) printf "%s\0" "$image";;
+                    */landscape/*) ;;
                     *)
                         case "$(std_get_image_aspect "$image")" in
                             0.*|.*) printf "%s\0" "$image";;
