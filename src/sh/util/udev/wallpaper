@@ -207,6 +207,11 @@ EOF4
             portrait_monitor_count="$(printf "%s\n" "$portrait_monitors" | wc -l)"
             landscape_monitor_count="$(printf "%s\n" "$landscape_monitors" | wc -l)"
 
+            [ "$portrait_monitor_count" -ne 0 ] && [ "$(wc -c < "$portrait_images")" -eq 0 ] \
+                && std_logerrq "portrait monitors are present but no portrait images were found"
+            [ "$landscape_monitor_count" -ne 0 ] && [ "$(wc -c < "$landscape_images")" -eq 0 ] \
+                && std_logerrq "landscape monitors are present but no landscape images were found"
+
             index=0
             while :; do
                 while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
