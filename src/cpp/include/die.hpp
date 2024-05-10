@@ -14,11 +14,7 @@ namespace xph {
     [[noreturn]] inline void die(const Ts&... args)
     {
         std::cerr << xph::exec_name << ": ";
-        (
-            [&] {
-                std::cerr << args;
-            }(),
-            ...);
+        (std::cerr << ... << args);
         std::cerr << '\n';
         std::exit(EXIT_FAILURE);
     }
