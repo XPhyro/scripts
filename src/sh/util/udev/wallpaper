@@ -67,6 +67,8 @@ while getopts "D:d:g:hn:opt:x:" OPT; do
 done
 shift "$((OPTIND - 1))"
 
+[ "$#" -ne 0 ] && std_logerrq "runaway arguments: $*"
+
 [ -z "$optdepth" ] && optdepth="$defaultdepth"
 [ -z "$opttime" ] && opttime=15m
 [ -z "$optcount" ] && optcount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
