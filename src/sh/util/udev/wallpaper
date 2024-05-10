@@ -220,6 +220,7 @@ EOF4
             [ "$landscape_monitor_count" -ne 0 ] && [ "$(wc -c < "$landscape_images")" -eq 0 ] \
                 && std_logerrq "landscape monitors are present but no landscape images were found"
 
+            set -e
             index=0
             while :; do
                 while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
