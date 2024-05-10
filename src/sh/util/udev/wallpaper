@@ -16,7 +16,7 @@ optgamemode=0
 gamemodetime=30
 optorient=0
 optpersist=0
-while getopts "D:d:g:hn:opt:x:" OPT; do
+while getopts "D:d:ghn:opt:x:" OPT; do
     case "$OPT" in
         D)
             [ "$OPTARG" -ge 1 ] || std_logerrq "DEPTH must be a valid positive integer."
