@@ -3,6 +3,7 @@
 . std.sh
 
 tmp="$(mktemp)"
+trap 'rm -f "$tmp"' TERM INT QUIT EXIT
 
 if [ "$#" -ne 0 ]; then
     cat "$@" > "$tmp"
