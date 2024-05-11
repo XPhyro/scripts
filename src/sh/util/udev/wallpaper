@@ -8,7 +8,7 @@
 . execinfo.sh
 . io.sh
 
-execs="'bgs', 'gsettings', 'hsetroot', 'xwallpaper' or 'mpv'"
+execs="'bgs', 'cron-gsettings', 'gsettings', 'hsetroot', 'xwallpaper' or 'mpv'"
 
 unset optdepth optdir optcount opttime
 defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
@@ -36,15 +36,16 @@ while getopts "D:d:ghn:opt:x:" OPT; do
               wa\`/{image,video} depending on the selected executable.
    -g         Do not change wallpaper if there is currently an application that
               uses libgamemodeauto. This is the case if running a game with
-              \`gamemoderun\`. Ignored if -x is not gsettings. Applications are
-              checked every $gamemodetime seconds.
+              \`gamemoderun\`. Ignored if -x is not 'cron-gsettings' or
+              'gsettings'. Applications are checked every $gamemodetime
+              seconds.
    -h         Print help message and exit.
    -n COUNT   Count of unique wallpapers to dispatch. Default is your display
-              count as of initialisation. Ignored if -x is 'gsettings' or
-              'hsetroot'.
+              count as of initialisation. Ignored if -x is 'cron-gsettings',
+              'gsettings' or 'hsetroot'.
    -o         Match images and monitors according to orientation. Ignored if -x
-              is not 'gsettings'.
-   -p         Make GNOME wallpapers persistent
+              is not 'cron-gsettings' or 'gsettings'.
+   -p         Make GNOME wallpapers persistent. Assumed if -x is 'cron-gsettings'.
    -t TIME    Wait TIME between wallpaper changes. TIME must be a valid
               sleep(1) time. Default is 15m.
    -x EXEC    Executable to use. Can be one of $execs. If not given, the
@@ -103,6 +104,94 @@ case "$optexec" in
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
                 sleep "$opttime"
             ' --
+        ;;
+    cron-gsettings)
+        all_images="$(mktemp)"
+        portrait_images="$(mktemp)"
+        landscape_images="$(mktemp)"
+        portrait_stack="$std_cache_home/portrait-stack"
+        landscape_stack="$std_cache_home/landscape-stack"
+        buf="$(mktemp)"
+        trap 'rm -f -- "$all_images" "$portrait_images" "$landscape_images" "$buf"' EXIT INT TERM QUIT
+
+        monitors="$(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")"
+
+        portrait_monitors="$(printf "%s\n" "$monitors" | awk -F 'x' '$2 > $1 {print}')"
+        landscape_monitors="$(printf "%s\n" "$monitors" | awk -F 'x' '$1 > $2 {print}')"
+
+        portrait_monitor_count="$(printf "%s\n" "$portrait_monitors" | wc -l)"
+        landscape_monitor_count="$(printf "%s\n" "$landscape_monitors" | wc -l)"
+
+        set -e
+
+        if [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ] \
+        || [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; then
+            find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+                | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
+                | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
+                | sort -z > "$all_images"
+
+            xargs -r0 -n 1 -P 64 sh -c '
+                . std.sh
+                . image.sh
+
+                image="$1"
+
+                case "$image" in
+                    */portrait/*) printf "%s\0" "$image";;
+                    */landscape/*) ;;
+                    *)
+                        case "$(std_get_image_aspect "$image")" in
+                            0.*|.*) printf "%s\0" "$image";;
+                        esac
+                        ;;
+                esac
+            ' -- < "$all_images" | sort -z > "$portrait_images"
+
+            comm -z -23 "$all_images" "$portrait_images" > "$landscape_images"
+
+            [ "$portrait_monitor_count" -ne 0 ] && [ "$(wc -c < "$portrait_images")" -eq 0 ] \
+                && std_logerrq "portrait monitors are present but no portrait images were found"
+            [ "$landscape_monitor_count" -ne 0 ] && [ "$(wc -c < "$landscape_images")" -eq 0 ] \
+                && std_logerrq "landscape monitors are present but no landscape images were found"
+        fi
+
+        while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
+            shuf -z < "$portrait_images" >> "$portrait_stack"
+        done
+
+        while [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; do
+            shuf -z < "$landscape_images" >> "$landscape_stack"
+        done
+
+        output_path="$(mktemp --tmpdir="$std_cache_home" --suffix=.jpg wallpaper.XXXXXXXXXX)"
+
+        {
+            printf "%s\0" "$output_path"
+            printf "%s\n" "$portrait_monitors" | while IFS= read -r geometry; do
+                head -z -n 1 -- "$portrait_stack" | tee -a -- "$buf"
+                tail -z -n +2 -- "$portrait_stack" | sponge -- "$portrait_stack"
+                printf "%s\0" "$geometry"
+            done
+            printf "%s\n" "$landscape_monitors" | while IFS= read -r geometry; do
+                head -z -n 1 -- "$landscape_stack" | tee -a -- "$buf"
+                tail -z -n +2 -- "$landscape_stack" | sponge -- "$landscape_stack"
+                printf "%s\0" "$geometry"
+            done
+        } | xargs -r0 span-images
+
+        while [ -n "$(gamemodelist 2> /dev/null)" ]; do
+            sleep "$gamemodetime"
+        done
+
+        gsettings set org.gnome.desktop.background picture-options spanned
+        gsettings set org.gnome.desktop.background picture-uri "file:///$output_path"
+        gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
+
+        xargs -r0 realpath --relative-to "$optdir" < "$buf" > "$optdir/.current-wallpapers"
+
+        rm -f -- "$(cat -- "$std_cache_home/output-path")"
+        printf "%s" "$output_path" > "$std_cache_home/output-path"
         ;;
     gsettings)
         prev_wallpaper_mode="$(gsettings get org.gnome.desktop.background picture-options)"
