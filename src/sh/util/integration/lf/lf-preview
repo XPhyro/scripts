@@ -18,10 +18,6 @@ exec_preview_image() {
     fi
 }
 
-preview_pdf() {
-    exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
-}
-
 scope() {
     "${XDG_CONFIG_HOME:-$HOME/.config}/ranger/scope.sh" \
         "$(realpath -P -- "$1")" \
@@ -53,17 +49,10 @@ main() {
                 *) scope "$@";;
             esac
             ;;
-        application/pdf)
-            preview_pdf "$@"
-            ;;
         application/epub+zip)
             exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
-        video/*|image/gif)
-            ext=jpg
-            exec_preview_image "$thumbfl.$ext" "$2" "$3" "$4" "$5"
-            ;;
-        image/heic)
+        application/pdf|video/*|image/gif|image/heic)
             exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
             ;;
         image/*)
