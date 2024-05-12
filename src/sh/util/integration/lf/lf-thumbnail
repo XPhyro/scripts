@@ -48,6 +48,9 @@ thumbnail() {
         image/heic)
             [ -s "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"
             ;;
+        text/html)
+            [ -s "$thumbfl.jpg" ] || wkhtmltoimage --height 1400 "$1" "$thumbfl.jpg"
+            ;;
         text/plain)
             [ -f "$thumbfl" ] || {
                 touch -- "$thumbfl"

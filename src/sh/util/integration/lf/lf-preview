@@ -52,7 +52,7 @@ main() {
         application/epub+zip)
             exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
-        application/pdf|video/*|image/gif|image/heic)
+        application/pdf|video/*|image/gif|image/heic|text/html)
             exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
             ;;
         image/*)
