@@ -2,15 +2,14 @@
 
 . std.sh
 
-if ! ids="$(xdotool search --name "^Stremio - Freedom to Stream$")"; then
+if ! ids="$(xdotool search --name "^Stremio - Freedom to Stream$")" \
+|| ! printf "%s\n" "$ids" \
+    | xargs -r -d '\n' -I ID xprop -id ID WM_CLASS \
+    | grep -Fx 'WM_CLASS(STRING) = "mutter-x11-frames", "mutter-x11-frames"'; then
     playerctlsel "$@"
 else
     printf "%s\n" "$ids" | while IFS= read -r id; do
-        [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "mutter-x11-frames", "mutter-x11-frames"' ] && break
-    done && printf "%s\n" "$ids" | while IFS= read -r id; do
-        [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "stremio", "Stremio"' ]
-        ret="$?"
-        [ "$ret" -eq 0 ] && {
+        [ "$(xprop -id "$id" WM_CLASS)" = 'WM_CLASS(STRING) = "stremio", "Stremio"' ] && {
             ctrl_done=0
             shift_done=0
             alt_done=0
@@ -37,6 +36,5 @@ else
                 key space \
                 windowactivate --sync "$(xdotool getactivewindow)"
         }
-        (exit "$ret")
     done
 fi
