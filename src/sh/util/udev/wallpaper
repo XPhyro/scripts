@@ -156,6 +156,9 @@ case "$optexec" in
                 && std_logerrq "landscape monitors are present but no landscape images were found"
         fi
 
+        stest -zf < "$portrait_stack" | sponge -- "$portrait_stack"
+        stest -zf < "$landscape_stack" | sponge -- "$landscape_stack"
+
         while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
             shuf -z < "$portrait_images" >> "$portrait_stack"
         done
