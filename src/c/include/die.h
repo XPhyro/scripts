@@ -6,9 +6,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <hedley.h>
+
 #include "exec_info.h"
 
-void die(const char *restrict format, ...)
+HEDLEY_NO_RETURN void die(const char *restrict format, ...)
 {
     va_list ap;
 
