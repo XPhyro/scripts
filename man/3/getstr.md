@@ -11,7 +11,7 @@ undefine({{{THIS}}})
 # SYNOPSIS
 
 ```c
-#include <ioutil.h>
+#include <xph/io.h>
 
 char *fgetstr(FILE *stream, int delim);
 char *getstr(int argc, char *argv[], int delim);
@@ -59,7 +59,7 @@ Conforms to nothing. Requires a POSIX.1-2008-compatible compiler.
 
 #include <stdio.h>
 
-#include <ioutil.h>
+#include <xph/io.h>
 
 void processline(char *line)
 {
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
 #include <stdio.h>
 
-#include <ioutil.h>
+#include <xph/io.h>
 
 void processline(char *line)
 {
