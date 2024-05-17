@@ -17,6 +17,7 @@
 DEFINE_EXEC_INFO()
 
 size_t parseline(char *line);
+void printresult(size_t sumns, bool unitless);
 
 int main(int argc, char *argv[])
 {
@@ -53,29 +54,7 @@ int main(int argc, char *argv[])
         sumns += parseline(line);
     free(line);
 
-    if (optunitless) {
-        printf("%zu\n", sumns);
-    } else {
-        size_t d, h, m, s, ns;
-
-        d = sumns / 86400000000000ull;
-        sumns %= 86400000000000ull;
-        h = sumns / 3600000000000ull;
-        sumns %= 3600000000000ull;
-        m = sumns / 60000000000ull;
-        sumns %= 60000000000ull;
-        s = sumns / 1000000000ull;
-        sumns %= 1000000000ull;
-        ns = sumns;
-
-        if (d)
-            printf("%zu:", d);
-        if (d || h)
-            printf("%zu:", h);
-        if (d || h || m)
-            printf("%zu:", m);
-        printf("%zu.%zu\n", s, ns);
-    }
+    printresult(sumns, optunitless);
 
     return EXIT_SUCCESS;
 }
@@ -143,4 +122,32 @@ size_t parseline(char *line)
 
 err:
     die("invalid duration string given: %s", line);
+}
+
+void printresult(size_t sumns, bool optunitless)
+{
+    size_t d, h, m, s, ns;
+
+    if (optunitless) {
+        printf("%zu\n", sumns);
+        return;
+    }
+
+    d = sumns / 86400000000000ull;
+    sumns %= 86400000000000ull;
+    h = sumns / 3600000000000ull;
+    sumns %= 3600000000000ull;
+    m = sumns / 60000000000ull;
+    sumns %= 60000000000ull;
+    s = sumns / 1000000000ull;
+    sumns %= 1000000000ull;
+    ns = sumns;
+
+    if (d)
+        printf("%zu:", d);
+    if (d || h)
+        printf("%zu:", h);
+    if (d || h || m)
+        printf("%zu:", m);
+    printf("%zu.%zu\n", s, ns);
 }
