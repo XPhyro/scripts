@@ -32,7 +32,16 @@ int main(int argc, char *argv[])
     while ((i = getopt(argc, argv, "huz0")) != -1) {
         switch (i) {
             case 'h':
-                /* TODO: help message */
+                printf("Usage: %s [OPTION...] [DURATION...]\n"
+                       "Sum ffmpeg-like durations and print the result.\n"
+                       "\n"
+                       "If no DURATION is given, read from standard input.\n"
+                       "\n"
+                       "  -h   display this help and exit\n"
+                       "  -u   print the result in unformatted nanoseconds\n"
+                       "  -z   line delimiter is NUL, not newline\n"
+                       "  -0   line delimiter is NUL, not newline\n",
+                       execpath);
                 return EXIT_SUCCESS;
             case 'u':
                 optunitless = true;
