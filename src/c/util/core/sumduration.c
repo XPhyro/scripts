@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
 
 size_t parseline(char *line)
 {
-    const char *errstr = "invalid duration string given";
     size_t ns = 0, sz;
     char *s, *pdot = NULL, *endptr, *end;
     char c;
@@ -104,7 +103,7 @@ size_t parseline(char *line)
     end = s;
 
     if (pdot && pdot[1]) {
-        sz = astrtoull(pdot + 1, errstr);
+        sz = astrtoull(pdot + 1, "invalid duration string given");
         if (sz > 999999999ull)
             goto err;
         if (pdot == line)
