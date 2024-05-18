@@ -15,7 +15,7 @@
 #include "types.hpp"
 #include "ui.hpp"
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 int main(int argc, char* argv[])
 {

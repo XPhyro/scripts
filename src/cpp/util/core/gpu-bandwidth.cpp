@@ -12,7 +12,7 @@
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 const constexpr std::size_t data_length = 1000000uz;
 using data_type = float;
