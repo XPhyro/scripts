@@ -4,17 +4,11 @@ test_exit_code=0
 
 set -- \
     -m \
-    -f \
-    min \
-    -f \
-    max \
-    -f \
-    mean \
-    -f \
-    std \
-    640 \
-    56 \
-    0
+    -f min \
+    -f max \
+    -f mean \
+    -f std \
+    640 56 0
 
 command_stdin() {
     :
