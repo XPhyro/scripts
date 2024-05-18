@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
+. std.sh
+
 xargs -r -d '\n' -I FILE printf "FILE\x00icon\x1fFILE\n" | rofi -dmenu
