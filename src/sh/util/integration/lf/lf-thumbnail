@@ -74,7 +74,6 @@ else
     } | parallel \
             --eta \
             --progress \
-            --total-jobs="$#" \
             -r0 \
             -P "${LF_THUMBNAIL_JOBS:-"33%"}" \
             -n 1 \
