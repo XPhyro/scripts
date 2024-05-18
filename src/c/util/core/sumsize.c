@@ -15,7 +15,7 @@
 
 #include <hedley.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 typedef long long int sum_t;
 #define SUM_T_FMT "%llu"

@@ -11,7 +11,7 @@
 #include <xph/exec_info.h>
 #include <xph/stdlib.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 int ctl_reset(const char *dev)
 {

@@ -13,7 +13,7 @@
 #include <xph/stdlib.h>
 #include <xph/string.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 int main(int argc, char *argv[])
 {

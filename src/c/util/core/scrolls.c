@@ -19,7 +19,7 @@
 #include <xph/param.h>
 #include <xph/stdlib.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 int n, idx;
 #define DEFAULTTEXTLEN 50

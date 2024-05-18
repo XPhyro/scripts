@@ -17,7 +17,7 @@
 
 #include <hedley.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 typedef enum {
     METHOD_MEAN,

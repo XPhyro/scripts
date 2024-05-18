@@ -13,7 +13,7 @@
 #include <xph/param.h>
 #include <xph/stdlib.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 typedef enum { UNIT_BYTE, UNIT_BIT } unit_t;
 typedef struct timespec timespec_t;

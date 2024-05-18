@@ -14,7 +14,7 @@
 #include <xph/math.h>
 #include <xph/stdlib.h>
 
-DEFINE_EXEC_INFO()
+DEFINE_EXEC_INFO();
 
 size_t parseline(char *line);
 void printresult(size_t sumns, bool consistent, bool unitless);

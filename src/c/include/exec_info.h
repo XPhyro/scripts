@@ -6,7 +6,7 @@
 
 #define DEFINE_EXEC_INFO() \
     const char *execname;  \
-    const char *execpath;
+    const char *execpath
 
 extern const char *execname;
 extern const char *execpath;
