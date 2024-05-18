@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-xargs -r0 -I FILE printf "FILE\x00icon\x1fFILE\n" | rofi -dmenu
+xargs -r -d '\n' -I FILE printf "FILE\x00icon\x1fFILE\n" | rofi -dmenu
