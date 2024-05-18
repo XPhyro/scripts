@@ -150,18 +150,35 @@ void printresult(size_t sumns, bool optunitless)
     sumns %= 60000000000ull;
     s = sumns / 1000000000ull;
     sumns %= 1000000000ull;
-    ns = sumns;
+
+    for (ns = sumns; ns % 10 == 0; ns /= 10) {}
 
     if (d) {
-        printf("%zu:%.2zu:%.2zu:%.2zu.%.9zu\n", d, h, m, s, ns);
+        if (ns) {
+            printf("%zu:%.2zu:%.2zu:%.2zu.%zu\n", d, h, m, s, ns);
+        } else {
+            printf("%zu:%.2zu:%.2zu:%.2zu\n", d, h, m, s);
+        }
     } else {
         if (h) {
-            printf("%zu:%.2zu:%.2zu.%.9zu\n", h, m, s, ns);
+            if (ns) {
+                printf("%zu:%.2zu:%.2zu.%zu\n", h, m, s, ns);
+            } else {
+                printf("%zu:%.2zu:%.2zu\n", h, m, s);
+            }
         } else {
             if (m) {
-                printf("%zu:%.2zu.%.9zu\n", m, s, ns);
+                if (ns) {
+                    printf("%zu:%.2zu.%zu\n", m, s, ns);
+                } else {
+                    printf("%zu:%.2zu\n", m, s);
+                }
             } else {
-                printf("%zu.%.9zu\n", s, ns);
+                if (ns) {
+                    printf("%zu.%zu\n", s, ns);
+                } else {
+                    printf("%zu\n", s);
+                }
             }
         }
     }
