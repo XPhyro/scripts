@@ -155,8 +155,8 @@ void printresult(size_t sumns, bool optunitless)
     if (d)
         printf("%zu:", d);
     if (d || h)
-        printf("%zu:", h);
+        printf("%.2zu:", h);
     if (d || h || m)
-        printf("%zu:", m);
-    printf("%zu.%zu\n", s, ns);
+        printf("%.2zu:", m);
+    printf("%.2zu.%.9zu\n", s, ns);
 }
