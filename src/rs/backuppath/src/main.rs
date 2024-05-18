@@ -27,16 +27,24 @@ fn main() {
 
         // check if path.~1~ exists, if it does not, print it
         let mut new_path = path.to_path_buf();
-        new_path.set_extension("~1~");
+        new_path.set_extension(format!(
+            "{}.{}",
+            new_path.extension().unwrap().to_string_lossy(),
+            "~1~"
+        ));
         if !new_path.exists() {
-            print!("{arg}.~1~{delim}");
+            print!("{}{}", new_path.to_str().unwrap(), delim);
             continue;
         }
 
         // path.~1~ exists, find the next backup number and print it
         let mut backup_number = 2;
         let mut new_path = path.to_path_buf();
-        new_path.set_extension(format!("~{backup_number}~"));
+        new_path.set_extension(format!(
+            "{}.{}",
+            new_path.extension().unwrap().to_string_lossy(),
+            format!("~{backup_number}~")
+        ));
         while new_path.exists() {
             backup_number += 1;
             new_path = path.to_path_buf();
