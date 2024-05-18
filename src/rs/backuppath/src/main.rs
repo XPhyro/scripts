@@ -47,7 +47,6 @@ fn main() {
         ));
         while new_path.exists() {
             backup_number += 1;
-            new_path = path.to_path_buf();
             new_path.set_extension(format!("~{backup_number}~"));
         }
         print!("{}{}", new_path.to_str().unwrap(), delim);
