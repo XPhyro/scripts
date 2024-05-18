@@ -17,7 +17,7 @@
 DEFINE_EXEC_INFO()
 
 size_t parseline(char *line);
-void printresult(size_t sumns, bool unitless);
+void printresult(size_t sumns, bool consistent, bool unitless);
 
 int main(int argc, char *argv[])
 {
@@ -25,23 +25,28 @@ int main(int argc, char *argv[])
     int i;
     char optdelim = '\n';
     size_t sumns;
-    bool optunitless = false;
+    bool optconsistent = false, optunitless = false;
 
     init_exec_info(argc, argv);
 
-    while ((i = getopt(argc, argv, "huz0")) != -1) {
+    while ((i = getopt(argc, argv, "chuz0")) != -1) {
         switch (i) {
+            case 'c':
+                optconsistent = true;
+                break;
             case 'h':
-                printf("Usage: %s [OPTION...] [DURATION...]\n"
-                       "Sum ffmpeg-like durations and print the result.\n"
-                       "\n"
-                       "If no DURATION is given, read from standard input.\n"
-                       "\n"
-                       "  -h   display this help and exit\n"
-                       "  -u   print the result in unformatted nanoseconds\n"
-                       "  -z   line delimiter is NUL, not newline\n"
-                       "  -0   line delimiter is NUL, not newline\n",
-                       execpath);
+                printf(
+                    "Usage: %s [OPTION...] [DURATION...]\n"
+                    "Sum ffmpeg-like durations and print the result.\n"
+                    "\n"
+                    "If no DURATION is given, read from standard input.\n"
+                    "\n"
+                    "  -c   make output more consistent, easier to parse. ignored if -u is given\n"
+                    "  -h   display this help and exit\n"
+                    "  -u   print the result in unformatted nanoseconds\n"
+                    "  -z   line delimiter is NUL, not newline\n"
+                    "  -0   line delimiter is NUL, not newline\n",
+                    execpath);
                 return EXIT_SUCCESS;
             case 'u':
                 optunitless = true;
@@ -63,7 +68,7 @@ int main(int argc, char *argv[])
         sumns += parseline(line);
     free(line);
 
-    printresult(sumns, optunitless);
+    printresult(sumns, optconsistent, optunitless);
 
     return EXIT_SUCCESS;
 }
@@ -133,11 +138,11 @@ err:
     die("invalid duration string given: %s", line);
 }
 
-void printresult(size_t sumns, bool optunitless)
+void printresult(size_t sumns, bool consistent, bool unitless)
 {
     size_t d, h, m, s, ns;
 
-    if (optunitless) {
+    if (unitless) {
         printf("%zu\n", sumns);
         return;
     }
@@ -151,7 +156,14 @@ void printresult(size_t sumns, bool optunitless)
     s = sumns / 1000000000ull;
     sumns %= 1000000000ull;
 
-    for (ns = sumns; ns % 10 == 0; ns /= 10) {}
+    ns = sumns;
+
+    if (consistent) {
+        printf("%zu:%.2zu:%.2zu:%.2zu.%.9zu\n", d, h, m, s, ns);
+        return;
+    }
+
+    for (; ns % 10 == 0; ns /= 10) {}
 
     if (d) {
         if (ns) {
