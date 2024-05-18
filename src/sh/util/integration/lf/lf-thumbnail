@@ -64,12 +64,14 @@ thumbnail() {
 
 if [ "$#" -eq 0 ]; then
     exit 0
-elif [ "$#" -eq 1 ]; then
+elif [ "$#" -eq 1 ] && ! [ -d "$1" ]; then
     printf "%s\n" "Thumbnailing $1." >&2
     thumbnail "$1" >&2
 else
-    printf "%s\0" "$@" \
-        | parallel \
+    {
+        printf "%s\0" "$@" | stest -d0 | xargs -r0 -I DIR find -P DIR -type f -print0
+        printf "%s\0" "$@" | stest -dd0
+    } | parallel \
             --eta \
             --progress \
             --total-jobs="$#" \
