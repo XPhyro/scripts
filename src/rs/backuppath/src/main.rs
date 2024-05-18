@@ -27,11 +27,11 @@ fn main() {
 
         // check if path.~1~ exists, if it does not, print it
         let mut new_path = path.to_path_buf();
-        new_path.set_extension(format!(
-            "{}.{}",
-            new_path.extension().unwrap().to_string_lossy(),
-            "~1~"
-        ));
+        if let Some(extension) = new_path.extension() {
+            new_path.set_extension(format!("{}.{}", extension.to_string_lossy(), "~1~"));
+        } else {
+            new_path.set_extension("~1~");
+        }
         if !new_path.exists() {
             print!("{}{}", new_path.to_str().unwrap(), delim);
             continue;
