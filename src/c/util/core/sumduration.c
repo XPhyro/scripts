@@ -152,11 +152,17 @@ void printresult(size_t sumns, bool optunitless)
     sumns %= 1000000000ull;
     ns = sumns;
 
-    if (d)
-        printf("%zu:", d);
-    if (d || h)
-        printf("%.2zu:", h);
-    if (d || h || m)
-        printf("%.2zu:", m);
-    printf("%.2zu.%.9zu\n", s, ns);
+    if (d) {
+        printf("%zu:%.2zu:%.2zu:%.2zu.%.9zu\n", d, h, m, s, ns);
+    } else {
+        if (h) {
+            printf("%zu:%.2zu:%.2zu.%.9zu\n", h, m, s, ns);
+        } else {
+            if (m) {
+                printf("%zu:%.2zu.%.9zu\n", m, s, ns);
+            } else {
+                printf("%zu.%.9zu\n", s, ns);
+            }
+        }
+    }
 }
