@@ -104,14 +104,13 @@ size_t parseline(char *line)
         ns = sz * ipow64(10, 10 - (end - pdot));
     }
 
-    for (s = line;; s++) {
-        c = *s;
-        if (!c || c == '.')
-            break;
+    for (s = line; (c = *s) && c != '.';) {
         if (c == ':') {
             i--;
+            s++;
             continue;
         }
+        endptr = NULL;
         sz = strtoull(s, &endptr, 10);
         switch (i) {
             case 3:
@@ -130,6 +129,8 @@ size_t parseline(char *line)
                 HEDLEY_UNREACHABLE();
         }
         ns += sz;
+        if (endptr)
+            s = endptr;
     }
 
     return ns;
