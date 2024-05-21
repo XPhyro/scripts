@@ -27,6 +27,8 @@
     due to not updating `bufsize`. See `fizzbuzz` as an example.
 - `make analyse` does not exit with non-zero code even if some analyses fail.
 - Analyse target on GitHub does not work correctly.
+- `wallpaper -x cron-gsettings` corrupts the wallpaper if run when not logged
+  into GNOME.
 
 ## Features
 
