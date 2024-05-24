@@ -9,9 +9,6 @@
 - Do not `eval` the output of `headsetcontrol` in `polybar-headsetcontrol` in
   case the interface changes.
   - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
-- The current method of doing `vector erase $(($(vector find) - 1))` is
-  cumbersome, bug-prone and has security flaws as the information could be out
-  of date by the time `vector erase` is issued.
 
 ## Bugs
 

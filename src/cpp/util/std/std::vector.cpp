@@ -79,6 +79,7 @@ namespace vec {
     void back();
     void insert(const std::string&& indexstr, const std::string&& value);
     void erase(const std::string&& indexstr);
+    void remove(const std::string&& value);
     void pop_back(const std::string&& countstr);
     void push_back(int argc, char* argv[]);
     void emplace_back(int argc, char* argv[]);
@@ -238,6 +239,9 @@ non_variadic:
                 STRING_BREAK
                 STRING_CASE("erase")
                 vec::erase(argv[1]);
+                STRING_BREAK
+                STRING_CASE("remove")
+                vec::remove(argv[1]);
                 STRING_BREAK
                 STRING_CASE("find")
                 vec::find({}, {}, argv[1]);
@@ -400,21 +404,24 @@ cache parse_args(int& argc, char**& argv)
                        "   9. erase [INDEX]\n"
                        "      1. Erase value at INDEX.\n"
                        "      2. Vector must have been initialised.\n"
-                       "  10. push_back [VALUE...]\n"
+                       "  10. remove [VALUE]\n"
+                       "      1. Remove all VALUEs.\n"
+                       "      2. Vector must have been initialised.\n"
+                       "  11. push_back [VALUE...]\n"
                        "      1. Append VALUEs to the end of the vector.\n"
                        "      2. Vector must have been initialised.\n"
-                       "  11. emplace_back [COMMAND] [ARG...]\n"
+                       "  12. emplace_back [COMMAND] [ARG...]\n"
                        "      1. Execute the given command with the given arguments, if any, and push_back its output after removing nulls (\\0).\n"
                        "      2. Vector must have been initialised.\n"
-                       "  12. pop_back [COUNT]?\n"
+                       "  13. pop_back [COUNT]?\n"
                        "      1. Pop COUNT values from the end of the vector.\n"
                        "      2. If COUNT is not given, COUNT is 1.\n"
                        "      3. Vector must have been initialised.\n"
-                       "  13. swap [OTHER_VEC_NAME]\n"
+                       "  14. swap [OTHER_VEC_NAME]\n"
                        "      1. Swap VEC_NAME and OTHER_VEC_NAME.\n"
                        "      2. OTHER_VEC_NAME cannot be \"NULL\", \"nullptr\", \"=\" or empty, or contain '/'.\n"
                        "      3. Vectors must have been initialised.\n"
-                       "  14. find [[FIRST_INDEX] [LAST_INDEX]]? [VALUE]\n"
+                       "  15. find [[FIRST_INDEX] [LAST_INDEX]]? [VALUE]\n"
                        "      1. Find VALUE in the vector.\n"
                        "      2. If FIRST_INDEX and LAST_INDEX are given, the search is limited within the range.\n"
                        "      3. If VALUE is found, its index is printed; otherwise the size of the vector is printed and a non-zero exit code is returned.\n"
@@ -814,6 +821,13 @@ namespace vec {
 
         vec.erase(vec.begin() + index);
 
+        write(vec);
+    }
+
+    void remove(const std::string&& value)
+    {
+        auto vec = parse();
+        vec.erase(std::remove(vec.begin(), vec.end(), value), vec.end());
         write(vec);
     }
 
