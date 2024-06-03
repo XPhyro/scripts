@@ -96,7 +96,7 @@ size_t parseline(char *line)
     end = s;
 
     if (pdot && pdot[1]) {
-        sz = astrtoull(pdot + 1, "invalid duration string given");
+        sz = strtoull(pdot + 1, NULL, 10);
         if (sz > 999999999ull)
             goto err;
         if (pdot == line)
@@ -141,6 +141,7 @@ err:
 
 void printresult(size_t sumns, bool consistent, bool unitless)
 {
+    int i;
     size_t d, h, m, s, ns;
 
     if (unitless) {
@@ -160,39 +161,28 @@ void printresult(size_t sumns, bool consistent, bool unitless)
     ns = sumns;
 
     if (consistent) {
-        printf("%zu:%.2zu:%.2zu:%.2zu.%.9zu\n", d, h, m, s, ns);
+        printf("%.2zu:%.2zu:%.2zu:%.2zu.%.9zu\n", d, h, m, s, ns);
         return;
     }
 
-    for (; ns % 10 == 0; ns /= 10) {}
+    for (i = 0; ns % 10 == 0; ns /= 10, i++) {}
 
     if (d) {
-        if (ns) {
-            printf("%zu:%.2zu:%.2zu:%.2zu.%zu\n", d, h, m, s, ns);
-        } else {
-            printf("%zu:%.2zu:%.2zu:%.2zu\n", d, h, m, s);
-        }
+        printf("%zu:%.2zu:%.2zu:%.2zu", d, h, m, s);
+    } else if (h) {
+        printf("%zu:%.2zu:%.2zu", h, m, s);
+    } else if (m) {
+        printf("%zu:%.2zu", m, s);
     } else {
-        if (h) {
-            if (ns) {
-                printf("%zu:%.2zu:%.2zu.%zu\n", h, m, s, ns);
-            } else {
-                printf("%zu:%.2zu:%.2zu\n", h, m, s);
-            }
-        } else {
-            if (m) {
-                if (ns) {
-                    printf("%zu:%.2zu.%zu\n", m, s, ns);
-                } else {
-                    printf("%zu:%.2zu\n", m, s);
-                }
-            } else {
-                if (ns) {
-                    printf("%zu.%zu\n", s, ns);
-                } else {
-                    printf("%zu\n", s);
-                }
-            }
-        }
+        printf("%zu\n", s);
+        return;
+    }
+
+    if (ns) {
+        putchar('.');
+        i = 9 - (i + digitcountu64(ns));
+        while (i--)
+            putchar('0');
+        printf("%zu\n", ns);
     }
 }
