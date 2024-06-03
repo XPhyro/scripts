@@ -96,6 +96,8 @@ size_t parseline(char *line)
     end = s;
 
     if (pdot && pdot[1]) {
+        if (end - pdot > 10)
+            goto err;
         sz = strtoull(pdot + 1, NULL, 10);
         if (sz > 999999999ull)
             goto err;
