@@ -102,6 +102,8 @@ case "$optexec" in
                 bgs -z "$@"
 
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                mkdir -p -- "$optdir/.current-wallpaper-links"
+                printf "%s\0" "$@" | xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links"
                 sleep "$opttime"
             ' --
         ;;
@@ -192,6 +194,8 @@ case "$optexec" in
         gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
 
         xargs -r0 realpath --relative-to "$optdir" < "$buf" > "$optdir/.current-wallpapers"
+        mkdir -p -- "$optdir/.current-wallpaper-links"
+        xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links" < "$buf"
 
         rm -f -- "$(cat -- "$std_cache_home/output-path")"
         printf "%s" "$output_path" > "$std_cache_home/output-path"
@@ -261,6 +265,8 @@ EOF4
                     gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
 
                     printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                    mkdir -p -- "$optdir/.current-wallpaper-links"
+                    printf "%s\0" "$@" | xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links"
                     sleep "$opttime"
                 ' --
         else
@@ -351,6 +357,8 @@ EOF4
                 gsettings set org.gnome.desktop.background picture-uri-dark "file:///$output_path"
 
                 xargs -r0 realpath --relative-to "$optdir" < "$buf" > "$optdir/.current-wallpapers"
+                mkdir -p -- "$optdir/.current-wallpaper-links"
+                xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links" < "$buf"
                 truncate -s 0 -- "$buf"
 
                 sleep "$opttime"
@@ -369,6 +377,8 @@ EOF4
                 hsetroot -cover "$1"
 
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                mkdir -p -- "$optdir/.current-wallpaper-links"
+                printf "%s\0" "$@" | xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links"
                 sleep "$opttime"
             ' --
         ;;
@@ -388,6 +398,8 @@ EOF3
 $(printf "%s\n" "$@")
 EOF4
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                mkdir -p -- "$optdir/.current-wallpaper-links"
+                printf "%s\0" "$@" | xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links"
                 sleep "$opttime"
             ' --
         ;;
@@ -443,6 +455,8 @@ $(printf "%s\n" @")
 EOF4
 )"
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
+                mkdir -p -- "$optdir/.current-wallpaper-links"
+                printf "%s\0" "$@" | xargs -r0 -I IMAGE ln -s -- IMAGE "$optdir/.current-wallpaper-links"
                 trap clean INT TERM EXIT QUIT
                 sleep "$opttime"
                 clean
