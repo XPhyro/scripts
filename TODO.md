@@ -40,7 +40,6 @@
 - In `tglapp`, support terminating the X window instead of the run process.
 - Support custom lock directory prefix in `dbutil.h`.
 - Support custom lock directory prefix in `lck`.
-- Support matching aspect ratios and displays in `wallpaper`.
 - Implement for/while-else construct of Python in C++.
   [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
   starting point.
