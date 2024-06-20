@@ -92,7 +92,12 @@ export gamemodetime
 
 case "$optexec" in
     bgs)
-        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+        find "$optdir/" \
+            -mindepth 1 -maxdepth "$optdepth" \
+            \( -type f -o -type l \) \
+            -not -path "*/*ignore*/*" \
+            -not -path "*/.current-wallpaper-links/*" \
+            -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -129,7 +134,12 @@ case "$optexec" in
 
         if [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ] \
         || [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; then
-            find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+            find "$optdir/" \
+                -mindepth 1 -maxdepth "$optdepth" \
+                \( -type f -o -type l \) \
+                -not -path "*/*ignore*/*" \
+                -not -path "*/.current-wallpaper-links/*" \
+                -print0 \
                 | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
                 | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
                 | sort -z > "$all_images"
@@ -230,7 +240,12 @@ case "$optexec" in
 
         if [ "$optorient" -eq 0 ]; then
             moncount="$(xrandr --listactivemonitors | head -n 1 | cut -d' ' -f2)"
-            find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+            find "$optdir/" \
+                -mindepth 1 -maxdepth "$optdepth" \
+                \( -type f -o -type l \) \
+                -not -path "*/*ignore*/*" \
+                -not -path "*/.current-wallpaper-links/*" \
+                -print0 \
                 | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
                 | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
                 | shufr -U0 -P "$moncount" \
@@ -284,7 +299,12 @@ EOF4
             "'rm -f -- "$all_images" "$portrait_images" "$landscape_images" "$portrait_stack" "$landscape_stack"'
             trap "$trap" EXIT INT TERM QUIT
 
-            find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+            find "$optdir/" \
+                -mindepth 1 -maxdepth "$optdepth" \
+                \( -type f -o -type l \) \
+                -not -path "*/*ignore*/*" \
+                -not -path "*/.current-wallpaper-links/*" \
+                -print0 \
                 | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
                 | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
                 | sort -z > "$all_images"
@@ -371,7 +391,12 @@ EOF4
         fi
         ;;
     hsetroot)
-        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+        find "$optdir/" \
+            -mindepth 1 -maxdepth "$optdepth" \
+            \( -type f -o -type l \) \
+            -not -path "*/*ignore*/*" \
+            -not -path "*/.current-wallpaper-links/*" \
+            -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -388,7 +413,12 @@ EOF4
             ' --
         ;;
     xwallpaper)
-        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+        find "$optdir/" \
+            -mindepth 1 -maxdepth "$optdepth" \
+            \( -type f -o -type l \) \
+            -not -path "*/*ignore*/*" \
+            -not -path "*/.current-wallpaper-links/*" \
+            -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "image/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
@@ -410,7 +440,12 @@ EOF4
             ' --
         ;;
     mpv)
-        find "$optdir/" -mindepth 1 -maxdepth "$optdepth" \( -type f -o -type l \) -not -path "*/*ignore*/*" -print0 \
+        find "$optdir/" \
+            -mindepth 1 -maxdepth "$optdepth" \
+            \( -type f -o -type l \) \
+            -not -path "*/*ignore*/*" \
+            -not -path "*/.current-wallpaper-links/*" \
+            -print0 \
             | xargs -r0 -n 20 -P 64 file -00 -L --mime-type -- \
             | xargs -r0 -n 2 sh -c 'prefixes "$2" "video/" && printf "%s\0" "$1"' -- \
             | shufr -U0 \
