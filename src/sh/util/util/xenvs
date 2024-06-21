@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+. std.sh
+
+cmd="$1"
+shift 1
+
+all="$(
+    jq -n '
+        env | with_entries(select(.key | startswith("XENVS_PRE_")
+                                         or startswith("XENVS_POST_")))
+    '
+)"
+pre="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_PRE_")))')"
+post="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_POST_")))')"
+
+{
+    printf '%s\n' "$pre" | jq -j 'join("\u0000")'
+    printf '\0'
+    printf '%s\0' "$@"
+    printf '%s\n' "$post" | jq -j 'join("\u0000")'
+    printf '\0'
+} | xargs -r0 -- "$cmd"
