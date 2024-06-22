@@ -12,6 +12,7 @@ unset optshow
 while getopts "hrt" OPT; do
     case "$OPT" in
         h)
+            # shellcheck disable=SC2154
             printf "%s" \
 "$std_execname [OPTION...] COMMAND [ARGUMENTS]
 Use environmental variables XENVS_PRE_* and XENVS_POST_* to
