@@ -5,8 +5,11 @@
 . execinfo.sh
 . io.sh
 
+exec 3<&0
+
 optempty=0
-while getopts "hr" OPT; do
+unset optshow
+while getopts "hrt" OPT; do
     case "$OPT" in
         h)
             printf "%s" \
@@ -16,10 +19,12 @@ pass conditional arguments to COMMAND.
 
    -h      Print this help message and exit.
    -r      Do not pass down empty arguments.
+   -t      Show what commands are run.
 " >&2
             exit 0
             ;;
         r) optempty=1;;
+        t) optshow=t;;
         *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
     esac
 done
@@ -45,10 +50,13 @@ all="$(
 pre="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_PRE_")))')"
 post="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_POST_")))')"
 
+tmp="$(mktemp -u)"
+mkfifo -m 0600 -- "$tmp"
+
 {
-    printf '%s\n' "$pre" | jq -j 'join("\u0000")'
-    printf '\0'
+    printf '%s\n' "$pre" | jq -j 'join("\u0000")' | fixend -r0
     printf '%s\0' "$@"
-    printf '%s\n' "$post" | jq -j 'join("\u0000")'
-    printf '\0'
-} | xargs -r0 -- "$cmd"
+    printf '%s\n' "$post" | jq -j 'join("\u0000")' | fixend -r0
+} > "$tmp" &
+
+exec xargs -a "$tmp" "-r0$optshow" -- "$cmd" <&3
