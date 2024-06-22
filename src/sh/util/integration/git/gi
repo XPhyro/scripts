@@ -67,7 +67,7 @@ git_add() {
                 else
                     printf "%s\n" {} | awk "{print \$2}" | xargs -r -d "\n" -n 1 bat --color=always --style=header,grid --line-range :500 --
                 fi
-            ' --bind=one:accept
+            ' --bind=one:accept --bind=load:down
     )"
 
     [ -z "$selection" ] && return
