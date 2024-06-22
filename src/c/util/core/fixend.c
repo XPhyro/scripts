@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     argc -= optind;
     argv += optind;
 
-    while ((i = read(STDIN_FILENO, buf, ARRLEN(buf))) > 0) {
+    while ((i = read(STDIN_FILENO, buf, sizeof(buf))) > 0) {
         empty = false;
         write(STDOUT_FILENO, buf, i);
     }
