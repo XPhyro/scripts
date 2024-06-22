@@ -2,14 +2,45 @@
 
 . std.sh
 
+. execinfo.sh
+. io.sh
+
+optempty=0
+while getopts "hr" OPT; do
+    case "$OPT" in
+        h)
+            printf "%s" \
+"$std_execname [OPTION...] COMMAND [ARGUMENTS]
+Use environmental variables XENVS_PRE_* and XENVS_POST_* to
+pass conditional arguments to COMMAND.
+
+   -h      Print this help message and exit.
+   -r      Do not pass down empty arguments.
+" >&2
+            exit 0
+            ;;
+        r) optempty=1;;
+        *) printf "Invalid option given: %s\n" "$OPT" >&2; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ "$#" -eq 0 ] && std_logerrq "no command given"
+
 cmd="$1"
 shift 1
 
+empty_filter=
+if [ "$optempty" -ne 0 ]; then
+    empty_filter='and .value != ""'
+fi
+
 all="$(
-    jq -n '
-        env | with_entries(select(.key | startswith("XENVS_PRE_")
-                                         or startswith("XENVS_POST_")))
-    '
+    jq -n "
+    env | with_entries(select((.key | startswith(\"XENVS_PRE_\")
+                                      or startswith(\"XENVS_POST_\"))
+                              $empty_filter))
+    "
 )"
 pre="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_PRE_")))')"
 post="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_POST_")))')"
