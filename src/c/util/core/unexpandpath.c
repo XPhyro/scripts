@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    argv += optind;
     argc -= optind;
+    argv += optind;
 
     users = amalloc(NUSERSINIT * sizeof(user));
 

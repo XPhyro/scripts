@@ -130,8 +130,8 @@ int main(int argc, char *argv[])
     if (filemodes == FILEMODE_NONE)
         DIE("at least one of -df must be passed\n");
 
-    argv += optind;
     argc -= optind;
+    argv += optind;
 
     if (optshell) {
         if (argc < 2 || argc > 4)

@@ -163,8 +163,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    argv += optind;
     argc -= optind;
+    argv += optind;
 
     if (!argc)
         DIE("no pattern given");

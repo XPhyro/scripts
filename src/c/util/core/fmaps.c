@@ -58,8 +58,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    argv += optind;
     argc -= optind;
+    argv += optind;
 
     if (!def)
         def = getenv("DEF");

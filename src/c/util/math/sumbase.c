@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    argv += optind;
     argc -= optind;
+    argv += optind;
 
     while ((line = getstr(argc, argv, delim)))
         sum += parsenum(line);

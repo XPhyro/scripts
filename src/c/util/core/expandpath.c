@@ -107,8 +107,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    argv += optind;
     argc -= optind;
+    argv += optind;
 
     if (!(home = getenv("HOME")) && !(home = getpwuid(getuid())->pw_dir))
         DIE("could not determine home directory");

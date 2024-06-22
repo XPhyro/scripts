@@ -119,8 +119,8 @@ int main(int argc, char *argv[])
     }
 
 #ifndef __clang_analyzer__
-    argv += optind;
     argc -= optind;
+    argv += optind;
 #endif /* ifndef __clang_analyzer__ */
 
     if (setvbuf(stdout, NULL, _IONBF, 0))

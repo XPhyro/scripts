@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
     if (end < 0)
         end = argc;
 
-    argv += 4 + beg;
     argc -= 4 + beg;
+    argv += 4 + beg;
 
     for (i = 0; i < argc && i < end; i++)
         if (!(i % inc))
