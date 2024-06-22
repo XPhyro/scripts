@@ -134,6 +134,9 @@ int main(int argc, char *argv[])
         }
     }
 
+    argc -= optind;
+    argv += optind;
+
     if (optwarmup) {
         while ((nread = read(STDIN_FILENO, buf, PIPE_BUF)) > 0 && (totread += nread) < optwarmup) {}
         totread = 0;
