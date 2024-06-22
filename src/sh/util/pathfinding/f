@@ -7,28 +7,25 @@
 main() {
     fl="$(
         find -L . -type f -not -path "*/.git/*" -printf "%P\n" \
-            | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
-                  --preview-window 'right,60%,wrap'
+            | XENVS_PRE_QUERY="$query" xenvs -r -- \
+                fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
+                    --preview-window 'right,60%,wrap'
     )" && [ -n "$fl" ] || exit 0
+    unset query
     "$EDITOR" -- "$fl"
 }
 
-[ "$#" -eq 0 ] && while :; do
-    main
-done
+[ "$#" -ne 0 ] && {
+    std_cd "$1"
+    shift 1
+}
 
-for i; do
-    [ -d "$i" ] || {
-        printf "Directory [%s] does not exist, exiting.\n" "$i"
-        exit 1
-    }
-done
+if [ "$#" -eq 0 ]; then
+    unset query
+else
+    query="--query=$*"
+fi
 
-rootpwd="$PWD"
 while :; do
-    for i; do
-        std_cd "$i"
-        main
-        std_cd "$rootpwd"
-    done
+    main
 done
