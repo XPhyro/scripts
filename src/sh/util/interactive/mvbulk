@@ -1,0 +1,215 @@
+#!/usr/bin/env sh
+
+. std.sh
+. io.sh
+
+abort() {
+    std_logerrq "$*, aborting operation"
+}
+
+construct_initial_prompt() {
+    if [ "$#" -ne 0 ]; then
+        printf "%s\n" "$@"
+    else
+        cat
+    fi | while IFS= read -r file; do
+        printf "%s" "$(slash "$file")"
+        if [ -d "$file" ]; then
+            printf "/"
+        fi
+        printf "\n"
+    done > "$original_list"
+
+    [ -s "$original_list" ] || abort 'no file given'
+}
+
+prompt() {
+    prompt_list="$1"
+
+    prompt_header="$(
+        printf "# \n"
+        prompt_header | sed 's/^/# /'
+        printf "# \n\n"
+    )"
+    prompt_lines="$(printf "%s\n\n" "$prompt_header" | wc -l)"
+
+    {
+        printf "%s\n\n" "$prompt_header"
+        cat -- "$prompt_list"
+    } > "$edited_list"
+
+    "$EDITOR" -- "$edited_list" \
+        || abort 'editor exit with nonzero status'
+
+    sed -i "1,$prompt_lines{/^#/d;/^$/d}" -- "$edited_list"
+}
+
+initial_prompt() {
+    initial_prompt="RENAME:
+- To rename a file or a directory, simply edit the line.
+- To delete a file or a directory recursively, leave the line empty.
+- Do not delete lines.
+- Empty the buffer to abort the operation."
+
+    prompt_header() {
+        printf "%s\n" "$initial_prompt"
+    }
+
+    while :; do
+        prompt "$original_list"
+
+        [ ! -s "$edited_list" ] && return 0
+
+        [ "$(wc -l < "$original_list")" -ne "$(wc -l < "$edited_list")" ] \
+            && {
+                initial_prompt="/Do not delete lines. If you would like to abort, empty the whole buffer./
+
+$initial_prompt"
+                continue
+            }
+
+        break
+    done
+
+    while IFS= read -r from <&3 && IFS= read -r to <&4; do
+        [ "$from" = "$to" ] && continue
+
+        [ -z "$to" ] && {
+            printf "%s\n" "$from" >> "$removed_list"
+            continue
+        }
+
+        [ -e "$to" ] && {
+            printf "# %s will overwrite:\n%s\n" "$from" "$to" >> "$overwrite_list"
+            continue
+        }
+
+        mkparent "$to"
+        mv -nT -- "$from" "$to" || {
+            printf "%s -> %s\n" "$from" "$to" >> "$failed_list"
+            continue
+        }
+
+        if [ "$optprintfull" -ne 0 ]; then
+            printf "%s -> %s\n" "$from" "$to"
+        elif [ "$optprint" -ne 0 ]; then
+            printf "%s\n" "$to"
+        fi
+    done 3< "$original_list" 4< "$edited_list"
+}
+
+removed_prompt() {
+    [ -s "$removed_list" ] || return 0
+
+    prompt_header() {
+        printf "%s\n" \
+            "DELETE:" \
+            "- The following files and directories will be removed." \
+            "- Directories will be removed recursively." \
+            "- To cancel deleting a file or a directory, simply delete the line." \
+            "- Empty the buffer to abort the operation."
+    }
+    prompt "$removed_list"
+
+    [ ! -s "$edited_list" ] && return 0
+
+    xargs -r -d '\n' rm -rf -- < "$edited_list"
+}
+
+overwrite_prompt() {
+    [ -s "$overwrite_list" ] || return 0
+
+    overwrite_prompt="OVERWRITE:
+- The following files and directories will be overwritten.
+- To cancel overwriting a file or a directory, simply delete the two lines.
+- Do not delete a single line. Only delete complete pairs.
+- Do not edit any lines.
+- Empty the buffer to abort the operation."
+
+    prompt_header() {
+        printf "%s\n" "$overwrite_prompt"
+    }
+
+    while :; do
+        prompt "$overwrite_list"
+
+        [ ! -s "$edited_list" ] && return 0
+
+        [ "$(($(wc -l < "$edited_list") % 2))" -ne 0 ] && {
+            overwrite_prompt="/Make sure to remove both lines of a pair./
+
+$overwrite_prompt"
+            continue
+        }
+
+        break
+    done
+
+    while IFS= read -r from && read -r to; do
+        from="${from%" will overwrite:"}"
+        from="${from#"# "}"
+
+        mkparent "$to"
+        mv -fT -- "$from" "$to" || {
+            printf "%s -> %s\n" "$from" "$to" >> "$failed_list"
+            continue
+        }
+
+        if [ "$optprintfull" -ne 0 ]; then
+            printf "%s -> %s\n" "$from" "$to"
+        elif [ "$optprint" -ne 0 ]; then
+            printf "%s\n" "$to"
+        fi
+    done < "$edited_list"
+}
+
+failed_prompt() {
+    [ -s "$failed_list" ] || return 0
+
+    prompt_header() {
+        printf "%s\n" \
+            "FAILED:" \
+            "- The following operations failed."
+    }
+    prompt "$failed_list"
+}
+
+optprint=0
+optprintfull=0
+while getopts "hPp" OPT; do
+    case "$OPT" in
+        h)
+            printf "%s" \
+"$std_execname [OPTION...] [FILE...]
+   -h    display this help and exit
+   -P    same as -p, but also print old files
+   -p    print moved files
+"
+            exit 0
+            ;;
+        P) optprintfull=1;;
+        p) optprint=1;;
+        *) printf "Invalid option given: %s\n" "$OPT"; exit 1;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+original_list="$(mktemp)"
+edited_list="$(mktemp -t --suffix=.txt mvbulk-paths.XXXXXXXXXX)"
+failed_list="$(mktemp)"
+removed_list="$(mktemp)"
+overwrite_list="$(mktemp)"
+trap '
+    rm -f -- \
+        "$original_list"\
+        "$edited_list"\
+        "$failed_list"\
+        "$removed_list"\
+        "$overwrite_list"
+' EXIT INT TERM QUIT
+
+construct_initial_prompt "$@"
+initial_prompt
+removed_prompt
+overwrite_prompt
+failed_prompt
