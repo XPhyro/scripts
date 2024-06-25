@@ -20,6 +20,8 @@ int main(int argc, char *argv[])
     int i;
     unsigned char buf[PIPE_BUF];
 
+    init_exec_info(argc, argv);
+
     while ((i = getopt(argc, argv, "hnrz0")) != -1) {
         switch (i) {
             case 'h':
