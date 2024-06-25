@@ -57,7 +57,7 @@ trap 'rm -f -- "$tmp"' EXIT INT TERM QUIT
 
 {
     printf '%s\n' "$pre" | jq -j 'join("\u0000")' | fixend -r0
-    printf '%s\0' "$@"
+    [ "$#" -ne 0 ] && printf '%s\0' "$@"
     printf '%s\n' "$post" | jq -j 'join("\u0000")' | fixend -r0
 } > "$tmp" &
 
