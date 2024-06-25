@@ -53,6 +53,7 @@ post="$(printf "%s\n" "$all" | jq 'with_entries(select(.key | startswith("XENVS_
 
 tmp="$(mktemp -u)"
 mkfifo -m 0600 -- "$tmp"
+trap 'rm -f -- "$tmp"' EXIT INT TERM QUIT
 
 {
     printf '%s\n' "$pre" | jq -j 'join("\u0000")' | fixend -r0
@@ -60,4 +61,4 @@ mkfifo -m 0600 -- "$tmp"
     printf '%s\n' "$post" | jq -j 'join("\u0000")' | fixend -r0
 } > "$tmp" &
 
-exec xargs -a "$tmp" "-r0$optshow" -- "$cmd" <&3
+xargs -a "$tmp" "-r0$optshow" -- "$cmd" <&3
