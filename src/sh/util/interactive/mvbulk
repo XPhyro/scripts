@@ -48,6 +48,7 @@ initial_prompt() {
     initial_prompt="RENAME:
 - To rename a file or a directory, simply edit the line.
 - To delete a file or a directory recursively, leave the line empty.
+- If a renamed path is detected in the original list, or is detected exactly twice in the final list, the files are exchanged.
 - Do not delete lines.
 - Empty the buffer to abort the operation."
 
@@ -79,21 +80,47 @@ $initial_prompt"
             continue
         }
 
-        [ -e "$to" ] && {
-            printf "# %s will overwrite:\n%s\n" "$from" "$to" >> "$overwrite_list"
-            continue
-        }
+        mv_exchange=
+        mv_no_clobber=-n
+        slashed_to="$(slash "$to")"
+        case "$(sed 's|/$||' < "$edited_list" | grep -Fxc -- "$slashed_to")" in
+            0|1) :;;
+            2) mv_exchange=--exchange;;
+            *)
+                printf "%s -> %s  # %s\n" \
+                    "$from" \
+                    "$to" \
+                    "destination file exists more than twice in the list" >> "$failed_list"
+                continue
+                ;;
+        esac
+
+        sed 's|/$||' < "$original_list" | grep -Fxq -- "$slashed_to" \
+            && mv_exchange=--exchange
+
+        if [ -n "$mv_exchange" ]; then
+            mv_no_clobber=
+        else
+            [ -e "$to" ] && {
+                printf "# %s will overwrite:\n%s\n" "$from" "$to" >> "$overwrite_list"
+                continue
+            }
+        fi
 
         mkparent "$to"
-        mv -nT -- "$from" "$to" || {
-            printf "%s -> %s\n" "$from" "$to" >> "$failed_list"
-            continue
-        }
+        XENVS_PRE_NO_CLOBBER="$mv_no_clobber" XENVS_PRE_EXCHANGE="$mv_exchange" \
+            xenvs -rt -- \
+                mv -T -- "$from" "$to" || {
+                    printf "%s -> %s\n" "$from" "$to" >> "$failed_list"
+                    continue
+                }
 
         if [ "$optprintfull" -ne 0 ]; then
             printf "%s -> %s\n" "$from" "$to"
+            [ -n "$mv_exchange" ] && printf "%s -> %s\n" "$to" "$from"
         elif [ "$optprint" -ne 0 ]; then
             printf "%s\n" "$to"
+            [ -n "$mv_exchange" ] && printf "%s\n" "$from"
         fi
     done 3< "$original_list" 4< "$edited_list"
 }
