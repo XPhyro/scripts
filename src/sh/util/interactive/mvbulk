@@ -7,6 +7,28 @@ abort() {
     std_logerrq "$*, aborting operation"
 }
 
+on_moved() {
+    if [ "$optprintfull" -ne 0 ]; then
+        printf "%s -> %s\n" "$from" "$to"
+        [ -n "$mv_exchange" ] && printf "%s -> %s\n" "$to" "$from"
+    elif [ "$optprint" -ne 0 ]; then
+        printf "%s\n" "$to"
+        [ -n "$mv_exchange" ] && printf "%s\n" "$from"
+    fi
+
+    if [ -n "$opteval" ]; then
+        eval_string="$opteval"
+
+        [ "$optfrom" -ne 0 ] \
+            && eval_string="$(printf "%s\n" "$eval_string" | awk -vfrom="$from" '{sub(/FROM/,from)}1')"
+        [ "$optto" -ne 0 ] \
+            && eval_string="$(printf "%s\n" "$eval_string" | awk -vto="$to" '{sub(/TO/,to)}1')"
+
+        export from to
+        (eval "$eval_string")
+    fi
+}
+
 construct_initial_prompt() {
     if [ "$#" -ne 0 ]; then
         printf "%s\n" "$@"
@@ -115,13 +137,7 @@ $initial_prompt"
                     continue
                 }
 
-        if [ "$optprintfull" -ne 0 ]; then
-            printf "%s -> %s\n" "$from" "$to"
-            [ -n "$mv_exchange" ] && printf "%s -> %s\n" "$to" "$from"
-        elif [ "$optprint" -ne 0 ]; then
-            printf "%s\n" "$to"
-            [ -n "$mv_exchange" ] && printf "%s\n" "$from"
-        fi
+        on_moved
     done 3< "$original_list" 4< "$edited_list"
 }
 
@@ -182,11 +198,7 @@ $overwrite_prompt"
             continue
         }
 
-        if [ "$optprintfull" -ne 0 ]; then
-            printf "%s -> %s\n" "$from" "$to"
-        elif [ "$optprint" -ne 0 ]; then
-            printf "%s\n" "$to"
-        fi
+        on_moved
     done < "$edited_list"
 }
 
@@ -201,21 +213,30 @@ failed_prompt() {
     prompt "$failed_list"
 }
 
+unset opteval
+optfrom=0
 optprint=0
 optprintfull=0
-while getopts "hPp" OPT; do
+optto=0
+while getopts "e:FhPpT" OPT; do
     case "$OPT" in
+        e) opteval="$OPTARG";;
+        F) optfrom=1;;
         h)
             printf "%s" \
 "$std_execname [OPTION...] [FILE...]
-   -h    display this help and exit
-   -P    same as -p, but also print old files
-   -p    print moved files
+   -e STR   evaluate STR on each changed file. \$from and \$to are exported
+   -F       replace FROM with \$from when using -e
+   -h       display this help and exit
+   -P       same as -p, but also print old files
+   -p       print moved files
+   -T       replace TO with \$to when using -e
 "
             exit 0
             ;;
         P) optprintfull=1;;
         p) optprint=1;;
+        T) optto=1;;
         *) printf "Invalid option given: %s\n" "$OPT"; exit 1;;
     esac
 done
