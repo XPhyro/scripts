@@ -1,0 +1,3 @@
+#!/usr/bin/env perl
+
+select(undef, undef, undef, $ARGV[0])
