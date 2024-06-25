@@ -109,7 +109,7 @@ $initial_prompt"
 
         mkparent "$to"
         XENVS_PRE_NO_CLOBBER="$mv_no_clobber" XENVS_PRE_EXCHANGE="$mv_exchange" \
-            xenvs -rt -- \
+            xenvs -r -- \
                 mv -T -- "$from" "$to" || {
                     printf "%s -> %s\n" "$from" "$to" >> "$failed_list"
                     continue
