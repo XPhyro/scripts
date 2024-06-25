@@ -58,7 +58,7 @@ main() {
         image/*)
             exec_preview_image "$@"
             ;;
-        */xml|application/javascript)
+        */xml|application/javascript|application/x-subrip)
             previewtext "$@"
             ;;
         text/plain)
