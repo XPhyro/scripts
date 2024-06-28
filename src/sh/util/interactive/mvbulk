@@ -33,7 +33,11 @@ construct_initial_prompt() {
     if [ "$#" -ne 0 ]; then
         printf "%s\n" "$@"
     else
-        cat
+        if [ -t 0 ]; then
+            printf "%s\n" *
+        else
+            cat
+        fi
     fi | while IFS= read -r file; do
         printf "%s" "$(slash "$file")"
         if [ -d "$file" ]; then
