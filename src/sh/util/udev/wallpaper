@@ -7,17 +7,29 @@
 . basedir.sh
 . execinfo.sh
 . io.sh
+. type.sh
+
+validate_image_brightness() {
+    isdaytime || identify -format "%[fx:mean]\n" -- "$@" | while IFS= read -r brightness; do
+        [ "$(printf "%s <= %s\n" "$brightness" "$optbrightness" | bc )" = 1 ] || return 1
+    done || return 1
+    return 0
+}
 
 execs="'bgs', 'cron-gsettings', 'gsettings', 'hsetroot', 'xwallpaper' or 'mpv'"
 
-unset optdepth optdir optcount opttime
+unset optbrightness optdepth optdir optcount opttime
 defaultdepth="$(printf "%s\n" "2^31 - 1" | bc)"
 optgamemode=0
 gamemodetime=30
 optorient=0
 optpersist=0
-while getopts "D:d:ghn:opt:x:" OPT; do
+while getopts "b:D:d:ghn:opt:x:" OPT; do
     case "$OPT" in
+        b)
+            std_assert_number_in_range "$OPTARG" 0.0 1.0
+            optbrightness="$OPTARG"
+            ;;
         D)
             [ "$OPTARG" -ge 1 ] || std_logerrq "DEPTH must be a valid positive integer."
             optdepth="$OPTARG"
@@ -30,28 +42,30 @@ while getopts "D:d:ghn:opt:x:" OPT; do
         h)
             printf "%s" \
 "$execname [OPTION...]
-   -D DEPTH   Search for wallpapers at at most DEPTH depth. Default is
-              $defaultdepth.
-   -d DIR     Use DIR as wallpaper directory. Default is \`getpath -ds --
-              wa\`/{image,video} depending on the selected executable.
-   -g         Do not change wallpaper if there is currently an application that
-              uses libgamemodeauto. This is the case if running a game with
-              \`gamemoderun\`. Ignored if -x is not 'cron-gsettings' or
-              'gsettings'. Applications are checked every $gamemodetime
-              seconds.
-   -h         Print help message and exit.
-   -n COUNT   Count of unique wallpapers to dispatch. Default is your display
-              count as of initialisation. Ignored if -x is 'cron-gsettings',
-              'gsettings' or 'hsetroot'.
-   -o         Match images and monitors according to orientation. Ignored if -x
-              is not 'cron-gsettings' or 'gsettings'.
-   -p         Make GNOME wallpapers persistent. Assumed if -x is 'cron-gsettings'.
-   -t TIME    Wait TIME between wallpaper changes. TIME must be a valid
-              sleep(1) time. Default is 15m.
-   -x EXEC    Executable to use. Can be one of $execs. If not given, the
-              aforementioned executables are searched for in the given order
-              and the first installed one is used. At least one must be
-              installed.
+   -b THRESHOLD   Don't use images that are too bright if it is after sunset.
+                  Ignored if -x is not 'cron-gsettings'.
+   -D DEPTH       Search for wallpapers at at most DEPTH depth. Default is
+                  $defaultdepth.
+   -d DIR         Use DIR as wallpaper directory. Default is \`getpath -ds --
+                  wa\`/{image,video} depending on the selected executable.
+   -g             Do not change wallpaper if there is currently an application that
+                  uses libgamemodeauto. This is the case if running a game with
+                  \`gamemoderun\`. Ignored if -x is not 'cron-gsettings' or
+                  'gsettings'. Applications are checked every $gamemodetime
+                  seconds.
+   -h             Print help message and exit.
+   -n COUNT       Count of unique wallpapers to dispatch. Default is your display
+                  count as of initialisation. Ignored if -x is 'cron-gsettings',
+                  'gsettings' or 'hsetroot'.
+   -o             Match images and monitors according to orientation. Ignored if -x
+                  is not 'cron-gsettings' or 'gsettings'.
+   -p             Make GNOME wallpapers persistent. Assumed if -x is 'cron-gsettings'.
+   -t TIME        Wait TIME between wallpaper changes. TIME must be a valid
+                  sleep(1) time. Default is 15m.
+   -x EXEC        Executable to use. Can be one of $execs. If not given, the
+                  aforementioned executables are searched for in the given order
+                  and the first installed one is used. At least one must be
+                  installed.
 "
             exit 0
             ;;
@@ -172,26 +186,42 @@ case "$optexec" in
         stest -zf < "$portrait_stack" | sponge -- "$portrait_stack"
         stest -zf < "$landscape_stack" | sponge -- "$landscape_stack"
 
-        while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
-            shuf -z < "$portrait_images" >> "$portrait_stack"
-        done
-
-        while [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; do
-            shuf -z < "$landscape_images" >> "$landscape_stack"
-        done
-
         output_path="$(mktemp --tmpdir="$std_cache_home" --suffix=.jpg wallpaper.XXXXXXXXXX)"
 
         {
             printf "%s\0" "$output_path"
+
             printf "%s\n" "$portrait_monitors" | while IFS= read -r geometry; do
-                head -z -n 1 -- "$portrait_stack" | tee -a -- "$buf"
-                tail -z -n +2 -- "$portrait_stack" | sponge -- "$portrait_stack"
+                while :; do
+                    while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
+                        shuf -z < "$portrait_images" >> "$portrait_stack"
+                    done
+
+                    chosen_image="$(head -z -n 1 -- "$portrait_stack")"
+                    tail -z -n +2 -- "$portrait_stack" | sponge -- "$portrait_stack"
+
+                    [ -z "$optbrightness" ] && break
+                    validate_image_brightness "$chosen_image" && break
+                done
+
+                printf "%s\0" "$chosen_image" | tee -a -- "$buf"
                 printf "%s\0" "$geometry"
             done
+
             printf "%s\n" "$landscape_monitors" | while IFS= read -r geometry; do
-                head -z -n 1 -- "$landscape_stack" | tee -a -- "$buf"
-                tail -z -n +2 -- "$landscape_stack" | sponge -- "$landscape_stack"
+                while :; do
+                    while [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; do
+                        shuf -z < "$landscape_images" >> "$landscape_stack"
+                    done
+
+                    chosen_image="$(head -z -n 1 -- "$landscape_stack")"
+                    tail -z -n +2 -- "$landscape_stack" | sponge -- "$landscape_stack"
+
+                    [ -z "$optbrightness" ] && break
+                    validate_image_brightness "$chosen_image" && break
+                done
+
+                printf "%s\0" "$chosen_image" | tee -a -- "$buf"
                 printf "%s\0" "$geometry"
             done
         } | xargs -r0 span-images
