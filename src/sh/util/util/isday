@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+[ "$(sunwait poll "$SUNWAIT_LAT" "$SUNWAIT_LON")" = "DAY" ]
