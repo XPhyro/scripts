@@ -33,7 +33,11 @@ fzf() {
 
 git_show_impl() {
     git log --color=always --pretty="%h %cs %s" \
-        | fzf --preview="printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git show --color=always"
+        | fzf --preview="
+              printf '%s\n' {} \
+                  | awk '{print \$2}' \
+                  | xargs -r -d '\n' -n 1 git show --color=always
+          "
 }
 
 git_show() {
@@ -50,8 +54,12 @@ git_diff() {
         git diff --name-only --staged
         git diff --name-only
     } | fzf --preview="
-            printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git diff --staged --color=always --
-            printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git diff --color=always --
+            printf '%s\n' {} \
+                | awk '{print \$2}' \
+                | xargs -r -d '\n' -n 1 git diff --staged --color=always --
+            printf '%s\n' {} \
+                | awk '{print \$2}' \
+                | xargs -r -d '\n' -n 1 git diff --color=always --
         " > /dev/null
 }
 
@@ -66,11 +74,21 @@ git_add() {
     selection="$(
         printf "%s\n" "*" "$files" \
             | fzf --multi --preview='
-                diff="$(printf "%s\n" {} | awk "{print \$2}" | xargs -r -d "\n" -n 1 git diff --color=always --)"
+                diff="$(
+                    printf "%s\n" {} \
+                        | awk "{print \$2}" \
+                        | xargs -r -d "\n" -n 1 git diff --color=always --
+                )"
                 if [ -n "$diff" ]; then
                     printf "%s\n" "$diff"
                 else
-                    printf "%s\n" {} | awk "{print \$2}" | xargs -r -d "\n" -n 1 bat --color=always --style=header,grid --line-range :500 --
+                    printf "%s\n" {} \
+                        | awk "{print \$2}" \
+                        | xargs -r -d "\n" -n 1 \
+                              bat --color=always \
+                                  --style=header,grid \
+                                  --line-range :500 \
+                                  --
                 fi
             ' --bind=one:accept --bind=load:down
     )"
@@ -88,7 +106,9 @@ git_partial_add() {
     selection="$(
         printf "%s\n" "$files" \
             | fzf --multi --preview="
-                printf '%s\n' {} | awk '{print \$2}' | xargs -r -d '\n' -n 1 git diff --color=always --
+                printf '%s\n' {} \
+                    | awk '{print \$2}' \
+                    | xargs -r -d '\n' -n 1 git diff --color=always --
             " --bind=one:accept
     )"
 
@@ -211,7 +231,13 @@ while :; do
             "[Q]uit"
     )"
 
-    command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status" --bind=one:accept)"
+    command="$(
+        printf "%s\n" "$available_commands" \
+            | fzf \
+                  --header="Select Git Command" \
+                  --preview="unbuffer git status" \
+                  --bind=one:accept
+    )"
 
     case "$command" in
         "[S]how")            git_show;;
