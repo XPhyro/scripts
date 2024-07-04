@@ -142,6 +142,10 @@ git_commit() {
     git commit
 }
 
+git_amend() {
+    git commit --amend
+}
+
 git_create() {
     printf "%s\n" "$(git diff --name-only --staged)" | xargs -r -d '\n' gacma Create
 }
@@ -194,6 +198,7 @@ while :; do
         printf "%s\n" "re[B]ase"
         [ -n "$(git diff --name-only --staged)" ] \
             && printf "%s\n" "[C]ommit" "crea[T]e"
+        printf "%s\n" "A[M]end commit"
         git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
             && printf "%s\n" "[P]ush"
         printf "%s\n" \
@@ -206,21 +211,22 @@ while :; do
     command="$(printf "%s\n" "$available_commands" | fzf --header="Select Git Command" --preview="unbuffer git status" --bind=one:accept)"
 
     case "$command" in
-        "[S]how")          git_show;;
-        "[L]og")           git_log;;
-        "[D]iff")          git_diff;;
-        "[A]dd")           git_add;;
-        "partial a[D]d")   git_partial_add;;
-        "un[S]tage")       git_unstage;;
-        "[R]eset")         git_reset;;
-        "re[B]ase")        git_rebase;;
-        "[C]ommit")        git_commit;;
-        "crea[T]e")        git_create;;
-        "[P]ush")          git_push;;
-        "fetc[H]")         git_fetch;;
-        "p[U]ll")          git_pull;;
-        "re[F]resh")       continue;;
-        ""|"[Q]uit")       break;;
-        *)                 continue;;
+        "[S]how")            git_show;;
+        "[L]og")             git_log;;
+        "[D]iff")            git_diff;;
+        "[A]dd")             git_add;;
+        "partial a[D]d")     git_partial_add;;
+        "un[S]tage")         git_unstage;;
+        "[R]eset")           git_reset;;
+        "re[B]ase")          git_rebase;;
+        "[C]ommit")          git_commit;;
+        "A[M]end commit")    git_amend;;
+        "crea[T]e")          git_create;;
+        "[P]ush")            git_push;;
+        "fetc[H]")           git_fetch;;
+        "p[U]ll")            git_pull;;
+        "re[F]resh")         continue;;
+        ""|"[Q]uit")         break;;
+        *)                   continue;;
     esac
 done
