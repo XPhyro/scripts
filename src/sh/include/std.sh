@@ -12,7 +12,7 @@
     elif [ "$STD_RUNTIME_DEPTH" -eq "$STD_RUNTIME_DEPTH" ]; then
         : "$((STD_RUNTIME_DEPTH += 1))"
     else
-        printf '$STD_RUNTIME_PATH (%s) is not empty and not a valid integer. Do not edit it, or make sure it is valid. Resetting it to 1.\n' "$STD_RUNTIME_DEPTH" >&2
+        printf '$STD_RUNTIME_DEPTH (%s) is not empty and not a valid integer. Do not edit it, or make sure it is valid. Resetting it to 1.\n' "$STD_RUNTIME_DEPTH" >&2
         STD_RUNTIME_DEPTH=1
     fi
 }
