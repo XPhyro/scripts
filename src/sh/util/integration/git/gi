@@ -26,6 +26,7 @@ fzf() {
             --layout=reverse \
             --height="65%" \
             --preview-window="right:65%" \
+            --scroll-off=10000 \
             "$@" \
         | sed 's/^\s*[0-9]\+\. //'
 }
