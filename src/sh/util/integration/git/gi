@@ -39,6 +39,10 @@ git_show() {
     git_show_impl > /dev/null
 }
 
+git_log() {
+    git log
+}
+
 git_diff() {
     {
         printf "%s\n" "*"
@@ -168,7 +172,9 @@ git_pull() {
 
 while :; do
     available_commands="$(
-        printf "%s\n" "[S]how"
+        printf "%s\n" \
+            "[S]how" \
+            "[L]og"
         [ -n "$(
             git diff --name-only --staged
             git diff --name-only
@@ -180,7 +186,7 @@ while :; do
         )" ] \
             && printf "%s\n" "[A]dd"
         [ -n "$(git diff --name-only)" ] \
-            && printf "%s\n" "partia[L] add"
+            && printf "%s\n" "partial a[D]d"
         [ -n "$(git diff --name-only --staged)" ] \
             && printf "%s\n" "un[S]tage"
         [ -n "$(git diff --name-only)" ] \
@@ -201,9 +207,10 @@ while :; do
 
     case "$command" in
         "[S]how")          git_show;;
+        "[L]og")           git_log;;
         "[D]iff")          git_diff;;
         "[A]dd")           git_add;;
-        "partia[L] add")   git_partial_add;;
+        "partial a[D]d")   git_partial_add;;
         "un[S]tage")       git_unstage;;
         "[R]eset")         git_reset;;
         "re[B]ase")        git_rebase;;
