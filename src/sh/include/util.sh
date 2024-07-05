@@ -12,4 +12,20 @@
         shift
         trap "trap - $*; $cmd" "$@"
     }
+
+    std_ret_to_bool() {
+        if [ "$?" -eq 0 ]; then
+            printf 1
+        else
+            printf 0
+        fi
+    }
+
+    std_invert_ret() {
+        if [ "$?" -eq 0 ]; then
+            return 1
+        else
+            return 0
+        fi
+    }
 }
