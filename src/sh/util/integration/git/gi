@@ -104,22 +104,7 @@ git_add() {
 }
 
 git_partial_add() {
-    files="$(git diff --name-only)"
-    [ -z "$files" ] && return
-
-    selection="$(
-        printf "%s\n" "$files" \
-            | fzf --multi --preview="
-                printf '%s\n' {} \
-                    | awk '{print \$2}' \
-                    | xargs -r -d '\n' -n 1 git diff --color=always --
-            " --bind=one:accept
-    )"
-
-    [ -z "$selection" ] && return
-
-    printf "%s\n" "$selection" | xargs -r -d '\n' -o git add -p --
-    git_partial_add
+    git add -p --
 }
 
 git_unstage() {
