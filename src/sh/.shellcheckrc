@@ -1,6 +1,6 @@
 shell=sh
 
-external-sources=true
+external-sources=false
 
 disable=SC1003
 disable=SC1007
