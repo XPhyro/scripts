@@ -2,6 +2,10 @@
 
 . std.sh
 
+. basedir.sh
+. execinfo.sh
+. util.sh
+
 PREVIEW='
     file="$(
         printf "%s\n" {} \
@@ -172,6 +176,8 @@ git_create() {
 }
 
 git_push() {
+    manage is_locked push && return
+
     selection="$(
         {
             printf "%s\n" "Normal"
@@ -188,12 +194,67 @@ git_push() {
 }
 
 git_fetch() {
+    manage is_locked pull && return
+
     git fetch
 }
 
 git_pull() {
+    manage is_locked pull && return
+
     git pull
 }
+
+vector() {
+    vector_hash="${1}_lock"
+    shift 1
+    std::vector -c p -- "$std_execname" "$vector_hash" "$@"
+}
+
+manage() {
+    action="$1"
+    lock_type="$2"
+    shift 2
+
+    vector "$lock_type" ensure
+
+    case "$action" in
+        "lock") manage is_locked "$lock_type" || vector "$lock_type" push_back "$repo_root";;
+        "unlock") vector "$lock_type" remove "$repo_root";;
+        "is_locked") vector "$lock_type" find "$repo_root" > /dev/null;;
+        "is_unlocked") manage is_locked "$lock_type"; std_invert_ret;;
+    esac
+}
+
+configure() {
+    available_commands="$(
+        manage is_locked push && printf "un"
+        printf "%s\n" "lock [P]ush"
+
+        manage is_locked pull && printf "un"
+        printf "%s\n" "lock p[U]ll"
+    )"
+
+    command="$(
+        printf "%s\n" "$available_commands" \
+            | fzf \
+                  --header="Select Git Command" \
+                  --preview="unbuffer git status" \
+                  --bind=one:accept
+    )"
+
+    case "$command" in
+        "unlock [P]ush") manage unlock push;;
+        "lock [P]ush") manage lock push;;
+        "unlock p[U]ll") manage unlock pull;;
+        "lock p[U]ll") manage lock pull;;
+        "") return;;
+    esac
+
+    configure
+}
+
+repo_root="$(realpath -P -- "$(git rev-parse --show-toplevel)")"
 
 while :; do
     available_commands="$(
@@ -217,16 +278,25 @@ while :; do
         [ -n "$(git diff --name-only)" ] \
             && printf "%s\n" "[R]eset"
         printf "%s\n" "re[B]ase"
+
         [ -n "$(git diff --name-only --staged)" ] \
             && printf "%s\n" \
                    "[C]ommit" \
                    "creat[E]"
+
         printf "%s\n" "a[M]end commit"
-        git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
+
+        manage is_unlocked lock \
+            && git status -sb | head -n 1 | grep -Eq '\[(ahead|behind) [0-9](, .*)?+\]$' \
             && printf "%s\n" "[P]ush"
+
+        manage is_unlocked pull \
+            && printf "%s\n" \
+                   "fetc[H]" \
+                   "p[U]ll"
+
         printf "%s\n" \
-            "fetc[H]" \
-            "p[U]ll" \
+            "c[O]nfigure" \
             "re[F]resh" \
             "[Q]uit"
     )"
@@ -254,6 +324,7 @@ while :; do
         "[P]ush")            git_push;;
         "fetc[H]")           git_fetch;;
         "p[U]ll")            git_pull;;
+        "c[O]nfigure")       configure;;
         "re[F]resh")         continue;;
         ""|"[Q]uit")         break;;
         *)                   continue;;
