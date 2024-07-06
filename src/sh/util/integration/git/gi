@@ -207,7 +207,7 @@ manage() {
         "lock") manage is_locked "$lock_type" || vector "$lock_type" push_back "$repo_root";;
         "unlock") vector "$lock_type" remove "$repo_root";;
         "is_locked") vector "$lock_type" find "$repo_root" > /dev/null;;
-        "is_unlocked") manage is_locked "$lock_type"; std_invert_ret;;
+        "is_unlocked") ! manage is_locked "$lock_type";;
     esac
 }
 
