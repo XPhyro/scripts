@@ -18,18 +18,15 @@
 /* path is modified in the process, but restored to original */
 void rmkparent(char *path, mode_t mode)
 {
-    size_t i, j, size = strlen(path) + 1;
+    size_t i, len = strlen(path);
 
-    for (i = 1, j = 0; i < size; i++) {
-        if (path[i] == '/') {
-            if (j)
-                path[j] = '/';
-            path[j = i] = '\0';
+    for (i = 1; i < len; i++) {
+        if (path[i] == '/' && i != len - 1) {
+            path[i] = '\0';
             mkdir(path, mode);
+            path[i] = '/';
         }
     }
-    if (j)
-        path[j] = '/';
 }
 
 void rmkparentconst(const char *path, mode_t mode)
