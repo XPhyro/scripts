@@ -1365,7 +1365,7 @@ export C_INCLUDE_PATH
 CXX="g++"
 CXX_INCLUDE_FLAGS="-I'$includeprefix' -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams' -I'$rootdir/lib/lyra-xphyro/include'"
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
-          -Wall -Wextra -Werror -Wabi=18 \
+          -Wall -Wextra -Werror -Wabi=19 \
           -Wswitch-default \
           -Wimplicit-fallthrough=5 -Wstringop-overflow=4 \
           -Wfloat-equal -Wdouble-promotion -Wdisabled-optimization \
