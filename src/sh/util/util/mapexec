@@ -30,9 +30,9 @@ printhelp() {
    --no-modified
        Stop recording positional arguments as commands to run against modified elements. Has no effect if -e is passed.
    -u, --unmodified
-       Toggle reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
+       Toggle recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
    --no-unmodified
-       Stop reording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
+       Stop recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
    -w, --wiped
        Toggle recording positional arguments as commands to run against unmodified elements. Has no effect if -e is passed.
    --no-wiped
