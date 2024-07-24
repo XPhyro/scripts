@@ -128,21 +128,21 @@ case "$optexec" in
             ' --
         ;;
     cron-gsettings)
-        all_images="$(mktemp)"
+        all_images="$std_cache_home/all-images"
         portrait_images="$(mktemp)"
         landscape_images="$(mktemp)"
         portrait_stack="$std_cache_home/portrait-stack"
         landscape_stack="$std_cache_home/landscape-stack"
         buf="$(mktemp)"
-        trap 'rm -f -- "$all_images" "$portrait_images" "$landscape_images" "$buf"' EXIT INT TERM QUIT
+        trap 'rm -f -- "$portrait_images" "$landscape_images" "$buf"' EXIT INT TERM QUIT
 
         monitors="$(xrandr | grep -Fw "connected" | grep -Eo "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+")"
 
         portrait_monitors="$(printf "%s\n" "$monitors" | awk -F 'x' '$2 > $1 {print}')"
         landscape_monitors="$(printf "%s\n" "$monitors" | awk -F 'x' '$1 > $2 {print}')"
 
-        portrait_monitor_count="$(printf "%s\n" "$portrait_monitors" | wc -l)"
-        landscape_monitor_count="$(printf "%s\n" "$landscape_monitors" | wc -l)"
+        portrait_monitor_count="$({ [ -n "$portrait_monitors" ] && printf "%s\n" "$portrait_monitors"; } | wc -l)"
+        landscape_monitor_count="$({ [ -n "$landscape_monitors" ] && printf "%s\n" "$landscape_monitors"; } | wc -l)"
 
         set -e
 
@@ -191,39 +191,43 @@ case "$optexec" in
         {
             printf "%s\0" "$output_path"
 
-            printf "%s\n" "$portrait_monitors" | while IFS= read -r geometry; do
-                while :; do
-                    while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
-                        shuf -z < "$portrait_images" >> "$portrait_stack"
+            [ "$portrait_monitor_count" -ne 0 ] && {
+                printf "%s\n" "$portrait_monitors" | while IFS= read -r geometry; do
+                    while :; do
+                        while [ "$(tr '\0' '\n' < "$portrait_stack" | wc -l)" -lt "$portrait_monitor_count" ]; do
+                            shuf -z < "$portrait_images" >> "$portrait_stack"
+                        done
+
+                        chosen_image="$(head -z -n 1 -- "$portrait_stack")"
+                        tail -z -n +2 -- "$portrait_stack" | sponge -- "$portrait_stack"
+
+                        [ -z "$optbrightness" ] && break
+                        validate_image_brightness "$chosen_image" && break
                     done
 
-                    chosen_image="$(head -z -n 1 -- "$portrait_stack")"
-                    tail -z -n +2 -- "$portrait_stack" | sponge -- "$portrait_stack"
-
-                    [ -z "$optbrightness" ] && break
-                    validate_image_brightness "$chosen_image" && break
+                    printf "%s\0" "$chosen_image" | tee -a -- "$buf"
+                    printf "%s\0" "$geometry"
                 done
+            }
 
-                printf "%s\0" "$chosen_image" | tee -a -- "$buf"
-                printf "%s\0" "$geometry"
-            done
+            [ "$landscape_monitor_count" -ne 0 ] && {
+                printf "%s\n" "$landscape_monitors" | while IFS= read -r geometry; do
+                    while :; do
+                        while [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; do
+                            shuf -z < "$landscape_images" >> "$landscape_stack"
+                        done
 
-            printf "%s\n" "$landscape_monitors" | while IFS= read -r geometry; do
-                while :; do
-                    while [ "$(tr '\0' '\n' < "$landscape_stack" | wc -l)" -lt "$landscape_monitor_count" ]; do
-                        shuf -z < "$landscape_images" >> "$landscape_stack"
+                        chosen_image="$(head -z -n 1 -- "$landscape_stack")"
+                        tail -z -n +2 -- "$landscape_stack" | sponge -- "$landscape_stack"
+
+                        [ -z "$optbrightness" ] && break
+                        validate_image_brightness "$chosen_image" && break
                     done
 
-                    chosen_image="$(head -z -n 1 -- "$landscape_stack")"
-                    tail -z -n +2 -- "$landscape_stack" | sponge -- "$landscape_stack"
-
-                    [ -z "$optbrightness" ] && break
-                    validate_image_brightness "$chosen_image" && break
+                    printf "%s\0" "$chosen_image" | tee -a -- "$buf"
+                    printf "%s\0" "$geometry"
                 done
-
-                printf "%s\0" "$chosen_image" | tee -a -- "$buf"
-                printf "%s\0" "$geometry"
-            done
+            }
         } | xargs -r0 span-images
 
         while [ -n "$(gamemodelist 2> /dev/null)" ]; do
