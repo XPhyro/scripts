@@ -2,7 +2,33 @@
 
 . std.sh
 
-add() {
+kitty_add() {
+    _pid="$1"
+    file="$2"
+    pane_width="$3"
+    pane_height="$4"
+    pane_x="$5"
+    pane_y="$6"
+    shift 6
+
+    kitty +kitten icat \
+        --transfer-mode file \
+        --stdin no \
+        --scale-up \
+        --place "${pane_width}x${pane_height}@${pane_x}x${pane_y}" \
+        -- "$file" < /dev/null > /dev/tty
+
+    [ "$#" -ne 0 ] && kitty_add "$@"
+}
+
+kitty_remove() {
+    kitty +kitten icat \
+        --transfer-mode file \
+        --stdin no \
+        --clear < /dev/null > /dev/tty
+}
+
+generic_add() {
     pid="$1"
     file="$2"
     pane_width="$3"
@@ -46,10 +72,10 @@ add() {
         --max-height "100000" \
         -f "$image_path" < /dev/null > /dev/null
 
-    [ "$#" -ne 0 ] && add "$@"
+    [ "$#" -ne 0 ] && generic_add "$@"
 }
 
-remove() {
+generic_remove() {
     pid="$1"
     shift 1
 
@@ -62,13 +88,25 @@ remove() {
             "$tmpdir/$pid"-img-*
     }
 
-    [ "$#" -ne 0 ] && remove "$@"
+    [ "$#" -ne 0 ] && generic_remove "$@"
+}
+
+choose_method() {
+    if [ -n "$KITTY_PID" ]; then
+        add() kitty_add "$@"
+        remove() kitty_remove "$@"
+    else
+        add() generic_add "$@"
+        remove() generic_remove "$@"
+    fi
 }
 
 tmpdir="${TMPDIR:-/tmp}/previewimage"
 mkdir -p -- "$tmpdir" || [ -d "$tmpdir" ] || exit 1
 
 ueberzugpp_tmpdir="${TMPDIR:-/tmp}"
+
+choose_method
 
 case "$1" in
     add) shift 1; add "$@";;
