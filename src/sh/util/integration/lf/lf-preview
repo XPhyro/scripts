@@ -52,8 +52,15 @@ main() {
         application/epub+zip)
             exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
-        application/pdf|video/*|image/gif|image/heic|text/html)
+        application/pdf|video/*|image/heic|text/html)
             exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            ;;
+        image/gif)
+            if [ -n "$KITTY_PID" ]; then
+                exec_preview_image "$@"
+            else
+                exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            fi
             ;;
         image/*)
             exec_preview_image "$@"
