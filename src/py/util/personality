@@ -118,19 +118,40 @@ def mask_to_str(mask) -> str:
     return ret.upper()
 
 
+def print_probs(probs, mask, depth=0) -> None:
+    if depth == 0:
+        print(f"Prevalence of {mask_to_str(mask)}:")
+        print_probs(probs, mask, 1)
+        return
+
+    for region, prob, subregions in probs:
+        prob = get_prob(prob, mask)
+        print(f"{"  " * depth}{region}: {prob * 100:.1f}")
+        print_probs(subregions, mask, depth + 1)
+
+
 def main(args) -> int:
     # data from 16personalities.com
-    world_probs = as_dict(0.4997, 0.5496, 0.4551, 0.5123, 0.5257)
-
-    us_probs = as_dict(0.5020, 0.5460, 0.4260, 0.5148, 0.5358)
-
-    eu_probs = as_dict(0.5116, 0.5703, 0.4627, 0.5254, 0.5391)
-    nl_probs = as_dict(0.4896, 0.5611, 0.4277, 0.5333, 0.5151)
-    de_probs = as_dict(0.5309, 0.5781, 0.4605, 0.5323, 0.5400)
-
-    as_probs = as_dict(0.4895, 0.5358, 0.4575, 0.5105, 0.5334)
-    jp_probs = as_dict(0.5154, 0.5470, 0.4387, 0.5429, 0.5383)
-    tr_probs = as_dict(0.4839, 0.5685, 0.4955, 0.5258, 0.5408)
+    probs = [
+        ("World", as_dict(0.4997, 0.5496, 0.4551, 0.5123, 0.5257), []),
+        ("United States", as_dict(0.5020, 0.5460, 0.4260, 0.5148, 0.5358), []),
+        (
+            "Europe",
+            as_dict(0.5116, 0.5703, 0.4627, 0.5254, 0.5391),
+            [
+                ("Netherlands", as_dict(0.4896, 0.5611, 0.4277, 0.5333, 0.5151), []),
+                ("Germany", as_dict(0.5309, 0.5781, 0.4605, 0.5323, 0.5400), []),
+            ],
+        ),
+        (
+            "Asia",
+            as_dict(0.4895, 0.5358, 0.4575, 0.5105, 0.5334),
+            [
+                ("Japan", as_dict(0.5154, 0.5470, 0.4387, 0.5429, 0.5383), []),
+                ("Turkey", as_dict(0.4839, 0.5685, 0.4955, 0.5258, 0.5408), []),
+            ],
+        ),
+    ]
 
     for arg in args:
         mask = 0
@@ -141,30 +162,7 @@ def main(args) -> int:
                 return 1
             mask |= char_to_mask[char]
 
-        world_prob = get_prob(world_probs, mask)
-
-        us_prob = get_prob(us_probs, mask)
-
-        eu_prob = get_prob(eu_probs, mask)
-        nl_prob = get_prob(nl_probs, mask)
-        de_prob = get_prob(de_probs, mask)
-
-        as_prob = get_prob(as_probs, mask)
-        jp_prob = get_prob(jp_probs, mask)
-        tr_prob = get_prob(tr_probs, mask)
-
-        print(
-            f"Prevalence of {mask_to_str(mask)}:\n"
-            f"\tWorld: {world_prob * 100:.1f}\n"
-            f"\tUS: {us_prob * 100:.1f}\n"
-            f"\tEurope: {eu_prob * 100:.1f}\n"
-            f"\t\tNL: {nl_prob * 100:.1f}\n"
-            f"\t\tDE: {de_prob * 100:.1f}\n"
-            f"\tAsia: {as_prob * 100:.1f}\n"
-            f"\t\tJP: {jp_prob * 100:.1f}\n"
-            f"\t\tTR: {tr_prob * 100:.1f}\n",
-            end="",
-        )
+        print_probs(probs, mask)
 
     return 0
 
