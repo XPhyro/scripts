@@ -126,6 +126,7 @@ def main(args) -> int:
 
     eu_probs = as_dict(0.5116, 0.5703, 0.4627, 0.5254, 0.5391)
     nl_probs = as_dict(0.4896, 0.5611, 0.4277, 0.5333, 0.5151)
+    de_probs = as_dict(0.5309, 0.5781, 0.4605, 0.5323, 0.5400)
 
     as_probs = as_dict(0.4895, 0.5358, 0.4575, 0.5105, 0.5334)
     jp_probs = as_dict(0.5154, 0.5470, 0.4387, 0.5429, 0.5383)
@@ -146,6 +147,7 @@ def main(args) -> int:
 
         eu_prob = get_prob(eu_probs, mask)
         nl_prob = get_prob(nl_probs, mask)
+        de_prob = get_prob(de_probs, mask)
 
         as_prob = get_prob(as_probs, mask)
         jp_prob = get_prob(jp_probs, mask)
@@ -157,6 +159,7 @@ def main(args) -> int:
             f"\tUS: {us_prob * 100:.1f}\n"
             f"\tEurope: {eu_prob * 100:.1f}\n"
             f"\t\tNL: {nl_prob * 100:.1f}\n"
+            f"\t\tDE: {de_prob * 100:.1f}\n"
             f"\tAsia: {as_prob * 100:.1f}\n"
             f"\t\tJP: {jp_prob * 100:.1f}\n"
             f"\t\tTR: {tr_prob * 100:.1f}\n",
