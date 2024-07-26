@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     inc = astrtol(argv[3], numerr);
 
     if (end < 0)
-        end = argc;
+        end = argc + 1 + end;
 
     argc -= 4 + beg;
     argv += 4 + beg;
