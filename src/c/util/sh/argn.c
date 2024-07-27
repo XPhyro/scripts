@@ -22,11 +22,11 @@ int main(int argc, char *argv[])
     end = astrtol(argv[2], numerr);
     inc = astrtol(argv[3], numerr);
 
-    if (end < 0)
-        end = argc + 1 + end;
-
     argc -= 4 + beg;
     argv += 4 + beg;
+
+    if (end < 0)
+        end = argc + end;
 
     for (i = 0; i < argc && i < end; i++)
         if (!(i % inc))
