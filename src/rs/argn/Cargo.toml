@@ -1,0 +1,13 @@
+[package]
+name = "argn"
+version = "0.1.0"
+edition = "2021"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
