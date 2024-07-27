@@ -8,7 +8,7 @@ main() {
     fl="$(
         find -L "${root_dir:-"."}" -type f -not -path "*/.git/*" -printf "%P\n" \
             | XENVS_PRE_QUERY="$query" xenvs -r -- \
-                fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
+                fzf --preview 'bat --color=always --style=numbers --line-range=:500 "$root_dir"{}' \
                     --preview-window 'right,60%,wrap'
     )" && [ -n "$fl" ] || exit 0
     unset query
@@ -27,6 +27,8 @@ else
         query="--query=$*"
     fi
 fi
+
+export root_dir
 
 while :; do
     main
