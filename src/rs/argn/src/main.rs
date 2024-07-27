@@ -90,7 +90,7 @@ fn main() {
             .map(|line| line.unwrap())
             .collect::<Vec<_>>()
     } else {
-        args.args.clone()
+        args.args
     };
 
     let sliced_args = apply_slice(&input, begin, end, increment);
