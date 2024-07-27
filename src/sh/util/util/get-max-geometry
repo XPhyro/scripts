@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. std.sh
+
 if [ -t 0 ]; then
     printf "%s\0" "$@" 
 else
