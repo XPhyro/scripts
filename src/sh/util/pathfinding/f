@@ -18,7 +18,7 @@ main() {
 if [ "$#" -eq 0 ]; then
     root_dir=""
 else
-    root_dir="$1/"
+    root_dir="${1%/}/"
     shift 1
 
     if [ "$#" -eq 0 ]; then
