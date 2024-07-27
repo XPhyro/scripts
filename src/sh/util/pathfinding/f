@@ -6,24 +6,26 @@
 
 main() {
     fl="$(
-        find -L . -type f -not -path "*/.git/*" -printf "%P\n" \
+        find -L "${root_dir:-"."}" -type f -not -path "*/.git/*" -printf "%P\n" \
             | XENVS_PRE_QUERY="$query" xenvs -r -- \
                 fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' \
                     --preview-window 'right,60%,wrap'
     )" && [ -n "$fl" ] || exit 0
     unset query
-    "$EDITOR" -- "$fl"
-}
-
-[ "$#" -ne 0 ] && {
-    std_cd "$1"
-    shift 1
+    "$EDITOR" -- "$root_dir$fl"
 }
 
 if [ "$#" -eq 0 ]; then
-    unset query
+    root_dir=""
 else
-    query="--query=$*"
+    root_dir="$1/"
+    shift 1
+
+    if [ "$#" -eq 0 ]; then
+        unset query
+    else
+        query="--query=$*"
+    fi
 fi
 
 while :; do
