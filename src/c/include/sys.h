@@ -1,7 +1,6 @@
 #ifndef HEADER_SCRIPTS_C_SYS_
 #define HEADER_SCRIPTS_C_SYS_
 
-#include <assert.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -67,14 +66,12 @@ void rmkdirconst(const char *path, mode_t mode)
     free(pathdup);
 }
 
-/* no restrict is intentional. buf must be <= path. */
+/* no restrict is intentional. buf must be <= path if there is any overlap. */
 char *simpslashnbuf(const char *path, char *buf, size_t bufsize)
 {
     char c;
     size_t i = 0;
     bool isslash = false;
-
-    assert(buf <= path);
 
     while ((c = *path)) {
         if (c == '/') {
@@ -99,14 +96,12 @@ char *simpslashnbuf(const char *path, char *buf, size_t bufsize)
     return buf;
 }
 
-/* no restrict is intentional. buf must be <= path. */
+/* no restrict is intentional. buf must be <= path if there is any overlap. */
 char *simpslashbuf(const char *path, char *buf)
 {
     const char *bufbeg = buf;
     char c;
     bool isslash = false;
-
-    assert(buf <= path);
 
     while ((c = *path)) {
         if (c == '/') {
@@ -137,13 +132,11 @@ char *simpslash(char *path)
     return path;
 }
 
-/* no restrict is intentional. buf must be <= path. */
+/* no restrict is intentional. buf must be <= path if there is any overlap. */
 char *dirslashbuf(char *path, char *buf)
 {
     struct stat st;
     size_t size;
-
-    assert(buf <= path);
 
     if (stat(path, &st) == -1)
         return NULL;
