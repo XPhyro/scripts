@@ -13,6 +13,7 @@ kitty_add() {
 
     kitty +kitten icat \
         --transfer-mode file \
+        --align left \
         --stdin no \
         --scale-up \
         --place "${pane_width}x${pane_height}@${pane_x}x${pane_y}" \
