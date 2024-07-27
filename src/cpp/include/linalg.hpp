@@ -137,6 +137,84 @@ namespace xph::linalg {
 
     // One to One
 
+    template <typename Tdata, typename Toperand>
+    inline void add(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val + operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void subtract(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val + operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void multiply(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val * operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void divide(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val / operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void equals(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val == operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void not_equals(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val != operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void lesser(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val < operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void greater(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val > operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void lesser_or_equal(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val <= operand; });
+    }
+
+    template <typename Tdata, typename Toperand>
+    inline void greater_or_equal(std::span<Tdata> arr, Toperand operand)
+    {
+        xph::transform(arr, [&](Tdata val) { return val >= operand; });
+    }
+
+    template <typename Tdata>
+    inline void logical_not(std::span<Tdata> arr)
+    {
+        xph::transform(arr, [&](Tdata val) { return !val; });
+    }
+
+    template <typename Tdata>
+    inline void bitwise_not(std::span<Tdata> arr)
+    {
+        xph::transform(arr, [&](Tdata val) { return ~static_cast<std::intmax_t>(val); });
+    }
+
+    template <typename Tdata>
+    inline void unsigned_bitwise_not(std::span<Tdata> arr)
+    {
+        xph::transform(arr, [&](Tdata val) { return ~static_cast<std::uintmax_t>(val); });
+    }
+
     template <typename Tdata>
     inline void cumsum(std::span<Tdata> arr)
     {
