@@ -38,69 +38,91 @@ DEFINE_EXEC_INFO();
 #define X_FUNCTION_SPAN_1(FUNC, MIN, MAX, DESC) \
     X_FUNCTION(FUNC, MIN, MAX, DESC) Y_FUNCTION_SPAN_1(FUNC)
 
-#define FUNCTIONS                                                                               \
-    /* none to many */                                                                          \
-    X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")                    \
-                                                                                                \
-    /* one to many */                                                                           \
-    X_FUNCTION_VECTOR_0(factor, 0, 0, "Map all elements to their factors.")                     \
-                                                                                                \
-    /* many to many */                                                                          \
-    X_FUNCTION_VECTOR_0(difference, 0, 0, "Map all elements to their difference.")              \
-    X_FUNCTION_VECTOR_1(partsum, 1, 1, "Map all elements to their partial sum.")                \
-    X_FUNCTION_VECTOR_1(partaltsum, 1, 1, "Map all elements to their partial alternating sum.") \
-    X_FUNCTION_VECTOR_1(partprod, 1, 1, "Map all elements to their partial product.")           \
-                                                                                                \
-    /* one to one */                                                                            \
-    X_FUNCTION_SPAN_0(cumsum, 0, 0, "Map all elements to their cumulative sum.")                \
-    X_FUNCTION_SPAN_0(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.") \
-    X_FUNCTION_SPAN_0(cumprod, 0, 0, "Map all elements to their cumulative product.")           \
-    X_FUNCTION_SPAN_0(factorial,                                                                \
-                      0,                                                                        \
-                      0,                                                                        \
-                      "Map all elements to their factorial. "                                   \
-                      "If elements are not integers, truncate them first.")                     \
-    X_FUNCTION_SPAN_0(degrees, 0, 0, "Map all elements to their degrees.")                      \
-    X_FUNCTION_SPAN_0(radians, 0, 0, "Map all elements to their radians.")                      \
-    X_FUNCTION_SPAN_0(acos, 0, 0, "Map all elements to their acos. See `man 3 acos`.")          \
-    X_FUNCTION_SPAN_0(asin, 0, 0, "Map all elements to their asin. See `man 3 asin`.")          \
-    X_FUNCTION_SPAN_0(atan, 0, 0, "Map all elements to their atan. See `man 3 atan`.")          \
-    X_FUNCTION_SPAN_0(cbrt, 0, 0, "Map all elements to their cbrt. See `man 3 cbrt`.")          \
-    X_FUNCTION_SPAN_0(ceil, 0, 0, "Map all elements to their ceil. See `man 3 ceil`.")          \
-    X_FUNCTION_SPAN_0(cos, 0, 0, "Map all elements to their cos. See `man 3 cos`.")             \
-    X_FUNCTION_SPAN_0(cosh, 0, 0, "Map all elements to their cosh. See `man 3 cosh`.")          \
-    X_FUNCTION_SPAN_0(exp, 0, 0, "Map all elements to their exp. See `man 3 exp`.")             \
-    X_FUNCTION_SPAN_0(abs, 0, 0, "Map all elements to their abs. See `man 3 fabs`.")            \
-    X_FUNCTION_SPAN_0(floor, 0, 0, "Map all elements to their floor. See `man 3 floor`.")       \
-    X_FUNCTION_SPAN_0(log, 0, 0, "Map all elements to their log. See `man 3 log`.")             \
-    X_FUNCTION_SPAN_0(log10, 0, 0, "Map all elements to their log10. See `man 3 log10`.")       \
-    X_FUNCTION_SPAN_0(log2, 0, 0, "Map all elements to their log2. See `man 3 log2`.")          \
-    X_FUNCTION_SPAN_0(log1p, 0, 0, "Map all elements to their log1p.")                          \
-    X_FUNCTION_SPAN_1(pow, 1, 1, "Map all elements to their pow. See `man 3 pow`.")             \
-    X_FUNCTION_SPAN_0(round, 0, 0, "Map all elements to their round. See `man 3 round`.")       \
-    X_FUNCTION_SPAN_0(sin, 0, 0, "Map all elements to their sin. See `man 3 sin`.")             \
-    X_FUNCTION_SPAN_0(sinh, 0, 0, "Map all elements to their sinh. See `man 3 sinh`.")          \
-    X_FUNCTION_SPAN_0(sqrt, 0, 0, "Map all elements to their sqrt. See `man 3 sqrt`.")          \
-    X_FUNCTION_SPAN_0(tan, 0, 0, "Map all elements to their tan. See `man 3 tan`.")             \
-    X_FUNCTION_SPAN_0(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")          \
-    X_FUNCTION_SPAN_0(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")       \
-                                                                                                \
-    /* one to optional one */                                                                   \
-    X_FUNCTION_VECTOR_0(zero, 0, 0, "Reduce to zero elements.")                                 \
-    X_FUNCTION_VECTOR_0(nonzero, 0, 0, "Reduce to non-zero elements.")                          \
-                                                                                                \
-    /* many to one */                                                                           \
-    X_FUNCTION_VECTOR_0(count, 0, 0, "Reduce to count of elements.")                            \
-    X_FUNCTION_VECTOR_0(max, 0, 0, "Reduce to the maximum element.")                            \
-    X_FUNCTION_VECTOR_0(min, 0, 0, "Reduce to the minimum element.")                            \
-    X_FUNCTION_VECTOR_0(sum, 0, 0, "Reduce to the sum of the elements.")                        \
-    X_FUNCTION_VECTOR_0(altsum, 0, 0, "Reduce to the alternating sum of the elements.")         \
-    X_FUNCTION_VECTOR_0(product, 0, 0, "Reduce to the product of the elements.")                \
-    X_FUNCTION_VECTOR_0(mean, 0, 0, "Reduce to the mean of the elements.")                      \
-    X_FUNCTION_VECTOR_0(std, 0, 0, "Reduce to the standard deviation of the elements.")         \
-    X_FUNCTION_VECTOR_0(median, 0, 0, "Reduce to the median of the elements.")                  \
-    X_FUNCTION_VECTOR_0(gmean, 0, 0, "Reduce to the geometric mean of the elements.")           \
-    X_FUNCTION_VECTOR_0(hmean, 0, 0, "Reduce to the harmonic mean of the elements.")            \
+#define FUNCTIONS                                                                                  \
+    /* none to many */                                                                             \
+    X_FUNCTION(arange, 1, 3, "Append [MIN, MAX) in STEP steps to elements.")                       \
+                                                                                                   \
+    /* one to many */                                                                              \
+    X_FUNCTION_VECTOR_0(factor, 0, 0, "Map all elements to their factors.")                        \
+                                                                                                   \
+    /* many to many */                                                                             \
+    X_FUNCTION_VECTOR_0(difference, 0, 0, "Map all elements to their difference.")                 \
+    X_FUNCTION_VECTOR_1(partsum, 1, 1, "Map all elements to their partial sum.")                   \
+    X_FUNCTION_VECTOR_1(partaltsum, 1, 1, "Map all elements to their partial alternating sum.")    \
+    X_FUNCTION_VECTOR_1(partprod, 1, 1, "Map all elements to their partial product.")              \
+                                                                                                   \
+    /* one to one */                                                                               \
+    X_FUNCTION_SPAN_1(add, 1, 1, "Add the given number to all elements.")                          \
+    X_FUNCTION_SPAN_1(subtract, 1, 1, "Subtract the given number from all elements.")              \
+    X_FUNCTION_SPAN_1(multiply, 1, 1, "Multiply all elements with the given number.")              \
+    X_FUNCTION_SPAN_1(divide, 1, 1, "Divide all elements by the given number.")                    \
+    X_FUNCTION_SPAN_1(                                                                             \
+        equals, 1, 1, "Map all elements to their equality status with the given number.")          \
+    X_FUNCTION_SPAN_1(                                                                             \
+        not_equals, 1, 1, "Map all elements to their non-equality status with the given number.")  \
+    X_FUNCTION_SPAN_1(                                                                             \
+        lesser, 1, 1, "Map all elements to their relation status with the given number.")          \
+    X_FUNCTION_SPAN_1(                                                                             \
+        greater, 1, 1, "Map all elements to their relation status with the given number.")         \
+    X_FUNCTION_SPAN_1(                                                                             \
+        lesser_or_equal, 1, 1, "Map all elements to their relation status with the given number.") \
+    X_FUNCTION_SPAN_1(greater_or_equal,                                                            \
+                      1,                                                                           \
+                      1,                                                                           \
+                      "Map all elements to their relation status with the given number.")          \
+    X_FUNCTION_SPAN_0(logical_not, 0, 0, "Map all elements to their logical inversion.")           \
+    X_FUNCTION_SPAN_0(bitwise_not, 0, 0, "Map all elements to their bitwise inversion.")           \
+    X_FUNCTION_SPAN_0(                                                                             \
+        unsigned_bitwise_not, 0, 0, "Map all elements to their unsigned bitwise inversion.")       \
+    X_FUNCTION_SPAN_0(cumsum, 0, 0, "Map all elements to their cumulative sum.")                   \
+    X_FUNCTION_SPAN_0(cumaltsum, 0, 0, "Map all elements to their cumulative alternating sum.")    \
+    X_FUNCTION_SPAN_0(cumprod, 0, 0, "Map all elements to their cumulative product.")              \
+    X_FUNCTION_SPAN_0(factorial,                                                                   \
+                      0,                                                                           \
+                      0,                                                                           \
+                      "Map all elements to their factorial. "                                      \
+                      "If elements are not integers, truncate them first.")                        \
+    X_FUNCTION_SPAN_0(degrees, 0, 0, "Map all elements to their degrees.")                         \
+    X_FUNCTION_SPAN_0(radians, 0, 0, "Map all elements to their radians.")                         \
+    X_FUNCTION_SPAN_0(acos, 0, 0, "Map all elements to their acos. See `man 3 acos`.")             \
+    X_FUNCTION_SPAN_0(asin, 0, 0, "Map all elements to their asin. See `man 3 asin`.")             \
+    X_FUNCTION_SPAN_0(atan, 0, 0, "Map all elements to their atan. See `man 3 atan`.")             \
+    X_FUNCTION_SPAN_0(cbrt, 0, 0, "Map all elements to their cbrt. See `man 3 cbrt`.")             \
+    X_FUNCTION_SPAN_0(ceil, 0, 0, "Map all elements to their ceil. See `man 3 ceil`.")             \
+    X_FUNCTION_SPAN_0(cos, 0, 0, "Map all elements to their cos. See `man 3 cos`.")                \
+    X_FUNCTION_SPAN_0(cosh, 0, 0, "Map all elements to their cosh. See `man 3 cosh`.")             \
+    X_FUNCTION_SPAN_0(exp, 0, 0, "Map all elements to their exp. See `man 3 exp`.")                \
+    X_FUNCTION_SPAN_0(abs, 0, 0, "Map all elements to their abs. See `man 3 fabs`.")               \
+    X_FUNCTION_SPAN_0(floor, 0, 0, "Map all elements to their floor. See `man 3 floor`.")          \
+    X_FUNCTION_SPAN_0(log, 0, 0, "Map all elements to their log. See `man 3 log`.")                \
+    X_FUNCTION_SPAN_0(log10, 0, 0, "Map all elements to their log10. See `man 3 log10`.")          \
+    X_FUNCTION_SPAN_0(log2, 0, 0, "Map all elements to their log2. See `man 3 log2`.")             \
+    X_FUNCTION_SPAN_0(log1p, 0, 0, "Map all elements to their log1p.")                             \
+    X_FUNCTION_SPAN_1(pow, 1, 1, "Map all elements to their pow. See `man 3 pow`.")                \
+    X_FUNCTION_SPAN_0(round, 0, 0, "Map all elements to their round. See `man 3 round`.")          \
+    X_FUNCTION_SPAN_0(sin, 0, 0, "Map all elements to their sin. See `man 3 sin`.")                \
+    X_FUNCTION_SPAN_0(sinh, 0, 0, "Map all elements to their sinh. See `man 3 sinh`.")             \
+    X_FUNCTION_SPAN_0(sqrt, 0, 0, "Map all elements to their sqrt. See `man 3 sqrt`.")             \
+    X_FUNCTION_SPAN_0(tan, 0, 0, "Map all elements to their tan. See `man 3 tan`.")                \
+    X_FUNCTION_SPAN_0(tanh, 0, 0, "Map all elements to their tanh. See `man 3 tanh`.")             \
+    X_FUNCTION_SPAN_0(trunc, 0, 0, "Map all elements to their trunc. See `man 3 trunc`.")          \
+                                                                                                   \
+    /* one to optional one */                                                                      \
+    X_FUNCTION_VECTOR_0(zero, 0, 0, "Reduce to zero elements.")                                    \
+    X_FUNCTION_VECTOR_0(nonzero, 0, 0, "Reduce to non-zero elements.")                             \
+                                                                                                   \
+    /* many to one */                                                                              \
+    X_FUNCTION_VECTOR_0(count, 0, 0, "Reduce to count of elements.")                               \
+    X_FUNCTION_VECTOR_0(max, 0, 0, "Reduce to the maximum element.")                               \
+    X_FUNCTION_VECTOR_0(min, 0, 0, "Reduce to the minimum element.")                               \
+    X_FUNCTION_VECTOR_0(sum, 0, 0, "Reduce to the sum of the elements.")                           \
+    X_FUNCTION_VECTOR_0(altsum, 0, 0, "Reduce to the alternating sum of the elements.")            \
+    X_FUNCTION_VECTOR_0(product, 0, 0, "Reduce to the product of the elements.")                   \
+    X_FUNCTION_VECTOR_0(mean, 0, 0, "Reduce to the mean of the elements.")                         \
+    X_FUNCTION_VECTOR_0(std, 0, 0, "Reduce to the standard deviation of the elements.")            \
+    X_FUNCTION_VECTOR_0(median, 0, 0, "Reduce to the median of the elements.")                     \
+    X_FUNCTION_VECTOR_0(gmean, 0, 0, "Reduce to the geometric mean of the elements.")              \
+    X_FUNCTION_VECTOR_0(hmean, 0, 0, "Reduce to the harmonic mean of the elements.")               \
     X_FUNCTION_VECTOR_0(gcd, 0, 0, "Reduce to the greatest common denominator of the elements.")
 
 #define Y_FUNCTION_VECTOR_0(FUNC)
