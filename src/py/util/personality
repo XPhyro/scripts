@@ -158,7 +158,7 @@ def main(args) -> int:
 
         for char in arg:
             if char not in char_to_mask:
-                logerr("invalid trait given: ")
+                logerr(f"invalid trait given: {char}")
                 return 1
             mask |= char_to_mask[char]
 
