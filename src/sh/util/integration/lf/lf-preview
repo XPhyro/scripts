@@ -45,7 +45,7 @@ main() {
     case "$mime_type" in
         application/octet-stream)
             case "$1" in
-                *.pdf) ;;
+                *.[Pp][Dd][Ff]) ;;
                 *) scope "$@";;
             esac
             ;;
