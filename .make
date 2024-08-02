@@ -1205,6 +1205,11 @@ stats() {
         "  shell:      $shsloc" \
         "  systemd:    $systemdsloc" \
         "  Total:      $totalsloc"
+
+    if command -v -- scc > /dev/null 2>&1; then
+        printf "\n"
+        scc --cocomo-project-type semi-detached --wide --avg-wage 85000
+    fi
 }
 
 [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && {
