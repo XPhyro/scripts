@@ -431,7 +431,11 @@ def dev_read_loop_impl(args, dev_path, config_path):
     dev = ev.InputDevice(dev_path)
 
     initial_wm_props = get_wm_props(default="")
-    callback_func = get_config(config_path).dev_to_selector[dev.name](*initial_wm_props)
+    dev_to_selector = get_config(config_path).dev_to_selector
+    if dev.name not in dev_to_selector:
+        return
+
+    callback_func = dev_to_selector[dev.name](*initial_wm_props)
 
     thread = tp.Thread(
         target=update_callback_loop,
