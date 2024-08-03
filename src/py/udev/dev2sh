@@ -511,6 +511,8 @@ def dev_read_loop(args, dev_path, config_path):
 def main() -> int:
     args = parse_args()
 
+    sys.path.append(os.path.dirname(args.config_path))
+
     processes = []
     for dev_path in ev.list_devices():
         process = mp.Process(
