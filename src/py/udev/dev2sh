@@ -499,6 +499,7 @@ def dev_read_loop_impl(args, dev_path, config_path):
 
 
 def dev_read_loop(args, dev_path, config_path):
+    os.environ["DEV2SH_DEVICE_PATH"] = dev_path
     while True:
         try:
             dev_read_loop_impl(args, dev_path, config_path)
