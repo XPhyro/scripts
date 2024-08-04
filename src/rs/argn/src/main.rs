@@ -63,25 +63,25 @@ where
         (len + begin).max(0)
     } else {
         begin.min(len)
-    } as usize;
+    } as isize;
 
     let stop = if end < 0 {
         (len + end).max(0)
     } else {
         end.min(len)
-    } as usize;
+    } as isize;
 
     if increment > 0 {
         let mut i = start;
         while i < stop {
-            result.push(input[i].clone());
-            i = (i as isize + increment) as usize;
+            result.push(input[i as usize].clone());
+            i += increment;
         }
     } else if increment < 0 {
-        let mut i = start;
-        while i > stop {
-            result.push(input[i].clone());
-            i = (i as isize + increment) as usize;
+        let mut i = stop - 1;
+        while i >= start {
+            result.push(input[i as usize].clone());
+            i += increment;
         }
     }
 
