@@ -396,7 +396,7 @@ next:
     lerp_alpha(options->alpha);
 }
 
-[[nodiscard]] bool watch_alpha(const char* path)
+[[nodiscard]] bool wait_for_alpha(const char* path)
 {
     const constexpr auto eventsize = sizeof(struct inotify_event);
     const constexpr auto buflen = (eventsize + 16) * 1024;
@@ -431,6 +431,79 @@ cleanup:
     return true;
 }
 
+void handle_new_alpha(int fd, fd_set* read_fds)
+{
+    static auto alpha = options->alpha;
+    static std::stringstream ss;
+    static double new_alpha;
+
+    const static auto read_alpha = [&](void) {
+        for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n'; ss << buf) {}
+        ss >> new_alpha;
+        ss.str("");
+        ss.clear();
+        new_alpha = std::clamp(new_alpha, 0.0, 1.0);
+    };
+
+    read_alpha();
+
+    while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
+        alpha += (new_alpha - alpha) * options->lerp_factor;
+        alpha = std::clamp(alpha, 0.0, 1.0);
+        std::for_each(windows.begin(), windows.end(), [&](auto window) {
+            set_window_alpha(window, alpha);
+            XFlush(display);
+        });
+
+        std::this_thread::sleep_for(options->frame_time);
+
+        struct timeval timeout = {
+            .tv_sec = 0,
+            .tv_usec = 0,
+        };
+        if (auto select = ::select(fd + 1, read_fds, nullptr, nullptr, &timeout); select == -1) {
+            std::perror("select");
+            die("could not check for data in ", options->alpha_path);
+        } else if (select) {
+            read_alpha();
+        }
+    }
+
+    std::for_each(windows.begin(), windows.end(), [&](auto window) {
+        set_window_alpha(window, new_alpha);
+        XFlush(display);
+    });
+
+    alpha = new_alpha;
+}
+
+void watch_alpha()
+{
+    if (!std::filesystem::exists(options->alpha_path) &&
+        ::mkfifo(options->alpha_path.data(), 0666)) {
+        std::perror("mkfifo");
+        die("could not create fifo at ", options->alpha_path);
+    }
+
+    const auto fd = ::open(options->alpha_path.data(), O_RDONLY | O_NONBLOCK);
+    if (fd == -1) {
+        std::perror("open");
+        die("could not open ", options->alpha_path);
+    }
+
+    if (struct stat st; !::fstat(fd, &st) && !S_ISFIFO(st.st_mode))
+        die(options->alpha_path, " exists and is not a fifo");
+
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(fd, &read_fds);
+
+    while (wait_for_alpha(options->alpha_path.data()))
+        handle_new_alpha(fd, &read_fds);
+
+    die("could not watch ", options->alpha_path);
+}
+
 int main(int argc, char* argv[])
 {
     xph::gather_exec_info(argc, argv);
@@ -448,73 +521,8 @@ int main(int argc, char* argv[])
 
     xph::sys::signals<4>({ SIGINT, SIGTERM, SIGQUIT, SIGHUP }, handle_signals);
 
-    if (!options.alpha_path.empty()) {
-        if (!std::filesystem::exists(options.alpha_path) &&
-            ::mkfifo(options.alpha_path.data(), 0666)) {
-            std::perror("mkfifo");
-            die("could not create fifo at ", options.alpha_path);
-        }
-
-        const auto fd = ::open(options.alpha_path.data(), O_RDONLY | O_NONBLOCK);
-        if (fd == -1) {
-            std::perror("open");
-            die("could not open ", options.alpha_path);
-        }
-
-        if (struct stat st; !::fstat(fd, &st) && !S_ISFIFO(st.st_mode))
-            die(options.alpha_path, " exists and is not a fifo");
-
-        fd_set read_fds;
-        FD_ZERO(&read_fds);
-        FD_SET(fd, &read_fds);
-
-        struct timeval timeout = {
-            .tv_sec = 0,
-            .tv_usec = 0,
-        };
-
-        while (watch_alpha(options.alpha_path.data())) {
-            static auto alpha = options.alpha;
-            static std::stringstream ss;
-            static double new_alpha;
-            const static auto read_alpha = [&](void) {
-                for (char buf; ::read(fd, &buf, sizeof(char)) == sizeof(char) && buf != '\n';
-                     ss << buf) {}
-                ss >> new_alpha;
-                ss.str("");
-                ss.clear();
-                new_alpha = std::clamp(new_alpha, 0.0, 1.0);
-            };
-
-            read_alpha();
-
-            while (!xph::approx_eq(alpha, new_alpha, epsilon)) {
-                alpha += (new_alpha - alpha) * options.lerp_factor;
-                alpha = std::clamp(alpha, 0.0, 1.0);
-                std::for_each(windows.begin(), windows.end(), [&](auto window) {
-                    set_window_alpha(window, alpha);
-                    XFlush(display);
-                });
-
-                std::this_thread::sleep_for(options.frame_time);
-
-                if (auto select = ::select(fd + 1, &read_fds, nullptr, nullptr, &timeout);
-                    select == -1) {
-                    std::perror("select");
-                    die("could not check for data in ", options.alpha_path);
-                } else if (select) {
-                    read_alpha();
-                }
-            }
-
-            std::for_each(windows.begin(), windows.end(), [&](auto window) {
-                set_window_alpha(window, new_alpha);
-                XFlush(display);
-            });
-            alpha = new_alpha;
-        }
-        die("could not watch ", options.alpha_path);
-    }
+    if (!options.alpha_path.empty())
+        watch_alpha();
 
     std::promise<void>().get_future().wait();
     terminate();
