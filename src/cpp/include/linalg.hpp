@@ -106,12 +106,12 @@ namespace xph::linalg {
     {
         Tarr partaltsum;
 
+        double sign = -1.0;
         partaltsum.reserve(arr.size() - window_size + 1);
         std::ranges::copy(
-            arr | std::views::slide(window_size) | std::views::transform([](auto window) {
+            arr | std::views::slide(window_size) | std::views::transform([&](auto window) {
                 return std::accumulate(
                     window.begin(), window.end(), 0.0, [&](double cumaltsum, double num) {
-                        static double sign = -1.0;
                         return cumaltsum + num * (sign = -sign);
                     });
             }),
@@ -451,8 +451,8 @@ namespace xph::linalg {
     void altsum(Tarr& arr)
     {
         static_assert(typename Tarr::value_type(-1.0) < 0);
+        decltype(arr.front()) sign = -1.0;
         arr = { std::accumulate(arr.begin(), arr.end(), 0.0, [&](auto altsum, auto val) {
-            static decltype(val) sign = -1.0;
             return altsum + val * (sign = -sign);
         }) };
     }
