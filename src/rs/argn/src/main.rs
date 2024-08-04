@@ -34,6 +34,11 @@ fn parse_part(part: Option<&str>, default: isize, name: &str) -> isize {
 
 fn parse_slice(slice: &str) -> (isize, isize, isize) {
     let parts: Vec<&str> = slice.split(':').collect();
+
+    if parts.len() > 3 {
+        logerrq("too many colons in slice expression");
+    }
+
     let begin = parse_part(parts.get(0).copied(), 0, "begin");
     let end = parse_part(parts.get(1).copied(), isize::MAX, "end");
     let increment = parse_part(parts.get(2).copied(), 1, "increment");
