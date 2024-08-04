@@ -40,8 +40,15 @@ fn parse_slice(slice: &str) -> (isize, isize, isize) {
     }
 
     let begin = parse_part(parts.get(0).copied(), 0, "begin");
-    let end = parse_part(parts.get(1).copied(), isize::MAX, "end");
-    let increment = parse_part(parts.get(2).copied(), 1, "increment");
+    let end = match parts.len() {
+        1 => begin + 1,
+        _ => parse_part(parts.get(1).copied(), isize::MAX, "end"),
+    };
+    let increment = match parts.len() {
+        3 => parse_part(parts.get(2).copied(), 1, "increment"),
+        _ => 1,
+    };
+
     (begin, end, increment)
 }
 
