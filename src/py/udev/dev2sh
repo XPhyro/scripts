@@ -515,13 +515,7 @@ def dev_read_loop_impl(args, dev_name: str, dev_paths: [str], config_path: str):
 
 def dev_read_loop(args, dev_name: str, dev_paths: [str], config_path: str):
     os.environ["DEV2SH_DEVICE_PATHS"] = "\n".join(dev_paths)
-    while True:
-        try:
-            dev_read_loop_impl(args, dev_name, dev_paths, config_path)
-        except OSError as e:
-            if e.errno != 19:
-                raise e
-        time.sleep(3.0)
+    dev_read_loop_impl(args, dev_name, dev_paths, config_path)
 
 
 def main() -> int:
