@@ -9,7 +9,7 @@ namespace xph {
     template <typename T>
     class nullable {
     public:
-        nullable() : value({}) {}
+        nullable() : value{} {}
 
         nullable(const T& t) : value(t) {}
 
