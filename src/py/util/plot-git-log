@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+
+
+import subprocess as sp
+import sys
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
+def logerr(*args, **kwargs):
+    print(f"{sys.argv[0]}:", *args, file=sys.stderr, **kwargs)
+
+
+def set_limits(data, ax) -> None:
+    xlim = [
+        data["Date"].min() - pd.Timedelta(days=1),
+        data["Date"].max() + pd.Timedelta(days=1),
+    ]
+    ax.set_xlim(xlim)
+
+    ylim = [-0.05 * data["Count"].max(), 1.05 * data["Count"].max()]
+    ax.set_ylim(ylim)
+
+
+def set_grids(data, ax) -> None:
+    ax.grid(False)
+
+    first_days_of_month = pd.date_range(
+        start=data["Date"].min(), end=data["Date"].max(), freq="MS"
+    )
+
+    # month lines
+    for year_month in first_days_of_month:
+        ax.axvline(x=year_month, color="black", linestyle="--", linewidth=1.0)
+
+    # day lines
+    for date in data["Date"]:
+        if date not in first_days_of_month:
+            ax.axvline(x=date, color="lightgray", linewidth=0.6)
+
+    xlim = ax.get_xlim()
+
+    # fake major grid lines
+    y_ticks = ax.get_yticks()
+    for y_tick in y_ticks:
+        ax.hlines(y_tick, xmin=xlim[0], xmax=xlim[1], colors="lightgray", linewidth=0.6)
+
+    # fake minor grid lines
+    y_ticks_delta = y_ticks[1] - y_ticks[0]
+    minor_y_tick_count = 3
+    all_y_ticks = np.arange(
+        y_ticks[0],
+        y_ticks[-1] + 1,
+        y_ticks_delta / (minor_y_tick_count + 1),
+    )
+    highlighted_y_ticks = filter(
+        lambda y: y >= 0 and y % y_ticks_delta != 0,
+        all_y_ticks,
+    )
+    for y in highlighted_y_ticks:
+        ax.hlines(y, xmin=xlim[0], xmax=xlim[1], colors="lightgray", linewidth=0.2)
+
+    # data lines
+    for year_month, group in data.groupby(data["Date"].dt.to_period("M")):
+        ax.plot(
+            group["Date"],
+            group["Count"],
+            marker="o",
+            label=year_month.strftime("%b, %Y"),  # legend format
+        )
+
+
+def set_ticks(data, ax) -> None:
+    ax.tick_params(labelright=True)
+
+    month_starts = pd.date_range(
+        start=data["Date"].min(), end=data["Date"].max(), freq="MS"
+    )
+    month_centers = pd.to_datetime(
+        [date + pd.Timedelta(days=14) for date in month_starts]
+    )
+
+    ax.set_xticks(month_centers)
+    ax.set_xticklabels(month_centers.strftime("%b"))
+
+
+def set_annotations(data, ax) -> None:
+    ax.set_title("Number of Commits per Day", weight="bold", fontsize=14)
+    ax.set_xlabel("Date", weight="bold", fontsize=12)
+    ax.set_ylabel("Number of Commits", weight="bold", fontsize=12)
+    ax.legend(loc="upper right", bbox_to_anchor=(1.05, 1.00), fontsize="small")
+
+
+def plot(data):
+    width_pixels = 3840
+    height_pixels = 2160
+    dpi = 100
+    figsize = (width_pixels / dpi, height_pixels / dpi)
+
+    _fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+
+    set_limits(data, ax)
+    set_grids(data, ax)
+    set_ticks(data, ax)
+    set_annotations(data, ax)
+
+    plt.tight_layout(pad=3.0)
+
+    plt.show()
+
+
+def main() -> int:
+    git_process = sp.Popen(
+        ["git", "log", "--format=%at", "--reverse"],
+        stdout=sp.PIPE,
+        text=True,
+    )
+
+    normalized_dates = pd.to_datetime(
+        [int(t) for t in git_process.stdout.readlines()],
+        unit="s",
+    ).normalize()
+
+    data = (
+        pd.DataFrame(normalized_dates, columns=["Date"])
+        .value_counts()
+        .sort_index()
+        .reset_index()
+    )
+    data.columns = ["Date", "Count"]
+
+    plot(data)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
