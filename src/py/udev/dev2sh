@@ -426,14 +426,15 @@ def update_callback_loop(config_path, dev_name, initial_wm_props):
             last_wm_props = wm_props
 
 
-def dev_read_loop_impl(args, dev_name: str, dev_paths: [str], config_path: str):
-    global callback_func
+def dev_read_loop(args, dev_name: str, dev_paths: [str], config_path: str):
+    os.environ["DEV2SH_DEVICE_PATHS"] = "\n".join(dev_paths)
 
     initial_wm_props = get_wm_props(default="")
     dev_to_selector = get_config(config_path).dev_to_selector
     if dev_name not in dev_to_selector:
         return
 
+    global callback_func
     callback_func = dev_to_selector[dev_name](*initial_wm_props)
 
     thread = tp.Thread(
@@ -449,7 +450,7 @@ def dev_read_loop_impl(args, dev_name: str, dev_paths: [str], config_path: str):
     last_inverse_timestamps = {}
     event_counter = 0
 
-    def dev_read_loop_impl_impl_impl(ui, event):
+    def dev_read_loop_impl(ui, event):
         global last_timestamps
         global last_inverse_timestamps
         global event_counter
@@ -500,22 +501,17 @@ def dev_read_loop_impl(args, dev_name: str, dev_paths: [str], config_path: str):
 
         event_counter += 1
 
-    async def dev_read_loop_impl_impl(dev):
+    async def dispatch_dev_read_loops(dev):
         ui = ev.UInput.from_device(dev, name=f"{PROGRAM_NAME} {dev.name}")
         with dev.grab_context():
             async for event in dev.async_read_loop():
-                dev_read_loop_impl_impl_impl(ui, event)
+                dev_read_loop_impl(ui, event)
 
     for dev_path in dev_paths:
         dev = ev.InputDevice(dev_path)
-        aio.ensure_future(dev_read_loop_impl_impl(dev))
+        aio.ensure_future(dispatch_dev_read_loops(dev))
 
     aio.get_event_loop().run_forever()
-
-
-def dev_read_loop(args, dev_name: str, dev_paths: [str], config_path: str):
-    os.environ["DEV2SH_DEVICE_PATHS"] = "\n".join(dev_paths)
-    dev_read_loop_impl(args, dev_name, dev_paths, config_path)
 
 
 def main() -> int:
