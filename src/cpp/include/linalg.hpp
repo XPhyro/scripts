@@ -8,6 +8,7 @@
 #include <numeric>
 #include <ranges>
 #include <span>
+#include <type_traits>
 #include <vector>
 
 #include "algorithm.hpp"
@@ -451,7 +452,7 @@ namespace xph::linalg {
     void altsum(Tarr& arr)
     {
         static_assert(typename Tarr::value_type(-1.0) < 0);
-        decltype(arr.front()) sign = -1.0;
+        typename std::remove_reference<decltype(*arr.begin())>::type sign = -1.0;
         arr = { std::accumulate(arr.begin(), arr.end(), 0.0, [&](auto altsum, auto val) {
             return altsum + val * (sign = -sign);
         }) };
