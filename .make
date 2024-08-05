@@ -503,7 +503,7 @@ install() {
         (
             cd browser
 
-            command -v pandoc > /dev/null 2>&1 || {
+            command -v web-ext > /dev/null 2>&1 || {
                 printf "  %s\n" '`web-ext` is not installed, cannot build browser extensions.'
                 exit 0
             }
