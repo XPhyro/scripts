@@ -19,14 +19,21 @@ mbsync -a || {
             find "$maildir/$acc" -ipath "$maildir/$acc/inbox/new/*" -type f -newer "$timefile" 2> /dev/null \
             | wc -l
         )
-        [ "$count" -gt 0 ] \
-            && notify-send -i mail-unread -u critical -t 0 "📬 syncmail [$count]" "[$count] new mail$(
-                [ "$count" -gt 1 ] && printf "s"
-            ) in $(
-                grep "^set from" -- "$accdir/$acc.muttrc" \
-                    | tail -n 1 \
-                    | sed -E 's/set\s+from\s*=\s*"?(.*[^"])"?/\1/'
-            )." &
+        [ "$count" -gt 0 ] && {
+            message="[$count] new mail$(
+                         [ "$count" -gt 1 ] && printf "s"
+                     ) in $(
+                         grep "^set from" -- "$accdir/$acc.muttrc" \
+                             | tail -n 1 \
+                             | sed -E 's/set\s+from\s*=\s*"?(.*[^"])"?/\1/'
+                     )."
+
+            if termctl get isatty 2> /dev/null; then
+                printf "%s\n" "$message"
+            else
+                notify-send -i mail-unread -u critical -t 0 "📬 syncmail [$count]" "$message" &
+            fi
+        }
     done
 }
 
