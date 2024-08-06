@@ -165,16 +165,18 @@ git_push() {
 
     selection="$(
         {
-            printf "%s\n" "Normal"
+            printf "%s\n" "[N]ormal"
             git status -sb | head -n 1 | grep -Eq '\[.*behind [0-9]+.*\]$' \
-                && printf "%s\n" "Force With Lease" "Force"
+                && printf "%s\n" \
+                       "Force With [L]ease" \
+                       "[F]orce"
         } | fzf --select-1 --multi --preview="unbuffer git status" --bind=one:accept
     )"
 
     case "$selection" in
-        "Normal") git push;;
-        "Force With Lease") git push --force-with-lease;;
-        "Force") git push -f;;
+        "[N]ormal") git push;;
+        "Force With [L]ease") git push --force-with-lease;;
+        "[F]orce") git push -f;;
     esac
 }
 
