@@ -8,8 +8,7 @@ maildir="$HOME/.local/share/mail"
 accdir="$HOME/.config/mutt/accounts"
 
 mbsync -a || {
-    color red "could not sync mails"
-    logerrnotif "$0" "$*" "ERROR" 'Could not sync mails' 'Run `mbsync -a -Dsmnd` to debug.'
+    color red 'could not sync mails, run `mbsync -a -Dsmnd` to debug'
     exit 1
 }
 
