@@ -14,3 +14,4 @@ clap = { version = "4.0", features = ["derive"] }
 exitfailure = "0.5.1"
 fstrings = "0.2.3"
 termion = "2.0.1"
+isatty = "0.1"

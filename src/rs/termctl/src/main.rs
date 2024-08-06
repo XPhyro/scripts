@@ -6,6 +6,7 @@ use std::io;
 
 use clap::Parser;
 use exitfailure::ExitFailure;
+use isatty::stdin_isatty;
 use termion::color;
 use termion::{cursor::DetectCursorPos, raw::IntoRawMode};
 
@@ -94,6 +95,14 @@ fn clear(subcommand: String, _args: Vec<String>) -> Result<(), ExitFailure> {
         _ => return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unknown clear mode").into()),
     };
     Ok(())
+}
+
+fn isatty() -> Result<(), ExitFailure> {
+    if stdin_isatty() {
+        Ok(())
+    } else {
+        Err(io::Error::new(io::ErrorKind::InvalidInput, "stdin is not a TTY").into())
+    }
 }
 
 fn get_cursor_pos(_args: Vec<String>) -> Result<(), ExitFailure> {
@@ -212,6 +221,7 @@ fn main() -> Result<(), ExitFailure> {
     return match args.command.as_str() {
         "clear" => clear(args.subcommand, args.args),
         "get" => match args.subcommand.as_str() {
+            "isatty" => isatty(),
             "cursor_pos" => get_cursor_pos(args.args),
             "geometry" => get_geometry(args.args),
             "height" => get_height(args.args),
