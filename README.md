@@ -69,63 +69,6 @@ See `man COMMAND`, `COMMAND -h` or `COMMAND --help`. Simple programs/scripts do
 not have man pages or help dialogues, either infer usage from their names, or see
 the source code.
 
-## Notable Scripts and Utilities
-
-- [afgrep](src/c/util/core/afgrep.c): Like `grep -F`, but supports alignment and
-  offset.
-- [bspwm-autokblayout](src/sh/integration/bspwm/daemon/bspwm-autokblayout): Automatically switch between keyboard layouts for different windows in [bspwm](https://github.com/baskerville/bspwm).
-- [bspwmpad](src/sh/integration/bspwm/util/bspwmpad): Dynamic scratch pads for
-  bspwm.
-- [cast](src/cpp/util/core/cast.cpp): Cast data between different data types.
-- [clplog](src/sh/daemon/clplog): Log clipboard history.
-- [clplogynk](src/sh/hotkey/clplogynk): Use `rofi` to yank an element from the
-  clipboard history.
-- [contexec](src/sh/daemon/contexec): Continuously execute a file every time it
-  is modified.
-- [eln](src/sh/ishell/eln): Batch edit or create symlinks.
-- [expandpath](src/c/util/core/expandpath.c): Like `wordexp`, but only expands
-  `~`.
-- [ffmw](src/sh/softwrapper/ffmw): `ffmpeg` wrapper for common actions.
-- [fmaps](src/c/util/core/fmaps.c): Map standard input per given key-value
-  pairs.
-- [kdialog](src/sh/wrapper/kdialog): Wrapper for KDE's `kdialog` to trick
-  applications into using `lf` as the file picker.
-- [latexd](src/sh/daemon/latexd): Basically `latexmk` but more minimal.
-- [mapexec](src/sh/util/mapexec): Open standard input in `$EDITOR` and execute
-  commands against all, modified, unmodified or wiped lines synchronously or
-  asynchronously. Basically [batch](https://github.com/alexherbo2/batch), but
-  more versatile.
-- [maptouch](src/sh/udev/maptouch): Map touchscreen and stylus devices to the
-  touch-enabled display. Best used in `.xinitrc` or as a `udev` rule.
-- [mkparent](src/c/util/sys/mkparent.c): Create the parent directories of a
-  path.
-- [neomuttpick](src/sh/integration/neomutt/neomuttpick): Use
-  [kdialog](src/sh/wrapper/kdialog) to pick attachments in `neomutt`.
-- [notiflog](src/py/daemon/notiflog): Log notifications on the dbus interface
-  `org.freedesktop.Notifications`. Supports incognito and blacklisting.
-- [numsh](src/cpp/util/core/numsh.cpp): A NumPy-like interface for the shell.
-- [rgb24togray](src/c/util/math/rgb24togray.c): Convert RGB24 pixels to
-  greyscale with selectable algorithms.
-- [scratchpad](src/sh/hotkey/scratchpad): Take and manage notes with `vim` and
-  `dmenu`. Can be used with `dwmpad` or `bspwmpad`.
-- [selfl](src/sh/util/selfl): Select a file or directory with `$MENU`.
-- [shufr](src/cpp/util/core/shufr.cpp): Like `shuf -r`, but supports outputting
-  unique sequences of tuples.
-- [std::unordered_map](src/cpp/util/std/std::unordered_map.cpp): Wrapper for
-  `std::unordered_map<std::string, std::string>` for shells.
-- [std::vector](src/cpp/util/std/std::vector.cpp): Wrapper for
-  `std::vector<std::string>` for shells.
-- [stest](src/c/util/core/stest.c): Filter a list of files by properties. This
-  is a superset of the `stest` included with suckless' `dmenu`.
-- [sumsize](src/c/util/core/sumsize.c): Sum human readable or raw sizes.
-- [tglapp](src/sh/hotkey/util/tglapp): Toggle an application on/off based on
-  hash codes. Originally written for toggling applications with the same hotkey
-  via `sxhkd`.
-- [unexpandpath](src/c/util/core/unexpandpath.c): Undo `expandpath`.
-- [wordexp](src/c/util/core/wordexp.c): Perform word expansion like a POSIX
-  shell.
-- [xins](src/sh/util/xins): Like `xargs` but for standard input.
-
 ## Environment Variables
 
 Some scripts use optional or mandatory environment variables for applications.
