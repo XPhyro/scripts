@@ -1,11 +1,17 @@
 #!/usr/bin/env sh
 
 . std.sh
+. meta.sh
+
+pager="$PAGER"
+[ -z "$pager" ] && std_try_choose_command moar bat less
+unset pager_opts
+[ "$pager" = "less" ] && pager_opts="-RN"
 
 if [ "$#" -eq 0 ]; then
-    less -RN
+    "$pager" $pager_opts
 elif exists "$@"; then
-    previewtext "$@" | less -RN
+    previewtext "$@" | "$pager" $pager_opts
 else
-    unbuffer "$@" | less -RN
+    unbuffer "$@" | "$pager" $pager_opts
 fi
