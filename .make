@@ -20,15 +20,6 @@ getrealuser() {
     done
 }
 
-cancompilecpp() {
-    if { [ "$CXX" != "g++" ] && [ "$CXX" != "gcc" ]; } \
-        || [ "$("$CXX" --version | head -n 1 | sed 's/\s*[0-9]*$//;s/.* \([0-9]\+\)\.[0-9]\+\.[0-9]\+/\1/')" -ge 12 ] 2> /dev/null; then
-        printf 1
-    else
-        printf 0
-    fi
-}
-
 FUNC_PARSEFLAGS='
 [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
 parseflags() {
@@ -253,12 +244,6 @@ install() {
                         || printf "%s\n" "could not be determined"
                 } | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+"
             )"
-
-        [ "$cancompilecpp" -ne 0 ] || {
-            printf "%s\n" \
-                "Compiler version is too old. Cannot compile C++ programs."
-            exit 0
-        }
 
         printf "%s\n" \
             "    Global compiler flags: $(printf "%s\n" "$CXXFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
@@ -912,32 +897,27 @@ analyse() {
             } | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+"
         )"
 
-    if [ "$cancompilecpp" -eq 0 ]; then
-            printf "%s\n" \
-                "Compiler version is too old. Cannot analyse C++ header files."
-    else
-        printf "%s\n" \
-            "  Compiler flags: $(printf "%s\n" "$CXXFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
-            "  Linker flags: $(printf "%s\n" "$CXXLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')"
+    printf "%s\n" \
+        "  Compiler flags: $(printf "%s\n" "$CXXFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')" \
+        "  Linker flags: $(printf "%s\n" "$CXXLDFLAGS" | tr -d '\n' | sed 's/^\s\+//;s/\s\+$//;s/\s\+/ /g')"
 
-        printf "\n%s\n" \
-            "Analysing C++ headers:"
+    printf "\n%s\n" \
+        "Analysing C++ headers:"
 
-            find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -not -path "*/project/*" -print0 \
-                | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
-                    [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
-                    fl="$1"
-                    (
-                        printf "  %s\n" "$fl"
-                        "$CXX" $CXXFLAGS "$fl" $CXXLDFLAGS -o "$tmpout" \
-                            || {
-                                printf "    %s\n" "Does not compile."
-                                exit 1
-                            }
-                    ) | sponge
-                ' --
-            ec="$((ec | $?))"
-    fi
+        find 'cpp/include' -mindepth 1 -type f -iname "*.hpp" -not -path "*/project/*" -print0 \
+            | CXX="$CXX" CXXFLAGS="$CXXFLAGS" CXXLDFLAGS="$CXXLDFLAGS" tmpout="$tmpout" xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
+                [ -n "$SHELL_VERBOSE" ] && [ "$SHELL_VERBOSE" -gt 0 ] && set -x
+                fl="$1"
+                (
+                    printf "  %s\n" "$fl"
+                    "$CXX" $CXXFLAGS "$fl" $CXXLDFLAGS -o "$tmpout" \
+                        || {
+                            printf "    %s\n" "Does not compile."
+                            exit 1
+                        }
+                ) | sponge
+            ' --
+        ec="$((ec | $?))"
 
     printf "\n%s\n" \
         "Analysis of C++23 source files is not fully supported by this analyser. Cannot analyse C++ source files."
@@ -1396,7 +1376,6 @@ CPPCHECK_SUPPRESS="--suppress=unmatchedSuppression:\* \
                    --suppress=uninitvar"
 
 ec=0
-cancompilecpp="$(cancompilecpp "$CXX")"
 
 if [ -n "$MAKE_JOBS" ]; then
     MAX_PROC="$MAKE_JOBS"
