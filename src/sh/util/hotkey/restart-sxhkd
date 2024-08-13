@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+cd "$HOME" || exit 0
+tglapp -T off -k sxhkd
+tglapp -c
+setsid -f -- tmux new -d -s sxhkd -- sh -c "unset TMUX TMUX_PANE; tglapp -avfc -T on -k sxhkd-auto -- sxhkd-auto" -- "$@"
