@@ -1,2 +1,0 @@
-#!/usr/bin/env -S execlineb -c "pipeline { pactl info } pipeline { tail -n 2 } pipeline { head -n 1 } awk \"{print \$3}\""
-# Print the default pulseaudio source.
