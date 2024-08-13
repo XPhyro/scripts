@@ -1377,7 +1377,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
           -Wshadow-compatible-local \
           -ffp-contract=on -fassociative-math -ffast-math -flto \
-          -fpermissive -fvtable-verify=none \
+          -fpermissive -fvtable-verify=none -fPIC \
           $CXX_INCLUDE_FLAGS"
 CXXLDFLAGS=""
 CPLUS_INCLUDE_PATH="$rootdir/lib/hedley:$rootdir/lib/pstreams:$CPLUS_INCLUDE_PATH"
