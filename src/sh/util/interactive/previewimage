@@ -94,11 +94,19 @@ generic_remove() {
 
 choose_method() {
     if [ -n "$KITTY_PID" ]; then
-        add() kitty_add "$@"
-        remove() kitty_remove "$@"
+        add() {
+            kitty_add "$@"
+        }
+        remove() {
+            kitty_remove "$@"
+        }
     else
-        add() generic_add "$@"
-        remove() generic_remove "$@"
+        add() {
+            generic_add "$@"
+        }
+        remove() {
+            generic_remove "$@"
+        }
     fi
 }
 
