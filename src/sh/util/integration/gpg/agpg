@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+encrypt() {
+    file="$(mktemp --suffix=.gpg --tmpdir=. agpg.XXXXXXXXXX)"
+    gpg --batch \
+        --yes \
+        --personal-compress-preferences=bzip2 \
+        --compress-level=9 \
+        --encrypt \
+        --recipient="$USER" \
+        --output="$file" \
+        -- "$1"
+    realpath --relative-to=. -- "$file"
+}
+
+decrypt() {
+    gpg --use-embedded-filename \
+        --decrypt \
+        -- "$1"
+}
+
+for i; do
+    case "$i" in
+        *.gpg) decrypt "$i";;
+        *) encrypt "$i";;
+    esac
+done
