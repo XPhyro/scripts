@@ -83,7 +83,12 @@ def set_ticks(data, ax) -> None:
     )
 
     ax.set_xticks(month_centers)
-    ax.set_xticklabels(month_centers.strftime("%b"))
+    ax.set_xticklabels(
+        [
+            label[:3] if label[:3] != "Jan" else label
+            for label in month_centers.strftime("%b\n%Y")
+        ]
+    )
 
 
 def set_annotations(data, ax) -> None:
