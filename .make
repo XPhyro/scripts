@@ -1349,6 +1349,10 @@ export C_INCLUDE_PATH
 
 CXX="g++"
 CXX_INCLUDE_FLAGS="-I'$includeprefix' -I'$rootdir/lib/hedley' -I'$rootdir/lib/pstreams' -I'$rootdir/lib/lyra-xphyro/include'"
+case "$(awk -F= '/^ID=/ {print $2}' /etc/os-release)" in
+    fedora) CXX_OS_FLAGS=" -fPIC ";;
+    *) CXX_OS_FLAGS="";;
+esac
 CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wall -Wextra -Werror -Wabi=19 \
           -Wswitch-default \
@@ -1357,7 +1361,7 @@ CXXFLAGS="-O${o:-3} $g $ndebug -std=c++2b \
           -Wstrict-null-sentinel -Wold-style-cast -Wsign-promo \
           -Wshadow-compatible-local \
           -ffp-contract=on -fassociative-math -ffast-math -flto \
-          -fpermissive -fvtable-verify=none -fPIC \
+          -fpermissive -fvtable-verify=none $CXX_OS_FLAGS \
           $CXX_INCLUDE_FLAGS"
 CXXLDFLAGS=""
 CPLUS_INCLUDE_PATH="$rootdir/lib/hedley:$rootdir/lib/pstreams:$CPLUS_INCLUDE_PATH"
