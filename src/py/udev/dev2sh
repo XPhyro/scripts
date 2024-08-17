@@ -73,7 +73,7 @@ class API:
 
         API.spawn_cmd(
             [
-                "xdotool",
+                "dotoolc-args",
                 *[*(sum(zip(["keydown"] * len(m), m), ()))],
                 *[*(sum(zip(["key"] * len(k), k), ()))],
                 *[*(sum(zip(["keyup"] * len(m), m), ()))],
@@ -87,7 +87,7 @@ class API:
 
         API.spawn_cmd(
             [
-                "xdotool",
+                "dotoolc-args",
                 *[*(sum(zip(["keydown"] * len(m), m), ()))],
                 *[*(sum(zip(["keydown"] * len(k), k), ()))],
             ]
@@ -100,7 +100,7 @@ class API:
 
         API.spawn_cmd(
             [
-                "xdotool",
+                "dotoolc-args",
                 *[*(sum(zip(["keyup"] * len(m), m), ()))],
                 *[*(sum(zip(["keyup"] * len(k), k), ()))],
             ]
@@ -142,7 +142,7 @@ class API:
 
         API.spawn_cmd(
             [
-                "xdotool",
+                "dotoolc-args",
                 *[*(sum(zip(["keydown"] * len(m), m), ()))],
                 *[*(sum(zip(["click"] * len(b), b), ()))],
                 *[*(sum(zip(["keyup"] * len(m), m), ()))],
@@ -156,7 +156,7 @@ class API:
 
         API.spawn_cmd(
             [
-                "xdotool",
+                "dotoolc-args",
                 *[*(sum(zip(["keydown"] * len(m), m), ()))],
                 *[*(sum(zip(["mousedown"] * len(b), b), ()))],
             ]
@@ -169,7 +169,7 @@ class API:
 
         API.spawn_cmd(
             [
-                "xdotool",
+                "dotoolc-args",
                 *[*(sum(zip(["keyup"] * len(m), m), ()))],
                 *[*(sum(zip(["mouseup"] * len(b), b), ()))],
             ]
@@ -206,7 +206,7 @@ class API:
 
     @staticmethod
     def type_text(text):
-        API.spawn_cmd(["xdotool", "type", text])
+        API.spawn_cmd(["dotoolc-args", "type", text])
 
 
 class CallbackData:
