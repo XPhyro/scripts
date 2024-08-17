@@ -28,7 +28,7 @@ class API:
     def __init__(self):
         self._repeat_processes = {}
         self._dotool_instance = sp.Popen(
-            ["dotoolc"],
+            ["dotool"],
             stdin=sp.PIPE,
             stdout=sp.DEVNULL,
             bufsize=0,
