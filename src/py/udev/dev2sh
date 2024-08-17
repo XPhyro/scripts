@@ -24,7 +24,15 @@ class API:
     _print_buffer = []
     _default_stdout = sp.DEVNULL
     _default_stderr = sp.DEVNULL
-    _repeat_processes = {}
+
+    def __init__(self):
+        self._repeat_processes = {}
+        self._dotool_instance = sp.Popen(
+            ["dotoolc"],
+            stdin=sp.PIPE,
+            stdout=sp.DEVNULL,
+            bufsize=0,
+        )
 
     @staticmethod
     def spawn_cmd(cmd, *args, **kwargs):
@@ -66,147 +74,121 @@ class API:
 
         return None
 
-    @staticmethod
-    def send_key(keys, modifiers=None):
-        k = [str(key) for key in keys]
-        m = [str(modifier) for modifier in modifiers] if modifiers else []
+    def _dotool_write(self, data):
+        self._dotool_instance.stdin.write(f"{data}\n".encode())
 
-        API.spawn_cmd(
-            [
-                "dotoolc-args",
-                *[*(sum(zip(["keydown"] * len(m), m), ()))],
-                *[*(sum(zip(["key"] * len(k), k), ()))],
-                *[*(sum(zip(["keyup"] * len(m), m), ()))],
-            ]
-        )
+    def send_key(self, keys, modifiers=None):
+        ks = [str(key) for key in keys]
+        ms = [str(modifier) for modifier in modifiers] if modifiers else []
 
-    @staticmethod
-    def send_key_down(keys, modifiers=None):
-        k = [str(key) for key in keys]
-        m = [str(modifier) for modifier in modifiers] if modifiers else []
+        for m in ms:
+            self._dotool_write(f"keydown {m}")
+        for k in ks:
+            self._dotool_write(f"key {k}")
+        for m in ms:
+            self._dotool_write(f"keyup {m}")
 
-        API.spawn_cmd(
-            [
-                "dotoolc-args",
-                *[*(sum(zip(["keydown"] * len(m), m), ()))],
-                *[*(sum(zip(["keydown"] * len(k), k), ()))],
-            ]
-        )
+    def send_key_down(self, keys, modifiers=None):
+        ks = [str(key) for key in keys]
+        ms = [str(modifier) for modifier in modifiers] if modifiers else []
 
-    @staticmethod
-    def send_key_up(keys, modifiers=None):
-        k = [str(key) for key in keys]
-        m = [str(modifier) for modifier in modifiers] if modifiers else []
+        for m in ms:
+            self._dotool_write(f"keydown {m}")
+        for k in ks:
+            self._dotool_write(f"keydown {k}")
 
-        API.spawn_cmd(
-            [
-                "dotoolc-args",
-                *[*(sum(zip(["keyup"] * len(m), m), ()))],
-                *[*(sum(zip(["keyup"] * len(k), k), ()))],
-            ]
-        )
+    def send_key_up(self, keys, modifiers=None):
+        ks = [str(key) for key in keys]
+        ms = [str(modifier) for modifier in modifiers] if modifiers else []
 
-    @staticmethod
-    def _repeat_key_impl(keys, modifiers, down_time, up_time):
+        for m in ms:
+            self._dotool_write(f"keyup {m}")
+        for k in ks:
+            self._dotool_write(f"keyup {k}")
+
+    def _repeat_key_impl(self, keys, modifiers, down_time, up_time):
         if not down_time:
             while True:
-                API.send_key(keys, modifiers)
+                self.send_key(keys, modifiers)
                 time.sleep(up_time)
         else:
             while True:
-                API.send_key_down(keys, modifiers)
+                self.send_key_down(keys, modifiers)
                 time.sleep(down_time)
-                API.send_key_up(keys, modifiers)
+                self.send_key_up(keys, modifiers)
                 time.sleep(up_time)
 
-    @staticmethod
-    def start_repeat_key(keys, modifiers=None, down_time=None, up_time=0.0):
+    def start_repeat_key(self, keys, modifiers=None, down_time=None, up_time=0.0):
         process = mp.Process(
-            target=API._repeat_key_impl,
+            target=self._repeat_key_impl,
             args=(keys, modifiers or [], down_time, up_time),
         )
         process.start()
-        API._repeat_processes[process.pid] = process
+        self._repeat_processes[process.pid] = process
         return process.pid
 
-    @staticmethod
-    def stop_repeat_key(repeat_id):
-        if repeat_id in API._repeat_processes:
-            process = API._repeat_processes.pop(repeat_id)
+    def stop_repeat_key(self, repeat_id):
+        if repeat_id in self._repeat_processes:
+            process = self._repeat_processes.pop(repeat_id)
             process.kill()
 
-    @staticmethod
-    def send_mouse(buttons, modifiers=None):
-        b = [str(button) for button in buttons]
-        m = [str(modifier) for modifier in modifiers] if modifiers else []
+    def send_mouse(self, buttons, modifiers=None):
+        bs = [str(button) for button in buttons]
+        ms = [str(modifier) for modifier in modifiers] if modifiers else []
 
-        API.spawn_cmd(
-            [
-                "dotoolc-args",
-                *[*(sum(zip(["keydown"] * len(m), m), ()))],
-                *[*(sum(zip(["click"] * len(b), b), ()))],
-                *[*(sum(zip(["keyup"] * len(m), m), ()))],
-            ]
-        )
+        for m in ms:
+            self._dotool_write(f"keydown {m}")
+        for b in bs:
+            self._dotool_write(f"click {b}")
+        for m in ms:
+            self._dotool_write(f"keyup {m}")
 
-    @staticmethod
-    def send_mouse_down(buttons, modifiers=None):
-        b = [str(button) for button in buttons]
-        m = [str(modifier) for modifier in modifiers] if modifiers else []
+    def send_mouse_down(self, buttons, modifiers=None):
+        bs = [str(button) for button in buttons]
+        ms = [str(modifier) for modifier in modifiers] if modifiers else []
 
-        API.spawn_cmd(
-            [
-                "dotoolc-args",
-                *[*(sum(zip(["keydown"] * len(m), m), ()))],
-                *[*(sum(zip(["mousedown"] * len(b), b), ()))],
-            ]
-        )
+        for m in ms:
+            self._dotool_write(f"keydown {m}")
+        for b in bs:
+            self._dotool_write(f"mousedown {b}")
 
-    @staticmethod
-    def send_mouse_up(buttons, modifiers=None):
-        b = [str(button) for button in buttons]
-        m = [str(modifier) for modifier in modifiers] if modifiers else []
+    def send_mouse_up(self, buttons, modifiers=None):
+        bs = [str(button) for button in buttons]
+        ms = [str(modifier) for modifier in modifiers] if modifiers else []
 
-        API.spawn_cmd(
-            [
-                "dotoolc-args",
-                *[*(sum(zip(["keyup"] * len(m), m), ()))],
-                *[*(sum(zip(["mouseup"] * len(b), b), ()))],
-            ]
-        )
+        for m in ms:
+            self._dotool_write(f"keyup {m}")
+        for b in bs:
+            self._dotool_write(f"mouseup {b}")
 
-    @staticmethod
-    def _repeat_mouse_impl(buttons, modifiers, down_time, up_time):
+    def _repeat_mouse_impl(self, buttons, modifiers, down_time, up_time):
         if not down_time:
             while True:
-                API.send_mouse(buttons, modifiers)
+                self.send_mouse(buttons, modifiers)
                 time.sleep(up_time)
         else:
             while True:
-                API.send_mouse_down(buttons, modifiers)
+                self.send_mouse_down(buttons, modifiers)
                 time.sleep(down_time)
-                API.send_mouse_up(buttons, modifiers)
+                self.send_mouse_up(buttons, modifiers)
                 time.sleep(up_time)
 
-    @staticmethod
-    def start_repeat_mouse(buttons, modifiers=None, down_time=None, up_time=0.0):
+    def start_repeat_mouse(self, buttons, modifiers=None, down_time=None, up_time=0.0):
         process = mp.Process(
-            target=API._repeat_mouse_impl,
+            target=self._repeat_mouse_impl,
             args=(buttons, modifiers or [], down_time, up_time),
         )
         process.start()
-        API._repeat_processes[process.pid] = process
+        self._repeat_processes[process.pid] = process
         return process.pid
 
-    @staticmethod
-    def stop_repeat_mouse(repeat_id):
-        if repeat_id in API._repeat_processes:
-            process = API._repeat_processes.pop(repeat_id)
+    def stop_repeat_mouse(self, repeat_id):
+        if repeat_id in self._repeat_processes:
+            process = self._repeat_processes.pop(repeat_id)
             process.kill()
 
-    @staticmethod
-    def type_text(text):
-        API.spawn_cmd(["dotoolc-args", "type", text])
+    def type_text(self, text):
+        self._dotool_write(f"type {text}")
 
 
 class CallbackData:
@@ -330,7 +312,7 @@ def get_config(config_path):
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    module.API = API
+    module.API = API()
     module.init()
     return module
 
