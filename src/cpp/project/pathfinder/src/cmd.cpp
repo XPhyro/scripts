@@ -6,6 +6,7 @@
 
 #include <cstdlib>
 
+#include <pwd.h>
 #include <unistd.h>
 
 #include <hedley.h>
@@ -65,7 +66,7 @@ paf::unmark::unmark(lyra::cli& cli)
 paf::jump::jump(lyra::cli& cli)
 {
     const auto arg_keycode =
-        lyra::arg(m_keycode, "keycode")("keycode to match the directory").cardinality(1, 1);
+        lyra::arg(m_keycode, "keycode")("keycode to match the directory").cardinality(0, 1);
 
     auto command = lyra::command("jump", [this](const lyra::group& group) { execute(group); })
                        .help("Jump to the directory for the given keycode.")
@@ -253,8 +254,17 @@ PAF_CMD_NORETURN void paf::jump::execute(const lyra::group& group)
         std::exit(EXIT_SUCCESS);
     }
 
+    if (!m_keycode) {
+        auto pw = getpwuid(getuid());
+        std::cout << pw->pw_dir << '\n';
+        PAF_CMD_EXIT();
+        return;
+    } else {
+        xph::die_if(!m_keycode->size(), "<keycode> cannot be empty");
+    }
+
     auto db = db::get_db(db_type::directory);
-    auto dir = db.try_get_mark(m_keycode);
+    auto dir = db.try_get_mark(*m_keycode);
 
     if (!dir)
         goto err;

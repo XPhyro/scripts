@@ -46,7 +46,7 @@ namespace paf {
     class jump {
     private:
         bool m_show_help = false;
-        std::string m_keycode = "";
+        std::optional<std::string> m_keycode = {};
 
     public:
         jump(void) = delete;
