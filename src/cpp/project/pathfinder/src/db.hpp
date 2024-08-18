@@ -42,6 +42,7 @@ namespace paf {
         ~db();
 
         static db get_db(db_type type);
+        static void reset_db(db_type type);
 
         void dump(std::string_view sep, std::string_view end);
         std::optional<std::string> try_get_mark(const std::string& keycode);

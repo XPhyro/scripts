@@ -12,8 +12,11 @@
 #include <hedley.h>
 
 #include <xph/db.h>
+#include <xph/die.hpp>
 
 namespace fs = std::filesystem;
+
+using db_version_t = std::uint64_t;
 
 namespace paf {
     static std::optional<std::vector<db_item>> db_dir_vec = std::nullopt,
@@ -36,22 +39,44 @@ namespace paf {
         }
     }
 
+    static void load_db_v0(std::vector<db_item>& db_vec, std::ifstream& ifs)
+    {
+        for (std::string k, v; std::getline(ifs, k, '\0') && std::getline(ifs, v, '\0');)
+            db_vec.emplace_back(k, v);
+    }
+
     static void load_db(std::vector<db_item>& db_vec, db_type type)
     {
         const auto path = get_db_path(type);
         std::ifstream ifs{ path };
 
-        for (std::string k, v; std::getline(ifs, k, '\0') && std::getline(ifs, v, '\0');)
-            db_vec.emplace_back(k, v);
+        if (ifs.peek() == std::ifstream::traits_type::eof())
+            return;
+
+        db_version_t version;
+        ifs.read(reinterpret_cast<char*>(&version), sizeof(version));
+
+        if (version == 0)
+            load_db_v0(db_vec, ifs);
+        else
+            xph::die("cannot load database with version [", version, "]");
     }
 
     static void save_db(const std::vector<db_item>& db_vec, db_type type)
     {
+        static const constexpr db_version_t db_version = 0uz;
+
         const auto path = get_db_path(type);
         const auto tmp_path = path + ".tmp";
 
-        for (std::ofstream ofs{ tmp_path }; const auto& item : db_vec)
-            ofs << item.keycode << '\0' << item.path << '\0';
+        {
+            std::ofstream ofs{ tmp_path };
+
+            ofs.write(reinterpret_cast<const char*>(&db_version), sizeof(db_version));
+
+            for (const auto& item : db_vec)
+                ofs << item.keycode << '\0' << item.path << '\0';
+        }
 
         fs::rename(tmp_path, path);
     }
@@ -78,6 +103,12 @@ namespace paf {
             default:
                 HEDLEY_UNREACHABLE();
         }
+    }
+
+    void db::reset_db(db_type type)
+    {
+        auto db_path = get_db_path(type);
+        fs::remove(db_path);
     }
 
     db::db(std::vector<db_item>& db_vec, db_type type) : type(type), m_db_vec(db_vec) {}
