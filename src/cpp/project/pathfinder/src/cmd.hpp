@@ -22,6 +22,7 @@ namespace paf {
     class mark {
     private:
         bool m_show_help = false;
+        bool m_abs = false;
         bool m_yes = false;
         std::string m_keycode = "";
         std::optional<std::string> m_file = {};

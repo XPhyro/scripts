@@ -31,6 +31,8 @@ paf::alias::alias(lyra::cli& cli)
 
 paf::mark::mark(lyra::cli& cli)
 {
+    const auto opt_abs =
+        lyra::opt(m_abs)["-a"]["--abs"]("mark paths as absolute even when given as relative");
     const auto opt_yes =
         lyra::opt(m_yes)["-y"]["--yes"]("don't require manual confirmation for overwriting marks");
     const auto arg_keycode =
@@ -40,6 +42,7 @@ paf::mark::mark(lyra::cli& cli)
     auto command = lyra::command("mark", [this](const lyra::group& group) { execute(group); })
                        .help("Mark the given directory or file.")
                        .add_argument(lyra::help(m_show_help))
+                       .add_argument(std::move(opt_abs))
                        .add_argument(std::move(opt_yes))
                        .add_argument(std::move(arg_keycode))
                        .add_argument(std::move(arg_file))
@@ -135,7 +138,8 @@ PAF_CMD_NORETURN void paf::alias::execute(const lyra::group& group)
         std::exit(EXIT_SUCCESS);
     }
 
-    std::cout << "m() { " << xph::exec_path << " mark \"$@\"; }\n";
+    std::cout << "M() { " << xph::exec_path << " mark \"$@\"; }\n";
+    std::cout << "m() { " << xph::exec_path << " mark -a \"$@\"; }\n";
     std::cout << R"#(g() { cd "$()#" << xph::exec_path << ' '
               << R"#(jump "$@")"; })#"
                  "\n";
@@ -182,6 +186,11 @@ PAF_CMD_NORETURN void paf::mark::execute(const lyra::group& group)
         }
 
         db.try_remove_mark_at(*kc_idx);
+    }
+
+    if (m_abs) {
+        auto abs_path = fs::absolute(*m_file);
+        m_file = abs_path.string();
     }
 
     db.add_mark(m_keycode, *m_file);
