@@ -69,7 +69,8 @@ namespace paf {
     class print {
     private:
         bool m_show_help = false;
-        std::string m_db_type = "both";
+        bool m_use_dir = false;
+        bool m_use_file = false;
         std::string m_keycode = "";
         bool m_nul = false;
 
@@ -82,7 +83,8 @@ namespace paf {
     class list {
     private:
         bool m_show_help = false;
-        std::string m_db_type = "both";
+        bool m_use_dir = false;
+        bool m_use_file = false;
         bool m_nul = false;
 
     public:

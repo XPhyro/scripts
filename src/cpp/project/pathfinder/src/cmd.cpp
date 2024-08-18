@@ -96,9 +96,8 @@ paf::open::open(lyra::cli& cli)
 
 paf::print::print(lyra::cli& cli)
 {
-    const auto opt_db_type =
-        lyra::opt(m_db_type, "database")["-d"]["--database"]("database to search")
-            .choices("both", "directory", "file");
+    const auto opt_use_dir = lyra::opt(m_use_dir)["-d"]["--dir"]("use directory database");
+    const auto opt_use_file = lyra::opt(m_use_file)["-f"]["--file"]("use file database");
     const auto arg_keycode =
         lyra::arg(m_keycode, "keycode")("keycode to match the file").cardinality(1, 1);
     const auto opt_nul = lyra::opt(m_nul)["-0"]["-z"]["--null"]("use NUL as output delimiter");
@@ -106,7 +105,8 @@ paf::print::print(lyra::cli& cli)
     auto command = lyra::command("print", [this](const lyra::group& group) { execute(group); })
                        .help("Print the value for the given keycode.")
                        .add_argument(lyra::help(m_show_help))
-                       .add_argument(std::move(opt_db_type))
+                       .add_argument(std::move(opt_use_dir))
+                       .add_argument(std::move(opt_use_file))
                        .add_argument(std::move(arg_keycode))
                        .add_argument(std::move(opt_nul))
                        .optional();
@@ -116,15 +116,15 @@ paf::print::print(lyra::cli& cli)
 
 paf::list::list(lyra::cli& cli)
 {
-    const auto opt_db_type =
-        lyra::opt(m_db_type, "database")["-d"]["--database"]("database to list")
-            .choices("both", "directory", "file");
+    const auto opt_use_dir = lyra::opt(m_use_dir)["-d"]["--dir"]("use directory database");
+    const auto opt_use_file = lyra::opt(m_use_file)["-f"]["--file"]("use file database");
     const auto opt_nul = lyra::opt(m_nul)["-0"]["-z"]["--null"]("use NUL as output delimiter");
 
     auto command = lyra::command("list", [this](const lyra::group& group) { execute(group); })
                        .help("List all marks.")
                        .add_argument(lyra::help(m_show_help))
-                       .add_argument(std::move(opt_db_type))
+                       .add_argument(std::move(opt_use_dir))
+                       .add_argument(std::move(opt_use_file))
                        .add_argument(std::move(opt_nul))
                        .optional();
 
@@ -319,19 +319,24 @@ PAF_CMD_NORETURN void paf::print::execute(const lyra::group& group)
         std::exit(EXIT_SUCCESS);
     }
 
-    if (m_db_type == "both" || m_db_type == "directory") {
+    if (!m_use_dir && !m_use_file) {
+        m_use_dir = true;
+        m_use_file = true;
+    }
+
+    if (m_use_dir) {
         auto db = db::get_db(db_type::directory);
         auto dir = db.try_get_mark(m_keycode);
         db.cancel();
         if (dir) {
             std::cout << *dir;
-            if (!m_db_type.ends_with('/'))
+            if (!dir->ends_with('/'))
                 std::cout << '/';
             std::cout << (m_nul ? '\0' : '\n');
         }
     }
 
-    if (m_db_type == "both" || m_db_type == "file") {
+    if (m_use_file) {
         auto db = db::get_db(db_type::file);
         auto file = db.try_get_mark(m_keycode);
         db.cancel();
@@ -349,13 +354,18 @@ PAF_CMD_NORETURN void paf::list::execute(const lyra::group& group)
         std::exit(EXIT_SUCCESS);
     }
 
-    if (m_db_type == "both" || m_db_type == "directory") {
+    if (!m_use_dir && !m_use_file) {
+        m_use_dir = true;
+        m_use_file = true;
+    }
+
+    if (m_use_dir) {
         auto db = db::get_db(db_type::directory);
         db.dump(m_nul ? "\0" : " : ", m_nul ? "\0" : "\n");
         db.cancel();
     }
 
-    if (m_db_type == "both" || m_db_type == "file") {
+    if (m_use_file) {
         auto db = db::get_db(db_type::file);
         db.dump(m_nul ? "\0" : " : ", m_nul ? "\0" : "\n");
         db.cancel();
