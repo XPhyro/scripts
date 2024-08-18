@@ -138,6 +138,7 @@ PAF_CMD_NORETURN void paf::alias::execute(const lyra::group& group)
         std::exit(EXIT_SUCCESS);
     }
 
+    std::cout << "paf() { " << xph::exec_path << " \"$@\"; }\n";
     std::cout << "M() { " << xph::exec_path << " mark \"$@\"; }\n";
     std::cout << "m() { " << xph::exec_path << " mark -a \"$@\"; }\n";
     std::cout << R"#(g() { cd "$()#" << xph::exec_path << ' '
