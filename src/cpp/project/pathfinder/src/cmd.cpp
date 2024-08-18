@@ -165,7 +165,9 @@ PAF_CMD_NORETURN void paf::mark::execute(const lyra::group& group)
 
     if (auto kc_idx = db.index_of(m_keycode); kc_idx) {
         if (!m_yes) {
-            std::cout << "Keycode already exists. "
+            std::cout << "Keycode [" << m_keycode << "] already exists as ["
+                      << *db.try_get_mark_at(*kc_idx)
+                      << "]. "
                          "Overwrite? [y/N] ";
 
             std::string answer;

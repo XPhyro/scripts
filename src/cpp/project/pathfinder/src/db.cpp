@@ -114,6 +114,14 @@ namespace paf {
         return std::nullopt;
     }
 
+    std::optional<std::string> db::try_get_mark_at(std::size_t index)
+    {
+        if (index >= m_db_vec.size())
+            return std::nullopt;
+
+        return m_db_vec[index].path;
+    }
+
     void db::add_mark(const std::string& keycode, const std::string& path)
     {
         m_db_vec.emplace_back(keycode, path);

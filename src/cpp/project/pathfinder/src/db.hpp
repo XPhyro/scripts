@@ -45,6 +45,7 @@ namespace paf {
 
         void dump(std::string_view sep, std::string_view end);
         std::optional<std::string> try_get_mark(const std::string& keycode);
+        std::optional<std::string> try_get_mark_at(std::size_t index);
         void add_mark(const std::string& keycode, const std::string& path);
         bool try_remove_mark(const std::string& keycode);
         bool try_remove_mark_at(std::size_t index);
