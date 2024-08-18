@@ -42,6 +42,15 @@ main() {
     thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
 
     mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$1")")"
+
+   case "$mime_type" in
+       text/html)
+           case "$1" in
+               *.[Mm][Dd]) mime_type=text/plain;;
+           esac
+           ;;
+   esac
+
     case "$mime_type" in
         application/octet-stream)
             case "$1" in
