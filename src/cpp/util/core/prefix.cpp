@@ -37,7 +37,8 @@ public:
     Options(int argc, char** argv)
     {
         bool help = false;
-        auto cli = lyra::cli() | lyra::help(help) |
+        auto cli = lyra::cli() |
+                   lyra::help(help).description("Prefix lines with selected attributes.") |
                    OPT(prefix_time)["-t"]["--time"]("prefix lines with current time") |
                    OPT(prefix_delta)["-d"]["--delta"]("prefix lines with delta time") |
                    OPT(prefix_line)["-l"]["--line"]("prefix lines with line number");
