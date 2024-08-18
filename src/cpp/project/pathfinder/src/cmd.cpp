@@ -272,12 +272,9 @@ PAF_CMD_NORETURN void paf::jump::execute(const lyra::group& group)
     auto db = db::get_db(db_type::directory);
     auto dir = db.try_get_mark(*m_keycode);
 
-    if (!dir)
-        goto err;
-
+    xph::die_if(!dir, "keycode [", *m_keycode, "] not found in database");
     std::cout << *dir << '\n';
 
-err:
     PAF_CMD_EXIT();
 }
 
