@@ -23,7 +23,7 @@ namespace fs = std::filesystem;
 paf::alias::alias(lyra::cli& cli)
 {
     auto command = lyra::command("alias", [this](const lyra::group& group) { execute(group); })
-                       .help("Print aliases `eval`able by a POSIX-compatible shell.")
+                       .help("Print aliases for POSIX-compatible shells.")
                        .add_argument(lyra::help(m_show_help))
                        .optional();
     cli.add_argument(std::move(command));
@@ -136,7 +136,7 @@ PAF_CMD_NORETURN void paf::alias::execute(const lyra::group& group)
     }
 
     std::cout << "m() { " << xph::exec_path << " mark \"$@\"; }\n";
-    std::cout << R"#(g() { eval "$()#" << xph::exec_path << ' '
+    std::cout << R"#(g() { cd "$()#" << xph::exec_path << ' '
               << R"#(jump "$@")"; })#"
                  "\n";
     std::cout << "e() { " << xph::exec_path << " open \"$@\"; }\n";
