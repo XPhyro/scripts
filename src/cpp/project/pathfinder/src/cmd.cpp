@@ -134,15 +134,11 @@ PAF_CMD_NORETURN void paf::alias::execute(const lyra::group& group)
         std::exit(EXIT_SUCCESS);
     }
 
-    auto print_alias = [](const char* alias, const char* cmd) {
-        std::cout << alias << R"#(() { eval "$()#" << xph::exec_path << ' ' << cmd
-                  << R"#( "$@")"; })#"
-                     "\n";
-    };
-
-    print_alias("m", "mark");
-    print_alias("g", "jump");
-    print_alias("e", "open");
+    std::cout << "m() { " << xph::exec_path << " mark \"$@\"; }\n";
+    std::cout << R"#(g() { eval "$()#" << xph::exec_path << ' '
+              << R"#(jump "$@")"; })#"
+                 "\n";
+    std::cout << "e() { " << xph::exec_path << " open \"$@\"; }\n";
 
     PAF_CMD_EXIT();
 }
