@@ -7,13 +7,13 @@
 #include <xph/exec_info.hpp>
 #include <xph/param.hpp>
 
-#include "options.hpp"
+#include "cli.hpp"
 
 DEFINE_EXEC_INFO();
 
 int main(int argc, char* argv[])
 {
     xph::gather_exec_info(argc, argv);
-    paf::Options options(argc, argv);
-    return EXIT_SUCCESS;
+    paf::cli cli(argc, argv);
+    cli.run();
 }

@@ -1,4 +1,4 @@
-#include "options.hpp"
+#include "cli.hpp"
 
 #include <iostream>
 
@@ -7,24 +7,22 @@
 #include <lyra/lyra.hpp>
 
 #include <xph/exec_info.hpp>
-#include <xph/lexical_cast.hpp>
 
-#include "command.hpp"
+#include "cmd.hpp"
 
-paf::Options::Options(int argc, char** argv)
+paf::cli::cli(int argc, char** argv)
 {
     bool help = false;
     auto cli = lyra::cli() |
                lyra::help(help).description("Pathfinding interface for interactive shells.");
 
-    paf::Alias alias{ cli };
-    paf::Mark mark{ cli };
-    paf::Unmark unmark{ cli };
-    paf::ToggleMark toggle_markj{ cli };
-    paf::Jump jump{ cli };
-    paf::Open open{ cli };
-    paf::Print print{ cli };
-    paf::List list{ cli };
+    paf::alias _{ cli };
+    paf::mark _{ cli };
+    paf::unmark _{ cli };
+    paf::jump _{ cli };
+    paf::open _{ cli };
+    paf::print _{ cli };
+    paf::list _{ cli };
 
     auto args = cli.parse({ argc, argv });
 
@@ -38,4 +36,9 @@ paf::Options::Options(int argc, char** argv)
         std::cout << cli << '\n';
         std::exit(EXIT_SUCCESS);
     }
+}
+
+[[noreturn]] void paf::cli::run(void)
+{
+    std::exit(EXIT_SUCCESS);
 }

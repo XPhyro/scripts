@@ -13,8 +13,7 @@ else
 	include =
 endif
 
-CXXFLAGS_NOWARN = -O3 -DNDEBUG -std=c++23 -pedantic $(include)
-CXXFLAGS = $(warnings) $(CXXFLAGS_NOWARN)
+CXXFLAGS = $(warnings) -O3 -DNDEBUG -std=c++2c -pedantic -fpermissive $(include)
 LDFLAGS = $(libs)
 
 EXE = pathfinder
