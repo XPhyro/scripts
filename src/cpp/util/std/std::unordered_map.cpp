@@ -30,7 +30,7 @@
 #include <xph/vector.hpp>
 
 // C libraries
-#include <xph/database.h>
+#include <xph/db.h>
 #include <xph/string.h>
 
 // third-party

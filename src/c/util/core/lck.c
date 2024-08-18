@@ -8,7 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <xph/database.h>
+#include <xph/db.h>
 #include <xph/exec_info.h>
 #include <xph/stdlib.h>
 #include <xph/string.h>
