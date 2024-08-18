@@ -39,6 +39,15 @@ namespace paf {
         }
     }
 
+    static void load_db_v1(std::vector<db_item>& db_vec, std::ifstream& ifs)
+    {
+        for (std::string k, v; std::getline(ifs, k, '\0') && std::getline(ifs, v, '\0');) {
+            db_flags_t flags;
+            ifs.read(reinterpret_cast<char*>(&flags), sizeof(flags));
+            db_vec.emplace_back(k, v, flags);
+        }
+    }
+
     static void load_db_v0(std::vector<db_item>& db_vec, std::ifstream& ifs)
     {
         for (std::string k, v; std::getline(ifs, k, '\0') && std::getline(ifs, v, '\0');)
@@ -58,13 +67,15 @@ namespace paf {
 
         if (version == 0)
             load_db_v0(db_vec, ifs);
+        else if (version == 1)
+            load_db_v1(db_vec, ifs);
         else
             xph::die("cannot load database with version [", version, "]");
     }
 
     static void save_db(const std::vector<db_item>& db_vec, db_type type)
     {
-        static const constexpr db_version_t db_version = 0uz;
+        static const constexpr db_version_t db_version = 1uz;
 
         const auto path = get_db_path(type);
         const auto tmp_path = path + ".tmp";
@@ -74,8 +85,10 @@ namespace paf {
 
             ofs.write(reinterpret_cast<const char*>(&db_version), sizeof(db_version));
 
-            for (const auto& item : db_vec)
+            for (const auto& item : db_vec) {
                 ofs << item.keycode << '\0' << item.path << '\0';
+                ofs.write(reinterpret_cast<const char*>(&item.flags), sizeof(item.flags));
+            }
         }
 
         fs::rename(tmp_path, path);
@@ -135,27 +148,27 @@ namespace paf {
             std::cout << item.keycode << sep << item.path << end;
     }
 
-    std::optional<std::string> db::try_get_mark(const std::string& keycode)
+    std::optional<db_item> db::try_get_mark(const std::string& keycode)
     {
         for (const auto& item : m_db_vec) {
             if (item.keycode == keycode)
-                return item.path;
+                return item;
         }
 
         return std::nullopt;
     }
 
-    std::optional<std::string> db::try_get_mark_at(std::size_t index)
+    std::optional<db_item> db::try_get_mark_at(std::size_t index)
     {
         if (index >= m_db_vec.size())
             return std::nullopt;
 
-        return m_db_vec[index].path;
+        return m_db_vec[index];
     }
 
-    void db::add_mark(const std::string& keycode, const std::string& path)
+    void db::add_mark(const std::string& keycode, const std::string& path, db_flags_t flags)
     {
-        m_db_vec.emplace_back(keycode, path);
+        m_db_vec.emplace_back(keycode, path, flags);
     }
 
     bool db::try_remove_mark(const std::string& keycode)

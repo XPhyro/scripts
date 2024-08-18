@@ -23,6 +23,9 @@ namespace paf {
     private:
         bool m_show_help = false;
         bool m_abs = false;
+        bool m_use_dir = false;
+        bool m_use_file = false;
+        bool m_wordexp = false;
         bool m_yes = false;
         std::string m_keycode = "";
         std::optional<std::string> m_file = {};
