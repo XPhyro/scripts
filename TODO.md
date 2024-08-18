@@ -9,10 +9,6 @@
 
 ## Bugs
 
-- In `editpath`, the given path is not escaped, even if it is known to be a
-  path not to be `wordexp`ed. Use `shell-escape` to escape the given path
-  before adding it to the database if the path is known to be a path.
-  - Perhaps also add a flag to signal no-escaping, and escape by default?
 - `vstrcatbuf` and other similar functions do not return the new `bufsize` or edit
   the original variable.
   - Consecutive calls to these functions reallocates memory when it should not
@@ -24,35 +20,19 @@
 
 ## Features
 
-- Add the ability to have default arguments via environment variables in
-  `tglapp`.
-- Support custom lock directory prefix in `dbutil.h`.
-- Support custom lock directory prefix in `lck`.
 - Implement for/while-else construct of Python in C++.
   [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
   starting point.
-- Add an option to override or append to the default clean-up process on
-  toggling off in `tglapp`.
-  - This would be useful for double-forking programs and or those that have
-    weird process trees like Steam.
-- Add support for dynamically queried paths in `getpath`. For instance:
-  - `td` may be `printf "%s\n" TODO*(N) TODO.md | head -n 1` (zsh)
-  - `rdm` may be `printf "%s\n" README*(N) README.md | head -n 1` (zsh)
-  - `lc` may be `find . -mindepth 1 -maxdepth 1 -type f -iname "*license*" -print0 | head -z -n 1 | head -c -2` (sh)
 - Make the interfaces of `std::*` (mostly) compliant with those of C++, even if
   it duplicates current interfaces.
 - Make `std::*` easier to use in shells with aliases similar to `ensure`.
 - Support printing all vectors, unordered maps, etc. with only program hash
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
   action should occur if no syntax is given.
-- `getpath`: add options to print all keys, values and keys & values.
 - Support globbing and regex in `exif-filter`.
 - Support mounting/unmounting Android devices in `mountsel`/`umountsel`.
 - `exif-filter`: support custom filter functions in place of the default
   `[ -n "$val" ] && [ "$flval" != "$val" ]`.
-- `tglapp`: run applications in a `tmux` session.
-  - Still capture stdout/stderr to temporary files.
-    - Or, don't capture them, but query them from `tmux` if it is supported.
 - `termctl`: include commands, subcommands, etc. in help dialog (or add a
   (command & subcommand)/flag for it)
 - Support stdin in `gcc-otg`.
@@ -72,9 +52,6 @@
 - Write a C program that takes in argv through argv and parsing configuration
   through stdin and outputs shell `eval`able code, then replace all applicable
   existing argument parsing in shell scripts with this program.
-- Create a script for enabling/disabling/toggling/querying xinput devices. Use
-  this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
-  scripts.
 - Automate [PulseAudio/PipeWire-Pulse network
   streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
   with optional pair configuration over `ssh`.
@@ -94,18 +71,8 @@
   - `std::unordered_set`
   - `std::map`
   - `std::set`
-- Write an init script to switch `nm-applet` ethernet presets depending on the
-  network.
 - Create two logging libraries that support colors (with automatic `isatty`
   detection) for C and C++ separately, using C and C++ streams respectively.
-- Create a script that makes `dotnet format` easier to use.
-  - It should be able to find the project/solution files and pass them to
-    `dotnet format`.
-  - It should handle special cases for Unity.
-  - It should support both formatting all files in the solution and formatting
-    only the files passed via the command-line (or also stdin?).
-- Write a script that converts CBR to PDF and uses a PDF viewer to open the
-  temporary file.
 - Create a shell header, that, if included, makes the current script reload if
   the script file is touched.
   - Similar to `polybar`, `picom`, etc.
@@ -130,7 +97,6 @@
     - See <https://video.stackexchange.com/questions/32297/resuming-a-partially-completed-encode-with-ffmpeg>
   - Use `parallel` with verbose progress & running commands.
 - Optimise `breadth-find` to not search the same initial depths multiple times.
-- Make `editpath` and related scripts as easy to use as `_m` and others.
 - Rewrite the pathfinding suite with `std::unordered_map`, or with the
   to-be-implemented C/C++ `std` base library.
 - Create a base C (or C++, depending on what features are required or heavily
@@ -142,18 +108,8 @@
     languages rather than in shell.
 - Export `align()` from `std::string` to `strutil.h` and use it from the
   header.
-- Merge `fillline` and `fillterm` into `fillcol`.
 - `prefix.sh`: don't query paths at runtime, make `.make` insert them in via
   `m4` during installation instead.
-- Rewrite the pathfinding suite fully in C as a single program.
-  - Don't require building a "database". Parse the configuration file on-the-go
-    (or generate the database on-the-go and regenerate if mtime of database is
-    less than the mtime of the configuration file).
-  - Make mark support first-party and eliminate the distinction between
-    permanent items and marks (or support setting marks as const).
-  - Add built-in special marks such as `-`, `@`, etc. Make sure these marks are
-    not caught or expanded by the POSIX Shell or mainstream shells like Bash
-    or Zsh.
 - Consider porting all execline scripts to shell for less dependencies.
 
 ## Other
@@ -193,8 +149,6 @@
 - `ffmw decat` does not work as expected. When the time is in format `HH:MM:SS`,
   it seems to work. Maybe it requires this format? If so, add it in the help
   menu.
-- Rewrite `parseargs()` without `while [ -n "$1" ]` to allow for empty
-  arguments. Instead loop using the count of arguments or use `for i`.
 - In `tglapp`, `--list=compact` prints stdout and stderr.
 - `.make`: `.installed` grows indefinitely unless `uninstall` is issued, fix.
 - `latexd` does not work with files containing `'`, fix.
@@ -203,8 +157,6 @@
 ## Features
 
 - In `contexec`, show the execution count in the header.
-- Add an option in `contexec` to open the editor. When this option is passed,
-  open the editor in the current terminal and execute the file in a `$PAD`.
 - In `steammgr`, keep a database of application IDs scraped from
   [steamdb](https://steamdb.info/apps) and present the user with relevant
   options. This could be done in two ways: either show the relevant options by
@@ -216,65 +168,17 @@
 - Integrate _synctex_ in `latexd`. See
   [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html)
   and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
-- In `tglapp`, add support for different commands depending on whether the
-  application is open or not. This would be useful in many scenarios, including
-  toggling an application wrapped with `screen`.
-- Add an option to start applications in a `screen` named `"$keycode"` in
-  `tglapp`. Also add an option to overwrite the `screen` name.
-- Support `--long-option=VALUE` in `ffmw` and `selfl`.
-- Support `-l LIMIT, --limit LIMIT` global option in `ffmw` to limit the CPU
-  usage of `ffmpeg` using `cpulimit`.
-- In `tglapp`, add support for force restarting applications via only a keycode.
-  To do this, read the command to start from `*/cmd`.
-- In `tglapp`, add `by-cmd`, `by-kc` (by-keycode), `by-hash` and `by-pid`
-  sub-directories like `/dev/*/by-*`.
 - Add usage statistics to `g`, `e` and `i` to rename keycodes to more efficient
   ones. Be sure to differentiate between scripted calls and interactive calls,
   this is probably a non-issue as the keycodes would be vastly different.
-- Use `get*unsafe` in `_[ge]*`.
-- Make the mark '¬' not shared between terminals, but still saved after the
-  terminal is closed. Load the value only at initialisation. In the interactive
-  shell side, before exiting, `cp -f "$somedir/$$" "$somedir/0"` and when
-  initialising, `cp "$somedir/0" "$somedir/$$"` can respectively be used to save
-  and load.
-- In `tglapp`, if both `-k` and `$cmd` are given, and if an application with the
-  same keycode is currently active, check that the given command is the same as
-  the currently running application. If the commands do not check out, exit with
-  error and do not toggle any applications.
-- In `tglapp` add an option to auto-restart the application when it exits. Make
-  this behaviour togglable between only non-zero codes and all codes.
-- In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of
-  `execmenu`.
-- Do not assume a font size in `rofifit`. The new calculation should still be
-  generous such that it would not make the same mistake as `rofi` trimming
-  _very_ short.
-- In `tglapp`, add an option that disables auto-unlocking, allowing the user to
-  review the stdout/stderr of the command.
 - In C `get*`, add diagnostic error messages.
 - In `fmaps`, implement options similar to that of `afgrep`'s `-aexbi`.
   - **Maybe** make these options specific to each given mapping? If so, also
     have the ability to globally define these options.
-- Maybe merge `_@` and `_g`?
-- In `polybar-headsetcontrol`, keep track of the last known battery percentage.
-  If battery is charging, show that it is charging, but also estimate a battery
-  percentage.
-- In `polybar-headsetcontrol`, make the battery icon's fill follow the
-  percentage.
 - In `stdutil.h`, min/max/minmax clamped versions add `astrto*` functions.
-- Add `-c` option to select column in `sumsize`.
-- Into the pathfinding suite, add a system for custom
-  aliases/functions/variables depending on the current directory of the user.
-  This could be done by modifying the currently provided `cd` function.
 - In `sandwichline`, add `-s, --same-dough` option to make the top and bottom
   of the sandwich the same when randomised.
-- `std::string` should have a help message.
 - Alternative to `make stats` that lists individual file statistics.
-
-## New Scripts
-
-- Write `getfls` and `getdirs` that support multiple arguments unlike `getfl`
-  and `getdir`. This might also be integrated in `getfl` and `getdir` in a
-  lightweight manner.
 
 ## Refactoring / Rewriting / Reworking
 
@@ -424,6 +328,38 @@
   for the terminal row/column values to change. Add another option to limit the
   waiting time of the previous action, so it does not end up waiting
   indefinitely.
+- Add an option to override or append to the default clean-up process on
+  toggling off in `tglapp`.
+  - This would be useful for double-forking programs and or those that have
+    weird process trees like Steam.
+- Add the ability to have default arguments via environment variables in
+  `tglapp`.
+- Support custom lock directory prefix in `dbutil.h`.
+- Support custom lock directory prefix in `lck`.
+- `tglapp`: run applications in a `tmux` session.
+  - Still capture stdout/stderr to temporary files.
+    - Or, don't capture them, but query them from `tmux` if it is supported.
+- In `tglapp`, add support for different commands depending on whether the
+  application is open or not. This would be useful in many scenarios, including
+  toggling an application wrapped with `screen`.
+- In `tglapp`, add support for force restarting applications via only a keycode.
+  To do this, read the command to start from `*/cmd`.
+- In `tglapp`, add `by-cmd`, `by-kc` (by-keycode), `by-hash` and `by-pid`
+  sub-directories like `/dev/*/by-*`.
+- In `tglapp` add an option to auto-restart the application when it exits. Make
+  this behaviour togglable between only non-zero codes and all codes.
+- In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of
+  `execmenu`.
+- Do not assume a font size in `rofifit`. The new calculation should still be
+  generous such that it would not make the same mistake as `rofi` trimming
+  _very_ short.
+- In `tglapp`, add an option that disables auto-unlocking, allowing the user to
+  review the stdout/stderr of the command.
+- In `polybar-headsetcontrol`, keep track of the last known battery percentage.
+  If battery is charging, show that it is charging, but also estimate a battery
+  percentage.
+- In `polybar-headsetcontrol`, make the battery icon's fill follow the
+  percentage.
 
 ## New Scripts
 
@@ -446,3 +382,8 @@
       - Have a root directory with necessary configuration files.
         - This would also make it easy to support public/private dotfiles more
           easily.
+- Create a script for enabling/disabling/toggling/querying xinput devices. Use
+  this script in `acpihandler`, `maptouch`, `tpcycle`, and other applicable
+  scripts.
+- Write a script that converts CBR to PDF and uses a PDF viewer to open the
+  temporary file.
