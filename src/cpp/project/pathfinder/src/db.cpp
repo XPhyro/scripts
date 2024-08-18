@@ -31,9 +31,9 @@ namespace paf {
             case db_type::both:
                 std::exit(EXIT_FAILURE);
             case db_type::directory:
-                return prefix + "/file_db.bin";
-            case db_type::file:
                 return prefix + "/dir_db.bin";
+            case db_type::file:
+                return prefix + "/file_db.bin";
             default:
                 HEDLEY_UNREACHABLE();
         }
