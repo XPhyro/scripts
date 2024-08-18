@@ -140,7 +140,7 @@ PAF_CMD_NORETURN void paf::alias::execute(const lyra::group& group)
                      "\n";
     };
 
-    print_alias("m", "toggle-mark");
+    print_alias("m", "mark");
     print_alias("g", "jump");
     print_alias("e", "open");
 
