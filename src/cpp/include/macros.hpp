@@ -7,6 +7,8 @@
     do {       \
     } while (false)
 
+#define SIMPLE_NAMEOF(x) #x
+
 #define DO_PRAGMA_(x) _Pragma(#x)
 #define DO_PRAGMA(x) DO_PRAGMA_(x)
 
