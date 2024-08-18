@@ -8,7 +8,6 @@
 
 #include <pwd.h>
 #include <unistd.h>
-#include <wordexp.h>
 
 #include <hedley.h>
 #include <lyra/lyra.hpp>
@@ -309,16 +308,7 @@ PAF_CMD_NORETURN void paf::jump::execute(const lyra::group& group)
     auto dir = db.try_get_mark(*m_keycode);
 
     xph::die_if(!dir, "keycode [", *m_keycode, "] not found in database");
-
-    if (dir->flags & static_cast<db_flags_t>(db_flag::wordexp)) {
-        wordexp_t result;
-        int r = ::wordexp(dir->path.c_str(), &result, 0);
-        xph::die_if(r, "wordexp [", dir->path, "] failed");
-        dir->path = result.we_wordv[0];
-        ::wordfree(&result);
-    }
-
-    std::cout << dir->path << '\n';
+    std::cout << *dir << '\n';
 
     PAF_CMD_EXIT();
 }
@@ -341,8 +331,7 @@ PAF_CMD_NORETURN void paf::open::execute(const lyra::group& group)
     db.cancel();
 
     xph::die_if(!file, "keycode [", m_keycode, "] not found in database");
-
-    ::execlp(editor, editor, "--", file->path.c_str(), nullptr);
+    ::execlp(editor, editor, "--", file->c_str(), nullptr);
 
     PAF_CMD_EXIT();
 }
@@ -364,8 +353,8 @@ PAF_CMD_NORETURN void paf::print::execute(const lyra::group& group)
         auto dir = db.try_get_mark(m_keycode);
         db.cancel();
         if (dir) {
-            std::cout << dir->path;
-            if (!dir->path.ends_with('/'))
+            std::cout << *dir;
+            if (dir->ends_with('/'))
                 std::cout << '/';
             std::cout << (m_nul ? '\0' : '\n');
         }
@@ -376,7 +365,7 @@ PAF_CMD_NORETURN void paf::print::execute(const lyra::group& group)
         auto file = db.try_get_mark(m_keycode);
         db.cancel();
         if (file)
-            std::cout << file->path << (m_nul ? '\0' : '\n');
+            std::cout << *file << (m_nul ? '\0' : '\n');
     }
 
     PAF_CMD_EXIT();

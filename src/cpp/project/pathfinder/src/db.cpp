@@ -9,6 +9,8 @@
 
 #include <cstdlib>
 
+#include <wordexp.h>
+
 #include <hedley.h>
 
 #include <xph/db.h>
@@ -148,11 +150,20 @@ namespace paf {
             std::cout << item.keycode << sep << item.path << end;
     }
 
-    std::optional<db_item> db::try_get_mark(const std::string& keycode)
+    std::optional<std::string> db::try_get_mark(const std::string& keycode)
     {
-        for (const auto& item : m_db_vec) {
-            if (item.keycode == keycode)
-                return item;
+        for (auto item : m_db_vec) {
+            if (item.keycode == keycode) {
+                if (item.flags & static_cast<db_flags_t>(db_flag::wordexp)) {
+                    wordexp_t result;
+                    int r = ::wordexp(item.path.c_str(), &result, 0);
+                    xph::die_if(r, "wordexp [", item.path, "] failed");
+                    item.path = result.we_wordv[0];
+                    ::wordfree(&result);
+                }
+
+                return item.path;
+            }
         }
 
         return std::nullopt;

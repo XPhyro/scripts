@@ -54,7 +54,7 @@ namespace paf {
         static void reset_db(db_type type);
 
         void dump(std::string_view sep, std::string_view end);
-        std::optional<db_item> try_get_mark(const std::string& keycode);
+        std::optional<std::string> try_get_mark(const std::string& keycode);
         std::optional<db_item> try_get_mark_at(std::size_t index);
         void add_mark(const std::string& keycode, const std::string& path, db_flags_t flags);
         bool try_remove_mark(const std::string& keycode);
