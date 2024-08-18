@@ -15,7 +15,7 @@
 
 #include <xph/stdlib.h>
 
-#define EXECNAME "rand"
+#define EXECNAME "getrandom"
 
 typedef enum {
     PRINTMODE_SIGNED,
