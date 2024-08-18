@@ -1,11 +1,4 @@
-#include <cerrno>
-#include <cstdlib>
-
-#include <unistd.h>
-
-#include <xph/die.hpp>
 #include <xph/exec_info.hpp>
-#include <xph/param.hpp>
 
 #include "cli.hpp"
 
