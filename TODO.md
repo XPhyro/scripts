@@ -6,14 +6,9 @@
   problems if the scripts are run with elevated permissions. Warn the user and,
   for programs local to this repository, always install the `eval`ed programs as
   root to prevent tinkering.
-- Do not `eval` the output of `headsetcontrol` in `polybar-headsetcontrol` in
-  case the interface changes.
-  - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
 
 ## Bugs
 
-- `acpihandler` does not handle already-off keyboard/touchpad correctly on
-  PROG1 event.
 - In `editpath`, the given path is not escaped, even if it is known to be a
   path not to be `wordexp`ed. Use `shell-escape` to escape the given path
   before adding it to the database if the path is known to be a path.
@@ -31,13 +26,6 @@
 
 - Add the ability to have default arguments via environment variables in
   `tglapp`.
-- In `bspwmpad`, if a slot is requested and the requested slot is occupied,
-  check if the occupier is alive. If a slot is not requested and all slots are
-  occupied, check all of the slots for whether each occupier is alive.
-- In `bspwmpad`, add an option to start in some desktop.
-- In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
-  numbers.
-- In `tglapp`, support terminating the X window instead of the run process.
 - Support custom lock directory prefix in `dbutil.h`.
 - Support custom lock directory prefix in `lck`.
 - Implement for/while-else construct of Python in C++.
@@ -47,26 +35,6 @@
   toggling off in `tglapp`.
   - This would be useful for double-forking programs and or those that have
     weird process trees like Steam.
-- Make the `kdialog` wrapper cross-compatible with other dialogue applications
-  such as Zenity. Create wrappers for these newly supported applications that
-  `exec` the `kdialog` wrapper.
-  - Or, create a generic base file dialogue application that uses `lf` and
-    create wrappers for other file dialogue applications that `exec` this
-    generic base application.
-- Currently, if `fillline` is included in an on-terminal-initialisation
-  pipeline, the line might not be filled fully. This is not per se a bug on the
-  `fillline` end, but it would be nice to mitigate it. Add an option to wait a
-  tiny bit to allow for the terminal window to initialise and settle to its
-  permanent/semi-permanent row/column configuration. Add another option to wait
-  for the terminal row/column values to change. Add another option to limit the
-  waiting time of the previous action, so it does not end up waiting
-  indefinitely.
-- Generalise `vector`:
-  - From `1D->1D` to `ND->MD`.
-    - Maybe even support variadic vectors like: `{{1, 2}, {3}, {4, 5, 6}}`.
-      Values can remain as strings.
-  - Support `key->value` and `index->value` at the same time. Key can just be
-    strings.
 - Add support for dynamically queried paths in `getpath`. For instance:
   - `td` may be `printf "%s\n" TODO*(N) TODO.md | head -n 1` (zsh)
   - `rdm` may be `printf "%s\n" README*(N) README.md | head -n 1` (zsh)
@@ -78,12 +46,6 @@
   given. In other words, `[SYNTAX]` should be `[SYNTAX]?`, and aforementioned
   action should occur if no syntax is given.
 - `getpath`: add options to print all keys, values and keys & values.
-- Support `fzf` in `selfl`.
-  - By default, automatically determine whether to use `fzf` or `$MENU`
-    depending on `[ -t 0 ]`.
-- Support anonymous (non-numbered) pads in `bspwmpad`.
-  - In `latexd`, if `$TABBED_XID` is set and non-empty, use request an
-    anonymous pad.
 - Support globbing and regex in `exif-filter`.
 - Support mounting/unmounting Android devices in `mountsel`/`umountsel`.
 - `exif-filter`: support custom filter functions in place of the default
@@ -103,9 +65,6 @@
   - <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md>
   - <https://github.com/actions/runner-images/blob/main/images/macos/macos-13-arm64-Readme.md>
-- In `wallpaper`, support different sources for different monitors and
-  different sources for landscape/portrait monitors.
-- Alternatively select files with fzf in git integrations (such as gcm).
 - Support `std::vector`, `std::unordered_map` and other future `std::`s in `numsh`.
 
 ## New Scripts
@@ -120,12 +79,6 @@
   streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
   with optional pair configuration over `ssh`.
 - Merge `*maps` into a single C/C++ program.
-- After `vector` is generalised, write a shell library using `vector` to parse
-  arguments. Or just create another C/C++ program for this.
-  - Ideally, it would
-    - require very little or no boilerplate code.
-    - support parsing without a loop in the shell script.
-    - output error-checked `eval`able variables similar to `getpath`.
 - Write an audio waveform visualisation extension (in Lua) for `mpv`.
   - These could be useful:
     - <https://web.archive.org/web/20220925075135/https://www.securitronlinux.com/debian-testing/how-to-get-a-nice-waveform-display-with-the-mpv-media-player-on-linux/>
@@ -166,8 +119,6 @@
 
 ## Refactoring / Rewriting / Reworking
 
-- Optimise `dbutil.h` to do less allocations.
-  - Reuse built paths.
 - Rewrite `ffmw`.
   - Make it saner.
   - Share default options between subcommands.
@@ -233,6 +184,8 @@
     - Warn about entries possibly becoming stale
 - Consider integrating `cpplint`.
 
+---
+
 # Normal Priority
 
 ## Bugs
@@ -249,31 +202,9 @@
 
 ## Features
 
-- In `contexec`, show the output in a `$PAD` and open the editor in the
-  initialised terminal.
-- Allow `m` to take input files. If an input file is given, mark the file; if
-  not, mark the current working directory. Similarly, support those files in `@`
-  for editing.
 - In `contexec`, show the execution count in the header.
-- In `bspwmpad`, allow setting the font size (not the whole font). This would be
-  useful in scripts/programs like `weather`, `neomutt`, etc.
-- Add options in `latexd` to not open the source/output files.
 - Add an option in `contexec` to open the editor. When this option is passed,
   open the editor in the current terminal and execute the file in a `$PAD`.
-- Add an option in `bspwmpad` that would skip the acquisition of a lock if all
-  locks are occupied. This could have two behaviours: open up a normal st
-  session or execute the command without st. This could be made into two more
-  options that would determine the behaviour.
-- When setting a mark, ensure that the mark name does not contain %20 (i.e.
-  space). Tabs, etc. are ok with the current setup. Alternatively, refactor the
-  current setup to not use whitespace delimiters. A mechanism like in `getdir`
-  and `getfl` could be implemented.
-- Add support for regular files in mark scripts. A possible way could be to also
-  add support for passed arguments for files in the marking process and check
-  the file type; if it is a regular file, then the file could be marked in a
-  different mark set. While using marks, first check if a directory mark exists.
-  If there exists a directory mark, `cd` into it; else, open up the regular file
-  for the given mark in `$EDITOR` if there is such a mark.
 - In `steammgr`, keep a database of application IDs scraped from
   [steamdb](https://steamdb.info/apps) and present the user with relevant
   options. This could be done in two ways: either show the relevant options by
@@ -310,9 +241,6 @@
   same keycode is currently active, check that the given command is the same as
   the currently running application. If the commands do not check out, exit with
   error and do not toggle any applications.
-- In `bspwmpad`, add an option to use `tglapp`.
-- In `tglapp`, add an option to use `bspwmpad`. If this option is given, when
-  toggling the application, toggle the hidden status of the pad if it is on.
 - In `tglapp` add an option to auto-restart the application when it exits. Make
   this behaviour togglable between only non-zero codes and all codes.
 - In `bspwm-show`, show thumbnails. To do this, use `rofi` instead of
@@ -322,11 +250,6 @@
   _very_ short.
 - In `tglapp`, add an option that disables auto-unlocking, allowing the user to
   review the stdout/stderr of the command.
-- In `latexd`, allow passing arguments to `bspwmpad`.
-- In `bspwmpad`, support killing the command running in the given pad number.
-- In `bspwmpad`, support killing the command running in the given pad number and
-  replacing it. This function should require a valid and non-zero `-n` to be
-  passed.
 - In C `get*`, add diagnostic error messages.
 - In `fmaps`, implement options similar to that of `afgrep`'s `-aexbi`.
   - **Maybe** make these options specific to each given mapping? If so, also
@@ -349,61 +272,21 @@
 
 ## New Scripts
 
-- Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink
-  them to the original locations.
-  - Support multiple systems:
-    - Support non-shared and shared files.
-    - Support "static" files, where those files are owned by a system and may
-      not be shared.
-    - If we do not support static files, or more than two systems with partial
-      sharing, these should be easily achievable with git branches. Otherwise,
-      possible implementations could be:
-      - A directory structure with a flags hashmap,
-      - A directory structure with the shared files being symlinked,
-      - Etc.
-    - Easiest solution that would support multiple systems, synchronous usage
-      across multiple systems and static & shared files is most likely either
-      multiple repositories or multiple copies of the same repository with
-      distinct branches checked-out.
-      - Have a root directory with necessary configuration files.
-        - This would also make it easy to support public/private dotfiles more
-          easily.
 - Write `getfls` and `getdirs` that support multiple arguments unlike `getfl`
   and `getdir`. This might also be integrated in `getfl` and `getdir` in a
   lightweight manner.
-- Write scripts that would: print the value for a mark, print the mark for a
-  given value (if marks are always in expanded form, also expand the given
-  value; else, ensure that the equivalent values are considered).
-- Write a helper script that would make it easy for a script to implement
-  hashmaps. Currently `getdir`, `getfl` and other scripts use directory/file
-  structures as a workaround. This script would need to perform at least as well
-  as the workaround, if not better, and be convenient to use.
-- Write a script similar to `bspwmpad` that would register/deregister the
-  focused node if the key (1-9) is empty, else it will deregister that key;
-  then, write a script that would hide/show these nodes per key. Key 0 should be
-  similar to the key 0 of `bspwmpad`.
-- Using `mapexec`, write a batch renaming tool that passes the name through
-  `stat --printf=` if the line starts with ` `.
 
 ## Refactoring / Rewriting / Reworking
 
 - Optimise `kmcycle` and `setxkb`.
 - Use `xsel` instead of `xclip`.
-- Optimise `bspwmpadinit`'s PID updating with `inotifywait`.
-- Rewrite `brightmute` in a more robust fashion that would not often break.
 - Consider `scrot` in `cpscr`.
-- Make `dupe`, `getnewpath` and alike use GNU `--backup` syntax instead of
-  continuous trailing underscores.
 - Make `-fin` options in `ffmw` global as they are used by every non-help
   subcommand.
-- Make `mvloc` have the same syntax as `mv`. That is, `mv file1 file2 ... fileN location`. `eval "$#=\"$(getdir $$#)\""` could be used to do so.
-- Rewrite `getnewname` and `getnewpath` to be compatible with GNU's
-  `--backup=numbered`.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary
   (except containing a newline).
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
 - Use `inotifywait` in `waitfl`.
-- In `genpath` and `editpath`, use `\0` as the line and keycode/path separator.
 - Merge `repeat{line,null,str}` into `repeatstr`.
 
 ## Other
@@ -412,7 +295,6 @@
   name of the crop subcommand is very counter-intuitive.
 - In scripts that acquire locks, release them with a trap in case the script is
   interrupted, killed, etc.
-- Add `exit 0` at the end of all applicable scripts.
 - Use `basename` and `dirname` instead of parameter expansions as they correctly
   deal with edge cases. If these edge cases are known not to be present, do use
   parameter expansions.
@@ -433,10 +315,8 @@
   - `tglapp` could benefit from this. A single tray icon when right clicked
     should show all `tglapp` applications. For this, a subscription and a server
     (like `lf`'s) system should be implemented.
-- Show errors with `rofi -e "$message"` in applicable headless scripts.
-  - Maybe create a helper script for this?
-- Do not print error messages when `get*` fails in scripts as those already
-  print errors to stderr.
+
+---
 
 # Low Priority
 
@@ -453,18 +333,116 @@
 
 ## Features
 
-- Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
-- In `pathfinding/v`, if the file is not found, try finding the file in _a few_
-  depths.
-- In `bright*`, fade the brightness.
+- Generalise `vector`:
+  - From `1D->1D` to `ND->MD`.
+    - Maybe even support variadic vectors like: `{{1, 2}, {3}, {4, 5, 6}}`.
+      Values can remain as strings.
+  - Support `key->value` and `index->value` at the same time. Key can just be
+    strings.
 
 ## New Scripts
 
-- Port `unitutil.hpp` to C.
-  - Maybe use the new C header in the C++ header as the backend?
+- After `vector` is generalised, write a shell library using `vector` to parse
+  arguments. Or just create another C/C++ program for this.
+  - Ideally, it would
+    - require very little or no boilerplate code.
+    - support parsing without a loop in the shell script.
+    - output error-checked `eval`able variables similar to `getpath`.
 
 ## Refactoring / Rewriting / Reworking
 
 - In all C files (except, perhaps, those under `*/include/*`), move variable
   declarations as close as possible to the first usage, i.e. reduce their scope
   as much as possible. Still use C89 style declarations.
+- Optimise `database.h` to do less allocations.
+  - Reuse built paths.
+
+---
+
+# Archive
+
+## Security
+
+- Do not `eval` the output of `headsetcontrol` in `polybar-headsetcontrol` in
+  case the interface changes.
+  - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
+
+## Bugs
+
+- `acpihandler` does not handle already-off keyboard/touchpad correctly on
+  PROG1 event.
+
+## Features
+
+- In `bspwmpad`, if a slot is requested and the requested slot is occupied,
+  check if the occupier is alive. If a slot is not requested and all slots are
+  occupied, check all of the slots for whether each occupier is alive.
+- In `bspwmpad`, add an option to start in some desktop.
+- In `bspwmpad`, support non-automated non-incrementing keycodes in addition to
+  numbers.
+- Support anonymous (non-numbered) pads in `bspwmpad`.
+  - In `latexd`, if `$TABBED_XID` is set and non-empty, use request an
+    anonymous pad.
+- In `bspwmpad`, allow setting the font size (not the whole font). This would be
+  useful in scripts/programs like `weather`, `neomutt`, etc.
+- Add options in `latexd` to not open the source/output files.
+- Add an option in `bspwmpad` that would skip the acquisition of a lock if all
+  locks are occupied. This could have two behaviours: open up a normal st
+  session or execute the command without st. This could be made into two more
+  options that would determine the behaviour.
+- In `bspwmpad`, add an option to use `tglapp`.
+- In `tglapp`, add an option to use `bspwmpad`. If this option is given, when
+  toggling the application, toggle the hidden status of the pad if it is on.
+- In `latexd`, allow passing arguments to `bspwmpad`.
+- In `bspwmpad`, support killing the command running in the given pad number.
+- In `bspwmpad`, support killing the command running in the given pad number and
+  replacing it. This function should require a valid and non-zero `-n` to be
+  passed.
+- In `bright*`, fade the brightness.
+- Make the `kdialog` wrapper cross-compatible with other dialogue applications
+  such as Zenity. Create wrappers for these newly supported applications that
+  `exec` the `kdialog` wrapper.
+  - Or, create a generic base file dialogue application that uses `lf` and
+    create wrappers for other file dialogue applications that `exec` this
+    generic base application.
+- Support `fzf` in `selfl`.
+  - By default, automatically determine whether to use `fzf` or `$MENU`
+    depending on `[ -t 0 ]`.
+- Add adequate padding in `genrc`. (GNU?) `printf` has a padding parameter.
+- In `pathfinding/v`, if the file is not found, try finding the file in _a few_
+  depths.
+- Show errors with `rofi -e "$message"` in applicable headless scripts.
+  - Maybe create a helper script for this?
+- In `contexec`, show the output in a `$PAD` and open the editor in the
+  initialised terminal.
+- In `tglapp`, support terminating the X window instead of the run process.
+- Currently, if `fillline` is included in an on-terminal-initialisation
+  pipeline, the line might not be filled fully. This is not per se a bug on the
+  `fillline` end, but it would be nice to mitigate it. Add an option to wait a
+  tiny bit to allow for the terminal window to initialise and settle to its
+  permanent/semi-permanent row/column configuration. Add another option to wait
+  for the terminal row/column values to change. Add another option to limit the
+  waiting time of the previous action, so it does not end up waiting
+  indefinitely.
+
+## New Scripts
+
+- Migrate `dotfilesbak{,-sensitive}` into this repository, and simply symlink
+  them to the original locations.
+  - Support multiple systems:
+    - Support non-shared and shared files.
+    - Support "static" files, where those files are owned by a system and may
+      not be shared.
+    - If we do not support static files, or more than two systems with partial
+      sharing, these should be easily achievable with git branches. Otherwise,
+      possible implementations could be:
+      - A directory structure with a flags hashmap,
+      - A directory structure with the shared files being symlinked,
+      - Etc.
+    - Easiest solution that would support multiple systems, synchronous usage
+      across multiple systems and static & shared files is most likely either
+      multiple repositories or multiple copies of the same repository with
+      distinct branches checked-out.
+      - Have a root directory with necessary configuration files.
+        - This would also make it easy to support public/private dotfiles more
+          easily.
