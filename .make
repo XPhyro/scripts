@@ -238,6 +238,23 @@ install() {
     )
 
     printf "\n%s\n" \
+        "Installing external C and C++ libraries:"
+
+    (
+        # shellcheck disable=SC2069
+        printf "%s\0" \
+            "$rootdir/lib/hedley/hedley.h" \
+            "$rootdir/lib/pstreams/pstream.h" \
+            "$rootdir/lib/imtui-xphyro/include/imtui/" \
+            "$rootdir/lib/lyra-xphyro/include/lyra/" \
+            | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
+                fl="$1"
+                printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
+                cp -rf -t "$includeprefix" -- "$fl"
+            ' --
+    )
+
+    printf "\n%s\n" \
         "Preparing to install C++ programs:"
         
     (
@@ -306,45 +323,28 @@ install() {
                     "$(printf "%s\n" "$ldflags" | tr -d "\n" | sed "s/^\s\+//;s/\s\+$//;s/\s\+/ /g")"
                 '"$CXX"' '"$CXXFLAGS"' $flags $extraflags "$1" '"$CXXLDFLAGS"' $ldflags -o "$installprefix/$out"
             ' --
-    )
 
-    printf "\n%s\n" \
-        "Installing external C and C++ libraries:"
+        printf "\n%s\n" \
+            "Installing C++ projects:"
 
-    (
-        # shellcheck disable=SC2069
-        printf "%s\0" \
-            "$rootdir/lib/hedley/hedley.h" \
-            "$rootdir/lib/pstreams/pstream.h" \
-            "$rootdir/lib/imtui-xphyro/include/imtui/" \
-            "$rootdir/lib/lyra-xphyro/include/lyra/" \
-            | xargs -r0 -n 1 -P "${MAKE_JOBS:-0}" sh -c '
-                fl="$1"
-                printf "  %s -> %s\n" "${fl##"$rootdir/lib/"}" "$includeprefix/${fl##*/}" >&2
-                cp -rf -t "$includeprefix" -- "$fl"
-            ' --
-    )
+        (
+            cd project
 
-    printf "\n%s\n" \
-        "Installing C++ projects:"
+            for dir in */; do
+                (
+                    cd "$dir"
+                    name="${dir%/}"
 
-    (
-        cd cpp/project
+                    [ -f ".no-runner" ] && [ -d "/home/runner" ] && {
+                        printf "  %s\n" "Runner detected, not compiling $name."
+                        exit 0
+                    }
 
-        for dir in */; do
-            (
-                cd "$dir"
-                name="${dir%/}"
-
-                [ -f ".no-runner" ] && [ -d "/home/runner" ] && {
-                    printf "  %s\n" "Runner detected, not compiling $name."
-                    exit 0
-                }
-
-                make -j"$CPU_PROC" "$name"
-                cp -f -t "$binprefix" -- "$name"
-            )
-        done
+                    make -j"$CPU_PROC" "$name"
+                    cp -f -t "$binprefix" -- "$name"
+                )
+            done
+        )
     )
 
     printf "\n%s\n" \
