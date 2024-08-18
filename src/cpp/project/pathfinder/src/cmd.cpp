@@ -213,7 +213,11 @@ PAF_CMD_NORETURN void paf::unmark::execute(const lyra::group& group)
         bool remove_dir = true;
         bool remove_file = true;
         if (dir_idx && file_idx) {
-            std::cout << "Keycode exists in both directory & file databases. "
+            std::cout << "Keycode [" << m_identifier
+                      << "] exists in both directory & file databases as ["
+                      << *dir_db.try_get_mark_at(*dir_idx) << "] & ["
+                      << *file_db.try_get_mark_at(*file_idx)
+                      << "]. "
                          "Unmark which one? [b/d/f] ";
 
             std::string answer;
