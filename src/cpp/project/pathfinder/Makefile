@@ -23,7 +23,7 @@ OBJ_ = $(SRC:src/%=%)
 OBJ = $(OBJ_:.cpp=.o)
 
 run: $(EXE)
-	./pathfinder
+	./$(EXE)
 
 $(EXE): $(OBJ)
 	$(CXX) $(LDFLAGS) $^ -o $(EXE)

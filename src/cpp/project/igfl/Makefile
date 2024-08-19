@@ -29,7 +29,7 @@ LIB_OBJ_ = $(LIB_SRC:src/%=%)
 LIB_OBJ = $(LIB_OBJ_:.cpp=.o)
 
 run: $(EXE)
-	./igfl
+	./$(EXE)
 
 $(EXE): $(OBJ) $(LIB_OBJ)
 	$(CXX) $(LDFLAGS) $^ -o $(EXE)
