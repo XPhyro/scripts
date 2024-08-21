@@ -26,7 +26,8 @@ bs::cli::cli(int argc, char** argv)
         lyra::opt(m_ignore_primary)["-p"]["--ignore-primary"]("ignore primary monitor") |
         lyra::opt(m_snap_threshold, "num")["-s"]["--snap"]("set alpha snap threshold") |
         lyra::opt(m_lerp_factor, "num")["-t"]["--factor"]("set alpha linear interpolation factor") |
-        lyra::arg(m_monitors, "monitor")("initial monitor to blank")
+        lyra::arg(m_monitors, "monitor")(
+            "initial monitor to blank, can be @cursor to use the monitor the cursor is in")
             .cardinality(0, std::numeric_limits<size_t>::max());
 
     auto args = cli.parse({ argc, argv });
