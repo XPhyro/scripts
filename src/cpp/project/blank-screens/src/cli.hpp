@@ -13,7 +13,7 @@ namespace bs {
         static const constexpr double k_default_max_alpha = 1.0;
         static const constexpr double k_default_min_alpha = 0.0;
         static const constexpr double k_default_snap_threshold = 0.01;
-        static const constexpr double k_default_lerp_factor = 0.10;
+        static const constexpr double k_default_lerp_factor = 0.0625;
         static const constexpr char* const k_default_fifo_path = "/tmp/blank-screens/fifo";
         static const constexpr char* const k_default_lock_path = "/tmp/blank-screens/";
 
