@@ -38,10 +38,11 @@ bs::daemon::daemon(const cli& cli) : m_cli(cli), m_blinds({ cli }) {}
     std::exit(EXIT_FAILURE);
 }
 
-void bs::daemon::handle_signals([[maybe_unused]] int signal)
+void bs::daemon::handle_signals(int signal)
 {
-    clean_up();
-    std::exit(EXIT_SUCCESS);
+    auto interrupt = signal == SIGINT;
+    clean_up(interrupt);
+    std::exit(!interrupt);
 }
 
 // // PRIVATE // //
@@ -91,10 +92,11 @@ err:
     }
 }
 
-void bs::daemon::clean_up()
+void bs::daemon::clean_up(bool lerp_to_zero)
 {
     fs::remove(m_cli.fifo_path());
     fs::remove_all(m_cli.lock_path());
 
-    m_blinds.lerp_alpha(0.0);
+    if (lerp_to_zero)
+        m_blinds.lerp_alpha(0.0);
 }

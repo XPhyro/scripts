@@ -15,11 +15,11 @@ namespace bs {
         daemon(void) = delete;
         daemon(const cli& cli);
         [[noreturn]] void run(void);
-        void handle_signals(int signal);
+        [[noreturn]] void handle_signals(int signal);
 
     private:
         void dispatch(const std::string& command_line);
-        void clean_up(void);
+        void clean_up(bool lerp_to_zero = true);
     };
 } // namespace bs
 
