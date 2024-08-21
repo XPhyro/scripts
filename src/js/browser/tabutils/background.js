@@ -93,7 +93,7 @@ function readFromClipboard(callback)
     const urls = clipboardData.split("\n").map((line) => {
         const splitLine = line.split(/(\s+)/);
         const url = coalesceUrl(splitLine.at(-1)) || coalesceUrl(splitLine.at(0)) ||
-                    coalesceUrl(line.replace(/^- \[.*\]\((.*)\)\s*$/, "$1"));
+                    coalesceUrl(line.replace(/^(?:- )?\[.*\]\((.*)\)\s*$/, "$1"));
         return url;
     });
 
