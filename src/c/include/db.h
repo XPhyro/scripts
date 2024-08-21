@@ -46,6 +46,7 @@ const char *temphome(void)
     return temphome_s(db_scriptsprefix);
 }
 
+/* thread-unsafe */
 const char *confhome_s(const char *pfx)
 {
     static const char *confhome;
@@ -82,6 +83,7 @@ const char *confhome(void)
     return confhome_s(db_scriptsprefix);
 }
 
+/* thread-unsafe */
 const char *cachehome_s(const char *pfx)
 {
     static const char *cachehome;

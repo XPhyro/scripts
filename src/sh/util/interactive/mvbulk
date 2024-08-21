@@ -227,6 +227,7 @@ while getopts "e:FhPpT" OPT; do
         e) opteval="$OPTARG";;
         F) optfrom=1;;
         h)
+            # shellcheck disable=SC2154
             printf "%s" \
 "$std_execname [OPTION...] [FILE...]
    -e STR   evaluate STR on each changed file. \$from and \$to are exported

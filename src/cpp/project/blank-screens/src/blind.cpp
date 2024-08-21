@@ -274,7 +274,6 @@ void bs::blinds::destroy_windows(void)
 
 std::string bs::blinds::get_cursor_monitor(void)
 {
-
     int root_x, root_y, win_x, win_y;
     unsigned int mask;
     Window root_return, child_return;

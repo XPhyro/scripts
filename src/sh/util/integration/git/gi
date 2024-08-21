@@ -195,6 +195,7 @@ git_pull() {
 vector() {
     vector_hash="${1}_lock"
     shift 1
+    # shellcheck disable=SC2154
     std::vector -c p -- "$std_execname" "$vector_hash" "$@"
 }
 
