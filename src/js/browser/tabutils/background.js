@@ -31,7 +31,7 @@ function pasteTabs()
 function copyCurrentTab()
 {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-        const tabInfo = `- [${tabs[0].title}](${tabs[0].url})`;
+        const tabInfo = `[${tabs[0].title}](${tabs[0].url})`;
         writeToClipboard(tabInfo);
     });
 }
