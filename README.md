@@ -13,41 +13,33 @@ Awk, Bash, C , C++, execline, Go, JavaScript, POSIX Shell, Perl, Python, and Rus
 
 ## Installation
 
-To install for your user:
-
 ```sh
-git submodule update --init --recursive
-make install
+git clone https://github.com/XPhyro/scripts.git # clone repository
+git submodule update --init --recursive # initialise dependencies
+
+make install # install for your user
+sudo make install # or install system-wide (recommended)
 ```
 
-To install system-wide (recommended):
+You may set `$PREFIX` to change the installation directory. By default, it is
+`~/.local` for your user, or `/usr/local` for the system.
 
-```sh
-git submodule update --init --recursive
-sudo make install
-```
+After installation, add `$PREFIX/share/scripts/include` to your path. A POSIX
+shell standard library will have been installed here, and will be used by all
+shell scripts.
 
-You may change the installation directory by setting `$PREFIX`.
-
-If you would like to use the provided wrapper scripts, add `$PREFIX/bin/wrapper`
+If you would like to use the provided wrapper scripts, also add `$PREFIX/bin/wrapper`
 to your `$PATH` with higher priority than the locations of the wrapped scripts.
-Some scripts also require `$PREFIX/share/scripts/include` to be in your path.
 
 ## Uninstallation
 
-If you installed for your user:
-
 ```sh
-make uninstall
+make uninstall # if you installed for your user
+sudo make uninstall # if you installed system-wide
 ```
 
-If you installed system-wide:
-
-```sh
-sudo make uninstall
-```
-
-You do not need to re-set `$PREFIX` while uninstalling.
+You do not need to re-set `$PREFIX` while uninstalling. The previously-used
+`$PREFIX` will automatically be used.
 
 If you altered your `$PATH`, you may also wish to undo it.
 
