@@ -304,10 +304,18 @@ PAF_CMD_NORETURN void paf::jump::execute(const lyra::group& group)
         xph::die_if(!m_keycode->size(), "<keycode> cannot be empty");
     }
 
-    auto db = db::get_db(db_type::directory);
-    auto dir = db.try_get_mark(*m_keycode);
+    auto dir_db = db::get_db(db_type::directory);
+    auto dir = dir_db.try_get_mark(*m_keycode);
 
-    xph::die_if(!dir, "keycode [", *m_keycode, "] not found in database");
+    if (!dir) {
+        auto file_db = db::get_db(db_type::file);
+        auto file = file_db.try_get_mark(*m_keycode);
+
+        xph::die_if(!file, "keycode [", *m_keycode, "] not found in database");
+
+        dir = fs::path(*file).parent_path();
+    }
+
     std::cout << *dir << '\n';
 
     PAF_CMD_EXIT();
