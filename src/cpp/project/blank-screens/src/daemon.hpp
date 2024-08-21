@@ -19,6 +19,7 @@ namespace bs {
 
     private:
         void dispatch(const std::string& command_line);
+        void clean_up(void);
     };
 } // namespace bs
 

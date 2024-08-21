@@ -3,8 +3,8 @@
 #include <filesystem>
 #include <fstream>
 #include <ranges>
-#include <thread>
 
+#include <csignal>
 #include <cstdlib>
 
 #include <sys/stat.h>
@@ -17,6 +17,8 @@
 #include <xph/math.hpp>
 
 namespace fs = std::filesystem;
+
+// // PUBLIC // //
 
 bs::daemon::daemon(const cli& cli) : m_cli(cli), m_blinds({ cli }) {}
 
@@ -36,6 +38,14 @@ bs::daemon::daemon(const cli& cli) : m_cli(cli), m_blinds({ cli }) {}
     std::exit(EXIT_FAILURE);
 }
 
+void bs::daemon::handle_signals([[maybe_unused]] int signal)
+{
+    clean_up();
+    std::exit(EXIT_SUCCESS);
+}
+
+// // PRIVATE // //
+
 void bs::daemon::dispatch(const std::string& command_line)
 {
     static std::vector<std::string> argv{};
@@ -51,8 +61,10 @@ void bs::daemon::dispatch(const std::string& command_line)
     if (argv.empty())
         return;
 
-    if (argv[0] == "exit")
+    if (argv[0] == "exit") {
+        clean_up();
         std::exit(EXIT_SUCCESS);
+    }
 
     if (argv.size() < 2)
         goto err;
@@ -79,7 +91,7 @@ err:
     }
 }
 
-void bs::daemon::handle_signals([[maybe_unused]] int signal)
+void bs::daemon::clean_up()
 {
     fs::remove(m_cli.fifo_path());
     fs::remove_all(m_cli.lock_path());
