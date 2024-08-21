@@ -84,7 +84,7 @@ If you altered your `$PATH`, you may also wish to undo it.
 | numsh                     | Like NumPy, but for the shell.                                                                                  |
 | openrgb-cycle             | Manage OpenRGB profiles.                                                                                        |
 | pathfinder                | Mark and jump to directories & files in the terminal.                                                           |
-| personality               | Calculate Myers-Briggs type distributions.                                                                      |
+| personality               | Calculate Myers-Briggs personality type distributions.                                                                      |
 | plot-git-log              | Plot a pretty graph of Git history.                                                                             |
 | prefix                    | Add various prefixes to standard input and pass to standard output.                                             |
 | presentimg                | Easily tile images with optional borders or labels.                                                             |
