@@ -28,10 +28,23 @@ function pasteTabs()
     });
 }
 
+function withoutSiteSuffix(title)
+{
+    const suffixes = [" - YouTube"];
+
+    for (let suffix of suffixes) {
+        if (title.endsWith(suffix)) {
+            return title.slice(0, -suffix.length);
+        }
+    }
+
+    return title;
+}
+
 function copyCurrentTab()
 {
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-        const tabInfo = `[${tabs[0].title}](${tabs[0].url})`;
+        const tabInfo = `[${withoutSiteSuffix(tabs[0].title)}](${tabs[0].url})`;
         writeToClipboard(tabInfo);
     });
 }
