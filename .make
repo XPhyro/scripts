@@ -606,12 +606,18 @@ clean() {
         "====="
 
     (
+        cd cpp/projects || exit 1
+        find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" \
+            | while IFS= read -r project; do
+                (cd "$project" && make clean)
+            done
+    )
+
+    (
         cd rs || exit 1
         find '.' -mindepth 1 -maxdepth 1 -type d -not -path "*/.archived/*" -not -name ".archived" -printf "%P\n" \
             | while IFS= read -r project; do
-                cd "$project" || continue
-                cargo clean
-                cd ..
+                (cd "$project" && cargo clean)
             done
     )
 
