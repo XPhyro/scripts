@@ -1,9 +1,10 @@
 #ifndef HEADER_SCRIPTS_CXX_BS_DAEMON_
 #define HEADER_SCRIPTS_CXX_BS_DAEMON_
 
-#include "blind.hpp"
-#include "cli.hpp"
 #include <X11/Xlib.h>
+
+#include "blinds.hpp"
+#include "cli.hpp"
 
 namespace bs {
     class daemon {

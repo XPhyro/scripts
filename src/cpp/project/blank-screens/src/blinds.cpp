@@ -1,4 +1,4 @@
-#include "blind.hpp"
+#include "blinds.hpp"
 
 #include <algorithm>
 #include <cassert>
