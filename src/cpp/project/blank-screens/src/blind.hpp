@@ -6,26 +6,34 @@
 #include "cli.hpp"
 
 namespace bs {
-    class blind {
+    class blinds {
+    private:
+        const cli& m_cli;
+        Display* const m_display;
+        const int m_screen;
+        const Window m_root_window;
+        std::vector<std::string> m_monitors;
+        std::vector<Window> m_windows;
+        std::vector<double> m_alphas;
+
     public:
-        std::string_view m_monitor;
+        blinds(void) = delete;
+        ~blinds(void);
+        blinds(const cli& cli);
+
+        bool add_monitor(const std::string& monitor_expr, bool commit_changes = true);
+        bool remove_monitor(const std::string& monitor_expr, bool commit_changes = true);
+        void toggle_monitor(const std::string& monitor_expr, bool commit_changes = true);
+        void commit_monitor_changes(void);
+        void lerp_alpha(double alpha);
 
     private:
-        std::shared_ptr<cli> m_cli;
-        Window m_window;
-        Display* m_display;
-
-    public:
-        blind(void) = delete;
-        ~blind(void);
-        blind(std::shared_ptr<cli> cli,
-              std::string_view monitor,
-              Display* display,
-              int default_screen,
-              Window root_window,
-              XRRCrtcInfo* crtc_info);
-
-        void set_alpha(double alpha);
+        std::string eval_monitor_expr(const std::string& monitor_expr);
+        void update_windows(void);
+        void create_windows(void);
+        void destroy_windows(void);
+        std::string get_cursor_monitor(void);
+        double set_window_alpha(Window window, double alpha);
     };
 } // namespace bs
 
