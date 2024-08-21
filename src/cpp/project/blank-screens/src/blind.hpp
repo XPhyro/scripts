@@ -1,6 +1,10 @@
 #ifndef HEADER_SCRIPTS_CXX_BS_BLIND_
 #define HEADER_SCRIPTS_CXX_BS_BLIND_
 
+#include <optional>
+#include <string>
+#include <vector>
+
 #include <X11/extensions/Xrandr.h>
 
 #include "cli.hpp"
@@ -25,7 +29,7 @@ namespace bs {
         bool remove_monitor(const std::string& monitor_expr, bool commit_changes = true);
         void toggle_monitor(const std::string& monitor_expr, bool commit_changes = true);
         void commit_monitor_changes(void);
-        void lerp_alpha(double alpha);
+        void lerp_alpha(double alpha, std::optional<std::string> monitor = std::nullopt);
 
     private:
         std::string eval_monitor_expr(const std::string& monitor_expr);

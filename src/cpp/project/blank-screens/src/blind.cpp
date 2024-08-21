@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <cassert>
+#include <optional>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include <ctype.h>
 
@@ -64,6 +66,8 @@ bool bs::blinds::remove_monitor(const std::string& monitor_expr, bool commit_cha
     if (monitor_it == m_monitors.end())
         return false;
 
+    lerp_alpha(0.0, monitor);
+
     m_alphas.erase(m_alphas.begin() + (monitor_it - m_monitors.begin()));
     m_monitors.erase(monitor_it);
     if (commit_changes)
@@ -94,15 +98,25 @@ void bs::blinds::commit_monitor_changes(void)
     std::cerr << '\n';
 }
 
-void bs::blinds::lerp_alpha(double alpha)
+void bs::blinds::lerp_alpha(double alpha, std::optional<std::string> monitor_expr)
 {
     const constexpr double epsilon = 0.0001;
 
     static std::vector<std::size_t> m_lerp_idx;
 
-    m_lerp_idx.reserve(m_windows.size());
-    for (std::size_t i = 0; i < m_windows.size(); ++i)
-        m_lerp_idx.push_back(i);
+    if (monitor_expr) {
+        const auto& monitor = eval_monitor_expr(*monitor_expr);
+        const auto& idx = std::find(m_monitors.begin(), m_monitors.end(), monitor);
+
+        if (idx == m_monitors.end())
+            return;
+
+        m_lerp_idx.push_back(std::distance(m_monitors.begin(), idx));
+    } else {
+        m_lerp_idx.reserve(m_windows.size());
+        for (std::size_t i = 0; i < m_windows.size(); ++i)
+            m_lerp_idx.push_back(i);
+    }
 
     while (m_lerp_idx.size()) {
         for (auto it = m_lerp_idx.end() - 1; it >= m_lerp_idx.begin(); --it) {
