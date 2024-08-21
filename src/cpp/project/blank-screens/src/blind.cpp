@@ -139,6 +139,10 @@ void bs::blinds::update_windows(void)
 
 void bs::blinds::create_windows(void)
 {
+    m_windows.reserve(m_monitors.size());
+    while (m_windows.size() < m_monitors.size())
+        m_windows.push_back(-1);
+
     const auto screen_resources = XRRGetScreenResources(m_display, m_root_window);
     xph::die_if(!screen_resources, "unable to get screen resources");
 
@@ -188,11 +192,7 @@ void bs::blinds::create_windows(void)
             class_hint->res_class = class_name.data();
             XSetClassHint(m_display, window, class_hint);
 
-            auto window_idx = m_windows.begin() + (idx - m_monitors.begin());
-            if (window_idx > m_windows.end())
-                m_windows.push_back(window);
-            else
-                m_windows.insert(window_idx, window);
+            m_windows[std::distance(m_monitors.begin(), idx)] = window;
         }
 
         XRRFreeCrtcInfo(crtc_info);
