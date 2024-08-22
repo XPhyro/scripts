@@ -3,7 +3,9 @@
 . std.sh
 
 apropos '' \
-    | fzf \
-    | head -n 1 \
-    | sed -E 's/^(.* )\((.*)\)(\s+-\s+.*)?$/\2 \1/' \
-    | xargs -d ' ' -rn 2 man
+    | fzf --no-multi \
+    | awk '{
+        cmd = $1
+        sec = substr($2, 2, length($2) - 2)
+        printf("%s", sec "\0" cmd "\0")
+    }' | xargs -r0 -n 2 man
