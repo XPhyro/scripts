@@ -342,8 +342,9 @@ install() {
 
                     make -j"$CPU_PROC" "$name"
                     cp -f -t "$binprefix" -- "$name"
-                )
+                ) &
             done
+            wait
         )
     )
 
@@ -609,16 +610,18 @@ clean() {
         cd cpp/project || exit 1
         find '.' -mindepth 1 -maxdepth 1 -type d -printf "%P\n" \
             | while IFS= read -r project; do
-                (cd "$project" && make clean)
+                (cd "$project" && make clean) &
             done
+        wait
     )
 
     (
         cd rs || exit 1
         find '.' -mindepth 1 -maxdepth 1 -type d -not -path "*/.archived/*" -not -name ".archived" -printf "%P\n" \
             | while IFS= read -r project; do
-                (cd "$project" && cargo clean)
+                (cd "$project" && cargo clean) &
             done
+        wait
     )
 
     (
