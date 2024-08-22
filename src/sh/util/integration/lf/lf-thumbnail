@@ -24,8 +24,21 @@ thumbnail() {
             [ -s "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
             ;;
         video/*|image/gif)
-            ext=jpg
-            [ -s "$thumbfl.$ext" ] || {
+            if [ -n "$KITTY_PID" ]; then
+                [ "$mime_type" = image/gif ] && return 0
+
+                ext=gif
+                [ -s "$thumbfl.$ext" ] && return 0
+
+                ffmpeg -hide_banner -nostdin -y -threads "$(nproc)" \
+                    -t 5 -i "file:$1" \
+                    -vf "fps=8,scale=420:-1:flags=bicubic,split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse" \
+                    -loop 0 \
+                    "$thumbfl.$ext"
+            else
+                ext=jpg
+                [ -s "$thumbfl.$ext" ] && return 0
+
                 resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1")"
                 width="${resolution%x*}"
                 height="${resolution#*x}"
@@ -43,7 +56,7 @@ thumbnail() {
                 montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
 
                 rm -f -- "$thumbfl"-*.jpg
-            }
+            fi
             ;;
         image/heic)
             [ -s "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"

@@ -43,13 +43,13 @@ main() {
 
     mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$1")")"
 
-   case "$mime_type" in
-       text/html)
-           case "$1" in
-               *.[Mm][Dd]) mime_type=text/plain;;
-           esac
-           ;;
-   esac
+    case "$mime_type" in
+        text/html)
+            case "$1" in
+                *.[Mm][Dd]) mime_type=text/plain;;
+            esac
+            ;;
+    esac
 
     case "$mime_type" in
         application/octet-stream)
@@ -61,8 +61,15 @@ main() {
         application/epub+zip)
             exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
             ;;
-        application/pdf|video/*|image/heic|text/html)
+        application/pdf|image/heic|text/html)
             exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
+            ;;
+        video/*)
+            if [ -n "$KITTY_PID" ]; then
+                exec_preview_image "$thumbfl.gif" "$2" "$3" "$4" "$5"
+            else
+                exec_preview_image "$@"
+            fi
             ;;
         image/gif)
             if [ -n "$KITTY_PID" ]; then
