@@ -19,7 +19,7 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
-    inline constexpr Treturn reverse_coalesce(const Ts&... args)
+    inline constexpr Treturn coalesce_reverse(const Ts&... args)
     {
         Treturn ret{};
 
@@ -51,7 +51,7 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
-    inline constexpr Treturn reverse_coalesce_pre(const Ts&... args)
+    inline constexpr Treturn coalesce_pre_reverse(const Ts&... args)
     {
         Treturn ret{};
 
@@ -83,7 +83,7 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
-    inline constexpr Treturn reverse_coalesce_post(const Ts&... args)
+    inline constexpr Treturn coalesce_post_reverse(const Ts&... args)
     {
         Treturn ret{};
 
@@ -114,7 +114,7 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
-    inline constexpr Treturn reverse_coalesce_deref(const Ts&... args)
+    inline constexpr Treturn coalesce_deref_reverse(const Ts&... args)
     {
         Treturn ret{};
 
@@ -145,7 +145,7 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
-    inline constexpr Treturn reverse_coalesce_map(const auto& callable, const Ts&... args)
+    inline constexpr Treturn coalesce_map_reverse(const auto& callable, const Ts&... args)
     {
         Treturn ret{};
 
@@ -176,7 +176,7 @@ namespace xph {
     }
 
     template <typename Treturn, typename... Ts>
-    inline constexpr Treturn reverse_coalesce_deref_map(const auto& callable, const Ts&... args)
+    inline constexpr Treturn coalesce_deref_map_reverse(const auto& callable, const Ts&... args)
     {
         Treturn ret{};
 
