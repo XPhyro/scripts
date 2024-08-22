@@ -8,7 +8,10 @@ main() {
     fl="$(
         find -L "${root_dir:-"."}" -type f -not -path "*/.git/*" -printf "%P\n" \
             | XENVS_PRE_QUERY="$query" xenvs -r -- \
-                fzf --preview 'bat --color=always --style=numbers --line-range=:500 "$root_dir"{}' \
+                fzf --layout=reverse \
+                    --height="65%" \
+                    --scroll-off=10000 \
+                    --preview 'bat --color=always --style=numbers --line-range=:500 "$root_dir"{}' \
                     --preview-window 'right,60%,wrap'
     )" && [ -n "$fl" ] || exit 0
     unset query
