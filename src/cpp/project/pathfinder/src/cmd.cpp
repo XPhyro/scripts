@@ -31,8 +31,8 @@ paf::alias::alias(lyra::cli& cli)
 
 paf::mark::mark(lyra::cli& cli)
 {
-    const auto opt_abs =
-        lyra::opt(m_abs)["-a"]["--abs"]("mark paths as absolute even when given as relative");
+    const auto opt_relative =
+        lyra::opt(m_relative)["-r"]["--relative"]("mark paths as given instead of as absolute");
     const auto opt_use_dir = lyra::opt(m_use_dir)["-d"]["--dir"]("use directory database");
     const auto opt_use_file = lyra::opt(m_use_file)["-f"]["--file"]("use file database");
     const auto opt_wordexp = lyra::opt(m_wordexp)["-w"]["--wordexp"]("wordexp mark when reading");
@@ -45,7 +45,7 @@ paf::mark::mark(lyra::cli& cli)
     auto command = lyra::command("mark", [this](const lyra::group& group) { execute(group); })
                        .help("Mark the given directory or file.")
                        .add_argument(lyra::help(m_show_help))
-                       .add_argument(std::move(opt_abs))
+                       .add_argument(std::move(opt_relative))
                        .add_argument(std::move(opt_use_dir))
                        .add_argument(std::move(opt_use_file))
                        .add_argument(std::move(opt_wordexp))
@@ -145,8 +145,8 @@ PAF_CMD_NORETURN void paf::alias::execute(const lyra::group& group)
     }
 
     std::cout << "paf() { " << xph::exec_path << " \"$@\"; }\n";
-    std::cout << "M() { " << xph::exec_path << " mark \"$@\"; }\n";
-    std::cout << "m() { " << xph::exec_path << " mark -a \"$@\"; }\n";
+    std::cout << "M() { " << xph::exec_path << " mark -r \"$@\"; }\n";
+    std::cout << "m() { " << xph::exec_path << " mark \"$@\"; }\n";
     std::cout << "mw() { " << xph::exec_path << " mark -w \"$@\"; }\n";
     std::cout << R"#(g() { cd "$()#" << xph::exec_path << ' '
               << R"#(jump "$@")"; })#"
@@ -210,7 +210,7 @@ PAF_CMD_NORETURN void paf::mark::execute(const lyra::group& group)
         db.try_remove_mark_at(*kc_idx);
     }
 
-    if (m_abs && !m_wordexp) {
+    if (!m_relative && !m_wordexp) {
         auto abs_path = fs::absolute(*m_file);
         m_file = abs_path.string();
     }

@@ -22,7 +22,7 @@ namespace paf {
     class mark {
     private:
         bool m_show_help = false;
-        bool m_abs = false;
+        bool m_relative = false;
         bool m_use_dir = false;
         bool m_use_file = false;
         bool m_wordexp = false;
