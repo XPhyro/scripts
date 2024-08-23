@@ -7,6 +7,20 @@
 
 #include <hedley.h>
 
+int popcountu(unsigned int x)
+{
+    int popcount;
+    int i;
+
+#if !defined(__GNUC__) || !defined(__clang__)
+    popcount = __builtin_popcount(x & 0xff);
+#else
+    for (i = 0, popcount = 0; i < sizeof(x) * 8; popcount += (x & (1 << i++)) >> 0) {}
+#endif
+
+    return popcount;
+}
+
 int64_t ipow64(int64_t base, uint8_t exp)
 // https://gist.github.com/orlp/3551590
 {
