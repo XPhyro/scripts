@@ -75,9 +75,9 @@ thumbnail() {
     esac
 }
 
-if [ "$#" -eq 0 ]; then
-    exit 0
-elif [ "$#" -eq 1 ] && ! [ -d "$1" ]; then
+[ "$#" -eq 0 ] && exit 0
+
+if [ "$#" -eq 1 ] && ! [ -d "$1" ]; then
     printf "%s\n" "Thumbnailing $1." >&2
     thumbnail "$1" >&2
 else
