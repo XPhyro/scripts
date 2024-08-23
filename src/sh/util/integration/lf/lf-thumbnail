@@ -2,76 +2,126 @@
 
 . std.sh
 
+tn_identity() {
+    printf "%s\n" "$fl"
+}
+
+tn_safe_print() {
+    [ -s "$1" ] && printf "%s\n" "$1"
+}
+
+tn_kitty() {
+    [ -n "$KITTY_PID" ] && {
+        tn_identity
+        return 0
+    }
+
+    return 1
+}
+
+tn_pdf() {
+    [ -s "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$fl" "$thumbfl"
+    tn_safe_print "$thumbfl.jpg"
+}
+
+tn_epub() {
+    [ -s "$thumbfl" ] || epub-thumbnailer "$fl" "$thumbfl" 1024
+    tn_safe_print "$thumbfl.jpg"
+}
+
+tn_gif() {
+    tn_kitty || tn_video
+}
+
+tn_video() {
+    if [ -n "$KITTY_PID" ]; then
+        ext=gif
+        [ -s "$thumbfl.$ext" ] || {
+            ffmpeg -hide_banner -nostdin -y -threads "$(nproc)" \
+                -t 5 -i "file:$fl" \
+                -vf "fps=8,scale=420:-1:flags=bicubic,split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse" \
+                -loop 0 \
+                "$thumbfl.$ext"
+        }
+    else
+        ext=jpg
+        [ -s "$thumbfl.$ext" ] || {
+            resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$fl")"
+            width="${resolution%x*}"
+            height="${resolution#*x}"
+
+            if [ "$width" -gt "$height" ]; then
+                tile=2x5
+                inc=11.1
+            else
+                tile=3x3
+                inc=12.4
+            fi
+
+            seq 0 "$inc" 100 | xargs -r -d '\n' -I SEEK -P 0 \
+                ffmpegthumbnailer -i "$fl" -o "$thumbfl-SEEK.jpg" -s 640 -q 8 -t "SEEK%"
+            montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
+
+            rm -f -- "$thumbfl"-*.jpg
+        }
+    fi
+
+    tn_safe_print "$thumbfl.$ext"
+}
+
+tn_heic() {
+    tn_kitty && return 0
+    [ -s "$thumbfl.jpg" ] || heif-thumbnailer -- "$fl" "$thumbfl.jpg"
+    tn_safe_print "$thumbfl.jpg"
+}
+
+tn_html() {
+    [ -s "$thumbfl.jpg" ] || wkhtmltoimage --height 1400 "$fl" "$thumbfl.jpg"
+    tn_safe_print "$thumbfl.jpg"
+}
+
+tn_encoded() {
+    [ -f "$thumbfl.jpg" ] || {
+        touch -- "$thumbfl.jpg"
+        [ "$(wc -l < "$fl")" -eq 1 ] \
+            && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$fl" \
+            && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$fl" | base64 -d > "$thumbfl.jpg"
+    }
+
+    tn_safe_print "$thumbfl.jpg"
+}
+
 thumbnail() {
+    fl="$1"
     realfl="$(realpath -P -- "$1")"
     thumbdir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/thumbnails"
     mkdir -p -- "$thumbdir"
     thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
 
-    mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$1")")"
+    mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$fl")")"
+
     case "$mime_type" in
-        application/octet-stream)
-            case "$1" in
-                *.pdf)
-                    [ -s "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
-                    ;;
+        text/html)
+            case "$fl" in
+                *.[Mm][Dd]) mime_type=text/plain;;
             esac
             ;;
-        application/pdf)
-            [ -s "$thumbfl.jpg" ] || pdftoppm -jpeg -f 1 -singlefile "$1" "$thumbfl"
+    esac
+
+    case "$mime_type" in
+        application/octet-stream)
+            case "$fl" in
+                *.pdf) tn_pdf;;
+            esac
             ;;
-        application/epub+zip)
-            [ -s "$thumbfl" ] || epub-thumbnailer "$1" "$thumbfl" 1024
-            ;;
-        video/*|image/gif)
-            if [ -n "$KITTY_PID" ]; then
-                [ "$mime_type" = image/gif ] && return 0
-
-                ext=gif
-                [ -s "$thumbfl.$ext" ] && return 0
-
-                ffmpeg -hide_banner -nostdin -y -threads "$(nproc)" \
-                    -t 5 -i "file:$1" \
-                    -vf "fps=8,scale=420:-1:flags=bicubic,split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse" \
-                    -loop 0 \
-                    "$thumbfl.$ext"
-            else
-                ext=jpg
-                [ -s "$thumbfl.$ext" ] && return 0
-
-                resolution="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1")"
-                width="${resolution%x*}"
-                height="${resolution#*x}"
-
-                if [ "$width" -gt "$height" ]; then
-                    tile=2x5
-                    inc=11.1
-                else
-                    tile=3x3
-                    inc=12.4
-                fi
-
-                seq 0 "$inc" 100 | xargs -r -d '\n' -I SEEK -P 0 \
-                    ffmpegthumbnailer -i "$1" -o "$thumbfl-SEEK.jpg" -s 640 -q 8 -t "SEEK%"
-                montage "$thumbfl"-*.jpg -geometry +0+0 -tile "$tile" "$thumbfl.$ext"
-
-                rm -f -- "$thumbfl"-*.jpg
-            fi
-            ;;
-        image/heic)
-            [ -s "$thumbfl.jpg" ] || heif-thumbnailer -- "$1" "$thumbfl.jpg"
-            ;;
-        text/html)
-            [ -s "$thumbfl.jpg" ] || wkhtmltoimage --height 1400 "$1" "$thumbfl.jpg"
-            ;;
-        text/plain)
-            [ -f "$thumbfl" ] && return 0
-
-            touch -- "$thumbfl"
-            [ "$(wc -l < "$1")" -eq 1 ] \
-                && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$1" \
-                && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
-            ;;
+        application/pdf) tn_pdf;;
+        application/epub+zip) tn_epub;;
+        image/gif) tn_gif;;
+        video/*) tn_video;;
+        image/heic) tn_heic;;
+        text/html) tn_html;;
+        text/plain) tn_encoded;;
+        image/*) tn_identity;;
     esac
 }
 
@@ -79,7 +129,7 @@ thumbnail() {
 
 if [ "$#" -eq 1 ] && ! [ -d "$1" ]; then
     printf "%s\n" "Thumbnailing $1." >&2
-    thumbnail "$1" >&2
+    thumbnail "$1"
 else
     {
         printf "%s\0" "$@" | stest -d0 | xargs -r0 -I DIR find -P DIR -type f -print0
@@ -87,6 +137,7 @@ else
     } | parallel \
             --eta \
             --progress \
+            --keep-order \
             -r0 \
             -P "${LF_THUMBNAIL_JOBS:-"33%"}" \
             -n 1 \

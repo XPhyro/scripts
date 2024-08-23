@@ -34,7 +34,8 @@ main() {
     }
 
     # TODO: clean up thumbnail usage. perhaps lf-thumbnail should return the path to the thumbnail?
-    lf-thumbnail "$1"
+    thumbnail="$(lf-thumbnail "$1")"
+    [ -n "$thumbnail" ] && exec_preview_image "$thumbnail" "$2" "$3" "$4" "$5"
 
     realfl="$(realpath -P -- "$1")"
     thumbdir="${XDG_CACHE_HOME:-"$HOME/.cache"}/lf/thumbnails"
@@ -42,15 +43,6 @@ main() {
     thumbfl="$thumbdir/$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$realfl" | sha512sum | cut -d' ' -f1)"
 
     mime_type="$(file --mime-type --brief -- "$(realpath -P -- "$1")")"
-
-    case "$mime_type" in
-        text/html)
-            case "$1" in
-                *.[Mm][Dd]) mime_type=text/plain;;
-            esac
-            ;;
-    esac
-
     case "$mime_type" in
         application/octet-stream)
             case "$1" in
@@ -58,41 +50,14 @@ main() {
                 *) scope "$@";;
             esac
             ;;
-        application/epub+zip)
-            exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
-            ;;
-        application/pdf|image/heic|text/html)
-            exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
-            ;;
-        video/*)
-            if [ -n "$KITTY_PID" ]; then
-                exec_preview_image "$thumbfl.gif" "$2" "$3" "$4" "$5"
-            else
-                exec_preview_image "$@"
-            fi
-            ;;
-        image/gif)
-            if [ -n "$KITTY_PID" ]; then
-                exec_preview_image "$@"
-            else
-                exec_preview_image "$thumbfl.jpg" "$2" "$3" "$4" "$5"
-            fi
-            ;;
-        image/*)
-            exec_preview_image "$@"
-            ;;
         */xml|application/javascript|application/x-subrip)
             previewtext "$@"
             ;;
         text/plain)
-            if [ -s "$thumbfl" ]; then
-                exec_preview_image "$thumbfl" "$2" "$3" "$4" "$5"
+            if [ "$(stat --printf="%s" -- "$1")" -le 16777216 ]; then # 16MiB
+                scope "$@"
             else
-                if [ "$(stat --printf="%s" -- "$1")" -le 16777216 ]; then # 16MiB
-                    scope "$@"
-                else
-                    cat -- "$1"
-                fi
+                cat -- "$1"
             fi
             ;;
         *)
