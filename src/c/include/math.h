@@ -10,11 +10,11 @@
 int popcountu(unsigned int x)
 {
     int popcount;
-    int i;
 
-#if !defined(__GNUC__) || !defined(__clang__)
+#if defined(__GNUC__) || defined(__clang__)
     popcount = __builtin_popcount(x & 0xff);
 #else
+    int i;
     for (i = 0, popcount = 0; i < sizeof(x) * 8; popcount += (x & (1 << i++)) >> 0) {}
 #endif
 
