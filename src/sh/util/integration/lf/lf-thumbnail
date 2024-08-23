@@ -65,12 +65,12 @@ thumbnail() {
             [ -s "$thumbfl.jpg" ] || wkhtmltoimage --height 1400 "$1" "$thumbfl.jpg"
             ;;
         text/plain)
-            [ -f "$thumbfl" ] || {
-                touch -- "$thumbfl"
-                [ "$(wc -l < "$1")" -eq 1 ] \
-                    && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$1" \
-                    && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
-            }
+            [ -f "$thumbfl" ] && return 0
+
+            touch -- "$thumbfl"
+            [ "$(wc -l < "$1")" -eq 1 ] \
+                && grep -q -- '^data:image/[a-zA-Z0-9_-]\+;base64,' "$1" \
+                && sed -n -- 's|^data:image/[a-zA-Z0-9_-]\+;base64,||p;q' "$1" | base64 -d > "$thumbfl"
             ;;
     esac
 }
