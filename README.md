@@ -45,6 +45,10 @@ If you altered your `$PATH`, you may also wish to undo it.
 
 ## Notable Scripts
 
+As mentioned, there are tons of scripts and other software included in this
+repository. Below are some of the more prominent ones. You can take a look at
+[src/](src/) for the others.
+
 | Name                      | Description                                                                                                     |
 | :------------------------ | :-------------------------------------------------------------------------------------------------------------- |
 | agpg                      | Encrypt/decrypt files using `gpg`.                                                                              |
@@ -62,6 +66,7 @@ If you altered your `$PATH`, you may also wish to undo it.
 | ffmw                      | Use `ffmpeg` with natural command names.                                                                        |
 | gcc-otg                   | Just-in-time compile and run C & C++ source files like Python.                                                  |
 | gi                        | Terminal UI for Git.                                                                                            |
+| gpu-bandwidth             | Measure the bandwidth of a GPU.                                                                                 |
 | headsetcontrol2mpris      | Convert `headsetcontrol`-compatible headset events into MPRIS commands.                                         |
 | isdaytime                 | Check if its day or night time.                                                                                 |
 | l                         | Conditionally page or preview files.                                                                            |
@@ -74,6 +79,7 @@ If you altered your `$PATH`, you may also wish to undo it.
 | neomutt-pick              | Use a file picker with `neomutt`.                                                                               |
 | nsts                      | Easily run NIST cryptographic tests.                                                                            |
 | numsh                     | Like NumPy, but for the shell.                                                                                  |
+| obs-event-sounds          | OBS plugin to play sounds on user events.                                                                       |
 | openrgb-cycle             | Manage OpenRGB profiles.                                                                                        |
 | pathfinder                | Mark and jump to directories & files in the terminal.                                                           |
 | personality               | Calculate Myers-Briggs personality type distributions.                                                          |
@@ -89,6 +95,7 @@ If you altered your `$PATH`, you may also wish to undo it.
 | slash                     | Normalise slashes of paths.                                                                                     |
 | sleep-precise             | Like `sleep`, but with millisecond precision and ~3ms accuracy.                                                 |
 | span-images               | Merge images into a single image using X11 geometry syntax.                                                     |
+| std.sh                    | A standard library for POSIX Shell.                                                                             |
 | std::string               | C++'s `std::string` for the shell.                                                                              |
 | std::unordered_map        | C++'s `std::unordered_map` for the shell.                                                                       |
 | std::vector               | C++'s `std::vector` for the shell.                                                                              |
@@ -101,6 +108,7 @@ If you altered your `$PATH`, you may also wish to undo it.
 | tglapp                    | Toggle applications. Useful for hotkeys.                                                                        |
 | torso                     | Like `head` & `tail`, but prints the in-between.                                                                |
 | trimpdf                   | Trim excess whitespace from PDFs.                                                                               |
+| uniqs & uniqsd            | Like `uniq`, but can work with unsorted input.                                                                  |
 | unsymlinks                | Reverse the effect of `symlinks`.                                                                               |
 | usbctl                    | Control USB devices.                                                                                            |
 | volmicmute                | Toggle mute status of the default microphone.                                                                   |
@@ -109,12 +117,6 @@ If you altered your `$PATH`, you may also wish to undo it.
 | x13ctl                    | Control ASUS ROG Flow X13 and other ASUS ROG laptops.                                                           |
 | ytdl-or-gldl              | Use `yt-dlp`, `youtube-dl` or `gallery-dl` depending on availability and target web site support.               |
 | zraminit                  | Initialise zram.                                                                                                |
-
-There are many other scripts & programs apart from these. Take a look under
-[src/](src/).
-
-Apart from executables, there are also C & C++ libraries, and even a [home brew
-standard library](src/sh/include/) for POSIX shells!
 
 ## Usage
 
