@@ -381,20 +381,24 @@ bool intnisfilter(const int *s, int (*func)(int), size_t n)
 }
 
 char *astrncatbuf(char *buf,
-                  size_t bufsize,
+                  size_t *bufsize,
                   const char **sptr,
                   size_t n,
                   const size_t *sizes,
                   size_t totsize)
 {
-    size_t i, j, idx, ssize;
+    size_t i, j, idx, ssize, reqsize;
     const char *s;
 
     if (!sptr || !sizes)
         return NULL;
 
-    if (!buf || bufsize < (totsize + 1) * sizeof(char))
-        buf = arealloc(buf, (totsize + 1) * sizeof(char));
+    reqsize = (totsize + 1) * sizeof(char);
+    if (!buf || (!bufsize || *bufsize < reqsize)) {
+        buf = arealloc(buf, reqsize);
+        if (bufsize)
+            *bufsize = reqsize;
+    }
 
     for (i = 0, idx = 0; i < n; i++) {
         ssize = sizes[i];
@@ -410,11 +414,9 @@ char *astrncatbuf(char *buf,
     return buf;
 }
 
-HEDLEY_MALLOC char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
+char *astrncat(const char **sptr, size_t n, const size_t *sizes, size_t totsize)
 {
-#ifndef __clang_analyzer__
-    return astrncatbuf(amalloc((totsize + 1) * sizeof(char)), totsize + 1, sptr, n, sizes, totsize);
-#endif /* ifndef __clang_analyzer__ */
+    return astrncatbuf(NULL, NULL, sptr, n, sizes, totsize);
 }
 
 HEDLEY_MALLOC char *astrcat(const char **sptr, size_t n)
@@ -440,7 +442,7 @@ HEDLEY_MALLOC char *astrcat(const char **sptr, size_t n)
     return o;
 }
 
-char *astrcatbuf(char *buf, size_t bufsize, const char **sptr, size_t n)
+char *astrcatbuf(char *buf, size_t *bufsize, const char **sptr, size_t n)
 {
     size_t i, totsize, *sizes;
     char *o;
@@ -515,7 +517,7 @@ HEDLEY_MALLOC char *vstrcat(size_t n, ...)
     return o;
 }
 
-char *vstrcatbuf(char *buf, size_t bufsize, size_t n, ...)
+char *vstrcatbuf(char *buf, size_t *bufsize, size_t n, ...)
 {
     va_list ap;
     const char **sptr = amalloc(n * sizeof(char *));
