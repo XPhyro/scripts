@@ -1217,7 +1217,7 @@ stats() {
 
     if command -v -- scc > /dev/null 2>&1; then
         printf "\n"
-        scc --cocomo-project-type semi-detached --wide --avg-wage 85000
+        scc --cocomo-project-type=semi-detached --sort=lines --wide --avg-wage=85000
     fi
 }
 
