@@ -17,7 +17,7 @@ expected_stdout() {
         'XXXXXX' \
         '/XXXXXX/YYYYYY' \
         '/XXXXXX' \
-        "$HOME"
+        "$HOME"/
 }
 
 expected_stderr() {
