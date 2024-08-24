@@ -95,16 +95,6 @@ namespace paf {
         list(lyra::cli& cli);
         PAF_CMD_NORETURN void execute(const lyra::group& g);
     };
-
-    class Edit {
-    private:
-        bool m_show_help = false;
-
-    public:
-        Edit(void) = delete;
-        Edit(lyra::cli& cli);
-        PAF_CMD_NORETURN void execute(const lyra::group& g);
-    };
 } // namespace paf
 
 #endif /* ifndef HEADER_SCRIPTS_CXX_PAF_CMD_ */
