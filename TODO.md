@@ -7,9 +7,6 @@
 
 ## Features
 
-- Implement for/while-else construct of Python in C++.
-  [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
-  starting point.
 - Make the interfaces of `std::*` (mostly) compliant with those of C++, even if
   it duplicates current interfaces.
 - Make `std::*` easier to use in shells with aliases similar to `ensure`.
@@ -39,9 +36,6 @@
 - Write a C program that takes in argv through argv and parsing configuration
   through stdin and outputs shell `eval`able code, then replace all applicable
   existing argument parsing in shell scripts with this program.
-- Automate [PulseAudio/PipeWire-Pulse network
-  streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
-  with optional pair configuration over `ssh`.
 - Merge `*maps` into a single C/C++ program.
 - Write an audio waveform visualisation extension (in Lua) for `mpv`.
   - These could be useful:
@@ -102,7 +96,7 @@
 ## Other
 
 - _Add support for installing single programs, plugins, etc._
-- Documentation:
+- Add documentation:
   - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
   - `-h` and/or `--help` flags.
@@ -118,13 +112,6 @@
 - At this point perhaps rename the repository from `scripts` to `utils`?
 - Consider changing the extension of shell headers from `.sh` to `.shh`, `.hsh`
   or something similar.
-- Add a commit hook that catches entries in the readme becoming broken or
-  stale.
-  - If entries become broken with the commit, the hook should:
-    - Warn about the broken entries
-    - Refuse the commit
-  - Otherwise, it should:
-    - Warn about entries possibly becoming stale
 - Consider integrating `cpplint`.
 
 ---
@@ -138,7 +125,6 @@
   menu.
 - In `tglapp`, `--list=compact` prints stdout and stderr.
 - `.make`: `.installed` grows indefinitely unless `uninstall` is issued, fix.
-- `latexd` does not work with files containing `'`, fix.
 - `std::string` segfaults if given alignment is not contained in the input.
 
 ## Features
@@ -152,12 +138,6 @@
   installed prompt, and show another prompt with the selected if all or
   in-library is selected).
 - Integrate `fzfp` of `stpv` into `f` and `_fd`.
-- Integrate _synctex_ in `latexd`. See
-  [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html)
-  and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
-- Add usage statistics to `g`, `e` and `i` to rename keycodes to more efficient
-  ones. Be sure to differentiate between scripted calls and interactive calls,
-  this is probably a non-issue as the keycodes would be vastly different.
 - In C `get*`, add diagnostic error messages.
 - In `fmaps`, implement options similar to that of `afgrep`'s `-aexbi`.
   - **Maybe** make these options specific to each given mapping? If so, also
@@ -169,11 +149,6 @@
 
 ## Refactoring / Rewriting / Reworking
 
-- Optimise `kmcycle` and `setxkb`.
-- Use `xsel` instead of `xclip`.
-- Consider `scrot` in `cpscr`.
-- Make `-fin` options in `ffmw` global as they are used by every non-help
-  subcommand.
 - Rewrite `eln` using `mapexec`. This will allow the name to be arbitrary
   (except containing a newline).
 - Rewrite `kasel` using `pgrep` and `kill --timeout`.
@@ -224,21 +199,12 @@
 
 ## Features
 
-- Generalise `vector`:
-  - From `1D->1D` to `ND->MD`.
-    - Maybe even support variadic vectors like: `{{1, 2}, {3}, {4, 5, 6}}`.
-      Values can remain as strings.
-  - Support `key->value` and `index->value` at the same time. Key can just be
-    strings.
-
-## New Scripts
-
-- After `vector` is generalised, write a shell library using `vector` to parse
-  arguments. Or just create another C/C++ program for this.
-  - Ideally, it would
-    - require very little or no boilerplate code.
-    - support parsing without a loop in the shell script.
-    - output error-checked `eval`able variables similar to `getpath`.
+- Implement for/while-else construct of Python in C++.
+  [This](https://stackoverflow.com/a/25209781/8403070) could be used as a
+  starting point.
+- Integrate _synctex_ in `latexd`. See
+  [this](https://www.math.cmu.edu/~gautam/sj/blog/20140310-zathura-fsearch.html)
+  and [this](https://gist.github.com/vext01/16df5bd48019d451e078).
 
 ## Refactoring / Rewriting / Reworking
 
@@ -247,6 +213,12 @@
   as much as possible. Still use C89 style declarations.
 - Optimise `database.h` to do less allocations.
   - Reuse built paths.
+
+## New Scripts
+
+- Automate [PulseAudio/PipeWire-Pulse network
+  streaming](https://gist.github.com/savegame/58ae5966c58a71fda5d3800b335eb2f5)
+  with optional pair configuration over `ssh`.
 
 ---
 
@@ -266,6 +238,7 @@
 
 - `acpihandler` does not handle already-off keyboard/touchpad correctly on
   PROG1 event.
+- `latexd` does not work with files containing `'`, fix.
 
 ## Features
 
@@ -351,6 +324,18 @@
   percentage.
 - In `polybar-headsetcontrol`, make the battery icon's fill follow the
   percentage.
+- Generalise `vector`:
+  - From `1D->1D` to `ND->MD`.
+    - Maybe even support variadic vectors like: `{{1, 2}, {3}, {4, 5, 6}}`.
+      Values can remain as strings.
+  - Support `key->value` and `index->value` at the same time. Key can just be
+    strings.
+
+## Refactoring / Rewriting / Reworking
+
+- Optimise `kmcycle` and `setxkb`.
+- Use `xsel` instead of `xclip`.
+- Consider `scrot` in `cpscr`.
 
 ## New Scripts
 
