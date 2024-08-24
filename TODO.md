@@ -1,18 +1,7 @@
 # High Priority
 
-## Security
-
-- `eval`ing `getpath`, `xdotool` and other programs can lead to security
-  problems if the scripts are run with elevated permissions. Warn the user and,
-  for programs local to this repository, always install the `eval`ed programs as
-  root to prevent tinkering.
-
 ## Bugs
 
-- `vstrcatbuf` and other similar functions do not return the new `bufsize` or edit
-  the original variable.
-  - Consecutive calls to these functions reallocates memory when it should not
-    due to not updating `bufsize`. See `fizzbuzz` as an example.
 - `make analyse` does not exit with non-zero code even if some analyses fail.
 - Analyse target on GitHub does not work correctly.
 
@@ -268,6 +257,10 @@
 - Do not `eval` the output of `headsetcontrol` in `polybar-headsetcontrol` in
   case the interface changes.
   - Maybe send a PR for an `-e` (for eval) flag to `headsetcontrol`?
+- `eval`ing `getpath`, `xdotool` and other programs can lead to security
+  problems if the scripts are run with elevated permissions. Warn the user and,
+  for programs local to this repository, always install the `eval`ed programs as
+  root to prevent tinkering.
 
 ## Bugs
 
