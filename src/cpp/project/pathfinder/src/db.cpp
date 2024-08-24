@@ -155,7 +155,8 @@ namespace paf {
             ::simpslashbuf(path.c_str(), data);
 
             std::cout << kc << sep << data;
-            if (type == db_type::directory && !path.ends_with('/'))
+            if (!(flags & static_cast<db_flags_t>(db_flag::wordexp)) &&
+                type == db_type::directory && !path.ends_with('/'))
                 std::cout << '/';
             std::cout << end;
         }
