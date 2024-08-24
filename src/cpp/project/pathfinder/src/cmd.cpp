@@ -393,13 +393,13 @@ PAF_CMD_NORETURN void paf::list::execute(const lyra::group& group)
 
     if (m_use_dir) {
         auto db = db::get_db(db_type::directory);
-        db.dump(m_nul ? "\0" : " : ", m_nul ? "\0" : "\n");
+        db.dump(m_nul ? "\0" : " — ", m_nul ? "\0" : "\n");
         db.cancel();
     }
 
     if (m_use_file) {
         auto db = db::get_db(db_type::file);
-        db.dump(m_nul ? "\0" : " : ", m_nul ? "\0" : "\n");
+        db.dump(m_nul ? "\0" : " — ", m_nul ? "\0" : "\n");
         db.cancel();
     }
 

@@ -15,6 +15,7 @@
 
 #include <xph/db.h>
 #include <xph/die.hpp>
+#include <xph/sys.hpp>
 
 namespace fs = std::filesystem;
 
@@ -146,8 +147,18 @@ namespace paf {
 
     void db::dump(std::string_view sep, std::string_view end)
     {
-        for (const auto& item : m_db_vec)
-            std::cout << item.keycode << sep << item.path << end;
+        std::vector<char> buf;
+        for (const auto& [kc, path, flags] : m_db_vec) {
+            buf.reserve(path.size() + 1);
+
+            char* data = buf.data();
+            ::simpslashbuf(path.c_str(), data);
+
+            std::cout << kc << sep << data;
+            if (type == db_type::directory && !path.ends_with('/'))
+                std::cout << '/';
+            std::cout << end;
+        }
     }
 
     std::optional<std::string> db::try_get_mark(const std::string& keycode)
