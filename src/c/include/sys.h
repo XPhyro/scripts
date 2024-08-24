@@ -138,7 +138,7 @@ void dirslashbuf(char *path, char *buf)
     struct stat st;
     size_t size;
 
-    memcpy(buf, path, (size = strlen(path) + 1) * sizeof(char));
+    memcpy(buf, path, ((size = strlen(path)) + 1) * sizeof(char));
 
     if (stat(path, &st) != -1 && S_ISDIR(st.st_mode)) {
         buf[size] = '/';
@@ -152,7 +152,7 @@ HEDLEY_MALLOC char *dirslash(const char *path)
     size_t size;
     char *s;
 
-    s = amalloc(((size = strlen(path) + 1) + 1) * sizeof(char));
+    s = amalloc(((size = strlen(path)) + 2) * sizeof(char));
     memcpy(s, path, size);
 
     if (stat(path, &st) != -1 && S_ISDIR(st.st_mode)) {
