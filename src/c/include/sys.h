@@ -133,22 +133,17 @@ char *simpslash(char *path)
 }
 
 /* no restrict is intentional. buf must be <= path if there is any overlap. */
-char *dirslashbuf(char *path, char *buf)
+void dirslashbuf(char *path, char *buf)
 {
     struct stat st;
     size_t size;
 
-    if (stat(path, &st) == -1)
-        return NULL;
-
     memcpy(buf, path, (size = strlen(path) + 1) * sizeof(char));
 
-    if (S_ISDIR(st.st_mode)) {
+    if (stat(path, &st) != -1 && S_ISDIR(st.st_mode)) {
         buf[size] = '/';
         buf[size + 1] = '\0';
     }
-
-    return buf;
 }
 
 HEDLEY_MALLOC char *dirslash(const char *path)
@@ -157,13 +152,10 @@ HEDLEY_MALLOC char *dirslash(const char *path)
     size_t size;
     char *s;
 
-    if (stat(path, &st) == -1)
-        return NULL;
-
     s = amalloc(((size = strlen(path) + 1) + 1) * sizeof(char));
     memcpy(s, path, size);
 
-    if (S_ISDIR(st.st_mode)) {
+    if (stat(path, &st) != -1 && S_ISDIR(st.st_mode)) {
         s[size] = '/';
         s[size + 1] = '\0';
     }
