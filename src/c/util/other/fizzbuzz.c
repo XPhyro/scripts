@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     bufsize = 0;
     for (i = 0; i < argc; i++) {
         buf =
-            vstrcatbuf(buf, bufsize, 3, "given string \"", argv[i], "\" is not a valid number.\n");
+            vstrcatbuf(buf, &bufsize, 3, "given string \"", argv[i], "\" is not a valid number.\n");
         num = astrtoull(argv[i], buf);
 
         if (optprepend)
