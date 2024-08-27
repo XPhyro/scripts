@@ -3,6 +3,7 @@
 
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <X11/extensions/Xrandr.h>
@@ -11,6 +12,11 @@
 
 namespace bs {
     class blinds {
+    public:
+        static const constexpr std::string_view k_expr_special_prefix = "@";
+        static const constexpr std::string_view k_expr_cursor = "cursor";
+        static const constexpr std::string_view k_expr_invert_prefix = "~";
+
     private:
         const cli& m_cli;
         Display* const m_display;
@@ -32,7 +38,7 @@ namespace bs {
         void lerp_alpha(double alpha, std::optional<std::string> monitor = std::nullopt);
 
     private:
-        std::string eval_monitor_expr(const std::string& monitor_expr);
+        std::optional<std::string> eval_monitor_expr(const std::string& monitor_expr);
         void update_windows(void);
         void create_windows(void);
         void destroy_windows(void);

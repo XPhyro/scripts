@@ -27,7 +27,7 @@ bs::cli::cli(int argc, char** argv)
         lyra::opt(m_snap_threshold, "num")["-s"]["--snap"]("set alpha snap threshold") |
         lyra::opt(m_lerp_factor, "num")["-t"]["--factor"]("set alpha linear interpolation factor") |
         lyra::arg(m_monitors, "monitor")(
-            "initial monitor to blank, can be @cursor to use the monitor the cursor is in")
+            "initial monitor to blank, can be @cursor to use the monitor the cursor is in, or prefix with ~ to invert the selection (only works with remove command)") // TODO: implement inversion for non-remove commands
             .cardinality(0, std::numeric_limits<size_t>::max());
 
     auto args = cli.parse({ argc, argv });

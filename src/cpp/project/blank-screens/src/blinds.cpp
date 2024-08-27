@@ -4,6 +4,7 @@
 #include <cassert>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -44,7 +45,11 @@ bs::blinds::~blinds(void)
 
 bool bs::blinds::add_monitor(const std::string& monitor_expr, bool commit_changes)
 {
-    const auto& monitor = eval_monitor_expr(monitor_expr);
+    const auto& optional_monitor = eval_monitor_expr(monitor_expr);
+    if (!optional_monitor)
+        return false;
+
+    const auto& monitor = *optional_monitor;
 
     if (std::all_of(monitor.begin(), monitor.end(), ::isspace))
         return false;
@@ -62,7 +67,31 @@ bool bs::blinds::add_monitor(const std::string& monitor_expr, bool commit_change
 
 bool bs::blinds::remove_monitor(const std::string& monitor_expr, bool commit_changes)
 {
-    const auto& monitor = eval_monitor_expr(monitor_expr);
+    if (monitor_expr.starts_with(k_expr_invert_prefix)) {
+        std::string_view sv = monitor_expr;
+        sv = sv.substr(k_expr_invert_prefix.size());
+
+        bool ret = false;
+
+        for (auto it = m_monitors.end() - 1; it > m_monitors.begin(); --it) {
+            if (*it == sv)
+                continue;
+
+            ret = true;
+            remove_monitor(*it, false);
+        }
+
+        if (commit_changes)
+            update_windows();
+
+        return ret;
+    }
+
+    const auto& optional_monitor = eval_monitor_expr(monitor_expr);
+    if (!optional_monitor)
+        return false;
+
+    const auto& monitor = *optional_monitor;
 
     auto monitor_it = std::find(m_monitors.begin(), m_monitors.end(), monitor);
     if (monitor_it == m_monitors.end())
@@ -107,7 +136,12 @@ void bs::blinds::lerp_alpha(double alpha, std::optional<std::string> monitor_exp
     static std::vector<std::size_t> m_lerp_idx;
 
     if (monitor_expr) {
-        const auto& monitor = eval_monitor_expr(*monitor_expr);
+        const auto& optional_monitor = eval_monitor_expr(*monitor_expr);
+        if (!optional_monitor)
+            return;
+
+        const auto& monitor = *optional_monitor;
+
         const auto& idx = std::find(m_monitors.begin(), m_monitors.end(), monitor);
 
         if (idx == m_monitors.end())
@@ -142,9 +176,18 @@ void bs::blinds::lerp_alpha(double alpha, std::optional<std::string> monitor_exp
 
 // // PRIVATE // //
 
-std::string bs::blinds::eval_monitor_expr(const std::string& monitor_expr)
+std::optional<std::string> bs::blinds::eval_monitor_expr(const std::string& monitor_expr)
 {
-    return monitor_expr == "@cursor" ? get_cursor_monitor(m_display) : monitor_expr;
+    std::string_view sv = monitor_expr;
+
+    if (sv.starts_with(k_expr_special_prefix)) {
+        const auto& special = sv.substr(k_expr_special_prefix.size());
+        if (special == k_expr_cursor)
+            return { get_cursor_monitor(m_display) };
+        return {};
+    }
+
+    return { monitor_expr };
 }
 
 void bs::blinds::update_windows(void)
