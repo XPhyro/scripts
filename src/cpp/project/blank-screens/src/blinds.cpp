@@ -15,6 +15,8 @@
 #include <xph/die.hpp>
 #include <xph/math.hpp>
 
+#include <xph/x11.h>
+
 // // PUBLIC // //
 
 bs::blinds::blinds(const bs::cli& cli)
@@ -142,7 +144,7 @@ void bs::blinds::lerp_alpha(double alpha, std::optional<std::string> monitor_exp
 
 std::string bs::blinds::eval_monitor_expr(const std::string& monitor_expr)
 {
-    return monitor_expr == "@cursor" ? get_cursor_monitor() : monitor_expr;
+    return monitor_expr == "@cursor" ? get_cursor_monitor(m_display) : monitor_expr;
 }
 
 void bs::blinds::update_windows(void)
@@ -270,58 +272,6 @@ void bs::blinds::destroy_windows(void)
     for (auto& window : m_windows)
         XDestroyWindow(m_display, window);
     m_windows.clear();
-}
-
-std::string bs::blinds::get_cursor_monitor(void)
-{
-    int root_x, root_y, win_x, win_y;
-    unsigned int mask;
-    Window root_return, child_return;
-
-    XQueryPointer(m_display,
-                  m_root_window,
-                  &root_return,
-                  &child_return,
-                  &root_x,
-                  &root_y,
-                  &win_x,
-                  &win_y,
-                  &mask);
-
-    XRRScreenResources* screen_resources = XRRGetScreenResources(m_display, m_root_window);
-    xph::die_if(!screen_resources, "unable to get screen resources");
-
-    for (int i = 0; i < screen_resources->noutput; ++i) {
-        XRROutputInfo* output_info =
-            XRRGetOutputInfo(m_display, screen_resources, screen_resources->outputs[i]);
-        if (!output_info || output_info->connection != RR_Connected) {
-            if (output_info)
-                XRRFreeOutputInfo(output_info);
-            continue;
-        }
-
-        XRRCrtcInfo* crtc_info = XRRGetCrtcInfo(m_display, screen_resources, output_info->crtc);
-        if (!crtc_info) {
-            XRRFreeOutputInfo(output_info);
-            continue;
-        }
-
-        if (root_x >= crtc_info->x && root_x < static_cast<int>(crtc_info->x + crtc_info->width) &&
-            root_y >= crtc_info->y && root_y < static_cast<int>(crtc_info->y + crtc_info->height)) {
-            std::string monitor_name = output_info->name;
-            XRRFreeCrtcInfo(crtc_info);
-            XRRFreeOutputInfo(output_info);
-            XRRFreeScreenResources(screen_resources);
-            return monitor_name;
-        }
-
-        XRRFreeCrtcInfo(crtc_info);
-        XRRFreeOutputInfo(output_info);
-    }
-
-    XRRFreeScreenResources(screen_resources);
-
-    return {};
 }
 
 double bs::blinds::set_window_alpha(Window window, double alpha)

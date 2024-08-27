@@ -36,7 +36,6 @@ namespace bs {
         void update_windows(void);
         void create_windows(void);
         void destroy_windows(void);
-        std::string get_cursor_monitor(void);
         double set_window_alpha(Window window, double alpha);
     };
 } // namespace bs
