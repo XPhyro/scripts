@@ -67,9 +67,6 @@ void bs::daemon::dispatch(const std::string& command_line)
         std::exit(EXIT_SUCCESS);
     }
 
-    if (argv.size() < 2)
-        goto err;
-
     if (argv[0] == "alpha") {
         std::cerr << xph::exec_name << ": setting alpha to " << argv[1] << '\n';
         const auto alpha = argv.size() < 2 ? m_cli.alpha() : std::stod(argv[1]);
@@ -86,8 +83,9 @@ void bs::daemon::dispatch(const std::string& command_line)
         for (const auto& monitor : argv | std::views::drop(1))
             m_blinds.toggle_monitor(monitor, false);
         m_blinds.commit_monitor_changes();
+    } else if (argv[0] == "clear") {
+        m_blinds.clear_monitors(true);
     } else {
-err:
         std::cerr << xph::exec_name << ": unknown command [" << argv[0] << "]\n";
     }
 }

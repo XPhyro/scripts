@@ -113,6 +113,20 @@ void bs::blinds::toggle_monitor(const std::string& monitor_expr, bool commit_cha
         remove_monitor(monitor_expr, commit_changes);
 }
 
+void bs::blinds::clear_monitors(bool commit_changes)
+{
+    if (m_monitors.empty())
+        return;
+
+    lerp_alpha(0.0, std::nullopt);
+
+    for (auto it = m_monitors.end() - 1; it >= m_monitors.begin(); --it)
+        remove_monitor(*it, false);
+
+    if (commit_changes)
+        update_windows();
+}
+
 void bs::blinds::commit_monitor_changes(void)
 {
     update_windows();

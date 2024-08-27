@@ -34,6 +34,7 @@ namespace bs {
         bool add_monitor(const std::string& monitor_expr, bool commit_changes = true);
         bool remove_monitor(const std::string& monitor_expr, bool commit_changes = true);
         void toggle_monitor(const std::string& monitor_expr, bool commit_changes = true);
+        void clear_monitors(bool commit_changes = true);
         void commit_monitor_changes(void);
         void lerp_alpha(double alpha, std::optional<std::string> monitor = std::nullopt);
 
