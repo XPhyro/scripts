@@ -28,7 +28,7 @@ jobs:
     - name: Install workflow dependencies
       run: |
         sudo apt-get update --fix-missing
-        sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev ncurses-bin
+        sudo apt-get -y install libmagic-dev moreutils libbsd-dev cargo libncurses5-dev libncursesw5-dev ncurses-bin libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
         git submodule update --init --recursive
       env:
         SHELL_VERBOSE: 1

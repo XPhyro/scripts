@@ -28,7 +28,7 @@ jobs:
     - name: Install workflow dependencies
       run: |
         sudo apt-get update --fix-missing
-        sudo apt-get -y install moreutils shellcheck pylint clang-tools cppcheck libbsd-dev
+        sudo apt-get -y install moreutils shellcheck pylint clang-tools cppcheck libbsd-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
         git submodule update --init --recursive
       env:
         SHELL_VERBOSE: 1
