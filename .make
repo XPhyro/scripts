@@ -562,7 +562,8 @@ install() {
         find cpp/project -mindepth 1 -maxdepth 1 -type d \
             -printf "$binprefix/%f\0"
         find go -mindepth 1 -type f -name "*.go" \
-            -printf "$binprefix/%f\0"
+            -printf "$binprefix/%f\0" \
+            | sed -z 's/\.go$//'
         find rs -mindepth 1 -maxdepth 1 -type d \
             -printf "$binprefix/%f\0"
         find ../man -mindepth 1 -type f -printf "$manprefix/man%P\0" \
