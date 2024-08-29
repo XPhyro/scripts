@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"unicode"
 )
 
 func sign(x int) int {
@@ -15,13 +16,20 @@ func sign(x int) int {
 	return 0
 }
 
+func charToInt(s string) (int, error) {
+	if len(s) == 1 && unicode.IsLetter(rune(s[0])) {
+		return int(s[0]), nil
+	}
+	return strconv.Atoi(s)
+}
+
 func main() {
 	args := os.Args[1:]
 
 	if len(args) < 1 || len(args) > 3 {
 		fmt.Println("Usage: seq LAST")
-		fmt.Println("       seq FIRST LAST\n")
-		fmt.Println("       seq FIRST INCREEMENT LAST")
+		fmt.Println("       seq FIRST LAST")
+		fmt.Println("       seq FIRST INCREMENT LAST")
 		return
 	}
 
@@ -32,17 +40,17 @@ func main() {
 	case 1:
 		first = 1
 		increment = 1
-		last, err = strconv.Atoi(args[0])
+		last, err = charToInt(args[0])
 		break
 	case 2:
-		first, err = strconv.Atoi(args[0])
+		first, err = charToInt(args[0])
 		increment = 1
-		last, err = strconv.Atoi(args[1])
+		last, err = charToInt(args[1])
 		break
 	case 3:
-		first, err = strconv.Atoi(args[0])
+		first, err = charToInt(args[0])
 		increment, err = strconv.Atoi(args[1])
-		last, err = strconv.Atoi(args[2])
+		last, err = charToInt(args[2])
 		break
 	}
 
