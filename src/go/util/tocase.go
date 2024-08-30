@@ -9,6 +9,18 @@ import (
 	"unicode"
 )
 
+func toAlternatingCase(input string) string {
+	var result strings.Builder
+	for i, r := range input {
+		if i%2 == 0 {
+			result.WriteRune(unicode.ToUpper(r))
+		} else {
+			result.WriteRune(unicode.ToLower(r))
+		}
+	}
+	return result.String()
+}
+
 func toCamelCase(input string) string {
 	words := splitWords(input)
 	for i := range words {
@@ -56,9 +68,10 @@ func splitWords(input string) []string {
 }
 
 func main() {
-	camel := flag.Bool("camel", false, "Convert to CamelCase")
+	alternating := flag.Bool("alternating", false, "Convert to AlTeRnAtInG CaSe")
+	camel := flag.Bool("camel", false, "Convert to camelCase")
 	pascal := flag.Bool("pascal", false, "Convert to PascalCase")
-	random := flag.Bool("random", false, "Convert to rAnDoM")
+	random := flag.Bool("random", false, "Convert to RaNDOm CAsE")
 	snake := flag.Bool("snake", false, "Convert to snake_case")
 	flag.Parse()
 
@@ -69,7 +82,9 @@ func main() {
 
 	input := strings.Join(flag.Args(), " ")
 
-	if *camel {
+	if *alternating {
+		fmt.Println(toAlternatingCase(input))
+	} else if *camel {
 		fmt.Println(toCamelCase(input))
 	} else if *pascal {
 		fmt.Println(toPascalCase(input))
