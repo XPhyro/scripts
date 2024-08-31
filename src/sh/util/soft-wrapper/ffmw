@@ -1068,7 +1068,7 @@ concat() {
 
     awk '{print '"\"file '\""'$0'"\"'\""'}' "$lstfl" | sponge "$lstfl"
 
-    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -f concat -safe 0 -i "$lstfl" -c copy -map 0 "$outfl" || {
+    $pperf ffmpeg -hide_banner $threads $overwrite $FFMW_FFMPEG_ARGS -f concat -safe 0 -i "$lstfl" -c:v copy -c:a copy -map 0 "$outfl" || {
         printferr "ffmpeg failed, exiting.\n"
         [ -f "$lstfl" ] && rm -- "$lstfl"
         exit 1
