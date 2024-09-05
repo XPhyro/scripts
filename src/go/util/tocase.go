@@ -81,17 +81,30 @@ func main() {
 
 	input := strings.Join(flag.Args(), " ")
 
+	hasFlag := false
+
 	if *alternating {
 		fmt.Println(toAlternatingCase(input))
-	} else if *camel {
+		hasFlag = true
+	}
+	if *camel {
 		fmt.Println(toCamelCase(input))
-	} else if *pascal {
+		hasFlag = true
+	}
+	if *pascal {
 		fmt.Println(toPascalCase(input))
-	} else if *random {
+		hasFlag = true
+	}
+	if *random {
 		fmt.Println(toRandomCase(input))
-	} else if *snake {
+		hasFlag = true
+	}
+	if *snake {
 		fmt.Println(toSnakeCase(input))
-	} else {
+		hasFlag = true
+	}
+
+	if !hasFlag {
 		fmt.Println("no conversion type specified")
 		os.Exit(1)
 	}
