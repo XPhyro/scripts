@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <optional>
 #include <random>
 #include <ranges>
 #include <set>
@@ -16,14 +17,13 @@
 
 #include <xph/die.hpp>
 #include <xph/exec_info.hpp>
-#include <xph/nullable.hpp>
 #include <xph/parse.hpp>
 
 void parseargs(int& argc, char**& argv);
 
 char optdelim = '\n';
 bool optargisline = false, optprefixline = false, optuniquemax = false;
-xph::nullable<std::size_t> optrangelow, optrangehigh, optcount, optunique, optprefixgroup;
+std::optional<std::size_t> optrangelow, optrangehigh, optcount, optunique, optprefixgroup;
 
 DEFINE_EXEC_INFO();
 
@@ -39,8 +39,7 @@ int main(int argc, char* argv[])
         std::ranges::copy(std::views::counted(argv, argc), std::back_inserter(lines));
     } else if (optrangelow && optrangehigh) {
         for (std::ostringstream ss;
-             const auto& i : std::views::iota(static_cast<std::size_t>(optrangelow),
-                                              static_cast<std::size_t>(optrangehigh) + 1ul)) {
+             const auto& i : std::views::iota(*optrangelow, *optrangehigh + 1ul)) {
             ss << i;
             lines.push_back(ss.str());
             ss.str("");
@@ -60,8 +59,8 @@ int main(int argc, char* argv[])
     if (optuniquemax)
         optunique = lines.size();
     else if (optunique && optunique > lines.size())
-        xph::die("not enough lines to ensure unique sequences of size ", optunique);
-    if (optprefixgroup && static_cast<std::size_t>(optprefixgroup) == 0)
+        xph::die("not enough lines to ensure unique sequences of size ", *optunique);
+    if (optprefixgroup && *optprefixgroup == 0)
         optprefixgroup = lines.size();
 
     std::random_device rdev;
@@ -70,8 +69,8 @@ int main(int argc, char* argv[])
     if (optunique <= 1ul) {
         std::uniform_int_distribution<std::size_t> dist(0u, lines.size() - 1);
         for (std::size_t count = 0; !optcount || count < optcount; ++count) {
-            if (optprefixgroup && !(count % static_cast<std::size_t>(optprefixgroup)))
-                std::cout << count / static_cast<std::size_t>(optprefixgroup) + 1 << optdelim;
+            if (optprefixgroup && !(count % *optprefixgroup))
+                std::cout << count / *optprefixgroup + 1 << optdelim;
             if (optprefixline)
                 std::cout << count + 1 << ": ";
             std::cout << lines[dist(rng)] << optdelim;
@@ -101,11 +100,11 @@ int main(int argc, char* argv[])
             auto i = active_indices[r];
             active_indices.erase(active_indices.begin() + r);
 
-            index_turns[i] = optunique;
+            index_turns[i] = *optunique;
             inactive_indices.insert(i);
 
-            if (optprefixgroup && !(count % static_cast<std::size_t>(optprefixgroup)))
-                std::cout << count / static_cast<std::size_t>(optprefixgroup) + 1 << optdelim;
+            if (optprefixgroup && !(count % *optprefixgroup))
+                std::cout << count / *optprefixgroup + 1 << optdelim;
             if (optprefixline)
                 std::cout << count + 1 << ": ";
             std::cout << lines[i] << optdelim;
