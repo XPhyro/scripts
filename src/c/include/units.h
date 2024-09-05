@@ -42,9 +42,8 @@ char *tick_to_human(unsigned long long tick)
 
     char buffer[max_len];
     for (int i = 0; i < ARRLEN(units); ++i) {
-        if (tick < durations[i]) {
+        if (tick < durations[i])
             continue;
-        }
 
         snprintf(buffer, sizeof(buffer), "%llu%s", tick / durations[i], units[i]);
         strncat(result, buffer, max_len);
