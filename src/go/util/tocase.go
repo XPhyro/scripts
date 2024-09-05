@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
-	"os"
 	"strings"
 	"unicode"
 )
@@ -76,8 +75,7 @@ func main() {
 	flag.Parse()
 
 	if len(flag.Args()) == 0 {
-		fmt.Println("Please provide a string to convert.")
-		os.Exit(1)
+		return
 	}
 
 	input := strings.Join(flag.Args(), " ")
