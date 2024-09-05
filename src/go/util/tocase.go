@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"os"
 	"strings"
 	"unicode"
 )
@@ -91,6 +92,7 @@ func main() {
 	} else if *snake {
 		fmt.Println(toSnakeCase(input))
 	} else {
-		fmt.Println("Please specify a conversion type: --camel, --pascal, --snake, or --random")
+		fmt.Println("no conversion type specified")
+		os.Exit(1)
 	}
 }
