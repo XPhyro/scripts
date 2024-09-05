@@ -95,7 +95,7 @@
 
 ## Other
 
-- _Add support for installing single programs, plugins, etc._
+- Add support for installing single programs, plugins, etc.
 - Add documentation:
   - Online documentation via `github.io` & `codeberg.page`.
   - Offline documentation via man pages.
@@ -103,12 +103,6 @@
   - For interpreted stuff and config files, brief explanation as comment at the
     beginning of the file.
   - Install man pages as compressed with `gzip`.
-  - Examples in the repository
-    - `sxhkd` examples for hotkey scripts
-    - Script/excerpt examples for utilities & libraries
-    - etc.
-  - Table of everything in README.md with 3 fields: name, very brief
-    description and (if possible) very brief example.
 - At this point perhaps rename the repository from `scripts` to `utils`?
 - Consider changing the extension of shell headers from `.sh` to `.shh`, `.hsh`
   or something similar.
