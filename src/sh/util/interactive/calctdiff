@@ -2,9 +2,9 @@
 
 . std.sh
 
-d1="$(date -d "$1" +%s)"
-d2="$(date -d "$2" +%s)"
-diff="$((d1 - d2))"
+begin_date="$(date -d "$1" +%s)"
+end_date="$(date -d "$2" +%s)"
+diff="$((end_date - begin_date))"
 
 printf "%s days, %s hours, %s minutes, %s seconds\n" \
     "$((diff / 86400))" \
