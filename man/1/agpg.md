@@ -19,7 +19,8 @@ individually. While encrypting, files are also compressed with BZip2 using a
 compression level of 9. Cryptographic operations use `gpg` with the key
 associated with the current local user account, not an email. Files' metadata
 are not checked: a file is considered to be encrypted if its base name ends
-with ".gpg".
+with ".gpg". File names are obfuscated when encrypted, but restored when
+decrypting.
 
 # OPTIONS
 
