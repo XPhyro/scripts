@@ -69,7 +69,7 @@ This program is not suitable for cryptographic use.
 
 # AUTHOR
 
-Berke Kocaoğlu <berke.kocaoglu@metu.edu.tr>
+Berke Kocaoğlu <berke.kocaoglu@icloud.com>
 
 # BUGS & ISSUES
 
