@@ -185,6 +185,8 @@ void printresult(size_t sumns, bool consistent, bool unitless)
         i = 9 - (i + digitcountu64(ns));
         while (i--)
             putchar('0');
-        printf("%zu\n", ns);
+        printf("%zu", ns);
     }
+
+    putchar('\n');
 }
