@@ -167,7 +167,7 @@ void printresult(size_t sumns, bool consistent, bool unitless)
         return;
     }
 
-    for (i = 0; ns % 10 == 0; ns /= 10, i++) {}
+    for (i = 0; ns && ns % 10 == 0; ns /= 10, i++) {}
 
     if (d) {
         printf("%zu:%.2zu:%.2zu:%.2zu", d, h, m, s);
