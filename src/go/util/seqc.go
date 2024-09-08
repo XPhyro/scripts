@@ -41,17 +41,14 @@ func main() {
 		first = 1
 		increment = 1
 		last, err = charToInt(args[0])
-		break
 	case 2:
 		first, err = charToInt(args[0])
 		increment = 1
 		last, err = charToInt(args[1])
-		break
 	case 3:
 		first, err = charToInt(args[0])
 		increment, err = strconv.Atoi(args[1])
 		last, err = charToInt(args[2])
-		break
 	}
 
 	if err != nil {
