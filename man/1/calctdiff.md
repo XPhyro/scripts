@@ -33,6 +33,12 @@ $ calctdiff 2020-10-11
 
 $ calctdiff 2020-10-11 "@$(date +%s)"
 1426 days, 1 hours, 22 minutes, 1 seconds
+
+$ calctdiff 2020-10-11 today
+1426 days, 1 hours, 22 minutes, 1 seconds
+
+$ calctdiff 2020-10-11 '1 hour ago'
+1426 days, 0 hours, 22 minutes, 1 seconds
 ```
 
 # AUTHOR
