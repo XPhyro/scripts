@@ -33,7 +33,7 @@ namespace xph {
     void die_if(std::function<bool()> func, const Ts&... args);
 
     template <typename... Ts>
-    void die_if(std::function<bool()> func, const Ts&... args)
+    inline void die_if(std::function<bool()> func, const Ts&... args)
     {
         if (func()) [[unlikely]]
             die(args...);
