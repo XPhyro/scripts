@@ -121,7 +121,7 @@ magicfailed:
             dup2(pipefd[1], STDOUT_FILENO);
             close(pipefd[0]);
             close(pipefd[1]);
-            execlp("file", "-00", "-b", "--mime-type", "--", path, NULL);
+            execlp("file", "file", "-00", "-b", "--mime-type", "--", path, NULL);
             exit(EXIT_SUCCESS);
         }
 
