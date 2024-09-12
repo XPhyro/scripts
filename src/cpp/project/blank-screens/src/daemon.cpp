@@ -70,11 +70,12 @@ void bs::daemon::dispatch(const std::string& command_line)
     if (argv[0] == "alpha") {
         std::cerr << xph::exec_name << ": setting alpha to " << argv[1] << '\n';
         const auto alpha = argv.size() < 2 ? m_cli.alpha() : std::stod(argv[1]);
+        const auto alpha_is_relative = alpha < 0.0 || argv[1].front() == '+';
         if (argv.size() < 3) {
-            m_blinds.lerp_alpha(alpha);
+            m_blinds.lerp_alpha(alpha, std::nullopt, alpha_is_relative);
         } else {
             for (const auto& monitor : argv | std::views::drop(2))
-                m_blinds.lerp_alpha(alpha, monitor);
+                m_blinds.lerp_alpha(alpha, monitor, alpha_is_relative);
         }
     } else if (argv[0] == "add") {
         for (const auto& monitor : argv | std::views::drop(1))

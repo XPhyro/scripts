@@ -143,11 +143,14 @@ void bs::blinds::commit_monitor_changes(void)
     std::cerr << '\n';
 }
 
-void bs::blinds::lerp_alpha(double alpha, std::optional<std::string> monitor_expr)
+void bs::blinds::lerp_alpha(double alpha,
+                            std::optional<std::string> monitor_expr,
+                            bool alpha_is_relative)
 {
     const constexpr double epsilon = 0.0001;
 
-    static std::vector<std::size_t> m_lerp_idx;
+    static std::vector<std::size_t> lerp_indices;
+    static std::vector<double> alphas;
 
     if (monitor_expr) {
         const auto& optional_monitor = eval_monitor_expr(*monitor_expr);
@@ -161,25 +164,33 @@ void bs::blinds::lerp_alpha(double alpha, std::optional<std::string> monitor_exp
         if (idx == m_monitors.end())
             return;
 
-        m_lerp_idx.push_back(std::distance(m_monitors.begin(), idx));
+        lerp_indices.push_back(std::distance(m_monitors.begin(), idx));
     } else {
-        m_lerp_idx.reserve(m_windows.size());
+        lerp_indices.reserve(m_windows.size());
         for (std::size_t i = 0; i < m_windows.size(); ++i)
-            m_lerp_idx.push_back(i);
+            lerp_indices.push_back(i);
     }
 
-    while (m_lerp_idx.size()) {
-        for (auto it = m_lerp_idx.end() - 1; it >= m_lerp_idx.begin(); --it) {
-            const auto& window = m_windows[*it];
-            const auto& last_alpha = m_alphas[*it];
+    alphas.clear();
+    alphas.reserve(lerp_indices.size());
+    for (auto it = lerp_indices.end() - 1; it >= lerp_indices.begin(); --it)
+        alphas.push_back(!alpha_is_relative ? alpha : m_alphas[*it] + alpha);
 
-            if (xph::approx_eq(last_alpha, alpha, epsilon)) {
-                m_lerp_idx.erase(it);
+    while (lerp_indices.size()) {
+        for (auto [lerp_it, alpha_it] = std::tuple{ lerp_indices.end() - 1, alphas.end() - 1 };
+             lerp_it >= lerp_indices.begin();
+             --lerp_it, --alpha_it) {
+            const auto& window = m_windows[*lerp_it];
+            const auto& last_alpha = m_alphas[*lerp_it];
+
+            if (xph::approx_eq(last_alpha, *alpha_it, epsilon)) {
+                lerp_indices.erase(lerp_it);
+                alphas.erase(alpha_it);
                 continue;
             }
 
-            const auto& new_alpha = last_alpha + (alpha - last_alpha) * m_cli.lerp_factor();
-            m_alphas[*it] = set_window_alpha(window, new_alpha);
+            const auto& new_alpha = last_alpha + (*alpha_it - last_alpha) * m_cli.lerp_factor();
+            m_alphas[*lerp_it] = set_window_alpha(window, new_alpha);
         }
 
         XFlush(m_display);

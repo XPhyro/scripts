@@ -36,7 +36,9 @@ namespace bs {
         void toggle_monitor(const std::string& monitor_expr, bool commit_changes = true);
         void clear_monitors(bool commit_changes = true);
         void commit_monitor_changes(void);
-        void lerp_alpha(double alpha, std::optional<std::string> monitor = std::nullopt);
+        void lerp_alpha(double alpha,
+                        std::optional<std::string> monitor = std::nullopt,
+                        bool alpha_is_relative = false);
 
     private:
         std::optional<std::string> eval_monitor_expr(const std::string& monitor_expr);
