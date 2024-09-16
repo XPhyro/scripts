@@ -83,14 +83,14 @@ int main(int argc, char* argv[])
         if (options.prefix_time()) {
             auto elapsed_time = current_time - start_time;
             auto elapsed_ticks = elapsed_time.count();
-            auto elapsed_human_ticks = xph::unit::tick_to_human(elapsed_ticks);
 
             if (prefixed)
                 std::cout << " | ";
             else
                 std::cout << '[';
 
-            std::cout << '@' << elapsed_human_ticks;
+            std::cout << '@';
+            xph::unit::write_tick_as_human(std::cout, elapsed_ticks);
 
             prefixed = true;
         }
@@ -98,14 +98,14 @@ int main(int argc, char* argv[])
         if (options.prefix_delta()) {
             auto differential_time = current_time - last_time;
             auto differential_ticks = differential_time.count();
-            auto differential_human_ticks = xph::unit::tick_to_human(differential_ticks);
 
             if (prefixed)
                 std::cout << " | ";
             else
                 std::cout << '[';
 
-            std::cout << '+' << differential_human_ticks;
+            std::cout << '+';
+            xph::unit::write_tick_as_human(std::cout, differential_ticks);
 
             prefixed = true;
         }
