@@ -22,14 +22,18 @@ public:                                                      \
         return m_##NAME;                                     \
     }
 
-#define OPT(NAME) lyra::opt(m_##NAME)
+#define OPT()                                                \
+    X_OPT(bool, prefix_time, false, t, time, "current time") \
+    X_OPT(bool, prefix_delta, false, d, delta, "delta time") \
+    X_OPT(bool, prefix_line, false, l, line, "line number")
 
 DEFINE_EXEC_INFO()
 
 class Options {
-    DECLARE_FIELD(bool, prefix_time, false);
-    DECLARE_FIELD(bool, prefix_delta, false);
-    DECLARE_FIELD(bool, prefix_line, false);
+#define X_OPT(X_TYPE, X_NAME, X_DEFAULT, X_SHORT, X_LONG, X_DESC) \
+    DECLARE_FIELD(X_TYPE, X_NAME, X_DEFAULT);
+    OPT()
+#undef X_OPT
 
 public:
     Options() = delete;
@@ -37,11 +41,11 @@ public:
     Options(int argc, char** argv)
     {
         bool help = false;
+#define X_OPT(X_TYPE, X_NAME, X_DEFAULT, X_SHORT, X_LONG, X_DESC) \
+    | lyra::opt(m_##X_NAME)["-" #X_SHORT]["--" #X_LONG]("prefix lines with " X_DESC)
         auto cli = lyra::cli() |
-                   lyra::help(help).description("Prefix lines with selected attributes.") |
-                   OPT(prefix_time)["-t"]["--time"]("prefix lines with current time") |
-                   OPT(prefix_delta)["-d"]["--delta"]("prefix lines with delta time") |
-                   OPT(prefix_line)["-l"]["--line"]("prefix lines with line number");
+                   lyra::help(help).description("Prefix lines with selected attributes.") OPT();
+#undef X_OPT
         auto args = cli.parse({ argc, argv });
 
         if (!args) {
