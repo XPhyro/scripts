@@ -41,7 +41,7 @@ char *get_cursor_monitor(Display *display)
 
     for (i = 0; i < screen_resources->noutput; i++) {
         output_info = XRRGetOutputInfo(display, screen_resources, screen_resources->outputs[i]);
-        if (!output_info || output_info->connection != RR_Connected) {
+        if (!output_info || output_info->connection != RR_Connected || output_info->crtc == None) {
             if (output_info)
                 XRRFreeOutputInfo(output_info);
             continue;
