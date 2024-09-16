@@ -1,13 +1,8 @@
 # Reporting Security Issues
 
 If you believe you found a security issue, please provide the details
-privately by
-
-- either using the private vulnerability reporting feature of GitHub,
-- or sending them to the e-mail address `berke.kocaoglu@metu.edu.tr`,
-  preferably encrypted with its public and your private PGP keys. The public
-  PGP key associated with this address can be found in most mainstream
-  databases or at the end of this document.
+privately by either using the private vulnerability reporting feature of
+GitHub, or sending them to the e-mail address `berke.kocaoglu@icloud.com`.
 
 Please include the following details if possible:
 
@@ -18,60 +13,3 @@ Please include the following details if possible:
 
 Please use English in your reports if possible. Otherwise, please still report
 the issue using your preferred language.
-
-## PGP Key
-
-```
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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
-r4L5tKC6puU=
-=clPT
------END PGP PUBLIC KEY BLOCK-----
-```
