@@ -3,8 +3,8 @@
 
 #define COMMA ,
 
-#define NOOP() \
-    do {       \
+#define NOOP(...) \
+    do {          \
     } while (false)
 
 #define SIMPLE_NAMEOF(x) #x
