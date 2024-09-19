@@ -34,7 +34,7 @@ tn_gif() {
 }
 
 tn_video() {
-    if [ -n "$KITTY_PID" ]; then
+    if { [ -z "$LF_THUMBNAIL_NO_GIF" ] || [ "$LF_THUMBNAIL_NO_GIF" -eq 0 ]; } && [ -n "$KITTY_PID" ]; then
         ext=gif
         [ -s "$thumbfl.$ext" ] || {
             ffmpeg -hide_banner -nostdin -y -threads "$(nproc)" \
