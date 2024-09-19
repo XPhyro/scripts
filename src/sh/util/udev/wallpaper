@@ -507,31 +507,31 @@ EOF4
                     mpvargs="--vo=vaapi"
                 fi
 
-                pids="$(while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
-                    
-                    xwinwrap $xwinwrapargs -g "$geom" -sub WID -- \
-                        prime-run mpv \
-                            --loop \
-                            --no-config \
-                            --no-input-terminal \
-                            --no-input-cursor \
-                            --no-osc \
-                            --no-osd-bar \
-                            --no-input-default-bindings \
-                            --cursor-autohide=no \
-                            --mute=yes \
-                            --stop-screensaver=no \
-                            --panscan=1 \
-                            --wid=WID \
-                            $mpvargs \
-                            -- "$fl" > /dev/null 2> /dev/null &
-                    printf "%s\n" "$!"
-                done 3<<EOF3 4<<EOF4
-$(xrandr | sed -"s/[a-zA-Z0-9_-]\+ connected \(primary \)\?\([0-9]\+x[0-9]\++[0-9]\++[0-9]\+\) \([a-z]\+ \)\?(.*$/\2/p")
+                pids="$(
+                    while IFS= read -r geom <&3 && IFS= read -r fl <&4; do
+                        xwinwrap $xwinwrapargs -g "$geom" -sub WID -- \
+                            prime-run mpv \
+                                --loop \
+                                --no-config \
+                                --no-input-terminal \
+                                --no-input-cursor \
+                                --no-osc \
+                                --no-osd-bar \
+                                --no-input-default-bindings \
+                                --cursor-autohide=no \
+                                --mute=yes \
+                                --stop-screensaver=no \
+                                --panscan=1 \
+                                --wid=WID \
+                                $mpvargs \
+                                -- "$fl" > /dev/null 2> /dev/null &
+                        printf "%s\n" "$!"
+                    done 3<<EOF3 4<<EOF4
+$(xrandr | sed -n "s/[a-zA-Z0-9_-]\+ connected \(primary \)\?\([0-9]\+x[0-9]\++[0-9]\++[0-9]\+\) \([a-z]\+ \)\?(.*$/\2/p")
 EOF3
-$(printf "%s\n" @")
+$(printf "%s\n" "$@")
 EOF4
-)"
+                )"
                 printf "%s\0" "$@" | xargs -r0 realpath --relative-to "$optdir" > "$optdir/.current-wallpapers"
                 rm -rf -- "$optdir/.current-wallpaper-links"
                 mkdir -p -- "$optdir/.current-wallpaper-links"
